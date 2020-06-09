@@ -1,0 +1,322 @@
+<template>
+  <el-container class="body-container">
+    <!-- 侧边栏 -->
+    <el-aside width="180px" class="left-aside">
+      <el-row>
+        <el-col :span="24">
+          <div class="aside-head">
+            <router-link :to="{name:'home'}" class="fa fa-home" style="font-size: 24px;">
+              <!--<el-image style="padding: 0 25px;" :src="require('@/assets/imgs/logo.png')"></el-image>-->
+            </router-link>
+          </div>
+          <div :style="selfHeight" class="aside-menu">
+            <el-menu class="menu-ul" :default-active="defaultActiveUrl" :collapse="isCollapse" :router="true">
+              <template v-for="item in subMenulist">
+                <el-menu-item v-if="!item.children" :index="item.url"><i :class="item.icon"></i><span slot="title">{{ item.name }}</span></el-menu-item>
+                <el-submenu v-if="!item.url" :index="item.name">
+                  <template slot="title"><i :class="item.icon"></i><span>{{ item.name }}</span></template>
+                  <el-menu-item v-for="(child,childIndex) in item.children" :key="childIndex" :index="child.url" @click="clickSubMenu(child.name)"><span style="margin-left:10px;">{{child.name}}</span></el-menu-item>
+                </el-submenu>
+              </template>
+            </el-menu>
+          </div>
+          <div class="aside-foot">
+            <el-button :icon="sideIcon" size="mini" circle @click="iconToggle"></el-button>
+            <div class="version-number">V2.0</div>
+          </div>
+        </el-col>
+      </el-row>
+    </el-aside>
+    <!-- 右侧部分 -->
+    <el-container>
+      <!-- 头部 -->
+      <el-header>
+        <div class="head-left-menu">
+          <ul>
+            <li>
+              <el-dropdown class="head-menu-item" trigger="click" @command="handleCommand">
+                <span class="el-dropdown-link">
+                  <!--<i class="el-icon-user-solid el-icon&#45;&#45;left"></i>{{ this.$store.state.UserName }}<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>-->
+                  <i class="el-icon-user-solid el-icon--left"></i>系统管理员<i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="a">个人信息</el-dropdown-item>
+                  <el-dropdown-item command="b"><i class="fa fa-power-off"></i></el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </li>
+            <li>
+              <el-tooltip class="head-menu-item" effect="dark" content="全屏" placement="bottom">
+                <i :class="isFullScreen?'el-icon-aim':'el-icon-full-screen'" @click="getFullCreeen"></i>
+              </el-tooltip>
+            </li>
+            <li><div>{{ time }}</div></li>
+          </ul>
+        </div>
+        <div class="head-right-menu">
+          <ul>
+            <li v-for="(item,index) in mainMenuList" :key="index" @click="clickMainMenu(index)" v-bind:class="{active:index==isactive}">{{ item.text }}</li>
+          </ul>
+        </div>
+        <!-- 个人信息 -->
+        <el-dialog title="个人信息" :visible.sync="dialogUserVisible">
+          <!--<el-form label-width="110px">-->
+            <!--<el-form-item label="名称：">{{ UserInfo.Name }}</el-form-item>-->
+            <!--<el-form-item label="工号：">{{ UserInfo.WorkNumber }}</el-form-item>-->
+            <!--<el-form-item label="所属厂区：">{{ UserInfo.FactoryName }}</el-form-item>-->
+            <!--<el-form-item label="所属部门：">{{ UserInfo.OrganizationName }}</el-form-item>-->
+            <!--<el-form-item label="创建人：">{{ UserInfo.Creater }}</el-form-item>-->
+            <!--<el-form-item label="创建时间：">{{ UserInfo.CreateTime }}</el-form-item>-->
+            <!--<el-form-item label="最近登录时间：">{{ UserInfo.LastLoginTime }}</el-form-item>-->
+          <!--</el-form>-->
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogUserVisible = false">取 消</el-button>
+          </div>
+        </el-dialog>
+      </el-header>
+      <!-- 页面主体 -->
+      <el-main style="clear: both;">
+        <transition name="move" mode="out-in">
+         <!--渲染子页面-->
+          <router-view :key="$route.fullPath"></router-view>
+       </transition>
+      </el-main>
+    </el-container>
+  </el-container>
+</template>
+
+<script>
+var moment = require('moment');
+import screenfull from "screenfull"
+export default {
+  name: 'Index',
+  data () {
+    return {
+      selfHeight:{ //自适应高度
+        height:''
+      },
+      isCollapse: false, //左侧菜单栏是否缩进了
+      sideIcon:'el-icon-arrow-left', //左侧菜单栏缩进点击切换图标
+      isClickElseMenu:false,
+      AreaArr:[],
+      time:"",  //实时显示当前的时间
+      dialogUserVisible:false, //是否弹出个人信息
+      isactive:"0", //主菜单选中索引值
+      defaultActiveUrl:"",
+      mainMenuList:[ //主菜单导航列表
+        {text:"能源管理"},
+        {text:"系统管理"}
+      ],
+      subMenulist:[], //子菜单导航列表
+      energyMenulist:[
+        // {name: "桓仁厂区", icon: "el-icon-location-outline", children:[]},
+        // {name: "能效分析", icon: "el-icon-data-analysis", url: "/EfficiencyAnalysis"},
+        // {name: "综合报表", icon: "el-icon-document", url: "/DataReport"},
+        // {name: "批次维护表", icon: "el-icon-set-up", url: "/MaintainedBatch"},
+        // {name: "基础维护表", icon: "el-icon-s-operation", url: "/MaintainedBoard"},
+        {name: "系统监控", icon: "el-icon-data-analysis", url: "/home"},
+      ],
+      systemMenulist:[
+        {name:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
+        {name:"角色管理",icon:"el-icon-s-check",url:"/Role"},
+        {name:"人员管理",icon:"el-icon-user",url:"/Personnel"},
+        {name:"工厂日历",icon:"el-icon-date",url:"/Calendar"},
+        {name:"调度维护",icon:"el-icon-suitcase",url:"/SchedulingRules"},
+        {name:"系统日志",icon:"el-icon-notebook-1",url:"/Log"}
+      ],
+      isFullScreen:false, //是否全屏
+      areaObj:{
+        areaName:""
+      },
+    }
+  },
+  //依赖注入传值
+  provide(){
+    return{
+      newAreaName:this.areaObj
+    }
+  },
+  mounted(){
+    let _this = this
+    this.timer = setInterval(() =>{
+      _this.time = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+    },1000);
+    if(this.$route.meta.title === "系统管理"){  //判断是否是属于系统管理模块，展示系统模块菜单
+      this.isactive = 1
+    }
+    this.clickMainMenu(this.isactive)
+    this.defaultActiveUrl = this.$route.path //将菜单激活项设置为当前页面地址
+  },
+  created(){
+    window.addEventListener('resize', this.getMenuHeight);
+    this.getMenuHeight()
+    // if(sessionStorage.getItem("LoginStatus")) {
+    //   this.$store.commit('setUser',sessionStorage.getItem('WorkNumber'))
+    //   this.axios.get("/api/CUID",{
+    //     params: {
+    //       tableName: "User",
+    //       field:"WorkNumber",
+    //       fieldvalue:sessionStorage.getItem('WorkNumber'),
+    //       limit:1,
+    //       offset:0
+    //     }
+    //   }).then(res =>{
+    //     var data = JSON.parse(res.data)
+    //     this.UserInfo =  data.rows[0]
+    //   })
+    // }else{
+    //   this.$router.push("/login");
+    // }
+  },
+  destroyed() {
+
+  },
+  methods:{
+    getMenuHeight(){
+      this.selfHeight.height = window.innerHeight - 230+'px';
+    },
+    clickSubMenu(areaName){  //点击左菜单传区域给子组件
+      this.areaObj.areaName = areaName
+    },
+    handleCommand(command) {  //判断用户下拉点击
+      if(command == "a"){
+        this.dialogUserVisible = true
+      }else if(command == "b"){
+        this.$store.commit('removeUser')
+        this.$router.replace("/login")
+      }
+    },
+    iconToggle() {  //折叠菜单
+      this.isCollapse = !this.isCollapse
+      if(this.isCollapse){
+        this.sideIcon = 'el-icon-arrow-right'
+        $(".left-aside").animate({"width":"64px"})
+      }else{
+        this.sideIcon = 'el-icon-arrow-left'
+        $(".left-aside").animate({"width":"180px"})
+      }
+    },
+    clickMainMenu(index){  //切换模块
+      this.isactive = index
+      if(index == 0) {
+        this.subMenulist = this.energyMenulist
+        if(this.isClickElseMenu){
+          this.defaultActiveUrl = this.subMenulist[0].children[0].url
+        }
+      }else if(index == 1){
+        this.subMenulist = this.systemMenulist
+        this.defaultActiveUrl = this.subMenulist[0].url
+      }
+    },
+    getFullCreeen () {  //全屏
+      if (screenfull.isEnabled) {
+        screenfull.toggle()
+        if(screenfull.isFullscreen){
+          this.isFullScreen = false
+        }else{
+          this.isFullScreen = true
+        }
+      }
+    },
+  }
+}
+</script>
+<style>
+  .el-container,.el-aside,.el-aside .el-row,.el-aside .el-row .el-col{
+    position: relative;
+    height: 100%;
+  }
+  .el-header{
+    overflow: hidden;
+  }
+  .body-container{
+    background: #EEEEEE;
+  }
+  .left-aside{
+    background: #082F4C;
+  }
+  .aside-head{
+    width: 100%;
+    text-align: center;
+    padding: 50px 0 30px;
+  }
+  .aside-head a{
+    color: #fff;
+  }
+  .aside-foot{
+    height:110px;
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
+    padding-top: 20px;
+  }
+  .aside-menu{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .menu-ul{
+    border: none;
+    clear: both;
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .menu-ul::-webkit-scrollbar {
+    display: none;
+  }
+  .el-menu-item .fa {
+    margin-right: 5px;
+    width: 24px;
+    text-align: center;
+    font-size: 18px;
+    vertical-align: middle;
+  }
+  .version-number{
+    margin-top: 20px;
+    color: #737373;
+  }
+  .head-left-menu,.head-right-menu{
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .head-left-menu{
+    float: left;
+  }
+  .head-left-menu i{
+    font-size: 24px;
+  }
+  .head-right-menu{
+    float: right;
+  }
+  .head-left-menu li{
+    display: inline-block;
+    margin-right: 30px;
+    color: #082F4C;
+    font-size: 20px;
+  }
+  .head-left-menu li i{
+    vertical-align: bottom;
+  }
+  .head-right-menu li{
+    float: left;
+    margin-right: 15px;
+    color: #082F4C;
+    font-size: 16px;
+    text-decoration: none;
+    display: block;
+    padding: 8px 15px;
+    background-color: #EEEEEE;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .head-right-menu li.active{
+    background-color: #082F4C;
+    color: #fff;
+  }
+  .head-menu-item{
+    cursor:pointer;
+  }
+</style>
