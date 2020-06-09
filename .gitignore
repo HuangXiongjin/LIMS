@@ -1,3 +1,4 @@
+./backend/database
 limsenv
 .qiniu_pythonsdk_hostscache.json
 celerybeat-schedule.db

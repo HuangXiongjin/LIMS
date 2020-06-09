@@ -9,7 +9,7 @@ users = Blueprint('users', __name__)
 
 @users.route('/', methods=['GET'])
 def index():
-    get_data = Users.query.all()
-    user_schema = UserSchema(many=True)
-    data = user_schema.dump(get_data)
-    return jsonify({'data': data})
+    # get_data = Users.query.all()
+    # user_schema = UserSchema(many=True)
+    # data = user_schema.dump(get_data)
+    return jsonify({'data': "data"})
