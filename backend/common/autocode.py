@@ -8,19 +8,21 @@ from flask import Flask
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import MetaData, create_engine
+
+from backend.common.MESLogger import MESLogger
+
 metadata = MetaData()
 from sqlalchemy import Table
 import json
 import datetime
-from models.SystemManagement.core import Base
+from backend.common.core import Base
 
 app = Flask(__name__)
 
-from tools.MESLogger import MESLogger
 logger = MESLogger('../logs', 'log')
 
-from dbset.database.db_operate import GLOBAL_DATABASE_CONNECT_STRING
-engine = create_engine(GLOBAL_DATABASE_CONNECT_STRING, deprecate_large_types=True)
+from backend import CONNECT_DATABASE
+engine = create_engine(CONNECT_DATABASE, deprecate_large_types=True)
 Session = sessionmaker(bind=engine)
 db_session = Session()
 
@@ -345,7 +347,7 @@ class MakeModel:
         try:
             import os, configparser
             BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            pythonFileName = os.path.join(BASE_DIR, r'models\SystemManagement\core.py')
+            pythonFileName = os.path.join(BASE_DIR, r'backend\common\core.py')
             tpl = ''
             # tpl += self.makeDevNotes()
             # tpl += self.makeImportNotes()
@@ -430,8 +432,8 @@ def make_model_main(data):
     try:
         import os,configparser
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        oldFileName = os.path.join(BASE_DIR,r'models\SystemManagement\core.py')
-        backFileName = os.path.join(BASE_DIR,r'models\SystemManagement\core_black.py')
+        oldFileName = os.path.join(BASE_DIR,r'backend\common\core.py')
+        backFileName = os.path.join(BASE_DIR,r'backend\common\core_black.py')
         shutil.copyfile(oldFileName, backFileName)
         newFileName = "make_model_test.txt"
         os.rename(backFileName,newFileName)

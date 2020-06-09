@@ -7,17 +7,15 @@ import re
 
 from werkzeug.security import generate_password_hash
 
-from models.SystemManagement.system import SysLog,AuditTrace,QualityControlTree,\
-    BatchInfo,BatchInfoDetail,EletronicBatchDataStore,BatchType,BrandFlag,FlowConfirm,FieldSet,CreateTableSet,PageRoute,FlowConfirm
-from dbset.database.db_operate import GLOBAL_DATABASE_CONNECT_STRING
-from dbset.main.BSFramwork import AlchemyEncoder
-from models.SystemManagement.system import SysLog
-from tools.MESLogger import MESLogger
+from backend import CONNECT_DATABASE
 import socket
 import datetime
-from models.SystemManagement.system import User
 
-engine = create_engine(GLOBAL_DATABASE_CONNECT_STRING, deprecate_large_types=True)
+from backend.common.BSFramwork import AlchemyEncoder
+from backend.common.MESLogger import MESLogger
+from backend.common.system import SysLog, User, AuditTrace
+
+engine = create_engine(CONNECT_DATABASE, deprecate_large_types=True)
 Session = sessionmaker(bind=engine)
 db_session = Session()
 
