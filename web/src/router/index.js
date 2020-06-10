@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/components/Index'
 import Home from '@/views/home'
+import config from '@/components/config'
 
 Vue.use(Router)
 
@@ -18,6 +19,11 @@ export default new Router({
         meta:{ title:'工作台'},
         component:Home
       }]
-    }
+    },
+    {
+      path: '/config',
+      name: 'config',
+      component: config,
+    },
   ]
 })

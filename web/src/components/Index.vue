@@ -36,6 +36,9 @@
               <div class='item-title'>深圳桃源地铁站能耗智能分析控制系统</div>
             </li>
             <li><div>{{ time }}</div></li>
+            <li>
+              <router-link :to="{name:'config'}" class="el-icon-data-analysis" style="color: #fff;"></router-link>
+            </li>
           </ul>
         </div>
         <div class="head-right-menu">
