@@ -22,7 +22,6 @@
           </div>
           <div class="aside-foot">
             <el-button :icon="sideIcon" size="mini" circle @click="iconToggle"></el-button>
-            <div class="version-number">V2.0</div>
           </div>
         </el-col>
       </el-row>
@@ -34,21 +33,7 @@
         <div class="head-left-menu">
           <ul>
             <li>
-              <el-dropdown class="head-menu-item" trigger="click" @command="handleCommand">
-                <span class="el-dropdown-link">
-                  <!--<i class="el-icon-user-solid el-icon&#45;&#45;left"></i>{{ this.$store.state.UserName }}<i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>-->
-                  <i class="el-icon-user-solid el-icon--left"></i>系统管理员<i class="el-icon-arrow-down el-icon--right"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="a">个人信息</el-dropdown-item>
-                  <el-dropdown-item command="b"><i class="fa fa-power-off"></i></el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </li>
-            <li>
-              <el-tooltip class="head-menu-item" effect="dark" content="全屏" placement="bottom">
-                <i :class="isFullScreen?'el-icon-aim':'el-icon-full-screen'" @click="getFullCreeen"></i>
-              </el-tooltip>
+              <div class='item-title'>深圳桃源地铁站能耗智能分析控制系统</div>
             </li>
             <li><div>{{ time }}</div></li>
           </ul>
@@ -56,23 +41,13 @@
         <div class="head-right-menu">
           <ul>
             <li v-for="(item,index) in mainMenuList" :key="index" @click="clickMainMenu(index)" v-bind:class="{active:index==isactive}">{{ item.text }}</li>
+              <li>
+              <el-tooltip class="head-menu-item" effect="dark" content="全屏" placement="bottom">
+                <i :class="isFullScreen?'el-icon-aim':'el-icon-full-screen'" @click="getFullCreeen"></i>
+              </el-tooltip>
+            </li>
           </ul>
         </div>
-        <!-- 个人信息 -->
-        <el-dialog title="个人信息" :visible.sync="dialogUserVisible">
-          <!--<el-form label-width="110px">-->
-            <!--<el-form-item label="名称：">{{ UserInfo.Name }}</el-form-item>-->
-            <!--<el-form-item label="工号：">{{ UserInfo.WorkNumber }}</el-form-item>-->
-            <!--<el-form-item label="所属厂区：">{{ UserInfo.FactoryName }}</el-form-item>-->
-            <!--<el-form-item label="所属部门：">{{ UserInfo.OrganizationName }}</el-form-item>-->
-            <!--<el-form-item label="创建人：">{{ UserInfo.Creater }}</el-form-item>-->
-            <!--<el-form-item label="创建时间：">{{ UserInfo.CreateTime }}</el-form-item>-->
-            <!--<el-form-item label="最近登录时间：">{{ UserInfo.LastLoginTime }}</el-form-item>-->
-          <!--</el-form>-->
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogUserVisible = false">取 消</el-button>
-          </div>
-        </el-dialog>
       </el-header>
       <!-- 页面主体 -->
       <el-main style="clear: both;">
@@ -109,12 +84,13 @@ export default {
       ],
       subMenulist:[], //子菜单导航列表
       energyMenulist:[
-        // {name: "桓仁厂区", icon: "el-icon-location-outline", children:[]},
-        // {name: "能效分析", icon: "el-icon-data-analysis", url: "/EfficiencyAnalysis"},
-        // {name: "综合报表", icon: "el-icon-document", url: "/DataReport"},
-        // {name: "批次维护表", icon: "el-icon-set-up", url: "/MaintainedBatch"},
-        // {name: "基础维护表", icon: "el-icon-s-operation", url: "/MaintainedBoard"},
-        {name: "系统监控", icon: "el-icon-data-analysis", url: "/home"},
+        {name: "系统监控", icon: "el-icon-zoom-in",url:"/SystemMonitor"},
+        {name: "智能分析", icon: "el-icon-data-analysis", url: "/EfficiencyAnalysis"},
+        {name: "智能运行", icon: "el-icon-document", url: "/DataReport"},
+        {name: "智能维保", icon: "el-icon-set-up", url: "/MaintainedBatch"},
+        {name: "参数配置", icon: "el-icon-s-operation", url: "/MaintainedBoard"},
+        {name: "数据管理", icon: "el-icon-data-analysis", url: "/home"},
+        {name: "服务诊断", icon: "el-icon-service", url: "/DiagnosticServices"},
       ],
       systemMenulist:[
         {name:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
@@ -230,10 +206,10 @@ export default {
     overflow: hidden;
   }
   .body-container{
-    background: #EEEEEE;
+    background: #34383E;
   }
   .left-aside{
-    background: #082F4C;
+    background: #1B1E27;
   }
   .aside-head{
     width: 100%;
@@ -294,16 +270,23 @@ export default {
   .head-left-menu li{
     display: inline-block;
     margin-right: 30px;
-    color: #082F4C;
+    color: #1B1E27;
     font-size: 20px;
+  }
+  .head-left-menu li:nth-child(2){
+   margin-left: 90px;
   }
   .head-left-menu li i{
     vertical-align: bottom;
   }
+  .head-left-menu li .item-title{
+    font-size: 22px;
+    color:#fff;
+  }
   .head-right-menu li{
     float: left;
     margin-right: 15px;
-    color: #082F4C;
+    color: #1B1E27;
     font-size: 16px;
     text-decoration: none;
     display: block;
@@ -313,7 +296,7 @@ export default {
     cursor: pointer;
   }
   .head-right-menu li.active{
-    background-color: #082F4C;
+    background-color: #34383E;
     color: #fff;
   }
   .head-menu-item{
