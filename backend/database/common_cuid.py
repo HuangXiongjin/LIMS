@@ -11,7 +11,7 @@ from backend import CONNECT_DATABASE
 import socket
 import datetime
 
-from backend.common.BSFramwork import AlchemyEncoder
+from backend.common.MyEncode import AlchemyEncoder
 from backend.common.MESLogger import MESLogger
 from backend.common.system import SysLog, User, AuditTrace
 
@@ -26,6 +26,7 @@ Base = automap_base()
 Base.prepare(engine, reflect=True)
 
 logger = MESLogger('../logs', 'log')
+
 #插入日志OperationType OperationContent OperationDate UserName ComputerName IP
 def insertSyslog(operationType, operationContent, userName):
         try:

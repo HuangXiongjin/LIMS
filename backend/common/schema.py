@@ -9,8 +9,8 @@ class UserSchema(ModelSchema):
     class Meta(ModelSchema.Meta):
         model = Users
         sql_session = db.session
-        id = fields.Integer()
-        name = fields.String()
-        number = fields.String()
-        phone = fields.String()
-        address = fields.String()
+    id = fields.Integer()
+    name = fields.String()
+    number = fields.String()
+    phone = fields.String()
+    address = fields.String()
