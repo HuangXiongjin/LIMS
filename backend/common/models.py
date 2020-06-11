@@ -1,5 +1,3 @@
-# import datetime
-#
 from backend import db
 
 
@@ -9,14 +7,13 @@ class Users(db.Model):
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 姓名
-    name = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.Unicode(128), nullable=False)
     # 编号
-    number = db.Column(db.String(128), nullable=False)
+    number = db.Column(db.Unicode(128), nullable=False)
     # 电话
-    phone = db.Column(db.String(32), nullable=False)
+    phone = db.Column(db.Unicode(32), nullable=False)
     # 地址
-    address = db.Column(db.String(128), nullable=False)
-
+    address = db.Column(db.Unicode(128), nullable=False)
 
 #
 #

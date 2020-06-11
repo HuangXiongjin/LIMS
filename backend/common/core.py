@@ -102,9 +102,10 @@ class Role(Base):
 
     # 所属部门:
     ParentNode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
     # 查询权限
     menus = relationship("Menu", secondary=Role_Menu)
+
+
 
 
 # Role_END:

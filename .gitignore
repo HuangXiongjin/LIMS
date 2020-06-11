@@ -1,4 +1,6 @@
-./backend/database
+backend/database/common_cuid.py
+backend/database/config_db.ini
+backend/database/connect_db.py
 limsenv
 .qiniu_pythonsdk_hostscache.json
 celerybeat-schedule.db

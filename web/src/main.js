@@ -9,9 +9,9 @@ import qs from 'qs'
 Vue.use(ElementUI)
 import 'element-ui/lib/theme-chalk/index.css'
 import './assets/common.css'
-import Jqeury from './assets/script/jquery-3.3.1.min'
 import 'font-awesome/css/font-awesome.min.css'
 import VCharts from 'v-charts'
+import Jqeury from './assets/script/jquery-3.3.1.min'
 import store from './store'
 
 Vue.config.productionTip = false
