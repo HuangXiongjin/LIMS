@@ -123,7 +123,11 @@
           this.determineSubmitType()
           this.tableData.dialogVisible = true
           this.tableData.handleForm.forEach(item =>{
-            item.value = ""
+            if(item.searchVal){
+              item.value = this.tableData.searchVal
+            }else{
+              item.value = ""
+            }
           })
         }else if(label === "修改"){
           this.determineSubmitType()

@@ -5,7 +5,7 @@
         <el-tabs v-model="activeName">
           <el-tab-pane label="数据库建表" name="tableName">
             <tableView :tableData="tableNameData" :relatedTableData="FieldSetData" @getTableData="gettableNameTable" style="margin-bottom: 20px;"></tableView>
-            <tableView :tableData="FieldSetData" @getTableData="getFieldSetTable" @privileges="resModel"></tableView>
+            <tableView :tableData="FieldSetData" @getTableData="getFieldSetTable" @resModel="resModel"></tableView>
           </el-tab-pane>
           <el-tab-pane label="字段类型" name="FieldType">
             <tableView :tableData="FieldTypeData" @getTableData="getFieldTypeTable"></tableView>
@@ -115,7 +115,7 @@
           ],
           handleForm:[  //模态框展示的表单和提交所需的数据
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true},
-            {label:"表名",prop:"TableName",type:"input",value:""},
+            {label:"表名",prop:"TableName",type:"input",value:"",searchVal:true},
             {label:"列头名称",prop:"TitleName",type:"input",value:""},
             {label:"字段名",prop:"FieldName",type:"input",value:""},
             {label:"可增改",prop:"Isedit",type:"select",Downtable:"ISFlag",showDownField:"Description",value:""},
@@ -125,7 +125,7 @@
             {label:"是否排序",prop:"Sortable",type:"select",Downtable:"ISFlag",showDownField:"Description",value:""},
             {label:"是否显示列头",prop:"Visible",type:"select",Downtable:"ISFlag",showDownField:"Description",value:""},
             {label:"字段注释",prop:"comment",type:"input",value:""},
-            {label:"字段类型",prop:"type",type:"select",Downtable:"ISFlag",showDownField:"Description",value:""},
+            {label:"字段类型",prop:"type",type:"select",Downtable:"FieldType",showDownField:"Type",value:""},
             {label:"VARCHAR长度",prop:"length",type:"input",value:""},
             {label:"是否为主键",prop:"primarykey",type:"select",Downtable:"ISFlag",showDownField:"Description",value:""},
             {label:"是否自增",prop:"autoincrement",type:"select",Downtable:"ISFlag",showDownField:"Description",value:""},
@@ -384,35 +384,64 @@
         })
       },
       resModel(){ //重置model
-        if(this.FieldSetData.multipleSelection.length === 1){
-          this.$confirm('确定删除所选记录？', '提示', {
+        if(this.tableNameData.multipleSelection.length === 1){  //判断点击选择了一个表
+          this.$confirm('确定重置所选表的model？', '提示', {
             distinguishCancelAndClose:true,
             type: 'warning'
           }).then(()  => {
-            this.axios.post("/api/system_set/make_model",{
+            this.axios.get("/api/CUID",{
               params: {
-
+                tableName:"FieldSet",
+                field: 'TableName',
+                fieldvalue: this.FieldSetData.searchVal,
+                limit: 100000000,
+                offset:0
               }
             }).then(res =>{
-              if(res === "OK"){
-                this.$message({
-                  type: 'success',
-                  message: '重置成功'
-                });
-              }
-            },res =>{
-              console.log("请求失败")
-            })
+              res = JSON.parse(res.data)
+              var queryData = {}
+              var queryField = []
+              res.rows.forEach((item,index) =>{
+                queryData.tableName = item.TableName
+                var queryFieldItem = {}
+                queryFieldItem.ID = item.ID
+                queryFieldItem.comment = item.comment
+                queryFieldItem.type = item.type
+                queryFieldItem.primarykey = item.primarykey
+                queryFieldItem.autoincrement = item.autoincrement
+                queryFieldItem.nullable = item.nullable
+                queryFieldItem.FieldName = item.FieldName
+                queryFieldItem.length = item.length
+                queryField.push(queryFieldItem)
+              })
+              queryField = JSON.stringify(queryField)
+              queryField = queryField.replace(/,{/g,";{")
+              queryData.Field = queryField
+              this.axios.post("/api/users/system_set/make_model",{
+                params: queryData
+              }).then(res =>{
+                if(res === "OK"){
+                  this.$message({
+                    type: 'success',
+                    message: '重置成功'
+                  });
+                }
+              },res =>{
+                console.log("请求失败")
+              })
+              },res =>{
+                console.log("请求失败")
+              })
           }).catch(() => {
             this.$message({
               type: 'info',
-              message: '已取消删除'
+              message: '已取消操作'
             });
           });
         }else{
           this.$message({
             type: 'info',
-            message: '请选择一条角色进行分配'
+            message: '请选择一个表进行操作'
           });
         }
       }
