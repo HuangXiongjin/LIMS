@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_login import LoginManager
 
-from backend import CONNECT_DATABASE
+from backend.database.connect_db import CONNECT_DATABASE
 
 login_manager = LoginManager()
 # 创建对象的基类
@@ -164,9 +164,130 @@ class FieldType(Base):
     Description = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 
+# 审计追踪
+class AuditTrace(Base):
+    __tablename__ = 'AuditTrace'
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 操作:
+    Operation = Column(Unicode(300), primary_key=False, autoincrement=False, nullable=True)
+
+    # 详细信息:
+    DeitalMSG = Column(Unicode(800), primary_key=False, autoincrement=False, nullable=True)
+
+    # 修改日期
+    ReviseDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 操作表:
+    TableName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 用户:
+    User = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 其他:
+    Other = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 
+class SysLog(Base):
+    __tablename__ = "SysLog"
 
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+
+    # IP:
+    IP = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 计算机名称:
+    ComputerName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 操作用户:
+    UserName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 操作日期:
+    OperationDate = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+
+    # 操作内容:
+    OperationContent = Column(Unicode(2048), primary_key=False, autoincrement=False, nullable=True)
+
+    # 类型:
+    OperationType = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+
+# User_START:
+class User(Base):
+    __tablename__ = "User"
+
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 用户名:
+    Name = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 密码:
+    Password = Column(Unicode(150), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工号:
+    WorkNumber = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 所属岗位:
+    StationName = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+    # 登录状态:
+    Status = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # session_id:
+    session_id = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 所属部门:
+    OrganizationName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 所属厂区:
+    FactoryName = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+    # 上次登录时间:
+    LastLoginTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 创建时间:
+    CreateTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 创建用户:
+    Creater = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+    # 是否锁定:
+    IsLock = Column(BIT, primary_key=False, autoincrement=False, nullable=True)
+
+    # @property
+    # def password(self):
+    #     raise AttributeError('password is not a readable attribute')
+
+    # 定义password字段的写方法，我们调用generate_password_hash将明文密码password转成密文Shadow
+    # @password.setter
+    def password(self, password):
+        self.Password = generate_password_hash(password)
+        return self.Password
+
+    # 定义验证密码的函数confirm_password
+    def confirm_password(self, password):
+        return check_password_hash(self.Password, password)
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.ID)  # python 3
+
+
+# User_END:
 
 
 

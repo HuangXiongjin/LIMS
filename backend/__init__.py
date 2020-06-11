@@ -3,6 +3,10 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from flask_sqlalchemy import SQLAlchemy
 import pymssql
+from flask_restful import reqparse, abort, Api, Resource
+from flask import Flask, abort, request, render_template
+from backend.database.common_cuid import insert, delete, update, select, accurateSelect
+from backend.database.common_cuid import accurateSelect
 
 from backend.database.connect_db import CONNECT_DATABASE
 
@@ -24,6 +28,31 @@ migrate = Migrate(app, db)
 # 传输命令行参数
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
+
+
+api = Api(app)
+class CUIDList(Resource):
+    def get(self):
+        data = request.values
+        searchModes = data.get("searchModes")
+        if searchModes == "精确查询":
+            return accurateSelect(request.values)
+        else:  # 模糊查询
+            return select(request.values)
+
+    def post(self):
+        return insert(request.values)
+
+    def put(self):
+        return update(request.values)
+
+    def delete(self):
+        return delete(request.values)
+
+
+api.add_resource(CUIDList, '/CUID')
+
+
 
 
 @app.route('/')
