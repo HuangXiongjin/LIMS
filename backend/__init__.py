@@ -1,12 +1,10 @@
-from flask import Flask
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from flask_sqlalchemy import SQLAlchemy
-import pymssql
-from flask_restful import reqparse, abort, Api, Resource
-from flask import Flask, abort, request, render_template
-from backend.database.common_cuid import insert, delete, update, select, accurateSelect
-from backend.database.common_cuid import accurateSelect
+from flask_restful import Api, Resource
+from flask import Flask, request
+from backend.common.common_cuid import insert, delete, update, select, accurateSelect
+from backend.common.common_cuid import accurateSelect
 
 from backend.database.connect_db import CONNECT_DATABASE
 
