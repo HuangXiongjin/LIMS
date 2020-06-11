@@ -4,7 +4,7 @@
       <div class="platformContainer">
         <el-tabs v-model="activeName">
           <el-tab-pane label="数据库建表" name="tableName">
-            <tableView :tableData="tableNameData" :relatedTableData="FieldSetData" @getTableData="gettableNameTable"></tableView>
+            <tableView :tableData="tableNameData" :relatedTableData="FieldSetData" @getTableData="gettableNameTable" style="margin-bottom: 20px;"></tableView>
             <tableView :tableData="FieldSetData" @getTableData="getFieldSetTable" @privileges="resModel"></tableView>
           </el-tab-pane>
           <el-tab-pane label="字段类型" name="FieldType">
