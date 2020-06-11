@@ -417,7 +417,7 @@
               queryField = JSON.stringify(queryField)
               queryField = queryField.replace(/,{/g,";{")
               queryData.Field = queryField
-              this.axios.post("/api/users/system_set/make_model",queryData).then(res =>{
+              this.axios.post("/api/users/system_set/make_model",this.qs.stringify(queryData)).then(res =>{
                 if(res === "OK"){
                   this.$message({
                     type: 'success',
