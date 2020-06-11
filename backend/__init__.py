@@ -1,8 +1,12 @@
+from flask_bootstrap import Bootstrap
+from flask_login import LoginManager
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask import Flask, request
+
+
 from backend.common.common_cuid import insert, delete, update, select, accurateSelect
 from backend.common.common_cuid import accurateSelect
 
@@ -26,7 +30,10 @@ migrate = Migrate(app, db)
 # 传输命令行参数
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
-
+bootstrap = Bootstrap(app)
+app.config['SECRET_KEY'] = 'qeqhdasdqiqd131'
+from backend.account import views
+views.login_manager.init_app(app)
 
 api = Api(app)
 class CUIDList(Resource):

@@ -1,7 +1,7 @@
 import json
 from flask import Blueprint, render_template, request, make_response
 from flask import Blueprint, jsonify
-from flask_login import login_user
+from flask_login import login_user, LoginManager
 
 from backend.tools import autocode
 from backend.tools.MyEncode import AlchemyEncoder
@@ -9,7 +9,11 @@ from backend.common.models import Users
 from backend.common.system import db_session, User
 import time, datetime
 
+
 users = Blueprint('users', __name__)
+login_manager = LoginManager()
+login_manager.db_session_protection = 'strong'
+login_manager.login_view = 'login_auth.login'
 
 
 @users.route('/', methods=['GET'])
