@@ -15,6 +15,9 @@ login_manager = LoginManager()
 login_manager.db_session_protection = 'strong'
 login_manager.login_view = 'login_auth.login'
 
+@login_manager.user_loader
+def load_user(user_id):
+    return db_session.query(User).filter_by(ID=int(user_id)).first()
 
 @users.route('/', methods=['GET'])
 def index():

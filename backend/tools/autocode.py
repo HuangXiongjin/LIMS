@@ -425,7 +425,7 @@ def make_model_main(data):
         import os,configparser
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         oldFileName = os.path.join(BASE_DIR,r'backend\common\core.py')
-        backFileName = os.path.join(BASE_DIR,r'backend\common\core_black.py')
+        backFileName = os.path.join(BASE_DIR,r'backend\common\core.py')
         shutil.copyfile(oldFileName, backFileName)
         newFileName = "make_model_test.txt"
         os.rename(backFileName,newFileName)
