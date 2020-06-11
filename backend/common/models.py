@@ -1,21 +1,4 @@
-# import datetime
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
 from backend import db
-
-from backend import CONNECT_DATABASE
-
-engine = create_engine(CONNECT_DATABASE, deprecate_large_types=True,
-                       max_overflow=0,  # 超过连接池大小外最多创建的连接
-                       pool_size=100,  # 连接池大小
-                       pool_timeout=50,  # 池中没有线程最多等待的时间，否则报错
-                       pool_recycle=-1  # 多久之后对线程池中的线程进行一次连接的回收（重置）
-                       # echo = True   #输出SQL
-                       )
-SessionFactory = sessionmaker(bind=engine)
-session = SessionFactory()
-Base = declarative_base(engine)
 
 
 class Users(db.Model):
@@ -24,14 +7,13 @@ class Users(db.Model):
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 姓名
-    name = db.Column(db.String(128), nullable=False)
+    name = db.Column(db.Unicode(128), nullable=False)
     # 编号
-    number = db.Column(db.String(128), nullable=False)
+    number = db.Column(db.Unicode(128), nullable=False)
     # 电话
-    phone = db.Column(db.String(32), nullable=False)
+    phone = db.Column(db.Unicode(32), nullable=False)
     # 地址
-    address = db.Column(db.String(128), nullable=False)
-
+    address = db.Column(db.Unicode(128), nullable=False)
 
 #
 #

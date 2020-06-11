@@ -1,21 +1,16 @@
 #!/usr/bin/ python
 # -*- coding:utf-8 -*-
-import time, os, random,sys,shutil
-import subprocess
-import re
+import time, os, sys,shutil
 import xlrd
 from flask import Flask
-from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import MetaData, create_engine
 
-from backend.common.MESLogger import MESLogger
+from backend.tools.MESLogger import MESLogger
 
 metadata = MetaData()
-from sqlalchemy import Table
 import json
 import datetime
-from backend.common.core import Base
 
 app = Flask(__name__)
 
@@ -231,7 +226,7 @@ class MakeModel:
         f.close()
 
     def ModifyModel(self,AFilename,ATableName):
-        currentPath = os.path.abspath('.')
+        currentPath = os.path.abspath('../common')
         model_path = PATH(currentPath + r'\\' + AFilename)
         i = 0
         tmp = ""
@@ -294,7 +289,7 @@ class MakeModel:
     def makeModelBySheet(self):
         #读取配置文件
         #获取工程所在的路径，如果加入目录名字切换到该目录下
-        currentPath = os.path.abspath('.')
+        currentPath = os.path.abspath('../common')
         models_xls_path = currentPath + '\\models\\'
         modelsxls = models_xls_path + 'model_Test20180317.xlsx'
         try:
@@ -378,7 +373,7 @@ class MakeModel:
     def ModifyAddModel(self,AModifyString):
         #读取配置文件
         #获取工程所在的路径，如果加入目录名字切换到该目录下
-        currentPath = os.path.abspath('.')
+        currentPath = os.path.abspath('../common')
         models_xls_path = currentPath + '\\models\\'
         modelsxls = models_xls_path + 'model_Test20180317.xlsx'
         try:
