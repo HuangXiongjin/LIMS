@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.collections import InstrumentedList
 
 
-class AlchemyEncoder(json.JSONEncoder):
+class MyEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj.__class__, DeclarativeMeta):
             fields = {}
@@ -28,7 +28,8 @@ class AlchemyEncoder(json.JSONEncoder):
                     elif isinstance(data, InstrumentedList):
                         fields[field] = '数据库表多对多查询序列化'
                     else:
-                        print('编码有误！！！！')
+                        # print('编码有误！！！！')
+                        fields[field] = MyEncoder.default(self, data)
                 except TypeError as e:
                     print('错误原因：', e)
             return fields

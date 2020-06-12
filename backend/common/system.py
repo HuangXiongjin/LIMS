@@ -3,8 +3,6 @@ from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine, ForeignKey, Table, Column, DateTime, Integer, String, Unicode, Float
 from sqlalchemy.dialects.mssql.base import BIT
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
-from flask_login import LoginManager
 
 from backend.database.connect_db import CONNECT_DATABASE
 

@@ -4,8 +4,8 @@ from flask import Blueprint, jsonify
 from flask_login import login_user, LoginManager
 
 from backend.tools import autocode
-from backend.tools.MyEncode import AlchemyEncoder
-from backend.common.models import Users
+from backend.tools.MyEncode import MyEncoder
+# from backend.common.models import Users
 from backend.common.system import db_session, User
 import time, datetime
 
@@ -19,10 +19,10 @@ login_manager.login_view = 'login_auth.login'
 def load_user(user_id):
     return db_session.query(User).filter_by(ID=int(user_id)).first()
 
-@users.route('/', methods=['GET'])
-def index():
-    get_data = Users.query.all()
-    return json.dumps({'data': get_data}, cls=AlchemyEncoder, ensure_ascii=True)
+# @users.route('/', methods=['GET'])
+# def index():
+#     get_data = Users.query.all()
+#     return json.dumps({'data': get_data}, cls=MyEncoder, ensure_ascii=True)
 
 
 @users.route('/system_set/make_model', methods=['POST', 'GET'])
@@ -60,5 +60,5 @@ def userloginauthentication():
     except Exception as e:
         print(e)
         db_session.rollback()
-        return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+        return json.dumps([{"status": "Error:" + str(e)}], cls=MyEncoder, ensure_ascii=False)
 
