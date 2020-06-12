@@ -78,7 +78,7 @@ class MakeModel:
         notes += 'from sqlalchemy import create_engine, Column,ForeignKey, Table, DateTime, Integer, String\n'
         notes += 'from sqlalchemy import Column, DateTime, Float, Integer, String, Unicode,BigInteger\n'
         notes += 'from sqlalchemy.dialects.mssql.base import BIT\n'
-        notes += 'from dbset.database.db_operate import GLOBAL_DATABASE_CONNECT_STRING\n'
+        notes += 'from backend.database.connect_db import CONNECT_DATABASE\n'
         notes += 'from datetime import datetime\n'
         notes += 'from flask_login import LoginManager\n'
         notes += 'from werkzeug.security import generate_password_hash, check_password_hash\n'
@@ -95,7 +95,7 @@ class MakeModel:
     # 创建对象的基类
     def makeBaseModel(self):
         notes = ''
-        sqlstring = "GLOBAL_DATABASE_CONNECT_STRING"
+        sqlstring = "CONNECT_DATABASE"
         notes = '\n'
         notes += '# 创建对象的基类\n'
         notes += "engine = create_engine(" + "\n\t\t"
@@ -226,7 +226,7 @@ class MakeModel:
         f.close()
 
     def ModifyModel(self,AFilename,ATableName):
-        currentPath = os.path.abspath('../common')
+        currentPath = os.path.abspath('.')
         model_path = PATH(currentPath + r'\\' + AFilename)
         i = 0
         tmp = ""
@@ -342,7 +342,7 @@ class MakeModel:
         try:
             import os, configparser
             BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            pythonFileName = os.path.join(BASE_DIR, r'common\core_black.py')
+            pythonFileName = os.path.join(BASE_DIR, r'common\core.py')
             tpl = ''
             # tpl += self.makeDevNotes()
             # tpl += self.makeImportNotes()
