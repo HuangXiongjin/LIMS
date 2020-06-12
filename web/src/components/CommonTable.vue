@@ -126,7 +126,11 @@
             if(item.searchVal){
               item.value = this.tableData.searchVal
             }else{
-              item.value = ""
+              if(item.defaultValue){
+                item.value = item.defaultValue
+              }else{
+                item.value = ""
+              }
             }
           })
         }else if(label === "修改"){
