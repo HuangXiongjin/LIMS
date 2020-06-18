@@ -1,28 +1,35 @@
+import datetime
 import json
-from flask import Blueprint, render_template, request, make_response
-from flask import Blueprint, jsonify
+import time
+
+from flask import Blueprint
+from flask import request, make_response
 from flask_login import login_user, LoginManager
 
-from backend.tools import autocode
-from backend.tools.MyEncode import MyEncoder
-# from backend.common.models import Users
+from backend.common.models import InstructionsCenter
 from backend.common.system import db_session, User
-import time, datetime
-
+from backend.tools import autocode
+from backend.tools.handle import MyEncoder, log
 
 users = Blueprint('users', __name__)
 login_manager = LoginManager()
 login_manager.db_session_protection = 'strong'
 login_manager.login_view = 'login_auth.login'
 
+
+@users.route('/', methods=['GET'])
+def index():
+    try:
+        get_data = InstructionsCenter.query.filter_by(number=1001).first()
+        return json.dumps({'data': get_data.instructions}, cls=MyEncoder, ensure_ascii=True)
+    except Exception as e:
+        log(e)
+        return json.dumps(str(e))
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return db_session.query(User).filter_by(ID=int(user_id)).first()
-
-# @users.route('/', methods=['GET'])
-# def index():
-#     get_data = Users.query.all()
-#     return json.dumps({'data': get_data}, cls=MyEncoder, ensure_ascii=True)
 
 
 @users.route('/system_set/make_model', methods=['POST', 'GET'])
@@ -34,6 +41,7 @@ def make_model():
             return autocode.make_model_main(data)
         except Exception as e:
             print(e)
+
 
 @users.route('/account/userloginauthentication', methods=['GET', 'POST'])
 def userloginauthentication():
@@ -61,4 +69,3 @@ def userloginauthentication():
         print(e)
         db_session.rollback()
         return json.dumps([{"status": "Error:" + str(e)}], cls=MyEncoder, ensure_ascii=False)
-

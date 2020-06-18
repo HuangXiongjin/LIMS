@@ -3,21 +3,6 @@ import datetime
 from backend import db
 
 
-# class Users(db.Model):
-#     """用户基本数据"""
-#     __tablename__ = 'Users'
-#
-#     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     # 姓名
-#     name = db.Column(db.Unicode(128), nullable=False)
-#     # 编号
-#     number = db.Column(db.Unicode(128), nullable=False)
-#     # 电话
-#     phone = db.Column(db.Unicode(32), nullable=False)
-#     # 地址
-#     address = db.Column(db.Unicode(128), nullable=False)
-
-
 class Equipment(db.Model):
     """设备基本数据"""
     __tablename__ = 'Equipment'
@@ -58,8 +43,7 @@ class InstructionsCenter(db.Model):
     # 设备/配件编号
     number = db.Column(db.Unicode(32), nullable=False)
     # 说明书ID
-    instructions_id = db.Column(db.Integer, db.ForeignKey('instructions.id'))
-    instructions = db.relationship("Instructions", backref='instructionsCenter')
+    instructions = db.relationship("Instructions", backref='instructionsCenter', lazy='dynamic')
 
 
 class Instructions(db.Model):
@@ -67,11 +51,13 @@ class Instructions(db.Model):
     __tablename__ = 'instructions'
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 说明书编号
-    number = db.Column(db.Unicode(128), nullable=False)
+    # number = db.Column(db.Unicode(128), nullable=False)
     # 说明书类型
     type = db.Column(db.Unicode(32), nullable=False)
     # 说明书详情
     detail = db.Column(db.Unicode(256), nullable=False)
+    # instructions = db.relationship("InstructionsCenter", backref='instructions')
+    equipment_id = db.Column(db.Integer, db.ForeignKey('instructionsCenter.id'))
 
 
 class Fitting(db.Model):
@@ -114,20 +100,20 @@ class Monitor(db.Model):
     stop_count = db.Column(db.Unicode(64), nullable=True)
 
 
-# class Users(db.Model):
-#     __tablename__ = 'users'
-#     # 主键
-#     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     # 用户名 唯一索引
-#     username = db.Column(db.Unicode(128), unique=True, nullable=False)
-#     # 密码 必填字段
-#     password = db.Column(db.Unicode(512), nullable=False)
-#     # 姓名 创建索引，加快查询
-#     fullname = db.Column(db.Unicode(128), index=True, nullable=False)
-#     # 状态 (1: 生效 0: 禁用)
-#     status = db.Column(db.SmallInteger, default=1, nullable=False)
-#     # 创建时间 默认当前时间
-#     created_time = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow, index=True)
-#
-#     def __repr__(self):
-#         return 'username=%s' % self.username
+class Users(db.Model):
+    __tablename__ = 'users'
+    # 主键
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    # 用户名 唯一索引
+    username = db.Column(db.Unicode(128), unique=True, nullable=False)
+    # 密码 必填字段
+    password = db.Column(db.Unicode(512), nullable=False)
+    # 姓名 创建索引，加快查询
+    fullname = db.Column(db.Unicode(128), index=True, nullable=False)
+    # 状态 (1: 生效 0: 禁用)
+    status = db.Column(db.SmallInteger, default=1, nullable=False)
+    # 创建时间 默认当前时间
+    created_time = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow, index=True)
+
+    def __repr__(self):
+        return 'username=%s' % self.username
