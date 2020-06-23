@@ -12,7 +12,7 @@ from sqlalchemy.orm.collections import InstrumentedList
 def log(e):
     """
     程序日志记录
-    :param e:捕获异常参数
+    :param e:捕获异常参数`
     """
     root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
     file_path = os.path.join(root_path, 'logs\\logs.txt')

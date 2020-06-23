@@ -14,6 +14,7 @@ from backend.database.connect_db import CONNECT_DATABASE
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = CONNECT_DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'qa12wecde34fss2'
 
 # 创建数据库连接对象
 db = SQLAlchemy(app)
@@ -30,14 +31,14 @@ migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
-bootstrap = Bootstrap(app)
-app.config['SECRET_KEY'] = 'qeqhdasdqiqd131'
+# bootstrap = Bootstrap(app)
+# app.config['SECRET_KEY'] = 'qeqhdasdqiqd131'
 
-from backend.account import views
-
-views.login_manager.init_app(app)
-
-api = Api(app)
+# from backend.account import views
+#
+# views.login_manager.init_app(app)
+#
+# api = Api(app)
 
 
 class CUIDList(Resource):
@@ -59,7 +60,7 @@ class CUIDList(Resource):
         return delete(request.values)
 
 
-api.add_resource(CUIDList, '/CUID')
+# api.add_resource(CUIDList, '/CUID')
 
 
 @app.route('/')
