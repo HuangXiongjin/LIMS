@@ -8,8 +8,8 @@ class Equipment(db.Model):
     __tablename__ = 'Equipment'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    # 车间编号
-    workno = db.Column(db.Unicode(128), nullable=False)
+    # 车间号
+    workshop_no = db.Column(db.Unicode(128), nullable=False)
     # 设备编号
     number = db.Column(db.Unicode(128), nullable=False)
     # 设备名称
@@ -67,8 +67,8 @@ class Fitting(db.Model):
     __tablename__ = 'fitting'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    # 车间编号
-    workno = db.Column(db.Unicode(128), nullable=False)
+    # 车间号
+    workshop_no = db.Column(db.Unicode(128), nullable=False)
     # 配件编号
     number = db.Column(db.Unicode(128), nullable=False)
     # 配件名称
