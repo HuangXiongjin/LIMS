@@ -31,14 +31,14 @@ migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
-# bootstrap = Bootstrap(app)
-# app.config['SECRET_KEY'] = 'qeqhdasdqiqd131'
+bootstrap = Bootstrap(app)
+app.config['SECRET_KEY'] = 'qeqhdasdqiqd131'
 
-# from backend.account import views
-#
-# views.login_manager.init_app(app)
-#
-# api = Api(app)
+from backend.account import views
+
+views.login_manager.init_app(app)
+
+api = Api(app)
 
 
 class CUIDList(Resource):
