@@ -19,10 +19,12 @@ db = SQLAlchemy(app)
 
 from backend.account.views import users
 from backend.product.equipment_fitting import equipment
+from backend.product.work_order import work_order
 from backend.common.models import *
 
 app.register_blueprint(users, url_prefix='/users')
 app.register_blueprint(equipment, url_prefix='/equipment')
+app.register_blueprint(work_order, url_prefix='/work')
 
 
 # 绑定app和数据库，迁移使用

@@ -321,7 +321,7 @@ class OrderVerify(db.Model):
     # 审核状态（待审核，审核通过）
     verify_status = db.Column(db.Unicode(32), default="待审核")
     # 计划表
-    plan = db.relationship("Plan", backref='orderVerify')
+    # plan = db.relationship("Plan", backref='orderVerify')
 
 
 class Plan(db.Model):
@@ -352,7 +352,7 @@ class Plan(db.Model):
     # 方案编号
     plan_no = db.Column(db.Unicode(128), nullable=False)
     # 审核人
-    verify_id = db.Column(db.Integer, db.ForeignKey('orderVerify.id'))
+    # verify_id = db.Column(db.Integer, db.ForeignKey('orderVerify.id'))
 
 
 class Monitor(db.Model):

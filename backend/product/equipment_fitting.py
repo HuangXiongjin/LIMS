@@ -6,14 +6,15 @@ from flask import Blueprint, request, current_app
 from sqlalchemy import and_
 
 from backend import db
-from backend.common.models import Fitting, Equipment, InstructionsCenter, Instructions
+from backend.common.models import Fitting, Equipment, InstructionsCenter, Instructions, FittingInto, FittingOut
 from backend.tools.handle import MyEncoder, is_allowed_type, generate_filename, get_root_path
 
 equipment = Blueprint('equipment', __name__)
 
 
-@equipment.route('/add_data', methods=['GET', 'POST'])
+@equipment.route('/input', methods=['GET', 'POST'])
 def add_data():
+    """设备配件说明书数据录入"""
     if request.args.get('foo') == 'equipment':
         result = request.get_json()
         # file = request.files.get('instruction')
@@ -84,3 +85,24 @@ def stock():
         result = {'fitting': query, 'count': len(query)}
         data.append(result)
     return json.dumps({'code': '10000', 'message': '请求成功', 'data': data}, cls=MyEncoder, ensure_ascii=True)
+
+
+@equipment.route('/fitting', methods=['GET', 'POST'])
+def fitting_into_out():
+    """配件出入库单"""
+    if request.args.get('foo') == 'into':
+        json_data = request.get_json()
+        fitting_into = FittingInto(no=str(round(time.time() * 1000)), fitting_no=json_data.get('fitting_no'),
+                                   fitting_number=json_data.get('fitting_number'), status=json_data.get('status'),
+                                   worker=json_data.get('worker'), time=json_data.get('time'))
+        db.session.add(fitting_into)
+        db.session.commit()
+    if request.args.get('foo') == 'out':
+        json_data = request.get_json()
+        fitting_into = FittingOut(no=str(round(time.time() * 1000)), fitting_no=json_data.get('fitting_no'),
+                                  fitting_number=json_data.get('fitting_number'),
+                                  out_worker=json_data.get('out_worker'),
+                                  use_worker=json_data.get('use_worker'), time=json_data.get('time'))
+        db.session.add(fitting_into)
+        db.session.commit()
+    return json.dumps({'code': '10000', 'message': '操作成功'})
