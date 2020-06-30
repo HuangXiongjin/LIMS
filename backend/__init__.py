@@ -5,10 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask import Flask, request
 
-
 from backend.common.common_cuid import insert, delete, update, select, accurateSelect
 from backend.common.common_cuid import accurateSelect
-
 from backend.database.connect_db import CONNECT_DATABASE
 
 app = Flask(__name__)
@@ -20,9 +18,11 @@ app.config['SECRET_KEY'] = 'qa12wecde34fss2'
 db = SQLAlchemy(app)
 
 from backend.account.views import users
+from backend.product.equipment_fitting import equipment
 from backend.common.models import *
 
 app.register_blueprint(users, url_prefix='/users')
+app.register_blueprint(equipment, url_prefix='/equipment')
 
 
 # 绑定app和数据库，迁移使用

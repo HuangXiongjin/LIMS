@@ -3,10 +3,33 @@ import sys
 import datetime
 import decimal
 import json
+import time
 
 from flask_sqlalchemy import BaseQuery
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.collections import InstrumentedList
+
+
+# 文件类型检查
+def is_allowed_type(content_type):
+    return content_type.lower() in ['image/jpeg', 'image/png', 'application/msword', 'application/vnd.ms-powerpoint',
+                                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                    'application/pdf']
+
+
+def is_allowed_image(content_type):
+    return content_type.lower() in ['image/jpeg', 'image/png']
+
+
+# 生成时间戳文件名
+def generate_filename():
+    return f'{str(round(time.time() * 1000))}'
+
+
+# 获取项目跟路径
+def get_root_path():
+    path = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+    return os.path.join(path, 'instruction')
 
 
 def log(e):

@@ -5,35 +5,35 @@ from backend import db
 
 class Equipment(db.Model):
     """设备数据"""
-    __tablename__ = 'Equipment'
+    __tablename__ = 'equipment'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 车间号
-    workshop_no = db.Column(db.Unicode(128), nullable=False)
-    # 设备编号
-    number = db.Column(db.Unicode(128), nullable=False)
+    workshop_no = db.Column(db.Unicode(128), nullable=True)
+    # 设备号
+    equipment_no = db.Column(db.Unicode(128), nullable=False)
     # 设备名称
     name = db.Column(db.Unicode(32), nullable=False)
     # 设备型号
-    model = db.Column(db.Unicode(128), nullable=False)
+    model = db.Column(db.Unicode(128), nullable=True)
     # 设备类型
-    type = db.Column(db.Unicode(32), nullable=False)
+    type = db.Column(db.Unicode(32), nullable=True)
     # 生产商
     manufacturer = db.Column(db.Unicode(32), nullable=False)
     # SAP号
-    sap = db.Column(db.Unicode(64), nullable=False)
+    sap = db.Column(db.Unicode(64), nullable=True)
     # 固定资产编号
-    fixed_assets_no = db.Column(db.Unicode(128), nullable=False)
+    fixed_assets_no = db.Column(db.Unicode(128), nullable=True)
     # 固定资产名称
-    fixed_assets_name = db.Column(db.Unicode(32), nullable=False)
+    fixed_assets_name = db.Column(db.Unicode(32), nullable=True)
     # 设备状态(1:良好 0：异常)
-    status = db.Column(db.SmallInteger, default=1, nullable=False)
+    status = db.Column(db.Unicode(16), default='良好', nullable=False)
     # 区域
-    area = db.Column(db.Unicode(32), nullable=False)
+    area = db.Column(db.Unicode(32), nullable=True)
     # 进厂日期
-    into_time = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    into_time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 中间表ID
-    center_id = db.Column(db.Integer, primary_key=True)
+    # center_id = db.Column(db.Integer, primary_key=True)
 
 
 class InstructionsCenter(db.Model):
@@ -42,7 +42,7 @@ class InstructionsCenter(db.Model):
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备/配件编号
-    number = db.Column(db.Unicode(32), nullable=False)
+    no = db.Column(db.Unicode(32), nullable=False)
     # 说明书ID
     instructions = db.relationship("Instructions", backref='instructionsCenter')
 
@@ -53,13 +53,13 @@ class Instructions(db.Model):
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 说明书编号
-    # number = db.Column(db.Unicode(128), nullable=False)
+    no = db.Column(db.Unicode(128), nullable=False)
     # 说明书类型
     type = db.Column(db.Unicode(32), nullable=False)
     # 说明书详情
     detail = db.Column(db.Unicode(256), nullable=False)
     # 中间表id
-    equipment_id = db.Column(db.Integer, db.ForeignKey('instructionsCenter.id'))
+    center_id = db.Column(db.Integer, db.ForeignKey('instructionsCenter.id'))
 
 
 class Fitting(db.Model):
@@ -67,22 +67,24 @@ class Fitting(db.Model):
     __tablename__ = 'fitting'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    # 车间号
-    workshop_no = db.Column(db.Unicode(128), nullable=False)
+    # 设备号
+    equipment_no = db.Column(db.Unicode(128), nullable=True)
     # 配件编号
-    number = db.Column(db.Unicode(128), nullable=False)
+    fitting_no = db.Column(db.Unicode(128), nullable=False)
     # 配件名称
     name = db.Column(db.Unicode(64), nullable=False)
     # 配件型号
     model = db.Column(db.Unicode(128), nullable=False)
     # 配件类型
     type = db.Column(db.Unicode(32), nullable=False)
+    # 使用状态
+    status = db.Column(db.Unicode(8), default="未使用")
     # 生产商
-    manufacturer = db.Column(db.Unicode(64), nullable=False)
+    manufacturer = db.Column(db.Unicode(64), nullable=True)
     # 进厂日期
-    time = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 中间表ID
-    center_id = db.Column(db.Integer, primary_key=True)
+    # center_id = db.Column(db.Integer, primary_key=True)
 
 
 class FittingInto(db.Model):
@@ -101,11 +103,11 @@ class FittingInto(db.Model):
     # 验收人员
     worker = db.Column(db.Unicode(128), nullable=False)
     # 入库时间
-    time = db.Column(db.DateTime, nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class FittingOut(db.Model):
-    """配件入库"""
+    """配件出库"""
     __tablename__ = 'fitting_out'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
@@ -120,7 +122,7 @@ class FittingOut(db.Model):
     # 领用人员
     use_worker = db.Column(db.Unicode(128), nullable=False)
     # 出库时间
-    time = db.Column(db.DateTime, nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class Stock(db.Model):
@@ -137,7 +139,7 @@ class Stock(db.Model):
     # 清点人员
     worker = db.Column(db.Unicode(128), nullable=False)
     # 清点时间
-    time = db.Column(db.DateTime, nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 库存预警
     status = db.Column(db.Unicode(32), default="库存充足")
 
@@ -162,9 +164,9 @@ class WorkOrder(db.Model):
     # 工单类型（维修，保养，润滑，巡检）
     type = db.Column(db.Unicode(32), nullable=True)
     # 开始时间
-    start_time = db.Column(db.DateTime, nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    start_time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 结束时间
-    end_time = db.Column(db.DateTime, nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    end_time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class Scheduling(db.Model):
@@ -204,7 +206,7 @@ class FaultRepair(db.Model):
     # 故障图片
     picture = db.Column(db.Unicode(128), nullable=False)
     # 申请时间
-    time = db.Column(db.DateTime, nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class Record(db.Model):
@@ -223,7 +225,7 @@ class Record(db.Model):
     # 设备状态（良好,异常）
     status = db.Column(db.Unicode(32), default="良好")
     # 工作时间
-    time = db.Column(db.DateTime, nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class RepairRecord(db.Model):
@@ -250,7 +252,7 @@ class RepairRecord(db.Model):
     # 维修知识
     knowledge = db.Column(db.Unicode(256), nullable=False)
     # 工作时间
-    time = db.Column(db.DateTime, nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class RepairPlan(db.Model):
@@ -344,9 +346,9 @@ class Plan(db.Model):
     # 工单类型（维修，保养，润滑，巡检）
     type = db.Column(db.Unicode(32), nullable=True)
     # 预工作时间
-    work_time = db.Column(db.DateTime, nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    work_time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 创建时间
-    found_time = db.Column(db.DateTime, nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    found_time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 方案编号
     plan_no = db.Column(db.Unicode(128), nullable=False)
     # 审核人
@@ -358,8 +360,8 @@ class Monitor(db.Model):
     __tablename__ = 'monitor'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    # 设备编号
-    number = db.Column(db.Unicode(128), nullable=False)
+    # 设备号
+    equipment_no = db.Column(db.Unicode(128), nullable=False)
     # 当前状态（1：良好 0：异常）
     status = db.Column(db.SmallInteger, default=1, nullable=False)
     # 运行总时间
@@ -378,7 +380,7 @@ class Kpi(db.Model):
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备编号
-    number = db.Column(db.Unicode(128), nullable=False)
+    equipment_no = db.Column(db.Unicode(128), nullable=False)
     # 设备完好率
     whl = db.Column(db.Unicode(64), nullable=True)
     # 设备故障率
