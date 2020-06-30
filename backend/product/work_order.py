@@ -38,8 +38,8 @@ def add_data():
                     )
         db.session.add(data)
         db.session.commit()
-        pass
-    pass
+        return 'this one'
+    return 'this two'
 
 
 @work_order.route('/', methods=['GET'])
