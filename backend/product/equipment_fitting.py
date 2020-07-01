@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import time
@@ -92,7 +93,8 @@ def fitting_into_out():
     """配件出入库单"""
     if request.args.get('foo') == 'into':
         json_data = request.get_json()
-        fitting_into = FittingInto(no=str(round(time.time() * 1000)), fitting_no=json_data.get('fitting_no'),
+        fitting_into = FittingInto(no=datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'),
+                                   fitting_no=json_data.get('fitting_no'),
                                    fitting_number=json_data.get('fitting_number'), status=json_data.get('status'),
                                    worker=json_data.get('worker'), time=json_data.get('time'))
         db.session.add(fitting_into)

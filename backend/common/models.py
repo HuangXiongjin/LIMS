@@ -220,6 +220,8 @@ class Record(db.Model):
     no = db.Column(db.Unicode(256), nullable=False)
     # 员工号
     worker_no = db.Column(db.Unicode(128), nullable=False)
+    # 姓名
+    name = db.Column(db.Unicode(32), nullable=False)
     # 工单类型（维修，保养，润滑，巡检）
     type = db.Column(db.Unicode(32), nullable=True)
     # 设备状态（良好,异常）
@@ -320,6 +322,8 @@ class OrderVerify(db.Model):
     name = db.Column(db.Unicode(32), nullable=False)
     # 审核状态（待审核，审核通过）
     verify_status = db.Column(db.Unicode(32), default="待审核")
+    # 审核时间
+    verify_time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 计划表
     # plan = db.relationship("Plan", backref='orderVerify')
 
@@ -353,6 +357,29 @@ class Plan(db.Model):
     plan_no = db.Column(db.Unicode(128), nullable=False)
     # 审核人
     # verify_id = db.Column(db.Integer, db.ForeignKey('orderVerify.id'))
+
+
+class Task(db.Model):
+    """任务表"""
+    __tablename__ = 'task'
+
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    # 设备号
+    equipment_no = db.Column(db.Unicode(128), nullable=False)
+    # 车间号
+    workshop_no = db.Column(db.Unicode(128), nullable=False)
+    # 工单号
+    no = db.Column(db.Unicode(256), nullable=False)
+    # 发放人
+    name = db.Column(db.Unicode(32), nullable=False)
+    # 工单状态（待处理，待审核，执行中，已完成）
+    no_status = db.Column(db.Unicode(32), default="待处理")
+    # 工单类型（维修，保养，润滑，巡检）
+    type = db.Column(db.Unicode(32), nullable=True)
+    # 工时要求
+    work_require = db.Column(db.Unicode(32), nullable=True)
+    # 下发时间
+    found_time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class Monitor(db.Model):

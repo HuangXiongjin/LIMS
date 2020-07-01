@@ -10,6 +10,12 @@ from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.collections import InstrumentedList
 
 
+def get_time_stamp(s):
+    time_array = time.strptime(s)
+    time_stamp = int(time.mktime(time_array))
+    return 0 < int(time.time()) - time_stamp < 86400
+
+
 # 文件类型检查
 def is_allowed_type(content_type):
     return content_type.lower() in ['image/jpeg', 'image/png', 'application/msword', 'application/vnd.ms-powerpoint',
