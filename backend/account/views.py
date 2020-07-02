@@ -20,11 +20,11 @@ login_manager.login_view = 'login_auth.login'
 @users.route('/', methods=['GET'])
 def index():
     try:
-        get_data = InstructionsCenter.query.filter_by(number=1001).first()
-        return json.dumps({'data': get_data.instructions}, cls=MyEncoder, ensure_ascii=True)
+        # get_data = InstructionsCenter.query.filter_by(number=1001).first()
+        return json.dumps({'data': 'get_data.instructions'}, cls=MyEncoder, ensure_ascii=True)
     except Exception as e:
         log(e)
-        return json.dumps(str(e))
+        return json.dumps('str(e)')
 
 
 @login_manager.user_loader
