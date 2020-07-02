@@ -42,7 +42,6 @@ views.login_manager.init_app(app)
 
 api = Api(app)
 
-
 class CUIDList(Resource):
     def get(self):
         data = request.values
@@ -62,7 +61,7 @@ class CUIDList(Resource):
         return delete(request.values)
 
 
-# api.add_resource(CUIDList, '/CUID')
+api.add_resource(CUIDList, '/CUID')
 
 
 @app.route('/')
