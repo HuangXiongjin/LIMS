@@ -42,7 +42,6 @@ views.login_manager.init_app(app)
 
 api = Api(app)
 
-
 class CUIDList(Resource):
     def get(self):
         data = request.values
