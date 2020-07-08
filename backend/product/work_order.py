@@ -4,7 +4,8 @@ import json
 from flask import Blueprint, request
 
 from backend import db
-from backend.common.models import RepairPlan, LubricationPlan, Plan, RepairRecord, Record, FaultRepair, OrderVerify
+from backend.common.models import RepairPlan, LubricationPlan, Plan, RepairRecord, Record, FaultRepair, OrderVerify, \
+    Task
 from backend.tools.handle import MyEncoder, get_time_stamp
 
 work_order = Blueprint('work_order', __name__)
@@ -106,14 +107,19 @@ def plan():
     if request.method == 'GET':
         return json.dumps({'code': '1000', 'message': '操作成功', 'data': query_data}, cls=MyEncoder, ensure_ascii=True)
     elif request.method == 'POST':
-        query_list = [item if get_time_stamp(item.work_time) else '' for item in query_data]
+        # query_list = [item if get_time_stamp(item.work_time) else '' for item in query_data]
+        # query_list = []
         for item in query_data:
             if get_time_stamp(item.work_time):
-
-                query_list.append(item)
+                task = Task(no=item.no, equipment_no=item.equipment_no, workshop_no=item.workshop_no,
+                            name=item.name, type=item.type, no_status=item.no_status, work_require='工作要求',
+                            found_time='下发时间')
+                db.session.add(task)
+                db.session.commit()
+                # query_list.append(item)
             else:
                 pass
-    pass
+        return json.dumps({'code': '1000', 'message': '操作成功'}, cls=MyEncoder, ensure_ascii=True)
 
 
 @work_order.route('/', methods=['GET'])
