@@ -1,11 +1,7 @@
 <template>
   <el-row :gutter="15">
       <el-col :span="24">
-       <div class="navOptionsItem">
-        <ul>
-          <li v-for="item in navOptions" @click="showPage(item.value)"><a href="javascript:;" :class="{ active:item.value===navOptionsCurrent }" v-html="item.name"></a></li>
-        </ul>
-      </div>
+
       </el-col>
   </el-row>
 </template>

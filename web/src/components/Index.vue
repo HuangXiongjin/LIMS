@@ -1,24 +1,41 @@
 <template>
   <el-container class="body-container">
     <!-- 侧边栏 -->
-    <el-aside width="180px" class="left-aside">
+    <el-aside width="220px" class="left-aside">
       <el-row>
         <el-col :span="24">
-          <div class="aside-head">
-            <router-link :to="{name:'home'}" class="fa fa-home" style="font-size: 24px;">
-              <!--<el-image style="padding: 0 25px;" :src="require('@/assets/imgs/logo.png')"></el-image>-->
-            </router-link>
+          <div class="aside-head blackComponents" v-if="!menuIsCollapse">
+            <el-select v-model="systemActive" placeholder="请选择" @change="selectSystem">
+              <el-option v-for="(item,index) in systemOptions" :key="index" :label="item.label" :value="item.label">
+              </el-option>
+            </el-select>
           </div>
-          <div :style="selfHeight" class="aside-menu">
-            <el-menu class="menu-ul" :default-active="defaultActiveUrl" :collapse="isCollapse" :router="true">
-              <template v-for="item in subMenulist">
-                <el-menu-item v-if="!item.children" :index="item.url"><i :class="item.icon"></i><span slot="title">{{ item.name }}</span></el-menu-item>
-                <el-submenu v-if="!item.url" :index="item.name">
-                  <template slot="title"><i :class="item.icon"></i><span>{{ item.name }}</span></template>
-                  <el-menu-item v-for="(child,childIndex) in item.children" :key="childIndex" :index="child.url" @click="clickSubMenu(child.name)"><span style="margin-left:10px;">{{child.name}}</span></el-menu-item>
-                </el-submenu>
-              </template>
-            </el-menu>
+          <div class="aside-head blackComponents" v-if="menuIsCollapse">
+            <el-dropdown trigger="click" @command="selectSystem">
+              <span class="el-dropdown-link">
+                <i class="el-icon-arrow-down"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item v-for="(item,index) in systemOptions" :key="index" :command="item.label">{{ item.label }}</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </div>
+          <div class="aside-main-nav">
+            <el-row :gutter="10">
+              <el-col :span="24">
+                <el-col :span="8" v-for="(item,index) in mainMenu" :key="index" v-if="!menuIsCollapse">
+                  <div class="main-nav-block" :class="{active:index===mainMenuActive}" @click="selectMainNav(index)" :title="item.title">
+                    <p class="text-size-20"><i :class="item.icon"></i></p>
+                    <p class="text-size-12">{{ item.title }}</p>
+                  </div>
+                </el-col>
+                <el-col :span="24" v-for="(item,index) in mainMenu" :key="index" v-if="menuIsCollapse">
+                  <div class="main-nav-block" :class="{active:index===mainMenuActive}" @click="selectMainNav(index)" :title="item.title">
+                    <p class="text-size-20"><i :class="item.icon"></i></p>
+                  </div>
+                </el-col>
+              </el-col>
+            </el-row>
           </div>
           <div class="aside-foot">
             <el-button :icon="sideIcon" size="mini" circle @click="iconToggle"></el-button>
@@ -30,24 +47,28 @@
     <el-container>
       <!-- 头部 -->
       <el-header>
-        <div class="head-left-menu">
+        <div class="head-menu floatLeft">
           <ul>
-            <li>
-              <div class='item-title'>深圳桃源地铁站能耗智能分析控制系统</div>
-            </li>
-            <li><div>{{ time }}</div></li>
-            <li>
-              <router-link :to="{name:'config'}" class="el-icon-data-analysis" style="color: #fff;"></router-link>
-            </li>
+            <li></li>
           </ul>
         </div>
-        <div class="head-right-menu">
+        <div class="head-menu floatRight">
           <ul>
-            <li v-for="(item,index) in mainMenuList" :key="index" @click="clickMainMenu(index)" v-bind:class="{active:index==isactive}">{{ item.text }}</li>
-              <li>
+            <li>
               <el-tooltip class="head-menu-item" effect="dark" content="全屏" placement="bottom">
                 <i :class="isFullScreen?'el-icon-aim':'el-icon-full-screen'" @click="getFullCreeen"></i>
               </el-tooltip>
+            </li>
+            <li>
+              <el-dropdown class="head-menu-item" trigger="click" @command="handleCommand">
+                <span class="el-dropdown-link">
+                  {{ this.$store.state.UserName }}<i class="el-icon-arrow-down el-icon--right text-size-12"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="a">个人信息</el-dropdown-item>
+                  <el-dropdown-item command="b" style="text-align: center"><i class="fa fa-power-off"></i></el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </li>
           </ul>
         </div>
@@ -73,36 +94,27 @@ export default {
       selfHeight:{ //自适应高度
         height:''
       },
-      isCollapse: false, //左侧菜单栏是否缩进了
+      menuIsCollapse: false, //左侧菜单栏是否缩进了
       sideIcon:'el-icon-arrow-left', //左侧菜单栏缩进点击切换图标
-      isClickElseMenu:false,
-      AreaArr:[],
-      time:"",  //实时显示当前的时间
-      dialogUserVisible:false, //是否弹出个人信息
-      isactive:"0", //主菜单选中索引值
+      systemActive:"设备管理",
+      systemOptions:[
+        {label: '设备管理',mainMenu:[
+          {title:"设备管理",icon:"el-icon-box"},
+          {title:"维修管理",icon:"el-icon-location-outline"},
+          {title:"保养管理",icon:"el-icon-goods"},
+          {title:"巡检管理",icon:"el-icon-goods"},
+          {title:"备件管理",icon:"el-icon-setting"},
+          {title:"统计分析",icon:"el-icon-setting"},
+          ]},
+        {label: '系统管理'},
+      ],
+      AreaArr:[
+        {title:"提取二车间"},{title:"综合车间"},{title:"新建综合制剂"}
+      ],
+      mainMenuActive:0,
+      mainMenu:[],
       defaultActiveUrl:"",
-      mainMenuList:[ //主菜单导航列表
-        {text:"能源管理"},
-        {text:"系统管理"}
-      ],
-      subMenulist:[], //子菜单导航列表
-      energyMenulist:[
-        {name: "系统监控", icon: "el-icon-zoom-in",url:"/SystemMonitor"},
-        {name: "智能分析", icon: "el-icon-data-analysis", url: "/EfficiencyAnalysis"},
-        {name: "智能运行", icon: "el-icon-document", url: "/DataReport"},
-        {name: "智能维保", icon: "el-icon-set-up", url: "/MaintainedBatch"},
-        {name: "参数配置", icon: "el-icon-s-operation", url: "/MaintainedBoard"},
-        {name: "数据管理", icon: "el-icon-data-analysis", url: "/home"},
-        {name: "服务诊断", icon: "el-icon-service", url: "/DiagnosticServices"},
-      ],
-      systemMenulist:[
-        {name:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
-        {name:"角色管理",icon:"el-icon-s-check",url:"/Role"},
-        {name:"人员管理",icon:"el-icon-user",url:"/Personnel"},
-        {name:"工厂日历",icon:"el-icon-date",url:"/Calendar"},
-        {name:"调度维护",icon:"el-icon-suitcase",url:"/SchedulingRules"},
-        {name:"系统日志",icon:"el-icon-notebook-1",url:"/Log"}
-      ],
+      dialogUserVisible:false, //是否弹出个人信息
       isFullScreen:false, //是否全屏
       areaObj:{
         areaName:""
@@ -116,15 +128,7 @@ export default {
     }
   },
   mounted(){
-    let _this = this
-    this.timer = setInterval(() =>{
-      _this.time = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-    },1000);
-    if(this.$route.meta.title === "系统管理"){  //判断是否是属于系统管理模块，展示系统模块菜单
-      this.isactive = 1
-    }
-    this.clickMainMenu(this.isactive)
-    this.defaultActiveUrl = this.$route.path //将菜单激活项设置为当前页面地址
+
   },
   created(){
     window.addEventListener('resize', this.getMenuHeight);
@@ -146,16 +150,25 @@ export default {
     }else{
       this.$router.push("/login");
     }
+    this.selectSystem(this.systemActive) //默认切换第一个系统
   },
   destroyed() {
 
   },
   methods:{
     getMenuHeight(){
-      this.selfHeight.height = window.innerHeight - 230+'px';
+      if(this.menuIsCollapse){
+        this.selfHeight.height = window.innerHeight - 490+'px';
+      }else{
+        this.selfHeight.height = window.innerHeight - 360+'px';
+      }
     },
-    clickSubMenu(areaName){  //点击左菜单传区域给子组件
-      this.areaObj.areaName = areaName
+    selectSystem(a){ //切换系统
+      this.systemOptions.forEach(item =>{
+        if(item.label === a){
+          this.mainMenu = item.mainMenu
+        }
+      })
     },
     handleCommand(command) {  //判断用户下拉点击
       if(command == "a"){
@@ -166,25 +179,14 @@ export default {
       }
     },
     iconToggle() {  //折叠菜单
-      this.isCollapse = !this.isCollapse
-      if(this.isCollapse){
+      this.menuIsCollapse = !this.menuIsCollapse
+      this.getMenuHeight()
+      if(this.menuIsCollapse){
         this.sideIcon = 'el-icon-arrow-right'
         $(".left-aside").animate({"width":"64px"})
       }else{
         this.sideIcon = 'el-icon-arrow-left'
-        $(".left-aside").animate({"width":"180px"})
-      }
-    },
-    clickMainMenu(index){  //切换模块
-      this.isactive = index
-      if(index == 0) {
-        this.subMenulist = this.energyMenulist
-        if(this.isClickElseMenu){
-          this.defaultActiveUrl = this.subMenulist[0].children[0].url
-        }
-      }else if(index == 1){
-        this.subMenulist = this.systemMenulist
-        this.defaultActiveUrl = this.subMenulist[0].url
+        $(".left-aside").animate({"width":"220px"})
       }
     },
     getFullCreeen () {  //全屏
@@ -209,100 +211,66 @@ export default {
     overflow: hidden;
   }
   .body-container{
-    background: #34383E;
+    background: rgba(30,34,43,1);
   }
   .left-aside{
-    background: #1B1E27;
+    background: rgba(30,34,43,1);
+    box-shadow:5px 0px 7px rgba(255,255,255,0.16);
   }
   .aside-head{
     width: 100%;
     text-align: center;
-    padding: 50px 0 30px;
+    padding: 20px;
   }
   .aside-head a{
     color: #fff;
   }
+  .aside-main-nav{
+    border-top: 2px solid rgba(88,91,98,0.48);
+    border-bottom: 2px solid rgba(88,91,98,0.48);
+    padding: 20px 0;
+    color: #fff;
+    text-align: center;
+    clear: both;
+    overflow: hidden;
+  }
+  .main-nav-block{
+    display: block;
+    padding: 10px 0;
+    border-radius:4px;
+    cursor: pointer;
+  }
+  .main-nav-block.active{
+    background: #00FAE7;
+    color: #585B62;
+  }
   .aside-foot{
+    position: absolute;
+    bottom: 0;
     height:110px;
     width: 100%;
     text-align: center;
     font-size: 18px;
     padding-top: 20px;
   }
-  .aside-menu{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .menu-ul{
-    border: none;
-    clear: both;
-    overflow: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .menu-ul::-webkit-scrollbar {
-    display: none;
-  }
-  .el-menu-item .fa {
-    margin-right: 5px;
-    width: 24px;
-    text-align: center;
-    font-size: 18px;
-    vertical-align: middle;
-  }
-  .version-number{
-    margin-top: 20px;
-    color: #737373;
-  }
-  .head-left-menu,.head-right-menu{
+  .head-menu{
     height: 60px;
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
-  .head-left-menu{
-    float: left;
-  }
-  .head-left-menu i{
-    font-size: 24px;
-  }
-  .head-right-menu{
-    float: right;
-  }
-  .head-left-menu li{
+  .head-menu li{
     display: inline-block;
-    margin-right: 30px;
-    color: #1B1E27;
-    font-size: 20px;
-  }
-  .head-left-menu li:nth-child(2){
-   margin-left: 90px;
-  }
-  .head-left-menu li i{
-    vertical-align: bottom;
-  }
-  .head-left-menu li .item-title{
-    font-size: 22px;
-    color:#fff;
-  }
-  .head-right-menu li{
-    float: left;
     margin-right: 15px;
-    color: #1B1E27;
-    font-size: 16px;
+    color: #ffffff;
+    font-size: 20px;
     text-decoration: none;
-    display: block;
     padding: 8px 15px;
-    background-color: #EEEEEE;
-    border-radius: 8px;
     cursor: pointer;
   }
-  .head-right-menu li.active{
-    background-color: #34383E;
-    color: #fff;
-  }
   .head-menu-item{
+    color: #ffffff;
+    font-size: 18px;
     cursor:pointer;
   }
 </style>

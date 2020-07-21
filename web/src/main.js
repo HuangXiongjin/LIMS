@@ -11,8 +11,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import './assets/common.css'
 import 'font-awesome/css/font-awesome.min.css'
 import VCharts from 'v-charts'
-import Jqeury from './assets/script/jquery-3.3.1.min'
 import store from './store'
+import $ from 'jquery'
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
