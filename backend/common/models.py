@@ -335,6 +335,8 @@ class Plan(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备号
     equipment_no = db.Column(db.Unicode(256), nullable=False)
+    # 车间号
+    workshop_no = db.Column(db.Unicode(128), nullable=False)
     # 工单号
     no = db.Column(db.Unicode(256), nullable=False)
     # 创建员工号

@@ -14,8 +14,6 @@ db_session = Session()
 Base = declarative_base(engine)
 
 
-
-
 # 页面路由配置
 class PageRoute(Base):
     __tablename__ = 'PageRoute'
@@ -30,7 +28,6 @@ class PageRoute(Base):
 
     # 路由:
     Route = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
 
 
 # 数据库建表配置
@@ -286,7 +283,6 @@ class User(Base):
 
 
 # User_END:
-
 
 
 # 生成表单的执行语句

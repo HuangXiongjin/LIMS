@@ -1,8 +1,9 @@
-from backend import manager
+from backend import manager, app
 
 
 def main():
-    manager.run()
+    app.run()
+    # manager.run()
 
 
 if __name__ == '__main__':
