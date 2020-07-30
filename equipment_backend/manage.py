@@ -2,7 +2,7 @@ from equipment_backend import manager, app
 
 
 def main():
-    app.run('0.0.0.0', 5001)
+    app.run(port=10001)
     # manager.run()
 
 
