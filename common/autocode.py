@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 logger = MESLogger('../equipment_backend/logs', 'log')
 
-from backend.database.connect_db import CONNECT_DATABASE
+from system_backend.database.connect_db import CONNECT_DATABASE
 engine = create_engine(CONNECT_DATABASE, deprecate_large_types=True)
 Session = sessionmaker(bind=engine)
 db_session = Session()

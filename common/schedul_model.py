@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, DateTime, Integer, Unicode
 
 from flask_login import LoginManager
-from backend.database.connect_db import CONNECT_DATABASE
+from system_backend.database.connect_db import CONNECT_DATABASE
 
 login_manager = LoginManager()
 # 创建对象的基类
