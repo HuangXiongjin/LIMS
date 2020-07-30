@@ -6,7 +6,7 @@ from flask import Flask
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import MetaData, create_engine
 
-from equipment_backend.tools.MESLogger import MESLogger
+from common.MESLogger import MESLogger
 
 metadata = MetaData()
 import json
@@ -14,7 +14,7 @@ import datetime
 
 app = Flask(__name__)
 
-logger = MESLogger('../logs', 'log')
+logger = MESLogger('../equipment_backend/logs', 'log')
 
 from database.connect_db import CONNECT_DATABASE
 engine = create_engine(CONNECT_DATABASE, deprecate_large_types=True)
@@ -226,7 +226,7 @@ class MakeModel:
         f.close()
 
     def ModifyModel(self,AFilename,ATableName):
-        currentPath = os.path.abspath('.')
+        currentPath = os.path.abspath('../equipment_backend/tools')
         model_path = PATH(currentPath + r'\\' + AFilename)
         i = 0
         tmp = ""

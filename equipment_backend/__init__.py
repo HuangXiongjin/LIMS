@@ -17,13 +17,13 @@ app.config['SECRET_KEY'] = 'qa12wecde34fss2'
 # 创建数据库连接对象
 db = SQLAlchemy(app)
 
-from account.views import users
-from account import views
+from account.user_auth import users
+from account import user_auth
 from equipment_backend.product.equipment_fitting import equipment
 from equipment_backend.product.work_order import work_order
 from common.equipment_models import *
 
-app.register_blueprint(users, url_prefix='/users')
+app.register_blueprint(users)
 app.register_blueprint(equipment, url_prefix='/equipment')
 app.register_blueprint(work_order, url_prefix='/work')
 
@@ -36,7 +36,7 @@ manager.add_command('db', MigrateCommand)
 bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = 'qeqhdasdqiqd131'
 
-views.login_manager.init_app(app)
+user_auth.login_manager.init_app(app)
 
 api = Api(app)
 

@@ -11,8 +11,8 @@ from database.connect_db import CONNECT_DATABASE
 import socket
 import datetime
 from common.system import SysLog, User, AuditTrace
-from equipment_backend.tools.MESLogger import MESLogger
-from equipment_backend.tools.BSFramwork import AlchemyEncoder
+from common.MESLogger import MESLogger
+from common.BSFramwork import AlchemyEncoder
 
 engine = create_engine(CONNECT_DATABASE, deprecate_large_types=True)
 Session = sessionmaker(bind=engine)

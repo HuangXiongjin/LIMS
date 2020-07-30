@@ -7,23 +7,13 @@ from flask import request, make_response
 from flask_login import login_user, LoginManager
 
 from common.system import db_session, User
-from equipment_backend.tools import autocode
+from common import autocode
 from equipment_backend.tools.handle import MyEncoder, log
 
 users = Blueprint('users', __name__)
 login_manager = LoginManager()
 login_manager.db_session_protection = 'strong'
 login_manager.login_view = 'login_auth.login'
-
-
-@users.route('/', methods=['GET'])
-def index():
-    try:
-        # get_data = InstructionsCenter.query.filter_by(number=1001).first()
-        return json.dumps({'data': 'get_data.instructions'}, cls=MyEncoder, ensure_ascii=False)
-    except Exception as e:
-        log(e)
-        return json.dumps('str(e)')
 
 
 @login_manager.user_loader
