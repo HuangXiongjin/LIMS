@@ -24,13 +24,13 @@
             <el-row :gutter="10">
               <el-col :span="24">
                 <el-col :span="8" v-for="(item,index) in mainMenu" :key="index" v-if="!menuIsCollapse">
-                  <div class="main-nav-block" :class="{active:index===mainMenuActive}" @click="selectMainNav(index)" :title="item.title">
+                  <div class="main-nav-block" :class="{active:index===mainMenuActive}" @click="selectMainNav(index,item.url)" :title="item.title">
                     <p class="text-size-20"><i :class="item.icon"></i></p>
                     <p class="text-size-12">{{ item.title }}</p>
                   </div>
                 </el-col>
                 <el-col :span="24" v-for="(item,index) in mainMenu" :key="index" v-if="menuIsCollapse">
-                  <div class="main-nav-block" :class="{active:index===mainMenuActive}" @click="selectMainNav(index)" :title="item.title">
+                  <div class="main-nav-block" :class="{active:index===mainMenuActive}" @click="selectMainNav(index,item.url)" :title="item.title">
                     <p class="text-size-20"><i :class="item.icon"></i></p>
                   </div>
                 </el-col>
@@ -106,7 +106,14 @@ export default {
           {title:"备件管理",icon:"el-icon-setting"},
           {title:"统计分析",icon:"el-icon-setting"},
           ]},
-        {label: '系统管理'},
+        {label: '系统管理',mainMenu:[
+          {title:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
+          {title:"角色管理",icon:"el-icon-s-check",url:"/Role"},
+          {title:"班组管理",icon:"el-icon-receiving",url:"/TeamGroup"},
+          {title:"人员管理",icon:"el-icon-user",url:"/Personnel"},
+          {title:"权限维护",icon:"el-icon-lock",url:"/Permission"},
+          {title:"系统日志",icon:"el-icon-notebook-1",url:"/Log"}
+          ]},
       ],
       AreaArr:[
         {title:"提取二车间"},{title:"综合车间"},{title:"新建综合制剂"}
@@ -170,10 +177,19 @@ export default {
         }
       })
     },
+    selectMainNav(index,url){  //系统内菜单导航跳转
+      this.mainMenuActive = index
+      if(url){
+        this.$router.replace({
+          path:url,
+          query: {time:moment()}
+        })
+      }
+    },
     handleCommand(command) {  //判断用户下拉点击
-      if(command == "a"){
+      if(command === "a"){
         this.dialogUserVisible = true
-      }else if(command == "b"){
+      }else if(command === "b"){
         this.$store.commit('removeUser')
         this.$router.replace("/login")
       }

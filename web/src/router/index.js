@@ -5,8 +5,9 @@ import Home from '@/views/home'
 import Login from '@/components/Login'
 import Organization from '@/views/system/Organization'
 import Role from '@/views/system/Role'
+import TeamGroup from '@/views/system/TeamGroup'
 import Personnel from '@/views/system/Personnel'
-import Calendar from '@/views/system/Calendar'
+import Permission from '@/views/system/Permission'
 import Log from '@/views/system/Log'
 
 Vue.use(Router)
@@ -22,8 +23,9 @@ export default new Router({
         {path:'/home',name:'home',meta:{ title:'工作台'},component:Home},
         {path:'/Organization',name:'Organization',meta:{ title:'组织架构'},component:Organization},
         {path:'/Role',name:'Role',meta:{ title:'角色管理'},component:Role},
+        {path:'/TeamGroup',name:'TeamGroup',meta:{ title:'班组管理'},component:TeamGroup},
         {path:'/Personnel',name:'Personnel',meta:{ title:'人员管理'},component:Personnel},
-        {path:'/Calendar',name:'Calendar',meta:{ title:'工作日历'},component:Calendar},
+        {path:'/Permission',name:'Permission',meta:{ title:'权限维护'},component:Permission},
         {path:'/Log',name:'Log',meta:{ title:'系统日志'},component:Log},
       ]
     },
@@ -34,3 +36,7 @@ export default new Router({
     },
   ]
 })
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}

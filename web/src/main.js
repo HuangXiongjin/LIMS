@@ -13,6 +13,7 @@ import 'font-awesome/css/font-awesome.min.css'
 import VCharts from 'v-charts'
 import store from './store'
 import $ from 'jquery'
+import has from './assets/js/btnPermissions.js';
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios

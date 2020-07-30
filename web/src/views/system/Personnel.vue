@@ -8,13 +8,20 @@
       </el-col>
       <el-col :span="24">
         <div class="platformContainer">
-          <tableView class="blackComponents" :tableData="TableData" @getTableData="getTableData" @privileges="privileges"></tableView>
+          <tableView class="blackComponents" :tableData="TableData" @getTableData="getTableData" @privileges="privileges" @teamGroup="teamGroup"></tableView>
         </div>
         <el-dialog :title="selectPersonnelName" :visible.sync="dialogVisible" width="50%">
           <el-transfer :titles="['未拥有角色', '已分配角色']" :button-texts="['收回', '分配']" v-model="transferValue" :data="transferData"></el-transfer>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
             <el-button type="primary" @click="savePrivileges">保存</el-button>
+          </span>
+        </el-dialog>
+        <el-dialog :title="selectPersonnelName" :visible.sync="teamGroupDialogVisible" width="50%">
+          <el-transfer :titles="['未拥有班组', '已分配班组']" :button-texts="['收回', '分配']" v-model="transferTeamGroupValue" :data="transferTeamGroupData"></el-transfer>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="teamGroupDialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="saveTeamGroup">保存</el-button>
           </span>
         </el-dialog>
       </el-col>
@@ -34,11 +41,12 @@
           tableName:"User",
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"Name",label:"用户名",type:"input",value:"",showField:false,searchProp:false},
-            {prop:"WorkNumber",label:"工号",type:"input",value:"",showField:true,searchProp:true},
-            {prop:"Creater",label:"创建人",type:"input",value:"",showField:true,searchProp:true},
-            {prop:"CreateTime",label:"创建时间",type:"input",value:"",showField:true,searchProp:false},
-            {prop:"LastLoginTime",label:"最近在线时间",type:"input",value:"",showField:true,searchProp:false},
+            {prop:"Name",label:"用户名",type:"input",value:""},
+            {prop:"WorkNumber",label:"工号",type:"input",value:""},
+            {prop:"Password",label:"密码",type:"input",value:"",showField:false,searchProp:false},
+            {prop:"Creater",label:"创建人",type:"input",value:"",searchProp:false,canSubmit:false},
+            {prop:"CreateTime",label:"创建时间",type:"input",value:"",searchProp:false,canSubmit:false},
+            {prop:"LastLoginTime",label:"最近在线时间",type:"input",value:"",searchProp:false,canSubmit:false},
           ],
           data:[],
           limit:5,
@@ -52,16 +60,20 @@
           dialogVisible: false,
           dialogTitle:'',
           handleType:[
-            {type:"primary",label:"添加"},
-            {type:"warning",label:"修改"},
-            {type:"danger",label:"删除"},
-            {type:"primary",label:"分配角色",clickEvent:"privileges"},
+            {type:"primary",label:"添加",hasPermissions:['管理人员']},
+            {type:"warning",label:"修改",hasPermissions:['管理人员']},
+            {type:"danger",label:"删除",hasPermissions:['管理人员']},
+            {type:"primary",label:"分配角色",clickEvent:"privileges",hasPermissions:['管理人员']},
+            {type:"primary",label:"分配班组",clickEvent:"teamGroup",hasPermissions:['管理人员']},
           ],
         },
         selectPersonnelName:"",
         dialogVisible:false,
         transferValue:[],
         transferData:[],
+        teamGroupDialogVisible:false,
+        transferTeamGroupValue:[],
+        transferTeamGroupData:[],
       }
     },
     created(){
@@ -139,6 +151,59 @@
           }
         },res =>{
           console.log("保存角色时请求错误")
+        })
+      },
+      teamGroup(){
+        if(this.TableData.multipleSelection.length === 1){
+          this.teamGroupDialogVisible = true
+          this.selectPersonnelName = '为 '+this.TableData.multipleSelection[0].Name+' 分配班组'
+          this.transferTeamGroupData = []
+          this.transferTeamGroupValue = []
+          var that = this
+          var params = {
+            userID:this.TableData.multipleSelection[0].ID
+          }
+          this.axios.get("/api/selectUserShiftsGroup",{
+            params: params
+          }).then(res =>{
+            res.data.notHaveRows.forEach(item =>{
+              that.transferTeamGroupData.push({
+                key:item.ID,
+                label:item.ShiftsGroupName
+              })
+            })
+            res.data.existingRows.forEach(item =>{
+              that.transferTeamGroupValue.push(item.ID)
+            })
+          },res =>{
+            console.log("获取班组时请求错误")
+          })
+        }else{
+          this.$message({
+            type: 'info',
+            message: '请选择一位人员进行分配'
+          });
+        }
+      },
+      saveTeamGroup(){
+        var selectPermissionArr = []
+        this.transferTeamGroupValue.forEach(item =>{
+          selectPermissionArr.push(item)
+        })
+        var params = {
+          userID: this.TableData.multipleSelection[0].ID,
+          shiftsgroupIDs:JSON.stringify(selectPermissionArr)
+        }
+        this.axios.post("/api/saveuserusershiftsgroup",this.qs.stringify(params)).then(res =>{
+          if(res.data === "OK"){
+            this.$message({
+              type: 'success',
+              message: '分配成功'
+            });
+            this.teamGroupDialogVisible = false
+          }
+        },res =>{
+          console.log("保存班组时请求错误")
         })
       }
     }

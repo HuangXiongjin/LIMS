@@ -270,3 +270,4 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/linux,macos,python,windows,pycharm+all
+backend/database/config_db.ini

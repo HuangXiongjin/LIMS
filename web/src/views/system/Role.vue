@@ -1,7 +1,7 @@
 <template>
   <el-row>
     <el-col :span="24">
-      <div class="card-head">
+      <div class="page-title">
         <span style="margin-left: 10px;" class="text-size-normol">角色管理</span>
       </div>
       <div class="platformContainer">
@@ -43,7 +43,7 @@
           searchProp:"",
           searchVal:"",
           handleType:[
-            {type:"primary",label:"分配权限",clickEvent:"privileges"},
+            {type:"primary",label:"分配权限",clickEvent:"privileges",hasPermissions:['分配权限']},
           ],
         },
         dialogVisible:false,
