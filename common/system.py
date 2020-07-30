@@ -1,12 +1,11 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
-from sqlalchemy import create_engine, ForeignKey, Table, Column, DateTime, Integer, String, Unicode, Float
-from sqlalchemy.dialects.mssql.base import BIT
+from sqlalchemy import create_engine, Column, DateTime, Integer, Unicode
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_login import LoginManager
 
-from database.connect_db import CONNECT_DATABASE
+from backend.database.connect_db import CONNECT_DATABASE
 
 login_manager = LoginManager()
 # 创建对象的基类
@@ -307,8 +306,6 @@ class Role(Base):
     # 所属部门:
     ParentNode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 查询权限
-    menus = relationship("Menu", secondary=Role_Menu)
 
 # 角色默认权限表
 class RolePermission(Base):
