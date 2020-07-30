@@ -6,12 +6,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from datetime import datetime
 from flask_login import LoginManager
-
-from dbset.database.db_operate import GLOBAL_DATABASE_CONNECT_STRING
+from database.connect_db import CONNECT_DATABASE
 
 login_manager = LoginManager()
 # 创建对象的基类
-engine = create_engine(GLOBAL_DATABASE_CONNECT_STRING, deprecate_large_types=True)
+engine = create_engine(CONNECT_DATABASE)
 Session = sessionmaker(bind=engine)
 db_session = Session()
 Base = declarative_base(engine)
@@ -181,8 +180,6 @@ class scheduleDateType(Base):
     Desc = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
     # 颜色
     color = Column(Unicode(30), primary_key=False, autoincrement=False, nullable=True)
-
-
 
 
 
