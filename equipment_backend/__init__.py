@@ -7,7 +7,7 @@ from flask import Flask, request
 
 from common.common_cuid import insert, delete, update, select
 from common.common_cuid import accurateSelect
-from database.connect_db import CONNECT_DATABASE
+from backend.database.connect_db import CONNECT_DATABASE
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = CONNECT_DATABASE

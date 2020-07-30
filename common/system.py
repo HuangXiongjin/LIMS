@@ -1,33 +1,103 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine, Column, DateTime, Integer, Unicode
-from sqlalchemy.dialects.mssql.base import BIT
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+from flask_login import LoginManager
 
-from database.connect_db import CONNECT_DATABASE
+from backend.database.connect_db import CONNECT_DATABASE
 
-# login_manager = LoginManager()
+login_manager = LoginManager()
 # 创建对象的基类
-engine = create_engine(CONNECT_DATABASE, deprecate_large_types=True)
+engine = create_engine(CONNECT_DATABASE)
 Session = sessionmaker(bind=engine)
 db_session = Session()
 Base = declarative_base(engine)
 
 
-# 页面路由配置
-class PageRoute(Base):
-    __tablename__ = 'PageRoute'
+class SysLog(Base):
+    __tablename__ = "SysLog"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+
+    # IP:
+    IP = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 计算机名称:
+    ComputerName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 操作用户:
+    UserName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 操作日期:
+    OperationDate = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+
+    # 操作内容:
+    OperationContent = Column(Unicode(2048), primary_key=False, autoincrement=False, nullable=True)
+
+    # 类型:
+    OperationType = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+
+# Organization:
+class Organization(Base):
+    __tablename__ = "Organization"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 组织结构编码:
+    OrganizationCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 父组织机构:
+    ParentNode = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 顺序号:
+    OrganizationSeq = Column(Unicode(10), primary_key=False, autoincrement=False, nullable=True)
+
+    # 组织机构名称:
+    OrganizationName = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 说明:
+    Description = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 创建人:
+    CreatePerson = Column(Unicode(20), primary_key=False, autoincrement=False, nullable=True)
+
+    # 创建时间:
+    CreateDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 显示图标:
+    Img = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True, default="antonio.jpg")
+
+    # 显示图标:
+    Color = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True, default="#1696d3")
+
+
+# 审计追踪
+class AuditTrace(Base):
+    __tablename__ = 'AuditTrace'
     # id:
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
 
-    # 页面路由配置:
-    SetRoute = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 操作:
+    Operation = Column(Unicode(300), primary_key=False, autoincrement=False, nullable=True)
 
-    # 页面路径名（XX.html）:
-    PageRouteName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 详细信息:
+    DeitalMSG = Column(Unicode(800), primary_key=False, autoincrement=False, nullable=True)
 
-    # 路由:
-    Route = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 修改日期
+    ReviseDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 操作表:
+    TableName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 用户:
+    User = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 其他:
+    Other = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 
 # 数据库建表配置
@@ -159,54 +229,128 @@ class FieldType(Base):
     Description = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 
-# 审计追踪
-class AuditTrace(Base):
-    __tablename__ = 'AuditTrace'
-    # id:
+# 用户班组表
+class UserShiftsGroup(Base):
+    __tablename__ = 'UserShiftsGroup'
+    # ID
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
 
-    # 操作:
-    Operation = Column(Unicode(300), primary_key=False, autoincrement=False, nullable=True)
+    # 用户ID:
+    UserID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
-    # 详细信息:
-    DeitalMSG = Column(Unicode(800), primary_key=False, autoincrement=False, nullable=True)
+    # 用户名:
+    Name = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-    # 修改日期
-    ReviseDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 班组ID:
+    ShiftsGroupID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
-    # 操作表:
-    TableName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 班组名称
+    ShiftsGroupName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 用户:
-    User = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
-    # 其他:
-    Other = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 创建时间
+    CreateDate = Column(DateTime, primary_key=False, autoincrement=False, nullable=True,
+                        default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
-class SysLog(Base):
-    __tablename__ = "SysLog"
+# 权限表
+class Permission(Base):
+    __tablename__ = 'Permission'
+    # ID
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 权限名字:
+    PermissionName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 权限类型:
+    PermissionType = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 描述:
+    Description = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 创建时间
+    CreateData = Column(DateTime, primary_key=False, autoincrement=False, nullable=True,
+                        default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+class DepartmentManager(Base):
+    '''部门'''
+    __tablename__ = "DepartmentManager"
 
     # ID:
-    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
 
-    # IP:
-    IP = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    # 部门名称:
+    DepartName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 计算机名称:
-    ComputerName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    # 部门编码:
+    DepartCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 操作用户:
-    UserName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    # 所属厂区:
+    DepartLoad = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 操作日期:
-    OperationDate = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+class Role(Base):
+    '''角色'''
+    __tablename__ = "Role"
 
-    # 操作内容:
-    OperationContent = Column(Unicode(2048), primary_key=False, autoincrement=False, nullable=True)
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
 
-    # 类型:
-    OperationType = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    # 角色编码:
+    RoleCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # RoleName:
+    RoleName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # Description:
+    Description = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 所属部门:
+    ParentNode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+
+# 角色默认权限表
+class RolePermission(Base):
+    __tablename__ = 'RolePermission'
+    # ID
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 角色ID:
+    RoleID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 角色名称:
+    RoleName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 权限ID:
+    PermissionID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 权限名字:
+    PermissionName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 创建时间
+    CreateDate = Column(DateTime, primary_key=False, autoincrement=False, nullable=True,
+                        default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+
+# 角色用户表
+class RoleUser(Base):
+    __tablename__ = 'RoleUser'
+    # ID
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 权限ID:
+    UserID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 权限名字:
+    UserName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 角色ID:
+    RoleID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 角色名称:
+    RoleName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 创建时间
+    CreateDate = Column(DateTime, primary_key=False, autoincrement=False, nullable=True,
+                        default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
 # User_START:
@@ -240,6 +384,9 @@ class User(Base):
     # 所属厂区:
     FactoryName = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
 
+    # 班组类型
+    ShiftsGroupType = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
     # 上次登录时间:
     LastLoginTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
@@ -250,7 +397,7 @@ class User(Base):
     Creater = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
 
     # 是否锁定:
-    IsLock = Column(BIT, primary_key=False, autoincrement=False, nullable=True)
+    IsLock = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # @property
     # def password(self):
@@ -283,6 +430,247 @@ class User(Base):
 
 
 # User_END:
+
+# 服务运行情况表
+class SystemRunDetail(Base):
+    __tablename__ = 'SystemRunDetail'
+    # ID
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 总执行次数:
+    RunTotalNum = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 开始执行时间:
+    RunStartTime = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+    # 最后刷新时间:
+    RunRefreshTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 执行状态:
+    RunStatus = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+    # 执行成功数:
+    RunSuccessNum = Column(Unicode(150), primary_key=False, autoincrement=False, nullable=True)
+
+    # 执行失败数:
+    RunFailNum = Column(Unicode(150), primary_key=False, autoincrement=False, nullable=True)
+
+
+
+# 班时
+class Shifts(Base):
+    __tablename__ = "Shifts"
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    # 班次编码
+    ShiftsCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 班次名称
+    ShiftsName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 班次开始时间
+    BeginTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 班次结束时间
+    EndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+
+# 班制
+class ShiftsClass(Base):
+    __tablename__ = "ShiftsClass"
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    # 班制编码
+    ShiftsClassCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 班制名称
+    ShiftsClassName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 排班序号
+    ShiftsClassNum = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 班制开始时间
+    BeginTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 班制结束时间
+    EndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+# 班组
+class ShiftsGroup(Base):
+    __tablename__ = "ShiftsGroup"
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    # 班组编码
+    ShiftsGroupCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 班组名称
+    ShiftsGroupName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 班组类型
+    ShiftsGroupType = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 描述:
+    Description = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+    # 创建日期:
+    CreateDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+
+class WorkShop(Base):
+    '''车间'''
+    __tablename__ = "WorkShop"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 车间名称:
+    WorkShopName = Column(Unicode(52), primary_key=False, autoincrement=False, nullable=True)
+
+    # 车间编码:
+    WorkShopCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 所属厂区:
+    FactoryName = Column(Unicode(52), primary_key=False, autoincrement=False, nullable=True)
+
+    # 描述:
+    Desc = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+
+class Unit(Base):
+    __tablename__ = "Unit"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 单位名称:
+    UnitName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 单位值:
+    UnitValue = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+class LimitTable(Base):
+    __tablename__ = "LimitTable"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 名称:
+    LimitName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 编码:
+    LimitCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 限值:
+    LimitValue = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+class AreaMaintain(Base):
+    '''厂区'''
+    __tablename__ = "AreaMaintain"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 区域编码:
+    AreaCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 区域名称:
+    AreaName = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+    # 所属厂区:
+    FactoryName = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+class Station(Base):
+    '''岗位'''
+    __tablename__ = "Station"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 地址:
+    Address = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+    # 电话:
+    Phone = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 岗位负责人:
+    PersonCharge = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+    # 岗位职责:
+    Responsibility = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 所属部门:
+    DepartName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 岗位类型:
+    StationType = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 岗位名称:
+    StationName = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+    # 岗位编码:
+    StationCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+class Factory(Base):
+    __tablename__ = "Factory"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 所属企业:
+    EnterpriseName = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+    # 厂名:
+    FactoryName = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+    # 所在地区:
+    Region = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+class Enterprise(Base):
+    __tablename__ = "Enterprise"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 上级企业:
+    ParentNode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 企业类型:
+    Type = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 描述:
+    Desc = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+    # 父节点名称:
+    ParentNodeName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 企业代码:
+    EnterpriseNo = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 企业名称:
+    EnterpriseName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 企业编码:
+    EnterpriseCode = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+
+class MenuType(Base):
+    __tablename__ = "MenuType"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 类型名称:
+    TypeName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 类型编码:
+    TypeCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+class plantCalendarScheduling(Base):
+    '''日历'''
+    __tablename__ = "plantCalendarScheduling"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 颜色:
+    color = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 标题:
+    title = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 时间:
+    start = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 结束:
+    end = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 
 # 生成表单的执行语句
