@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_login import LoginManager
 
-from system_backend.database.connect_db import CONNECT_DATABASE
+from database.connect_db import CONNECT_DATABASE
 
 login_manager = LoginManager()
 # 创建对象的基类

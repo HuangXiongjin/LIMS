@@ -7,7 +7,7 @@ import re
 
 from werkzeug.security import generate_password_hash
 
-from system_backend.database.connect_db import CONNECT_DATABASE
+from database.connect_db import CONNECT_DATABASE
 import socket
 import datetime
 from common.system import SysLog, User, AuditTrace
