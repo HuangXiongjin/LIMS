@@ -5,6 +5,7 @@ celerybeat-schedule.db
 celerybeat.pid
 error.log
 access.log
+migrations
 # Created by https://www.gitignore.io/api/linux,macos,python,windows,pycharm+all
 # Edit at https://www.gitignore.io/?templates=linux,macos,python,windows,pycharm+all
 
