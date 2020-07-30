@@ -3,19 +3,20 @@ import json
 
 from flask import Blueprint, request
 
-from backend import db
-from backend.common.models import RepairPlan, LubricationPlan, Plan, RepairRecord, Record, FaultRepair, OrderVerify, \
+from equipment_backend import db
+from common.equipment_models import RepairPlan, LubricationPlan, Plan, RepairRecord, Record, FaultRepair, OrderVerify, \
     Task
-from backend.tools.handle import MyEncoder, get_time_stamp
+from equipment_backend.tools.handle import MyEncoder, get_time_stamp
 
 work_order = Blueprint('work_order', __name__)
 
 
 @work_order.route('/input', methods=['GET', 'POST'])
 def add_data():
-    """工单等表录入数据"""
+    """方案表和计划表数据录入"""
     json_data = request.get_json()
     if request.args.get('foo') == 'bjw_plan':
+        # 保，检，修方案表数据录入
         data = RepairPlan(equipment_no=json_data.get('equipment_no'), plan_no=json_data.get('plan_no'),
                           position=json_data.get('position'), tools=json_data.get('tools'),
                           material=json_data.get('material'), plan=json_data.get('plan'),
@@ -25,6 +26,7 @@ def add_data():
         db.session.add(data)
         db.session.commit()
     elif request.args.get('foo') == 'r_plan':
+        # 润滑计划表数据录入
         data = LubricationPlan(equipment_no=json_data.get('equipment_no'), plan_no=json_data.get('plan_no'),
                                position=json_data.get('position'), oils=json_data.get('oils'),
                                way=json_data.get('way'), changes_amount=json_data.get('changes_amount'),
@@ -35,6 +37,7 @@ def add_data():
         db.session.add(data)
         db.session.commit()
     elif request.args.get('foo') == 'plan':
+        # 维保润检计划表数据录入
         data = Plan(equipment_no=json_data.get('equipment_no'), no=json_data.get('no'),
                     worker_no=json_data.get('worker_no'), name=json_data.get('name'),
                     no_status=json_data.get('no_status'), verify_status=json_data.get('verify_status'),
@@ -45,6 +48,7 @@ def add_data():
         db.session.add(data)
         db.session.commit()
     elif request.args.get('foo') == 'repair_record':
+        # 维修记录表数据录入
         data = RepairRecord(equipment_no=json_data.get('equipment_no'),
                             no=datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'),
                             worker_no=json_data.get('worker_no'), name=json_data.get('name'),
@@ -56,6 +60,7 @@ def add_data():
         db.session.add(data)
         db.session.commit()
     elif request.args.get('foo') == 'brj_record':
+        # 保润检记录表数据录入
         data = Record(equipment_no=json_data.get('equipment_no'),
                       no=datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'),
                       worker_no=json_data.get('worker_no'), name=json_data.get('name'),
@@ -64,6 +69,7 @@ def add_data():
         db.session.add(data)
         db.session.commit()
     elif request.args.get('foo') == 'fault_repair':
+        # 故障报修数据录入
         # file = request.files.get('picture')
         # 检查文件类型
         # if file and not is_allowed_type(file.content_type):
@@ -81,23 +87,23 @@ def add_data():
                            )
         db.session.add(data)
         db.session.commit()
-        return 'this one'
-    return 'this two'
+        # return 'this one'
+    return json.dumps({'code': '2000', 'message': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
 
 
 @work_order.route('/verify', methods=['GET', 'POST'])
 def verify():
     """工单审核"""
     if request.method == 'GET':
-        plan = Plan.query.filter_by(verify_status='待审核').all()
-        return json.dumps({'code': '1000', 'message': '请求成功', 'data': plan}, cls=MyEncoder, ensure_ascii=True)
+        data = Plan.query.filter_by(verify_status='待审核').all()
+        return json.dumps({'code': '1000', 'message': '请求成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'POST':
         json_data = request.get_json()
         data = OrderVerify(no=json_data.get('no'), verify_status=json_data.get('verify_status'),
                            name='name', verify_time=json_data.get('verify_time'))
         db.session.add(data)
         db.session.commit()
-        return json.dumps({'code': '1000', 'message': '操作成功'}, cls=MyEncoder, ensure_ascii=True)
+        return json.dumps({'code': '1000', 'message': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
 
 
 @work_order.route('/plan', methods=['GET', 'POST'])
@@ -105,7 +111,7 @@ def plan():
     """任务表添加任务"""
     query_data = Plan.query.filter_by(verify_status='待处理').all()
     if request.method == 'GET':
-        return json.dumps({'code': '1000', 'message': '操作成功', 'data': query_data}, cls=MyEncoder, ensure_ascii=True)
+        return json.dumps({'code': '1000', 'message': '操作成功', 'data': query_data}, cls=MyEncoder, ensure_ascii=False)
     elif request.method == 'POST':
         # query_list = [item if get_time_stamp(item.work_time) else '' for item in query_data]
         # query_list = []
@@ -119,7 +125,7 @@ def plan():
                 # query_list.append(item)
             else:
                 pass
-        return json.dumps({'code': '1000', 'message': '操作成功'}, cls=MyEncoder, ensure_ascii=True)
+        return json.dumps({'code': '1000', 'message': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
 
 
 @work_order.route('/', methods=['GET'])

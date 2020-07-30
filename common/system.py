@@ -1,10 +1,10 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
-from sqlalchemy import create_engine, ForeignKey, Table, Column, DateTime, Integer, String, Unicode, Float
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine, Column, DateTime, Integer, Unicode
 from sqlalchemy.dialects.mssql.base import BIT
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from backend.database.connect_db import CONNECT_DATABASE
+from database.connect_db import CONNECT_DATABASE
 
 # login_manager = LoginManager()
 # 创建对象的基类

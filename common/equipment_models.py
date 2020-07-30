@@ -1,11 +1,11 @@
 import datetime
 
-from backend import db
+from equipment_backend import db
 
 
 class Equipment(db.Model):
     """设备数据"""
-    __tablename__ = 'equipment'
+    __tablename__ = 'Equipment'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 车间号
@@ -19,7 +19,7 @@ class Equipment(db.Model):
     # 设备类型
     type = db.Column(db.Unicode(32), nullable=True)
     # 生产商
-    manufacturer = db.Column(db.Unicode(32), nullable=False)
+    manufacturer = db.Column(db.Unicode(32), nullable=True)
     # SAP号
     sap = db.Column(db.Unicode(64), nullable=True)
     # 固定资产编号
@@ -27,29 +27,27 @@ class Equipment(db.Model):
     # 固定资产名称
     fixed_assets_name = db.Column(db.Unicode(32), nullable=True)
     # 设备状态(1:良好 0：异常)
-    status = db.Column(db.Unicode(16), default='良好', nullable=False)
+    status = db.Column(db.Unicode(16), default='良好', nullable=True)
     # 区域
     area = db.Column(db.Unicode(32), nullable=True)
     # 进厂日期
     into_time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-    # 中间表ID
-    # center_id = db.Column(db.Integer, primary_key=True)
 
 
 class InstructionsCenter(db.Model):
     """说明书中间表"""
-    __tablename__ = 'instructionsCenter'
+    __tablename__ = 'InstructionsCenter'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备/配件编号
     no = db.Column(db.Unicode(32), nullable=False)
     # 说明书ID
-    instructions = db.relationship("Instructions", backref='instructionsCenter')
+    instructions = db.relationship("Instructions", backref='InstructionsCenter')
 
 
 class Instructions(db.Model):
     """设备/配件说明书"""
-    __tablename__ = 'instructions'
+    __tablename__ = 'Instructions'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 说明书编号
@@ -59,12 +57,12 @@ class Instructions(db.Model):
     # 说明书详情
     detail = db.Column(db.Unicode(256), nullable=False)
     # 中间表id
-    center_id = db.Column(db.Integer, db.ForeignKey('instructionsCenter.id'))
+    center_id = db.Column(db.Integer, db.ForeignKey('InstructionsCenter.id'))
 
 
 class Fitting(db.Model):
     """配件数据"""
-    __tablename__ = 'fitting'
+    __tablename__ = 'Fitting'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备号
@@ -74,9 +72,9 @@ class Fitting(db.Model):
     # 配件名称
     name = db.Column(db.Unicode(64), nullable=False)
     # 配件型号
-    model = db.Column(db.Unicode(128), nullable=False)
+    model = db.Column(db.Unicode(128), nullable=True)
     # 配件类型
-    type = db.Column(db.Unicode(32), nullable=False)
+    type = db.Column(db.Unicode(32), nullable=True)
     # 使用状态
     status = db.Column(db.Unicode(8), default="未使用")
     # 生产商
@@ -89,7 +87,7 @@ class Fitting(db.Model):
 
 class FittingInto(db.Model):
     """配件入库"""
-    __tablename__ = 'fitting_into'
+    __tablename__ = 'FittingInto'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 入库单号
@@ -108,7 +106,7 @@ class FittingInto(db.Model):
 
 class FittingOut(db.Model):
     """配件出库"""
-    __tablename__ = 'fitting_out'
+    __tablename__ = 'FittingOut'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 出库单号
@@ -127,7 +125,7 @@ class FittingOut(db.Model):
 
 class Stock(db.Model):
     """库存统计"""
-    __tablename__ = 'stock'
+    __tablename__ = 'Stock'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 配件型号
@@ -146,7 +144,7 @@ class Stock(db.Model):
 
 class WorkOrder(db.Model):
     """工单记录"""
-    __tablename__ = 'work_order'
+    __tablename__ = 'WorkOrder'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 工单号
@@ -171,7 +169,7 @@ class WorkOrder(db.Model):
 
 class Scheduling(db.Model):
     """排班表"""
-    __tablename__ = 'scheduling'
+    __tablename__ = 'Scheduling'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备号
@@ -181,14 +179,14 @@ class Scheduling(db.Model):
     # 工单号
     no = db.Column(db.Unicode(256), nullable=False)
     # 班组号
-    work_no = db.Column(db.Unicode(64), nullable=False)
+    work_no = db.Column(db.Unicode(64), nullable=True)
     # 班次号
-    work_group = db.Column(db.Unicode(64), nullable=False)
+    work_group = db.Column(db.Unicode(64), nullable=True)
 
 
 class FaultRepair(db.Model):
     """故障报修"""
-    __tablename__ = 'fault_repair'
+    __tablename__ = 'FaultRepair'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备号
@@ -202,16 +200,16 @@ class FaultRepair(db.Model):
     # 姓名
     name = db.Column(db.Unicode(32), nullable=False)
     # 故障原因
-    reason = db.Column(db.Unicode(128), nullable=False)
+    reason = db.Column(db.Unicode(128), nullable=True)
     # 故障图片
-    picture = db.Column(db.Unicode(128), nullable=False)
+    picture = db.Column(db.Unicode(128), nullable=True)
     # 申请时间
     time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class Record(db.Model):
     """保润检记录表"""
-    __tablename__ = "record"
+    __tablename__ = "Record"
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备号
@@ -232,7 +230,7 @@ class Record(db.Model):
 
 class RepairRecord(db.Model):
     """维修记录表"""
-    __tablename__ = 'repair_record'
+    __tablename__ = 'RepairRecord'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备号
@@ -244,22 +242,22 @@ class RepairRecord(db.Model):
     # 设备状态（良好，异常）
     status = db.Column(db.Unicode(12), default="良好")
     # 故障原因
-    fault_reason = db.Column(db.Unicode(128), nullable=False)
+    fault_reason = db.Column(db.Unicode(128), nullable=True)
     # 维修材料
-    repair_material = db.Column(db.Unicode(128), nullable=False)
+    repair_material = db.Column(db.Unicode(128), nullable=True)
     # 修复验收(是， 否)
     repair_status = db.Column(db.Unicode(12), default="否")
     # 故障等级(一级， 二级， 三级)
     fault_rank = db.Column(db.Unicode(12), default="一级")
     # 维修知识
-    knowledge = db.Column(db.Unicode(256), nullable=False)
+    knowledge = db.Column(db.Unicode(256), nullable=True)
     # 工作时间
     time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class RepairPlan(db.Model):
     """维保检方案"""
-    __tablename__ = 'repair_plan'
+    __tablename__ = 'RepairPlan'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备号
@@ -267,26 +265,26 @@ class RepairPlan(db.Model):
     # 方案编号
     plan_no = db.Column(db.Unicode(128), nullable=False)
     # 部位
-    position = db.Column(db.Unicode(64), nullable=False)
+    position = db.Column(db.Unicode(64), nullable=True)
     # 工具
-    tools = db.Column(db.Unicode(64), nullable=False)
+    tools = db.Column(db.Unicode(64), nullable=True)
     # 材料
-    material = db.Column(db.Unicode(64), nullable=False)
+    material = db.Column(db.Unicode(64), nullable=True)
     # 方法
-    plan = db.Column(db.Unicode(64), nullable=False)
+    plan = db.Column(db.Unicode(64), nullable=True)
     # 标准
-    standard = db.Column(db.Unicode(32), nullable=False)
+    standard = db.Column(db.Unicode(32), nullable=True)
     # 周期
-    period = db.Column(db.Unicode(32), nullable=False)
+    period = db.Column(db.Unicode(32), nullable=True)
     # 实施部门
-    department = db.Column(db.Unicode(32), nullable=False)
+    department = db.Column(db.Unicode(32), nullable=True)
     # 工单类型（维修，保养，巡检）
     type = db.Column(db.Unicode(32), nullable=True)
 
 
 class LubricationPlan(db.Model):
     """润滑方案"""
-    __tablename__ = 'lubrication_plan'
+    __tablename__ = 'LubricationPlan'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备号
@@ -294,26 +292,26 @@ class LubricationPlan(db.Model):
     # 方案编号
     plan_no = db.Column(db.Unicode(128), nullable=False)
     # 润滑部位
-    position = db.Column(db.Unicode(64), nullable=False)
+    position = db.Column(db.Unicode(64), nullable=True)
     # 润滑油品
-    oils = db.Column(db.Unicode(32), nullable=False)
+    oils = db.Column(db.Unicode(32), nullable=True)
     # 润滑方式
-    way = db.Column(db.Unicode(32), nullable=False)
+    way = db.Column(db.Unicode(32), nullable=True)
     # 换油数量
-    changes_amount = db.Column(db.Unicode(32), nullable=False)
+    changes_amount = db.Column(db.Unicode(32), nullable=True)
     # 换油周期
-    oils_changes_period = db.Column(db.Unicode(32), nullable=False)
+    oils_changes_period = db.Column(db.Unicode(32), nullable=True)
     # 加油数量
-    add_amount = db.Column(db.Unicode(32), nullable=False)
+    add_amount = db.Column(db.Unicode(32), nullable=True)
     # 加油周期
-    oils_add_period = db.Column(db.Unicode(32), nullable=False)
+    oils_add_period = db.Column(db.Unicode(32), nullable=True)
     # 实施部门
-    department = db.Column(db.Unicode(32), nullable=False)
+    department = db.Column(db.Unicode(32), nullable=True)
 
 
 class OrderVerify(db.Model):
     """工单审核"""
-    __tablename__ = 'orderVerify'
+    __tablename__ = 'OrderVerify'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 工单号
@@ -330,7 +328,7 @@ class OrderVerify(db.Model):
 
 class Plan(db.Model):
     """维保润检计划表"""
-    __tablename__ = 'plan'
+    __tablename__ = 'Plan'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备号
@@ -363,7 +361,7 @@ class Plan(db.Model):
 
 class Task(db.Model):
     """任务表"""
-    __tablename__ = 'task'
+    __tablename__ = 'Task'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备号
@@ -386,13 +384,13 @@ class Task(db.Model):
 
 class Monitor(db.Model):
     """设备实时监测数据"""
-    __tablename__ = 'monitor'
+    __tablename__ = 'Monitor'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备号
     equipment_no = db.Column(db.Unicode(128), nullable=False)
     # 当前状态（1：良好 0：异常）
-    status = db.Column(db.SmallInteger, default=1, nullable=False)
+    status = db.Column(db.SmallInteger, default=1, nullable=True)
     # 运行总时间
     total_time = db.Column(db.Unicode(64), nullable=True)
     # 停机总时间
@@ -405,7 +403,7 @@ class Monitor(db.Model):
 
 class Kpi(db.Model):
     """设备KPI"""
-    __tablename__ = 'kpi'
+    __tablename__ = 'Kpi'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     # 设备编号

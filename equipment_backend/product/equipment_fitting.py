@@ -1,14 +1,12 @@
 import datetime
 import json
-import os
 import time
 
-from flask import Blueprint, request, current_app
-from sqlalchemy import and_
+from flask import Blueprint, request
 
-from backend import db
-from backend.common.models import Fitting, Equipment, InstructionsCenter, Instructions, FittingInto, FittingOut
-from backend.tools.handle import MyEncoder, is_allowed_type, generate_filename, get_root_path
+from equipment_backend import db
+from common.equipment_models import Fitting, Equipment, InstructionsCenter, Instructions, FittingInto, FittingOut
+from equipment_backend.tools.handle import MyEncoder
 
 equipment = Blueprint('equipment', __name__)
 
@@ -85,7 +83,7 @@ def stock():
         query = Fitting.query.filter_by(status='未使用').filter_by(model=item).all()
         result = {'fitting': query, 'count': len(query)}
         data.append(result)
-    return json.dumps({'code': '10000', 'message': '请求成功', 'data': data}, cls=MyEncoder, ensure_ascii=True)
+    return json.dumps({'code': '10000', 'message': '请求成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
 
 
 @equipment.route('/fitting', methods=['GET', 'POST'])

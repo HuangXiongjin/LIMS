@@ -1,8 +1,8 @@
-from backend import manager, app
+from equipment_backend import manager, app
 
 
 def main():
-    app.run()
+    app.run('0.0.0.0', 5001)
     # manager.run()
 
 

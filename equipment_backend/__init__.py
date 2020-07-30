@@ -5,9 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask import Flask, request
 
-from backend.common.common_cuid import insert, delete, update, select, accurateSelect
-from backend.common.common_cuid import accurateSelect
-from backend.database.connect_db import CONNECT_DATABASE
+from common.common_cuid import insert, delete, update, select
+from common.common_cuid import accurateSelect
+from database.connect_db import CONNECT_DATABASE
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = CONNECT_DATABASE
@@ -17,16 +17,15 @@ app.config['SECRET_KEY'] = 'qa12wecde34fss2'
 # 创建数据库连接对象
 db = SQLAlchemy(app)
 
-from backend.account.views import users
-from backend.product.equipment_fitting import equipment
-from backend.product.work_order import work_order
-from backend.common.models import *
-from backend.common.system import *
+from account.views import users
+from account import views
+from equipment_backend.product.equipment_fitting import equipment
+from equipment_backend.product.work_order import work_order
+from common.equipment_models import *
 
-app.register_blueprint(users)
+app.register_blueprint(users, url_prefix='/users')
 app.register_blueprint(equipment, url_prefix='/equipment')
 app.register_blueprint(work_order, url_prefix='/work')
-
 
 # 绑定app和数据库，迁移使用
 migrate = Migrate(app, db)
@@ -37,11 +36,10 @@ manager.add_command('db', MigrateCommand)
 bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = 'qeqhdasdqiqd131'
 
-from backend.account import views
-
 views.login_manager.init_app(app)
 
 api = Api(app)
+
 
 class CUIDList(Resource):
     def get(self):
@@ -67,6 +65,4 @@ api.add_resource(CUIDList, '/CUID')
 
 @app.route('/')
 def hello_world():
-    return 'Hello LIMS!'
-
-
+    return 'Hello LIMS!!!'

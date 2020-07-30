@@ -7,12 +7,12 @@ import re
 
 from werkzeug.security import generate_password_hash
 
-from backend.database.connect_db import CONNECT_DATABASE
+from database.connect_db import CONNECT_DATABASE
 import socket
 import datetime
-from backend.common.system import SysLog, User, AuditTrace
-from backend.tools.MESLogger import MESLogger
-from backend.tools.BSFramwork import AlchemyEncoder
+from common.system import SysLog, User, AuditTrace
+from equipment_backend.tools.MESLogger import MESLogger
+from equipment_backend.tools.BSFramwork import AlchemyEncoder
 
 engine = create_engine(CONNECT_DATABASE, deprecate_large_types=True)
 Session = sessionmaker(bind=engine)
@@ -25,7 +25,7 @@ from sqlalchemy import Table
 Base = automap_base()
 Base.prepare(engine, reflect=True)
 
-logger = MESLogger('../logs', 'log')
+logger = MESLogger('../equipment_backend/logs', 'log')
 #插入日志OperationType OperationContent OperationDate UserName ComputerName IP
 def insertSyslog(operationType, operationContent, userName):
         try:

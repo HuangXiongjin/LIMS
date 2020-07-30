@@ -6,10 +6,9 @@ from flask import Blueprint
 from flask import request, make_response
 from flask_login import login_user, LoginManager
 
-from backend.common.models import InstructionsCenter
-from backend.common.system import db_session, User
-from backend.tools import autocode
-from backend.tools.handle import MyEncoder, log
+from common.system import db_session, User
+from equipment_backend.tools import autocode
+from equipment_backend.tools.handle import MyEncoder, log
 
 users = Blueprint('users', __name__)
 login_manager = LoginManager()
@@ -21,7 +20,7 @@ login_manager.login_view = 'login_auth.login'
 def index():
     try:
         # get_data = InstructionsCenter.query.filter_by(number=1001).first()
-        return json.dumps({'data': 'get_data.instructions'}, cls=MyEncoder, ensure_ascii=True)
+        return json.dumps({'data': 'get_data.instructions'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
         return json.dumps('str(e)')
@@ -45,10 +44,10 @@ def make_model():
 
 @users.route('/account/userloginauthentication', methods=['GET', 'POST'])
 def userloginauthentication():
-    '''
+    """
     用户登陆认证
     :return:
-    '''
+    """
     try:
         if request.method == 'POST':
             data = request.values

@@ -6,7 +6,7 @@ from flask import Flask
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import MetaData, create_engine
 
-from backend.tools.MESLogger import MESLogger
+from equipment_backend.tools.MESLogger import MESLogger
 
 metadata = MetaData()
 import json
@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 logger = MESLogger('../logs', 'log')
 
-from backend.database.connect_db import CONNECT_DATABASE
+from database.connect_db import CONNECT_DATABASE
 engine = create_engine(CONNECT_DATABASE, deprecate_large_types=True)
 Session = sessionmaker(bind=engine)
 db_session = Session()
@@ -78,7 +78,7 @@ class MakeModel:
         notes += 'from sqlalchemy import create_engine, Column,ForeignKey, Table, DateTime, Integer, String\n'
         notes += 'from sqlalchemy import Column, DateTime, Float, Integer, String, Unicode,BigInteger\n'
         notes += 'from sqlalchemy.dialects.mssql.base import BIT\n'
-        notes += 'from backend.database.connect_db import CONNECT_DATABASE\n'
+        notes += 'from equipment_backend.database.connect_db import CONNECT_DATABASE\n'
         notes += 'from datetime import datetime\n'
         notes += 'from flask_login import LoginManager\n'
         notes += 'from werkzeug.security import generate_password_hash, check_password_hash\n'
