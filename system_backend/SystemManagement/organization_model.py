@@ -1,11 +1,21 @@
 from flask import Blueprint, render_template, request
 import json
-from flask_login import current_user
-from dbset.main.BSFramwork import AlchemyEncoder
-from models.system import Organization
-from dbset.log.BK2TLogger import logger,insertSyslog
-from dbset.database.db_operate import db_session
-from models.core import Factory, DepartmentManager, Role
+from flask_login import current_user, LoginManager
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+from common.BSFramwork import AlchemyEncoder
+from common.system import Organization, Factory, DepartmentManager, Role
+from system_backend.SystemManagement.user_management import user_manage
+
+from database.connect_db import CONNECT_DATABASE
+login_manager = LoginManager()
+# 创建对象的基类
+engine = create_engine(CONNECT_DATABASE)
+Session = sessionmaker(bind=engine)
+db_session = Session()
+Base = declarative_base(engine)
 
 organiza = Blueprint('organiza', __name__, template_folder='templates')
 

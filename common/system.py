@@ -6,7 +6,6 @@ from datetime import datetime
 from flask_login import LoginManager
 
 from database.connect_db import CONNECT_DATABASE
-
 login_manager = LoginManager()
 # 创建对象的基类
 engine = create_engine(CONNECT_DATABASE)

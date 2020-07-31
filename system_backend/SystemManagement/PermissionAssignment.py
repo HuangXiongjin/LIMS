@@ -1,13 +1,22 @@
 import json
 import re
 from flask import render_template,request,Blueprint,redirect,url_for
+from flask_login import LoginManager
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-from dbset.database.db_operate import db_session
-from models.core import Role, Role_Menu, Menu
-from models.system import Permission, User, RolePermission, ModulMenus, RoleUser
-from flask_login import current_user
-from dbset.log.BK2TLogger import logger,insertSyslog
-from dbset.main.BSFramwork import AlchemyEncoder
+from common.BSFramwork import AlchemyEncoder
+from common.system import Organization, Factory, DepartmentManager, Role
+from system_backend.SystemManagement.user_management import user_manage
+
+from database.connect_db import CONNECT_DATABASE
+login_manager = LoginManager()
+# 创建对象的基类
+engine = create_engine(CONNECT_DATABASE)
+Session = sessionmaker(bind=engine)
+db_session = Session()
+Base = declarative_base(engine)
 
 permission_distribution = Blueprint('permission_distribution', __name__, template_folder='templates')
 

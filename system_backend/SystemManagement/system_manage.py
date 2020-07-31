@@ -2,24 +2,33 @@ import redis
 from flask import Blueprint, render_template, request, make_response
 from flask_login import current_user
 from sqlalchemy.ext.automap import automap_base
-from dbset.main.BSFramwork import AlchemyEncoder
-from models.system import DataSummaryAnalysis
-from tools import autocode
-from tools.MESLogger import MESLogger
-from dbset.log.BK2TLogger import logger,insertSyslog
 import json
-from tools.common import engine
-from dbset.database.db_operate import db_session
 import arrow
 import calendar
 import datetime
 
-logger = MESLogger('../logs', 'log')
+from flask import render_template,request,Blueprint,redirect,url_for
+from flask_login import LoginManager
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from common import MESLogger, autocode
+
+from common.BSFramwork import AlchemyEncoder
+from common.system import Organization, Factory, DepartmentManager, Role
+from system_backend.SystemManagement.user_management import user_manage
+
+from database.connect_db import CONNECT_DATABASE
+login_manager = LoginManager()
+# 创建对象的基类
+engine = create_engine(CONNECT_DATABASE)
+Session = sessionmaker(bind=engine)
+db_session = Session()
+
 from sqlalchemy import MetaData, desc
 from io import BytesIO
 
 metadata = MetaData()
-from dbset.database import constant
 Base = automap_base()
 Base.prepare(engine, reflect=True)
 

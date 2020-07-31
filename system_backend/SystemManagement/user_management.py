@@ -1,11 +1,23 @@
 import json
 from flask import Blueprint, render_template
-from dbset.database.db_operate import db_session
-from dbset.log.BK2TLogger import logger,insertSyslog
-from flask_login import current_user
-from models.system import User, ShiftsGroup, UserShiftsGroup
+from flask_login import current_user, LoginManager
 from flask import render_template,request,Blueprint
-from dbset.main.BSFramwork import AlchemyEncoder
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+from common.BSFramwork import AlchemyEncoder
+from common.system import Organization, Factory, DepartmentManager, Role, User, ShiftsGroup, UserShiftsGroup
+from common.MESLogger import logger,insertSyslog
+
+from database.connect_db import CONNECT_DATABASE
+login_manager = LoginManager()
+# 创建对象的基类
+engine = create_engine(CONNECT_DATABASE)
+Session = sessionmaker(bind=engine)
+db_session = Session()
+Base = declarative_base(engine)
+
 
 user_manage = Blueprint('user_manage', __name__, template_folder='templates')
 
