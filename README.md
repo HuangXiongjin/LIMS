@@ -1,4 +1,2 @@
 # LIMS
-#### 设备管理系统
-开发人员：xxxxxxxxx
-时间：xxxxxxxxx
+## 重庆希尔安敏捷开发
