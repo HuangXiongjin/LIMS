@@ -14,8 +14,8 @@ work_order = Blueprint('work_order', __name__)
 @work_order.route('/input', methods=['GET', 'POST'])
 def add_data():
     """方案表和计划表数据录入"""
-    json_data = request.get_json()
-    if request.args.get('foo') == 'bjw_plan':
+    json_data = request.values
+    if request.values.get('foo') == 'bjw_plan':
         # 保，检，修方案表数据录入
         data = RepairPlan(equipment_no=json_data.get('equipment_no'), plan_no=json_data.get('plan_no'),
                           position=json_data.get('position'), tools=json_data.get('tools'),
@@ -25,7 +25,7 @@ def add_data():
                           )
         db.session.add(data)
         db.session.commit()
-    elif request.args.get('foo') == 'r_plan':
+    elif request.values.get('foo') == 'r_plan':
         # 润滑计划表数据录入
         data = LubricationPlan(equipment_no=json_data.get('equipment_no'), plan_no=json_data.get('plan_no'),
                                position=json_data.get('position'), oils=json_data.get('oils'),
@@ -36,7 +36,7 @@ def add_data():
                                )
         db.session.add(data)
         db.session.commit()
-    elif request.args.get('foo') == 'plan':
+    elif request.values.get('foo') == 'plan':
         # 维保润检计划表数据录入
         data = Plan(equipment_no=json_data.get('equipment_no'), no=json_data.get('no'),
                     worker_no=json_data.get('worker_no'), name=json_data.get('name'),
@@ -47,7 +47,7 @@ def add_data():
                     )
         db.session.add(data)
         db.session.commit()
-    elif request.args.get('foo') == 'repair_record':
+    elif request.values.get('foo') == 'repair_record':
         # 维修记录表数据录入
         data = RepairRecord(equipment_no=json_data.get('equipment_no'),
                             no=datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'),
@@ -59,7 +59,7 @@ def add_data():
         data = RepairRecord(data)
         db.session.add(data)
         db.session.commit()
-    elif request.args.get('foo') == 'brj_record':
+    elif request.values.get('foo') == 'brj_record':
         # 保润检记录表数据录入
         data = Record(equipment_no=json_data.get('equipment_no'),
                       no=datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'),
@@ -68,7 +68,7 @@ def add_data():
                       )
         db.session.add(data)
         db.session.commit()
-    elif request.args.get('foo') == 'fault_repair':
+    elif request.values.get('foo') == 'fault_repair':
         # 故障报修数据录入
         # file = request.files.get('picture')
         # 检查文件类型
@@ -98,7 +98,7 @@ def verify():
         data = Plan.query.filter_by(verify_status='待审核').all()
         return json.dumps({'code': '1000', 'message': '请求成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'POST':
-        json_data = request.get_json()
+        json_data = request.values
         data = OrderVerify(no=json_data.get('no'), verify_status=json_data.get('verify_status'),
                            name='name', verify_time=json_data.get('verify_time'))
         db.session.add(data)

@@ -69,7 +69,8 @@ class MyEncoder(json.JSONEncoder):
                     elif isinstance(data, (BaseQuery, type)):
                         pass
                     elif isinstance(data, datetime.datetime):
-                        fields[field] = data.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+                        fields[field] = data.strftime("%Y-%m-%d %H:%M:%S")
+                        # fields[field] = data.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
                     elif isinstance(data, datetime.date):
                         fields[field] = data.strftime("%Y-%m-%d")
                     elif isinstance(data, decimal.Decimal):
