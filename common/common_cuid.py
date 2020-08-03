@@ -76,13 +76,13 @@ def insert(data):
             aud.User = current_user.Name
             db_session.add(aud)
             db_session.commit()
-            return 'OK'
+            return  json.dumps({"code": "200", "message": "请求成功", "data": ""})
         except Exception as e:
             print(e)
             db_session.rollback()
             logger.error(e)
             insertSyslog("error", "%s数据添加报错："%tableName + str(e), current_user.Name)
-            return json.dumps('数据添加失败！')
+            return json.dumps({"code": "500", "message": "请求错误", "data": "%s数据添加报错："%tableName + str(e)})
 
 def delete(data):
     '''
@@ -111,13 +111,13 @@ def delete(data):
                     print(ee)
                     db_session.rollback()
                     insertSyslog("error", "删除户ID为"+str(id)+"报错Error：" + str(ee), current_user.Name)
-                    return json.dumps("删除用户报错", cls=AlchemyEncoder,ensure_ascii=False)
-            return 'OK'
+                    return json.dumps({"code": "500", "message": "请求错误", "data": "删除户ID为"+str(id)+"报错Error：" + str(ee)})
+            return json.dumps({"code": "200", "message": "请求成功", "data": ""})
     except Exception as e:
         db_session.rollback()
         logger.error(e)
         insertSyslog("error", "%s数据删除报错："%tableName + str(e), current_user.Name)
-        return json.dumps('数据删除失败！')
+        return json.dumps({"code": "500", "message": "请求错误", "data": "%s数据删除报错："%tableName + str(e)})
 
 def update(data):
     '''
@@ -154,14 +154,14 @@ def update(data):
                 aud.User = current_user.Name
                 db_session.add(aud)
                 db_session.commit()
-                return 'OK'
+                return json.dumps({"code": "200", "message": "请求成功", "data": ""})
             else:
-                return json.dumps('当前记录不存在！', cls=AlchemyEncoder, ensure_ascii=False)
+                return json.dumps({"code": "200", "message": "请求成功", "data": "当前记录不存在"})
         except Exception as e:
             db_session.rollback()
             logger.error(e)
             insertSyslog("error", "%s数据更新报错："%tableName + str(e), current_user.Name)
-            return json.dumps('数据更新失败！', cls=AlchemyEncoder, ensure_ascii=False)
+            return json.dumps({"code": "500", "message": "请求错误", "data": "%s数据更新报错："%tableName + str(e)})
 
 def select(data):#table, page, rows, fieid, param
     '''
@@ -198,11 +198,12 @@ def select(data):#table, page, rows, fieid, param
             dir.append(divi)
         jsonoclass = json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
         jsonoclass = '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonoclass + "}"
-        return jsonoclass
+        return json.dumps({"code": "200", "message": "请求成功", "data": jsonoclass})
     except Exception as e:
         print(e)
         logger.error(e)
         insertSyslog("error", "查询报错Error：" + str(e), current_user.Name)
+        return json.dumps({"code": "500", "message": "请求错误", "data": "查询报错Error：" + str(e)})
 
 def accurateSelect(data):
     '''
@@ -238,11 +239,12 @@ def accurateSelect(data):
             dir.append(divi)
         jsonoclass = json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
         jsonoclass = '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonoclass + "}"
-        return jsonoclass
+        return json.dumps({"code": "200", "message": "请求成功", "data": jsonoclass})
     except Exception as e:
         print(e)
         logger.error(e)
         insertSyslog("error", "查询报错Error：" + str(e), current_user.Name)
+        return json.dumps({"code": "500", "message": "请求错误", "data": "查询报错Error：" + str(e)})
 
 def FuzzyQuery(tablename, params):
     '''
