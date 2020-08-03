@@ -197,7 +197,7 @@ def select(data):#table, page, rows, fieid, param
                 a = a + 1
             dir.append(divi)
         jsonoclass = json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
-        jsonoclass = {"total:" + str(total) + ",rows:\n" + jsonoclass}
+        jsonoclass = {"total": str(total), "rows": jsonoclass}
         return {"code": "200", "message": "请求成功", "data": jsonoclass}
     except Exception as e:
         print(e)
@@ -238,7 +238,7 @@ def accurateSelect(data):
                 a = a + 1
             dir.append(divi)
         jsonoclass = json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
-        jsonoclass = {"total:" + str(total) + ",rows:\n" + jsonoclass}
+        jsonoclass =  {"total": str(total), "rows": jsonoclass}
         return {"code": "200", "message": "请求成功", "data": jsonoclass}
     except Exception as e:
         print(e)
