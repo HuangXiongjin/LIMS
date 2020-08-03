@@ -299,7 +299,7 @@ class ProductLine(Base):
     PLineName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
     # 车间ID:
-    AreaID = Column(Integer, ForeignKey("Area.ID"), nullable=False, primary_key=False)
+    AreaID = Column(Integer, autoincrement=False, nullable=False, primary_key=False)
 
     # 描述:
     Desc = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
@@ -328,7 +328,7 @@ class ProcessUnit(Base):
     PUName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
     # 生产线ID:
-    PLineID = Column(Integer, ForeignKey("ProductLine.ID"), nullable=False, primary_key=False)
+    PLineID = Column(Integer, autoincrement=False, nullable=False, primary_key=False)
 
     # 描述:
     Desc = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
