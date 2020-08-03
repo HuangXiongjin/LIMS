@@ -557,6 +557,20 @@ class PlanManager(Base):
     #
 	# PLineName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
+class TypeDetail(Base):
+    '''电子批记录type维护表'''
+    __tablename__ = "TypeDetail"
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    # 类型编码
+    TypeCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 类型名称
+    TypeName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 所属工艺段
+    PUID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 注释
+    Desc = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
+
 
 
 # 生成表单的执行语句
