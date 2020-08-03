@@ -64,18 +64,18 @@ class CUIDList(Resource):
         data = request.values
         searchModes = data.get("searchModes")
         if searchModes == "精确查询":
-            return accurateSelect(request.values), 200
+            return accurateSelect(request.values)
         else:  # 模糊查询
-            return select(request.values), 200
+            return select(request.values)
 
     def post(self):
-        return insert(request.values), 200
+        return insert(request.values)
 
     def put(self):
-        return update(request.values), 200
+        return update(request.values)
 
     def delete(self):
-        return delete(request.values), 200
+        return delete(request.values)
 
 
 api.add_resource(CUIDList, '/CUID')
