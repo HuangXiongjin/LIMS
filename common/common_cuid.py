@@ -196,9 +196,7 @@ def select(data):#table, page, rows, fieid, param
                 divi[str(j)] = str(i[a])
                 a = a + 1
             dir.append(divi)
-        jsonoclass = json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
-        jsonoclass = {"total": str(total), "rows": jsonoclass}
-        return {"code": "200", "message": "请求成功", "data": jsonoclass}
+        return {"code": "200", "message": "请求成功", "data": {"total": str(total), "rows": dir}}
     except Exception as e:
         print(e)
         logger.error(e)
@@ -237,9 +235,7 @@ def accurateSelect(data):
                 divi[str(j)] = str(i[a])
                 a = a + 1
             dir.append(divi)
-        jsonoclass = json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
-        jsonoclass =  {"total": str(total), "rows": jsonoclass}
-        return {"code": "200", "message": "请求成功", "data": jsonoclass}
+        return {"code": "200", "message": "请求成功", "data": {"total": str(total), "rows": dir}}
     except Exception as e:
         print(e)
         logger.error(e)
