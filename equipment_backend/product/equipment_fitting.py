@@ -4,6 +4,8 @@ import time
 
 from flask import Blueprint, request
 
+from common.system import db_session, User
+from common.BSFramwork import AlchemyEncoder
 from equipment_backend import db
 from common.equipment_models import Fitting, Equipment, InstructionsCenter, Instructions, FittingInto, FittingOut
 from equipment_backend.tools.handle import MyEncoder
@@ -11,10 +13,17 @@ from equipment_backend.tools.handle import MyEncoder
 equipment = Blueprint('equipment', __name__)
 
 
+@equipment.route('/', methods=['GET'])
+def index():
+    user = db_session.query(User).all()
+    equipments = Equipment.query.all()
+    return json.dumps({'equipments': equipments, 'user': user}, cls=MyEncoder, ensure_ascii=False)
+
+
 @equipment.route('/input', methods=['GET', 'POST'])
 def add_data():
     """设备配件说明书数据录入"""
-    if request.args.get('foo') == 'equipment':
+    if request.values.get('foo') == 'equipment':
         result = request.get_json()
         # file = request.files.get('instruction')
         # 检查文件类型
@@ -43,7 +52,7 @@ def add_data():
         # file_path = get_root_path()
         # file.save(os.path.join(file_path, full_filename))
         return "this equipment page"
-    elif request.args.get('foo') == 'fitting':
+    elif request.values.get('foo') == 'fitting':
         result = request.get_json()
         # file = request.files.get('instruction')
         # 检查文件类型
@@ -89,7 +98,7 @@ def stock():
 @equipment.route('/fitting', methods=['GET', 'POST'])
 def fitting_into_out():
     """配件出入库单"""
-    if request.args.get('foo') == 'into':
+    if request.values.get('foo') == 'into':
         json_data = request.get_json()
         fitting_into = FittingInto(no=datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'),
                                    fitting_no=json_data.get('fitting_no'),
@@ -97,7 +106,7 @@ def fitting_into_out():
                                    worker=json_data.get('worker'), time=json_data.get('time'))
         db.session.add(fitting_into)
         db.session.commit()
-    if request.args.get('foo') == 'out':
+    if request.values.get('foo') == 'out':
         json_data = request.get_json()
         fitting_into = FittingOut(no=str(round(time.time() * 1000)), fitting_no=json_data.get('fitting_no'),
                                   fitting_number=json_data.get('fitting_number'),
