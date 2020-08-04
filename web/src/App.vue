@@ -11,23 +11,23 @@
 </script>
 <style>
   body {
-      font-family: "PingFang SC", sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+    font-family:Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   li, ul, p, div, body, html, table {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
   html, body {
-      height: 100%;
-      overflow: hidden;
+    height: 100%;
+    overflow: hidden;
   }
   li {
-      list-style: none;
+    list-style: none;
   }
   #app {
-      height: 100%;
+    height: 100%;
   }
 </style>

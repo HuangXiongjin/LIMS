@@ -51,10 +51,10 @@
       </div>
       <el-col :span="24" v-else-if="showTypeValue === '表格视图'">
         <div class="platformContainer" style="margin-bottom: 10px;">
-          <tableView class="blackComponents" :tableData="DepartmentTableData" @getTableData="getDepartmentTable" :relatedTableData="RoleTableData"></tableView>
+          <tableView class="" :tableData="DepartmentTableData" @getTableData="getDepartmentTable" :relatedTableData="RoleTableData"></tableView>
         </div>
         <div class="platformContainer" style="margin-bottom: 10px;">
-          <tableView class="blackComponents" :tableData="RoleTableData" @getTableData="getRoleTable"></tableView>
+          <tableView class="" :tableData="RoleTableData" @getTableData="getRoleTable"></tableView>
         </div>
       </el-col>
 
@@ -584,7 +584,7 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          var data = JSON.parse(res.data)
+          var data = res.data
           that.DepartmentTableData.data = data.rows
           that.DepartmentTableData.total = data.total
         },res =>{
@@ -601,7 +601,7 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          var data = JSON.parse(res.data)
+          var data = res.data
           that.RoleTableData.data = data.rows
           that.RoleTableData.total = data.total
         },res =>{

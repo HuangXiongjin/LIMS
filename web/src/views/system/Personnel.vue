@@ -8,7 +8,7 @@
       </el-col>
       <el-col :span="24">
         <div class="platformContainer">
-          <tableView class="blackComponents" :tableData="TableData" @getTableData="getTableData" @privileges="privileges" @teamGroup="teamGroup"></tableView>
+          <tableView class="" :tableData="TableData" @getTableData="getTableData" @privileges="privileges" @teamGroup="teamGroup"></tableView>
         </div>
         <el-dialog :title="selectPersonnelName" :visible.sync="dialogVisible" width="50%">
           <el-transfer :titles="['未拥有角色', '已分配角色']" :button-texts="['收回', '分配']" v-model="transferValue" :data="transferData"></el-transfer>
@@ -93,7 +93,7 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          var data = JSON.parse(res.data)
+          var data = res.data
           that.TableData.data = data.rows
           that.TableData.total = data.total
         },res =>{
