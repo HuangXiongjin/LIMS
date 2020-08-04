@@ -685,6 +685,9 @@ class TechnologicalProcess(Base):
     # 流程结构:
     ProcessStructure = Column(Unicode(1000), primary_key=False, autoincrement=False, nullable=True)
 
+    # 流程结构:
+    Icon = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
     # 注释:
     Describtion = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
 
