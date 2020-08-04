@@ -192,8 +192,12 @@ def select(data):#table, page, rows, fieid, param
                 oclass = db_session.query(newTable).order_by(desc("ID")).all()[inipage:endpage]
         else:
             total = db_session.query(newTable).filter(newTable.columns._data[param].like("%"+paramvalue+"%")).count()
-            oclass = db_session.query(newTable).filter(newTable.columns._data[param].like("%"+paramvalue+"%")).order_by(desc("ID")).all()[
-                     inipage:endpage]
+            if inipage == "":
+                oclass = db_session.query(newTable).filter(
+                    newTable.columns._data[param].like("%" + paramvalue + "%")).order_by(desc("ID")).all()
+            else:
+                oclass = db_session.query(newTable).filter(newTable.columns._data[param].like("%"+paramvalue+"%")
+                                                           ).order_by(desc("ID")).all()[inipage:endpage]
         dir = []
         for i in oclass:
             a = 0
