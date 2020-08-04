@@ -173,17 +173,23 @@ def select(data):#table, page, rows, fieid, param
     :return:
     '''
     try:
-        pages = int(data.get("offset"))
-        rowsnumber = int(data.get("limit"))
+        pages = data.get("offset")
+        rowsnumber = data.get("limit")
         param = data.get("field")
         tableName = data.get("tableName")
         paramvalue = data.get("fieldvalue")
-        inipage = pages * rowsnumber + 0  # 起始页
-        endpage = pages * rowsnumber + rowsnumber  # 截止页
+        if not pages:
+            inipage = ""
+        else:
+            inipage = pages * rowsnumber + 0  # 起始页
+            endpage = pages * rowsnumber + rowsnumber  # 截止页
         newTable = Table(tableName, metadata, autoload=True, autoload_with=engine)
         if (param == "" or param == None):
             total = db_session.query(newTable).count()
-            oclass = db_session.query(newTable).order_by(desc("ID")).all()[inipage:endpage]
+            if inipage == "":
+                oclass = db_session.query(newTable).order_by(desc("ID")).all()
+            else:
+                oclass = db_session.query(newTable).order_by(desc("ID")).all()[inipage:endpage]
         else:
             total = db_session.query(newTable).filter(newTable.columns._data[param].like("%"+paramvalue+"%")).count()
             oclass = db_session.query(newTable).filter(newTable.columns._data[param].like("%"+paramvalue+"%")).order_by(desc("ID")).all()[
