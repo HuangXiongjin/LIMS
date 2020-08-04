@@ -24,11 +24,13 @@ export default new Vuex.Store({
           offset:0
         }
       }).then(res =>{
-        var data = JSON.parse(res.data)
-        state.UserName = data.rows[0].Name
-        state.UserId = data.rows[0].id
-        sessionStorage.setItem('UserName', data.rows[0].Name)
-        sessionStorage.setItem('UserId', data.rows[0].id)
+        var data = res.data
+        if(data.code === "200"){
+          state.UserName = data.data.rows[0].Name
+          state.UserId = data.data.rows[0].ID
+          sessionStorage.setItem('UserName', data.data.rows[0].Name)
+          sessionStorage.setItem('UserId', data.data.rows[0].ID)
+        }
       },res =>{
         console.log("获取用户信息时请求错误")
       })

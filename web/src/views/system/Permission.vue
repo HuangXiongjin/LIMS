@@ -5,7 +5,7 @@
         <span style="margin-left: 10px;" class="text-size-normol">权限维护</span>
       </div>
       <div class="platformContainer">
-        <tableView class="blackComponents" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
+        <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
       </div>
     </el-col>
   </el-row>
@@ -59,7 +59,7 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          var data = JSON.parse(res.data)
+          var data = res.data
           that.PermissionTableData.data = data.rows
           that.PermissionTableData.total = data.total
         },res =>{
