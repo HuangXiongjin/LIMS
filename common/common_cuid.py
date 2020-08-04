@@ -196,7 +196,7 @@ def select(data):#table, page, rows, fieid, param
                 divi[str(j)] = str(i[a])
                 a = a + 1
             dir.append(divi)
-        return {"code": "200", "message": "请求成功", "data": {"total": str(total), "rows": dir}}
+        return {"code": "200", "message": "请求成功", "data": {"total": total, "rows": dir}}
     except Exception as e:
         print(e)
         logger.error(e)
@@ -235,7 +235,7 @@ def accurateSelect(data):
                 divi[str(j)] = str(i[a])
                 a = a + 1
             dir.append(divi)
-        return {"code": "200", "message": "请求成功", "data": {"total": str(total), "rows": dir}}
+        return {"code": "200", "message": "请求成功", "data": {"total": total, "rows": dir}}
     except Exception as e:
         print(e)
         logger.error(e)
