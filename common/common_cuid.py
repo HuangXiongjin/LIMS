@@ -76,7 +76,7 @@ def insert(data):
             aud.User = current_user.Name
             db_session.add(aud)
             db_session.commit()
-            return  {"code": "200", "message": "请求成功", "data": ""}
+            return  {"code": "200", "message": "添加成功"}
         except Exception as e:
             print(e)
             db_session.rollback()
@@ -112,7 +112,7 @@ def delete(data):
                     db_session.rollback()
                     insertSyslog("error", "删除户ID为"+str(id)+"报错Error：" + str(ee), current_user.Name)
                     return {"code": "500", "message": "请求错误", "data": "删除户ID为"+str(id)+"报错Error：" + str(ee)}
-            return {"code": "200", "message": "请求成功", "data": ""}
+            return {"code": "200", "message": "删除成功"}
     except Exception as e:
         db_session.rollback()
         logger.error(e)
@@ -154,7 +154,7 @@ def update(data):
                 aud.User = current_user.Name
                 db_session.add(aud)
                 db_session.commit()
-                return {"code": "200", "message": "请求成功", "data": ""}
+                return {"code": "200", "message": "修改成功"}
             else:
                 return {"code": "200", "message": "请求成功", "data": "当前记录不存在"}
         except Exception as e:
@@ -240,7 +240,7 @@ def accurateSelect(data):
         print(e)
         logger.error(e)
         insertSyslog("error", "查询报错Error：" + str(e), current_user.Name)
-        return {"code": "500", "message": "请求错误", "data": "查询报错Error：" + str(e)}
+        return {"code": "500", "message": "请求错误", "data": "精确查询报错Error：" + str(e)}
 
 def FuzzyQuery(tablename, params):
     '''
