@@ -181,8 +181,8 @@ def select(data):#table, page, rows, fieid, param
         if not pages:
             inipage = ""
         else:
-            inipage = pages * rowsnumber + 0  # 起始页
-            endpage = pages * rowsnumber + rowsnumber  # 截止页
+            inipage = int(pages) * int(rowsnumber) + 0  # 起始页
+            endpage = int(pages) * int(rowsnumber) + int(rowsnumber)  # 截止页
         newTable = Table(tableName, metadata, autoload=True, autoload_with=engine)
         if (param == "" or param == None):
             total = db_session.query(newTable).count()
