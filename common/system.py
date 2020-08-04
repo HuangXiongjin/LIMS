@@ -672,5 +672,25 @@ class plantCalendarScheduling(Base):
     end = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 
+class TechnologicalProcess(Base):
+    '''流程'''
+    __tablename__ = "TechnologicalProcess"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 流程名:
+    ProcessName = Column(Unicode(80), primary_key=False, autoincrement=False, nullable=True)
+
+    # 流程结构:
+    ProcessStructure = Column(Unicode(1000), primary_key=False, autoincrement=False, nullable=True)
+
+    # 注释:
+    Describtion = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 录入时间:
+    InputDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+
 # 生成表单的执行语句
 Base.metadata.create_all(engine)
