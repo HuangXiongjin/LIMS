@@ -62,7 +62,6 @@
 
 <script>
   import G6 from '@antv/g6';
-  import insertCss from 'insert-css';
   export default {
     name: "flowGraph",
     data(){
@@ -238,16 +237,16 @@
                   }
                 })
 
-                group.addShape('image', {
-                  attrs: {
-                    x: 8,
-                    y: 8,
-                    width: 24,
-                    height: 24,
-                    img: img || 'https://g.alicdn.com/cm-design/arms-trace/1.0.155/styles/armsTrace/images/TAIR.png',
-                  },
-                  name: 'image-shape',
-                });
+                // group.addShape('image', {
+                //   attrs: {
+                //     x: 8,
+                //     y: 8,
+                //     width: 24,
+                //     height: 24,
+                //     //img: img || 'https://g.alicdn.com/cm-design/arms-trace/1.0.155/styles/armsTrace/images/TAIR.png',
+                //   },
+                //   name: 'image-shape',
+                // });
               }
 
               // 如果不需要动态增加或删除元素，则不需要 add 这两个 marker
