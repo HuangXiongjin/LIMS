@@ -1,17 +1,15 @@
 from flask import Blueprint, render_template, request
-from flask_login import LoginManager
 from sqlalchemy import desc, create_engine
 import json
 import socket
 import datetime
-
+from flask_login import current_user, LoginManager
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from common.MESLogger import logger,insertSyslog
 from common.BSFramwork import AlchemyEncoder
 from common.system import Organization, Factory, DepartmentManager, Role, SysLog, AuditTrace
 from system_backend.SystemManagement.user_management import user_manage
-
 from database.connect_db import CONNECT_DATABASE
 login_manager = LoginManager()
 # 创建对象的基类
@@ -40,8 +38,8 @@ def syslogsFindByDate():
                 rowsnumber = int(data.get("limit"))  # 行数
                 inipage = pages * rowsnumber + 0  # 起始页
                 endpage = pages * rowsnumber + rowsnumber  # 截止页
-                startTime = data['startTime']  # 开始时间
-                endTime = data['endTime']  # 结束时间
+                startTime = data.get('startTime')  # 开始时间
+                endTime = data.get('endTime') # 结束时间
                 if startTime == "" and endTime == "":
                     total = db_session.query(SysLog).count()
                     syslogs = db_session.query(SysLog).order_by(desc("OperationDate")).all()[inipage:endpage]
@@ -56,13 +54,12 @@ def syslogsFindByDate():
                     syslogs = db_session.query(SysLog).filter(
                         SysLog.OperationDate.between(startTime, endTime)).order_by(desc("OperationDate")).all()[
                               inipage:endpage]
-                jsonsyslogs = json.dumps(syslogs, cls=AlchemyEncoder, ensure_ascii=False)
-                jsonsyslogs = '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonsyslogs + "}"
-                return jsonsyslogs
+                return {"code": "200", "message": "请求成功", "data": {"total": total, "rows": syslogs}}
         except Exception as e:
             print(e)
             logger.error(e)
-            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+            insertSyslog("error", "查询日志报错Error：" + str(e), current_user.Name)
+            return {"code": "500", "message": "请求错误", "data": "查询日志报错Error：" + str(e)}
 
 # 插入日志OperationType OperationContent OperationDate UserName ComputerName IP
 def insertSyslog(operationType, operationContent, userName):
@@ -113,10 +110,9 @@ def AuditTraceSelecct():
                     syslogs = db_session.query(AuditTrace).filter(
                         AuditTrace.ReviseDate.between(startTime, endTime)).order_by(desc("OperationDate")).all()[
                               inipage:endpage]
-                jsonsyslogs = json.dumps(syslogs, cls=AlchemyEncoder, ensure_ascii=False)
-                jsonsyslogs = '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonsyslogs + "}"
-                return jsonsyslogs
+                return {"code": "200", "message": "请求成功", "data": {"total": total, "rows": syslogs}}
         except Exception as e:
             print(e)
             logger.error(e)
-            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+            insertSyslog("error", "审计追踪查询报错Error：" + str(e), current_user.Name)
+            return {"code": "500", "message": "请求错误", "data": "审计追踪查询报错Error：" + str(e)}
