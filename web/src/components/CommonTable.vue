@@ -94,9 +94,11 @@
                 offset:this.relatedTableData.offset - 1
               }
             }).then(res =>{
-              var data = res.data
-              this.relatedTableData.data = data.rows
-              this.relatedTableData.total = data.total
+              if(res.data.code === '200'){
+                var data = res.data.data
+                this.relatedTableData.data = data.rows
+                this.relatedTableData.total = data.total
+              }
             },res =>{
               console.log("请求错误")
             })
@@ -125,9 +127,11 @@
             offset:this.tableData.offset - 1
           }
         }).then(res =>{
-          var data = res.data
-          this.tableData.data = data.rows
-          this.tableData.total = data.total
+          if(res.data.code === '200'){
+            var data = res.data.data
+            this.tableData.data = data.rows
+            this.tableData.total = data.total
+          }
         },res =>{
           console.log("请求错误")
         })
@@ -168,10 +172,10 @@
               this.axios.delete("/api/CUID",{
                 params: params
               }).then(res =>{
-                if(res.data == "OK"){
+                if(res.data.code === "200"){
                   this.$message({
                     type: 'success',
-                    message: '删除成功'
+                    message: res.data.message
                   });
                 }
                 this.$emit('getTableData')
@@ -206,8 +210,10 @@
               this.axios.get("/api/CUID",{
                 params: params
               }).then(res =>{
-                var data = res.data
-                item.DownData = data.rows
+                if(res.data.code === "200"){
+                  var data = res.data.data
+                  item.DownData = data.rows
+                }
               },res =>{
                 console.log("请求错误")
               })
@@ -231,10 +237,12 @@
                         offset:0
                       }
                     }).then(res =>{
-                      var data = res.data
-                      childItem.DownData = data.rows
-                      var childItemObj = childItem
-                      this.tableData.column.splice(index,1,childItemObj) //将子节点表单按索引替换为修改后的数据
+                      if(res.data.code === "200"){
+                        var data = res.data.data
+                        childItem.DownData = data.rows
+                        var childItemObj = childItem
+                        this.tableData.column.splice(index,1,childItemObj) //将子节点表单按索引替换为修改后的数据
+                      }
                     },res =>{
                       console.log("请求错误")
                     })
@@ -254,16 +262,16 @@
             }
           })
           this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
-            if(res.data == "OK"){
+            if(res.data.code === "200"){
               this.$message({
                 type: 'success',
-                message: '添加成功'
+                message: res.data.message
               });
               this.$emit('getTableData')
             }else{
               this.$message({
                 type: 'info',
-                message: res.data
+                message: res.data.message
               });
             }
             this.tableData.dialogVisible = false
@@ -276,16 +284,16 @@
             params[item.prop] = item.value
           })
           this.axios.put("/api/CUID",this.qs.stringify(params)).then(res =>{
-            if(res.data == "OK"){
+            if(res.data.code === "200"){
               this.$message({
                 type: 'success',
-                message: '修改成功'
+                message: res.data.message
               });
               this.$emit('getTableData')
             }else{
               this.$message({
                 type: 'info',
-                message: res.data
+                message: res.data.message
               });
             }
             this.tableData.dialogVisible = false
