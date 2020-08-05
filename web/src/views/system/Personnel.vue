@@ -46,7 +46,7 @@
             {prop:"Password",label:"密码",type:"input",value:"",showField:false,searchProp:false},
             {prop:"Creater",label:"创建人",type:"input",value:"",searchProp:false,canSubmit:false},
             {prop:"CreateTime",label:"创建时间",type:"input",value:"",searchProp:false,canSubmit:false},
-            {prop:"LastLoginTime",label:"最近在线时间",type:"input",value:"",searchProp:false,canSubmit:false},
+            {prop:"LastLoginTime",label:"最近登录时间",type:"input",value:"",searchProp:false,canSubmit:false},
           ],
           data:[],
           limit:5,
@@ -93,9 +93,11 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          var data = res.data
-          that.TableData.data = data.rows
-          that.TableData.total = data.total
+          if(res.data.code === "200"){
+            var data = res.data.data
+            that.TableData.data = data.rows
+            that.TableData.total = data.total
+          }
         },res =>{
           console.log("请求错误")
         })

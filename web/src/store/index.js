@@ -20,8 +20,6 @@ export default new Vuex.Store({
           tableName: "User",
           field:"WorkNumber",
           fieldvalue:user,
-          limit:1,
-          offset:0
         }
       }).then(res =>{
         var data = res.data

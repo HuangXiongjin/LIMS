@@ -59,9 +59,11 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          var data = res.data
-          that.PermissionTableData.data = data.rows
-          that.PermissionTableData.total = data.total
+          if(res.data.code === "200"){
+            var data = res.data.data
+            that.PermissionTableData.data = data.rows
+            that.PermissionTableData.total = data.total
+          }
         },res =>{
           console.log("请求错误")
         })
