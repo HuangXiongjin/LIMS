@@ -5,7 +5,6 @@ from flask import render_template,request,Blueprint
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-
 from common.BSFramwork import AlchemyEncoder
 from common.system import Organization, Factory, DepartmentManager, Role, User, ShiftsGroup, UserShiftsGroup
 from common.MESLogger import logger,insertSyslog
