@@ -1,3 +1,5 @@
+from tkinter.tix import MAX
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine, Column, DateTime, Integer, Unicode
@@ -683,7 +685,7 @@ class TechnologicalProcess(Base):
     ProcessName = Column(Unicode(80), primary_key=False, autoincrement=False, nullable=True)
 
     # 流程结构:
-    ProcessStructure = Column(Unicode(1000), primary_key=False, autoincrement=False, nullable=True)
+    ProcessStructure = Column(Unicode(MAX), primary_key=False, autoincrement=False, nullable=True)
 
     # 流程结构:
     Icon = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
