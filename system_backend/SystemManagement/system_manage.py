@@ -14,7 +14,6 @@ from common import MESLogger, autocode
 from flask_login import current_user, LoginManager
 from common.BSFramwork import AlchemyEncoder
 from common.system import Organization, Factory, DepartmentManager, Role
-from system_backend.SystemManagement.user_management import user_manage
 
 from database.connect_db import CONNECT_DATABASE
 login_manager = LoginManager()

@@ -9,7 +9,7 @@ from system_backend.SystemManagement import auth_lib, user_management, Role_mana
     PermissionAssignment, account_auth
 from system_backend.SystemManagement.account_auth import login_auth
 from system_backend.SystemManagement.organization_model import organiza
-from system_backend.SystemManagement.user_management import user_manage
+from system_backend.SystemManagement.user_management import user_manager
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -22,7 +22,7 @@ app.add_template_global(auth_lib.isIn, 'isIn')
 # 登录
 app.register_blueprint(login_auth)
 # 用户管理
-app.register_blueprint(user_management.user_manage)
+app.register_blueprint(user_management.user_manager)
 # 角色管理
 app.register_blueprint(Role_management.role_management)
 # 主页
@@ -34,7 +34,7 @@ app.register_blueprint(organiza)
 # 过程连续数据
 # app.register_blueprint(ProcessContinuousData.continuous_data)
 # 组织架构
-app.register_blueprint(user_manage)
+app.register_blueprint(user_manager)
 
 
 @app.route('/')

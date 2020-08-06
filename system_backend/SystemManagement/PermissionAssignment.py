@@ -9,7 +9,6 @@ from common.MESLogger import logger,insertSyslog
 from common.BSFramwork import AlchemyEncoder
 from common.system import Organization, Factory, DepartmentManager, Role, Permission, ModulMenus, User, RolePermission, \
     RoleUser
-from system_backend.SystemManagement.user_management import user_manage
 from flask_login import current_user, LoginManager
 from database.connect_db import CONNECT_DATABASE
 login_manager = LoginManager()
