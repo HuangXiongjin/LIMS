@@ -48,13 +48,17 @@
           <el-row :gutter="20">
             <el-col :span="20">
               <div class="platformContainer">
-                <div id="container" style="width: 100%;height: 700px;"></div>
+                <div id="container" style="width: 100%;height: 800px;"></div>
               </div>
             </el-col>
             <el-col :span="4">
               <div class="platformContainer">
-
-              </div>
+                <el-form v-model="clickModel">
+                  <el-form-item label="节点名称">
+                    <el-input size="small" v-model="clickModel.label" @change="changeNode"></el-input>
+                  </el-form-item>
+                </el-form>
+                </div>
             </el-col>
           </el-row>
         </el-col>
@@ -79,6 +83,8 @@
         selectRow:"",
         selectFlowData:"",
         graph:null,
+        clickNode:{},
+        clickModel:{},
       }
     },
     mounted() {
@@ -214,7 +220,7 @@
         }
       },
       init(){
-        var that = this
+        let that = this
         this.$nextTick(() => {
           const COLLAPSE_ICON = function COLLAPSE_ICON(x, y, r) {
             return [
@@ -242,21 +248,18 @@
                 fill: '#e6fffb',
                 stroke: '#e6fffb'
               },
-              //img: 'https://gw.alipayobjects.com/mdn/rms_f8c6a0/afts/img/A*Q_FQT6nwEC8AAAAAAAAAAABkARQnAQ'
             }
             return true
           })
-
           G6.registerNode('icon-node', {
             options: {
-              size: [60, 20],
+              size: [80, 20],
               stroke: '#91d5ff',
               fill: '#91d5ff'
             },
             draw(cfg, group) {
               const styles = this.getShapeStyle(cfg)
               const {labelCfg = {}} = cfg
-
               const keyShape = group.addShape('rect', {
                 attrs: {
                   ...styles,
@@ -264,7 +267,6 @@
                   y: 0
                 }
               })
-
               /**
                * leftIcon 格式如下：
                *  {
@@ -272,31 +274,6 @@
                *    img: ''
                *  }
                */
-              if (cfg.leftIcon) {
-                const {style, img} = cfg.leftIcon
-                group.addShape('rect', {
-                  attrs: {
-                    x: 1,
-                    y: 1,
-                    width: 38,
-                    height: styles.height - 2,
-                    fill: '#8c8c8c',
-                    ...style
-                  }
-                })
-
-                // group.addShape('image', {
-                //   attrs: {
-                //     x: 8,
-                //     y: 8,
-                //     width: 24,
-                //     height: 24,
-                //     //img: img || 'https://g.alicdn.com/cm-design/arms-trace/1.0.155/styles/armsTrace/images/TAIR.png',
-                //   },
-                //   name: 'image-shape',
-                // });
-              }
-
               // 如果不需要动态增加或删除元素，则不需要 add 这两个 marker
               group.addShape('marker', {
                 attrs: {
@@ -309,7 +286,6 @@
                 },
                 name: 'add-item'
               })
-
               group.addShape('marker', {
                 attrs: {
                   x: 80,
@@ -321,27 +297,23 @@
                 },
                 name: 'remove-item'
               })
-
               if (cfg.label) {
                 group.addShape('text', {
                   attrs: {
                     ...labelCfg.style,
                     text: cfg.label,
-                    x: 50,
+                    x: 35,
                     y: 25,
                   }
                 })
               }
-
               return keyShape
             }
           }, 'rect')
-
           G6.registerEdge('flow-line', {
             draw(cfg, group) {
               const startPoint = cfg.startPoint;
               const endPoint = cfg.endPoint;
-
               const {style} = cfg
               const shape = group.addShape('path', {
                 attrs: {
@@ -355,24 +327,20 @@
                   ],
                 },
               });
-
               return shape;
             }
           });
-
           const defaultStateStyles = {
-            hover: {
-              stroke: '#1890ff',
+            click: {
+              stroke: '#228AD5',
               lineWidth: 2
             }
           }
-
           const defaultNodeStyle = {
             fill: '#91d5ff',
             stroke: '#40a9ff',
             radius: 5
           }
-
           const defaultEdgeStyle = {
             stroke: '#91d5ff',
             endArrow: {
@@ -381,7 +349,6 @@
               d: -20
             }
           }
-
           const defaultLayout = {
             type: 'compactBox',
             direction: 'TB',
@@ -401,17 +368,14 @@
               return 70;
             },
           }
-
           const defaultLabelCfg = {
             style: {
               fill: '#000',
               fontSize: 12
             }
           }
-
           const width = document.getElementById('container').scrollWidth;
-          const height = document.getElementById('container').scrollHeight || 500;
-
+          const height = document.getElementById('container').scrollHeight - 150;
           const minimap = new G6.Minimap({
             size: [150, 100]
           })
@@ -425,6 +389,7 @@
               default: [
                 'drag-canvas',
                 'zoom-canvas',
+                'drag-node',
               ],
             },
             defaultNode: {
@@ -437,33 +402,27 @@
               type: 'flow-line',
               style: defaultEdgeStyle,
             },
-            nodeStateStyles: defaultStateStyles,
+            nodeStateStyles: defaultStateStyles, //节点状态样式
             edgeStateStyles: defaultStateStyles,
             layout: defaultLayout
           });
 
           that.graph.read(that.selectFlowData);
           that.graph.fitView();
-
-          that.graph.on('node:mouseenter', evt => {
-            const {item} = evt
-            that.graph.setItemState(item, 'hover', true)
-          })
-
-          that.graph.on('node:mouseleave', evt => {
-            const {item} = evt
-            that.graph.setItemState(item, 'hover', false)
-          })
-
           that.graph.on('node:click', evt => {
             const {item, target} = evt
             const targetType = target.get('type')
             const name = target.get('name')
-
-            // 增加元素
+            //清楚所有节点的状态
+            that.graph.findAllByState("node", 'click').forEach(node => {
+              that.graph.setItemState(node, 'click', false);
+            });
+            //给当前节点添加状态
+            that.graph.setItemState(item, 'click', true)
+            //点击添加和删除按钮
             if (targetType === 'marker') {
               const model = item.getModel()
-              if (name === 'add-item') {
+              if (name === 'add-item') {  // 增加元素
                 if (!model.children) {
                   model.children = []
                 }
@@ -476,16 +435,28 @@
                       fill: '#e6fffb',
                       stroke: '#e6fffb'
                     },
-                    img: 'https://gw.alipayobjects.com/mdn/rms_f8c6a0/afts/img/A*Q_FQT6nwEC8AAAAAAAAAAABkARQnAQ'
                   }
                 })
                 that.graph.updateChild(model, model.id)
               } else if (name === 'remove-item') {
                 that.graph.removeChild(model.id)
               }
+            }else if(targetType === 'rect'){
+              that.clickNode = evt.item
+              that.clickModel = evt.item.getModel()
+            }else if(targetType === 'text'){
+              that.clickNode = evt.item
+              that.clickModel = evt.item.getModel()
             }
           })
         })
+      },
+      changeNode(){ //修改节点 重新渲染
+        let that = this
+        if(that.clickModel.label){
+          that.graph.read(that.selectFlowData);
+          that.graph.fitView();
+        }
       }
     }
   }
