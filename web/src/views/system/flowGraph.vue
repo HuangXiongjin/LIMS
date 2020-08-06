@@ -41,6 +41,9 @@
             <el-form-item>
               <el-button @click="saveFlow">保存流程结构</el-button>
             </el-form-item>
+            <el-form-item>
+              <el-button type="danger" @click="delFlow">删除流程</el-button>
+            </el-form-item>
           </el-form>
           <el-row :gutter="20">
             <el-col :span="20">
@@ -102,28 +105,38 @@
         this.dialogVisible = true
       },
       saveAddFlow(){
-        var params = {
-          tableName:this.FlowtableName,
-          ProcessName:this.formParameters.ProcessName,
-          Icon:this.formParameters.Icon,
-        }
-        this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
-          if(res.data.code === "200"){
-            this.$message({
-              type: 'success',
-              message: res.data.message
-            });
-            this.getFlow()
-          }else{
-            this.$message({
-              type: 'info',
-              message: res.data.message
-            });
+        if(this.formParameters.ProcessName != ""){
+          if(this.formParameters.Icon === ''){
+            this.formParameters.Icon = "el-icon-share"
           }
-          this.dialogVisible = false
-        },res =>{
-          console.log("请求错误")
-        })
+          var params = {
+            tableName:this.FlowtableName,
+            ProcessName:this.formParameters.ProcessName,
+            Icon:this.formParameters.Icon,
+          }
+          this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
+            if(res.data.code === "200"){
+              this.$message({
+                type: 'success',
+                message: res.data.message
+              });
+              this.getFlow()
+            }else{
+              this.$message({
+                type: 'info',
+                message: res.data.message
+              });
+            }
+            this.dialogVisible = false
+          },res =>{
+            console.log("请求错误")
+          })
+        }else{
+          this.$message({
+            type: 'info',
+            message: "请输入流程名称"
+          });
+        }
       },
       toG6(label){
         this.selectRow = label
@@ -150,7 +163,6 @@
           ProcessStructure:JSON.stringify(this.graph.save())
         }
         this.axios.put("/api/CUID",this.qs.stringify(params)).then(res => {
-          console.log(res.data)
           if (res.data.code === "200") {
             this.$message({
               type: 'success',
@@ -164,6 +176,42 @@
             });
           }
         })
+      },
+      delFlow(){
+        if(this.selectRow.ProcessName && this.selectRow.ID){
+          var params = {tableName:this.FlowtableName}
+          var mulId = []
+          mulId.push({id:this.selectRow.ID});
+          params.delete_data = JSON.stringify(mulId)
+          this.$confirm('确定删除'+this.selectRow.ProcessName+'流程？', '提示', {
+            distinguishCancelAndClose:true,
+            type: 'warning'
+          }).then(()  => {
+            this.axios.delete("/api/CUID",{
+              params: params
+            }).then(res =>{
+              if(res.data.code === "200"){
+                this.$message({
+                  type: 'success',
+                  message: res.data.message
+                });
+              }
+              this.getFlow()
+            },res =>{
+              console.log("请求错误")
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+        }else{
+          this.$message({
+            type: 'info',
+            message: '请选择一项流程进行删除'
+          });
+        }
       },
       init(){
         var that = this
