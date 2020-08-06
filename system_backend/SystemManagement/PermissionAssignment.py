@@ -352,7 +352,7 @@ def selectpermissionbyuser():
                 rps = db_session.query(RolePermission).filter(RolePermission.RoleID == ro.RoleID).all()
                 for rp in rps:
                     permission_list.append(rp.PermissionName)
-            return {"code": "200", "message": "请求成功", "data": {"total": len(permission_list), "rows": permission_list}}
+            return json.dumps({"code": "200", "message": "请求成功", "data": {"total": len(permission_list), "rows": permission_list}})
         except Exception as e:
             print(e)
             logger.error(e)
