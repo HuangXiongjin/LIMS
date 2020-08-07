@@ -58,10 +58,10 @@ def insert(data):
             for key in data:
 
                 if key != "ID" and key != "tableName" and key != "id":
-                    if tableName == "user" and key == "Creater":
-                        setattr(ss, key, current_user.Name)
-                    elif key == "Password":
+                    if key == "Password":
                         setattr(ss, key, generate_password_hash(data['Password']))
+                        if tableName == "User":
+                            setattr(ss, "Creater", current_user.Name)
                     elif key == "WorkNumber":
                         ocal = db_session.query(User).filter(User.WorkNumber == data['WorkNumber']).first()
                         if ocal != None:
