@@ -56,8 +56,11 @@ def insert(data):
             obj = Base.classes.get(tableName)
             ss = obj()
             for key in data:
-                if key != "ID" and key != "tableName" and key != "id" and key != "Creater":
-                    if key == "Password":
+
+                if key != "ID" and key != "tableName" and key != "id":
+                    if tableName == "user" and key == "Creater":
+                        setattr(ss, key, current_user.Name)
+                    elif key == "Password":
                         setattr(ss, key, generate_password_hash(data['Password']))
                     elif key == "WorkNumber":
                         ocal = db_session.query(User).filter(User.WorkNumber == data['WorkNumber']).first()
