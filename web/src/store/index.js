@@ -26,14 +26,13 @@ export default new Vuex.Store({
           state.UserName = data.data.rows[0].Name
           state.UserId = data.data.rows[0].ID
           sessionStorage.setItem('UserName', data.data.rows[0].Name)
-          sessionStorage.setItem('LastLoginTime', data.rows[0].LastLoginTime)
+          sessionStorage.setItem('LastLoginTime', data.data.rows[0].LastLoginTime)
         }
       },res =>{
         console.log("获取用户信息时请求错误")
       })
       axios.get("/api/permission/selectpermissionbyuser").then(res =>{
-        console.log(res.data)
-        sessionStorage.setItem('Permissions', JSON.stringify(res.data))
+        sessionStorage.setItem('Permissions', JSON.stringify(res.data.data.rows))
       })
       sessionStorage.setItem('WorkNumber', user)
       sessionStorage.setItem('LoginStatus', true)

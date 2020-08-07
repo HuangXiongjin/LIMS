@@ -182,7 +182,7 @@
               lineStyle:{
                 curveness:0.5,
                 width: 1.5,
-                color: "#ffffff"
+                color: "#A3B1BF"
               },
               roam:false,
               layout:"orthogonal",
@@ -191,11 +191,11 @@
               symbolSize: 8,
               label:{
                 position: 'right',
-                color:"#ffffff"
+                color:"#333"
               },
               itemStyle:{
-                color:"#ffffff",
-                borderColor:"#082F4C"
+                color:"#C6E5FF",
+                borderColor:"#5B8FF9"
               }
             }
           },

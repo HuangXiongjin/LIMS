@@ -170,7 +170,7 @@
 .blackComponents .el-pagination__jump{
   color: #E4E4E4;
 }
-.blackComponents .el-pagination.is-background .btn-next, .el-pagination.is-background .btn-prev, .el-pagination.is-background .el-pager li{
+.blackComponents .el-pagination.is-background .btn-next,.blackComponents .el-pagination.is-background .btn-prev,.blackComponents .el-pagination.is-background .el-pager li{
   color: #fff;
 }
 .blackComponents .fc-unthemed .fc-today {
