@@ -726,6 +726,45 @@ class ModulMenus(Base):
     # 菜单创建人:
     Creator = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
+# 流程存储
+class ProcessStorage(Base):
+    '''流程存储'''
+    __tablename__ = 'ProcessStorage'
+    # 模块ID
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+
+    # 流程存储名:
+    ProcessName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 流程存储code:
+    ModulMenuCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 流程存储内容:
+    ModulMenuRoute = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 存储时间
+    CreateDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), nullable=True)
+
+# 首页模块存储
+class HomeModule(Base):
+    '''首页模块存储'''
+    __tablename__ = 'HomeModule'
+    # 模块ID
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+
+    # 模块名称:
+    HomeModuleName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 模块内容:
+    HomeModuleContent = Column(Unicode(500), primary_key=False, autoincrement=False, nullable=True)
+
+    # 描述:
+    Description = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 存储时间
+    CreateDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), nullable=True)
+
+
 
 
 # 生成表单的执行语句
