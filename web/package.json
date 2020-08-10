@@ -23,11 +23,13 @@
     "less-loader": "^6.1.0",
     "moment": "^2.26.0",
     "screenfull": "^5.0.2",
+    "sortablejs": "^1.10.2",
     "style-loader": "^1.2.1",
     "three": "^0.119.0",
     "v-charts": "^1.19.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
+    "vuedraggable": "^2.24.0",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
