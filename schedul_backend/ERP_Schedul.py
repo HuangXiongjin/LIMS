@@ -27,6 +27,8 @@ from datetime import timedelta
 from common.schedul_model import Scheduling, plantCalendarScheduling, ERPproductcode_prname, SchedulingStandard, \
     product_plan, scheduledate
 from database.connect_db import CONNECT_DATABASE
+from enum import Enum, IntEnum, unique
+
 login_manager = LoginManager()
 # 创建对象的基类
 engine = create_engine(CONNECT_DATABASE)

@@ -5,11 +5,11 @@ from flask_login import LoginManager
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-
+from common.MESLogger import logger,insertSyslog
 from common.BSFramwork import AlchemyEncoder
-from common.system import Organization, Factory, DepartmentManager, Role
-from system_backend.SystemManagement.user_management import user_manage
-
+from common.system import Organization, Factory, DepartmentManager, Role, Permission, ModulMenus, User, RolePermission, \
+    RoleUser
+from flask_login import current_user, LoginManager
 from database.connect_db import CONNECT_DATABASE
 login_manager = LoginManager()
 # 创建对象的基类
@@ -142,95 +142,6 @@ def getMenuList(user_menus, id=0):
         return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
 
 
-# 加载菜单列表
-@permission_distribution.route('/permission/menulist')
-def menulist():
-    if request.method == 'GET':
-        role_data = request.values
-        if 'id' not in role_data.keys():
-            try:
-                data = getMenuList(role_menus=[],id=0)
-                jsondata = json.dumps(data, cls=AlchemyEncoder, ensure_ascii=False)
-                return jsondata.encode("utf8")
-            except Exception as e:
-                print(e)
-                logger.error(e)
-                insertSyslog("error", "加载菜单列表Error：" + str(e), current_user.Name)
-                return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
-        id = role_data['id']
-        try:
-            role_menus = db_session.query(Menu.ModuleName).join(Role_Menu, isouter=True).filter_by(Role_ID=id).all()
-            r_menus = []
-            for menu in role_menus:
-                r_menus.append(menu[0])
-            menus_data = getMenuList(r_menus, id=0)
-            jsondata = json.dumps(menus_data, cls=AlchemyEncoder, ensure_ascii=False)
-            return jsondata.encode("utf8")
-        except Exception as e:
-            print(e)
-            logger.error(e)
-            insertSyslog("error", "加载菜单列表Error：" + str(e), current_user.Name)
-            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
-
-# 权限分配下为角色添加权限
-@permission_distribution.route('/permission/MenuToRole')
-def menuToUser():
-    if request.method == 'GET':
-        data = request.values  # 返回请求中的参数和form
-        try:
-            # 获取菜单和用户并存入数据库
-            role_id = data['role_id']  # 获取角色ID
-            if role_id is None:
-                return
-            menus = db_session.query(Menu).join(Role_Menu, isouter=True).filter_by(Role_ID=id).all()
-            if menus:
-                db_session.delete(menus)
-                db_session.commit()
-            menu_id = data['menu_id'] # 获取菜单ID
-            if menu_id is None:
-                return
-            menu_id = re.findall(r'\d+\.?\d*', menu_id)
-            for r in menu_id:
-                role = db_session.query(Role).filter_by(ID=role_id).first()
-                menu = db_session.query(Menu).filter_by(ID=r).first()
-                # 将菜单ID和角色ID存入User_Role
-                menu.roles.append(role)
-                db_session.add(menu)
-                db_session.commit()
-            # 存入数据库后跳转到权限分配页面
-            return redirect(url_for("roleright"))
-        except Exception as e:
-            print(e)
-            logger.error(e)
-            insertSyslog("error", "权限分配下为角色添加权限Error：" + str(e), current_user.Name)
-            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
-
-# 菜单权限控制
-@permission_distribution.route('/ZYPlanGuid/menuRedirect', methods=['POST', 'GET'])
-def menuRedirect():
-    if request.method == 'POST':
-        data = request.values  # 返回请求中的参数和form
-        try:
-            menuName = data['menuName']
-            RoleNames = db_session.query(User.RoleName).filter(User.Name == current_user.Name).all()
-            flag = 'OK'
-            for rN in RoleNames:
-                roleID = db_session.query(Role.ID).filter(Role.RoleName == rN[0]).first()
-                menus = db_session.query(Menu.ModuleName).join(Role_Menu, isouter=True).filter_by(Role_ID=roleID).all()
-                for menu in menus:
-                    if (menu[0] == menuName):
-                        return 'OK'
-                    else:
-                        flag = '当前用户没有此操作权限！'
-            return flag
-        except Exception as e:
-            print(e)
-            logger.error(e)
-            insertSyslog("error", "计划向导生成计划报错Error：" + str(e), current_user.Name)
-            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
-
-#----------------------------------------------------------------------------------------%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 # 菜单权限查询
 @permission_distribution.route('/Permission/SelectMenus', methods=['POST', 'GET'])
 def SelectMenus():
@@ -241,7 +152,8 @@ def SelectMenus():
             Name = current_user.Name
             if Name == "系统管理员":
                 oclass = db_session.query(ModulMenus).all()
-                return json.dumps(oclass, cls=AlchemyEncoder, ensure_ascii=False)
+                count = db_session.query(ModulMenus).count()
+                return {"code": "200", "message": "请求成功", "data": {"total": count, "rows": oclass}}
             periss = db_session.query(Permission).filter(Permission.Name == current_user.Name, Permission.MenuType == MenuType).all()
             flag = 'OK'
             dic = []
@@ -256,12 +168,12 @@ def SelectMenus():
                 #     oclass = db_session.query(ModulMenus).filter(
                 #         ModulMenus.ResourceMenuName.like("%" + i.MenuName + "%")).first()
                 #     dic.append(oclass)
-            return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
+            return {"code": "200", "message": "请求成功", "data": {"total": len(dic), "rows": dic}}
         except Exception as e:
             print(e)
             logger.error(e)
             insertSyslog("error", "菜单权限查询报错Error：" + str(e), current_user.Name)
-            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+            return {"code": "500", "message": "请求错误", "data": "菜单权限查询报错Error：" + str(e)}
 
 # 增加菜单父节点查询
 @permission_distribution.route('/Permission/SelectParentMenus', methods=['POST', 'GET'])
@@ -440,8 +352,9 @@ def selectpermissionbyuser():
                 rps = db_session.query(RolePermission).filter(RolePermission.RoleID == ro.RoleID).all()
                 for rp in rps:
                     permission_list.append(rp.PermissionName)
-            return json.dumps(permission_list, cls=AlchemyEncoder, ensure_ascii=False)
+            return json.dumps({"code": "200", "message": "请求成功", "data": {"total": len(permission_list), "rows": permission_list}})
         except Exception as e:
             print(e)
             logger.error(e)
             insertSyslog("error", "根据用户查询权限Error：" + str(e), current_user.Name)
+            return {"code": "500", "message": "请求错误", "data": "根据用户查询权限报错Error：" + str(e)}

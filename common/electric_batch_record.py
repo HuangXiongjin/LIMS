@@ -299,7 +299,7 @@ class ProductLine(Base):
     PLineName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
     # 车间ID:
-    AreaID = Column(Integer, ForeignKey("Area.ID"), nullable=False, primary_key=False)
+    AreaID = Column(Integer, autoincrement=False, nullable=False, primary_key=False)
 
     # 描述:
     Desc = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
@@ -328,7 +328,7 @@ class ProcessUnit(Base):
     PUName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
     # 生产线ID:
-    PLineID = Column(Integer, ForeignKey("ProductLine.ID"), nullable=False, primary_key=False)
+    PLineID = Column(Integer, autoincrement=False, nullable=False, primary_key=False)
 
     # 描述:
     Desc = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
@@ -556,6 +556,20 @@ class PlanManager(Base):
 	# PLineID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
     #
 	# PLineName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+class TypeDetail(Base):
+    '''电子批记录type维护表'''
+    __tablename__ = "TypeDetail"
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    # 类型编码
+    TypeCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 类型名称
+    TypeName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 所属工艺段
+    PUID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 注释
+    Desc = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
 
 
 

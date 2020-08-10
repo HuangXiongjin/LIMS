@@ -1,6 +1,5 @@
 import redis
 from flask import Blueprint, render_template, request, make_response
-from flask_login import current_user
 from sqlalchemy.ext.automap import automap_base
 import json
 import arrow
@@ -8,15 +7,13 @@ import calendar
 import datetime
 from common.MESLogger import logger,insertSyslog
 from flask import render_template,request,Blueprint,redirect,url_for
-from flask_login import LoginManager
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from common import MESLogger, autocode
-
+from flask_login import current_user, LoginManager
 from common.BSFramwork import AlchemyEncoder
 from common.system import Organization, Factory, DepartmentManager, Role
-from system_backend.SystemManagement.user_management import user_manage
 
 from database.connect_db import CONNECT_DATABASE
 login_manager = LoginManager()

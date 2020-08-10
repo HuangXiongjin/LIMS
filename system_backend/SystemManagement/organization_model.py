@@ -4,11 +4,9 @@ from flask_login import current_user, LoginManager
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-
+from common.MESLogger import logger,insertSyslog
 from common.BSFramwork import AlchemyEncoder
 from common.system import Organization, Factory, DepartmentManager, Role
-from system_backend.SystemManagement.user_management import user_manage
-
 from database.connect_db import CONNECT_DATABASE
 login_manager = LoginManager()
 # 创建对象的基类

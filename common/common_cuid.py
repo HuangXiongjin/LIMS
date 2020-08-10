@@ -56,9 +56,12 @@ def insert(data):
             obj = Base.classes.get(tableName)
             ss = obj()
             for key in data:
-                if key != "ID" and key != "tableName" and key != "id" and key != "Creater":
+
+                if key != "ID" and key != "tableName" and key != "id":
                     if key == "Password":
                         setattr(ss, key, generate_password_hash(data['Password']))
+                        if tableName == "User":
+                            setattr(ss, "Creater", current_user.Name)
                     elif key == "WorkNumber":
                         ocal = db_session.query(User).filter(User.WorkNumber == data['WorkNumber']).first()
                         if ocal != None:
@@ -71,18 +74,18 @@ def insert(data):
             aud = AuditTrace()
             aud.TableName = tableName
             aud.Operation = current_user.Name + " 对表" + tableName + "添加一条数据！"
-            aud.DeitalMSG = "用户：" + current_user.Name + " 对表" + tableName + "添加一条数据！"+json.dumps(data.to_dict())
+            aud.DeitalMSG = "用户：" + current_user.Name + " 对表" + tableName + "添加一条数据！"
             aud.ReviseDate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             aud.User = current_user.Name
             db_session.add(aud)
             db_session.commit()
-            return 'OK'
+            return  {"code": "200", "message": "添加成功"}
         except Exception as e:
             print(e)
             db_session.rollback()
             logger.error(e)
             insertSyslog("error", "%s数据添加报错："%tableName + str(e), current_user.Name)
-            return json.dumps('数据添加失败！')
+            return {"code": "500", "message": "请求错误", "data": "%s数据添加报错："%tableName + str(e)}
 
 def delete(data):
     '''
@@ -97,7 +100,7 @@ def delete(data):
             jsonnumber = re.findall(r"\d+\.?\d*", jstr)
             for key in jsonnumber:
                 try:
-                    sql = "delete from "+"[DB_MICS].[dbo].["+tableName+"] where ID = "+str(key)
+                    sql = "delete from "+"[LIMS].[dbo].["+tableName+"] where ID = "+str(key)
                     db_session.execute(sql)
                     aud = AuditTrace()
                     aud.TableName = tableName
@@ -111,13 +114,13 @@ def delete(data):
                     print(ee)
                     db_session.rollback()
                     insertSyslog("error", "删除户ID为"+str(id)+"报错Error：" + str(ee), current_user.Name)
-                    return json.dumps("删除用户报错", cls=AlchemyEncoder,ensure_ascii=False)
-            return 'OK'
+                    return {"code": "500", "message": "请求错误", "data": "删除户ID为"+str(id)+"报错Error：" + str(ee)}
+            return {"code": "200", "message": "删除成功"}
     except Exception as e:
         db_session.rollback()
         logger.error(e)
         insertSyslog("error", "%s数据删除报错："%tableName + str(e), current_user.Name)
-        return json.dumps('数据删除失败！')
+        return {"code": "500", "message": "请求错误", "data": "%s数据删除报错："%tableName + str(e)}
 
 def update(data):
     '''
@@ -149,19 +152,19 @@ def update(data):
                 aud = AuditTrace()
                 aud.TableName = tableName
                 aud.Operation =current_user.Name+" 对表"+tableName+"的数据做了更新操作！"
-                aud.DeitalMSG = "用户："+current_user.Name+" 对表"+tableName+"ID为："+ID+"做了更新操作："+json.dumps(data.to_dict())
+                aud.DeitalMSG = "用户："+current_user.Name+" 对表"+tableName+"ID为："+ID+"做了更新操作"
                 aud.ReviseDate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 aud.User = current_user.Name
                 db_session.add(aud)
                 db_session.commit()
-                return 'OK'
+                return {"code": "200", "message": "修改成功"}
             else:
-                return json.dumps('当前记录不存在！', cls=AlchemyEncoder, ensure_ascii=False)
+                return {"code": "200", "message": "请求成功", "data": "当前记录不存在"}
         except Exception as e:
             db_session.rollback()
             logger.error(e)
             insertSyslog("error", "%s数据更新报错："%tableName + str(e), current_user.Name)
-            return json.dumps('数据更新失败！', cls=AlchemyEncoder, ensure_ascii=False)
+            return {"code": "500", "message": "请求错误", "data": "%s数据更新报错："%tableName + str(e)}
 
 def select(data):#table, page, rows, fieid, param
     '''
@@ -173,21 +176,31 @@ def select(data):#table, page, rows, fieid, param
     :return:
     '''
     try:
-        pages = int(data.get("offset"))
-        rowsnumber = int(data.get("limit"))
+        pages = data.get("offset")
+        rowsnumber = data.get("limit")
         param = data.get("field")
         tableName = data.get("tableName")
         paramvalue = data.get("fieldvalue")
-        inipage = pages * rowsnumber + 0  # 起始页
-        endpage = pages * rowsnumber + rowsnumber  # 截止页
+        if not pages:
+            inipage = ""
+        else:
+            inipage = int(pages) * int(rowsnumber) + 0  # 起始页
+            endpage = int(pages) * int(rowsnumber) + int(rowsnumber)  # 截止页
         newTable = Table(tableName, metadata, autoload=True, autoload_with=engine)
         if (param == "" or param == None):
             total = db_session.query(newTable).count()
-            oclass = db_session.query(newTable).order_by(desc("ID")).all()[inipage:endpage]
+            if inipage == "":
+                oclass = db_session.query(newTable).order_by(desc("ID")).all()
+            else:
+                oclass = db_session.query(newTable).order_by(desc("ID")).all()[inipage:endpage]
         else:
             total = db_session.query(newTable).filter(newTable.columns._data[param].like("%"+paramvalue+"%")).count()
-            oclass = db_session.query(newTable).filter(newTable.columns._data[param].like("%"+paramvalue+"%")).order_by(desc("ID")).all()[
-                     inipage:endpage]
+            if inipage == "":
+                oclass = db_session.query(newTable).filter(
+                    newTable.columns._data[param].like("%" + paramvalue + "%")).order_by(desc("ID")).all()
+            else:
+                oclass = db_session.query(newTable).filter(newTable.columns._data[param].like("%"+paramvalue+"%")
+                                                           ).order_by(desc("ID")).all()[inipage:endpage]
         dir = []
         for i in oclass:
             a = 0
@@ -196,13 +209,12 @@ def select(data):#table, page, rows, fieid, param
                 divi[str(j)] = str(i[a])
                 a = a + 1
             dir.append(divi)
-        jsonoclass = json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
-        jsonoclass = '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonoclass + "}"
-        return jsonoclass
+        return {"code": "200", "message": "请求成功", "data": {"total": total, "rows": dir}}
     except Exception as e:
         print(e)
         logger.error(e)
         insertSyslog("error", "查询报错Error：" + str(e), current_user.Name)
+        return {"code": "500", "message": "请求错误", "data": "查询报错Error：" + str(e)}
 
 def accurateSelect(data):
     '''
@@ -236,13 +248,12 @@ def accurateSelect(data):
                 divi[str(j)] = str(i[a])
                 a = a + 1
             dir.append(divi)
-        jsonoclass = json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
-        jsonoclass = '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonoclass + "}"
-        return jsonoclass
+        return {"code": "200", "message": "请求成功", "data": {"total": total, "rows": dir}}
     except Exception as e:
         print(e)
         logger.error(e)
         insertSyslog("error", "查询报错Error：" + str(e), current_user.Name)
+        return {"code": "500", "message": "请求错误", "data": "精确查询报错Error：" + str(e)}
 
 def FuzzyQuery(tablename, params):
     '''

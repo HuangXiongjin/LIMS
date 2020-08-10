@@ -9,6 +9,7 @@ import TeamGroup from '@/views/system/TeamGroup'
 import Personnel from '@/views/system/Personnel'
 import Permission from '@/views/system/Permission'
 import Log from '@/views/system/Log'
+import flowGraph from '@/views/system/flowGraph'
 
 Vue.use(Router)
 
@@ -27,6 +28,7 @@ export default new Router({
         {path:'/Personnel',name:'Personnel',meta:{ title:'人员管理'},component:Personnel},
         {path:'/Permission',name:'Permission',meta:{ title:'权限维护'},component:Permission},
         {path:'/Log',name:'Log',meta:{ title:'系统日志'},component:Log},
+        {path:'/flowGraph',name:'flowGraph',meta:{ title:'流程图管理'},component:flowGraph},
       ]
     },
     {

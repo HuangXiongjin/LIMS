@@ -1,15 +1,14 @@
 import json
-from flask import Blueprint, render_template
+
+from flask import Blueprint, request
+from common.MESLogger import logger,insertSyslog
 from flask_login import current_user, LoginManager
-from flask import render_template,request,Blueprint
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 from common.BSFramwork import AlchemyEncoder
-from common.system import Organization, Factory, DepartmentManager, Role, User, ShiftsGroup, UserShiftsGroup
-from common.MESLogger import logger,insertSyslog
-
+from common.system import DepartmentManager, AreaMaintain, Role, RoleUser, User, ShiftsGroup, UserShiftsGroup
 from database.connect_db import CONNECT_DATABASE
 login_manager = LoginManager()
 # 创建对象的基类
@@ -18,34 +17,138 @@ Session = sessionmaker(bind=engine)
 db_session = Session()
 Base = declarative_base(engine)
 
+user_manager = Blueprint('user_manager', __name__)
 
-user_manage = Blueprint('user_manage', __name__, template_folder='templates')
 
-# 用户管理
-@user_manage.route('/user_manage/userpage')
-def userpage():
-    # departments = db_session.query(Organization.ID, Organization.OrganizationName).all()
-    # # print(departments)
-    # # departments = json.dumps(departments, cls=AlchemyEncoder, ensure_ascii=False)
-    # data = []
-    # for tu in departments:
-    #     li = list(tu)
-    #     id = li[0]
-    #     name = li[1]
-    #     department = {'OrganizationID':id,'OrganizationName':name}
-    #     data.append(department)
-    #
-    # dataRoleName = []
-    # roleNames = db_session.query(Role.ID, Role.RoleName).all()
-    # for role in roleNames:
-    #     li = list(role)
-    #     id = li[0]
-    #     name = li[1]
-    #     roleName = {'RoleID': id, 'RoleName': name}
-    #     dataRoleName.append(roleName)
-    return render_template('./user.html')#, departments=data, roleNames=dataRoleName
+@user_manager.route('/system_tree', methods=['GET'])
+def get_user():
+    departments = db_session.query(DepartmentManager).all()
+    factory = db_session.query(AreaMaintain).first()
+    queryset = []
+    for department in departments:
+        role_query = db_session.query(Role).filter(Role.ParentNode == department.DepartCode).all()
+        role_list = []
+        for data in role_query:
+            d1 = db_session.query(DepartmentManager).filter(DepartmentManager.DepartCode == data.ParentNode).first()
+            user_list = {'name': data.RoleName, 'value': data.RoleCode, 'role_description': data.Description, 'type': 'role', 'rid': data.ID, 'did': d1.ID, 'department_name': department.DepartName, 'children': []}
+            user_role_query = db_session.query(RoleUser).filter(RoleUser.RoleName == data.RoleName).all()
+            for user_role in user_role_query:
+                user_query = db_session.query(User).filter(User.ID == user_role.UserID).first()
+                if user_query:
+                    d2 = db_session.query(DepartmentManager).filter(DepartmentManager.DepartName == user_query.OrganizationName).first()
+                    if d2:
+                        user_data = {'name': user_query.Name, 'value': user_query.WorkNumber, 'type': 'user', 'rid': data.ID,
+                                     'did': d2.ID}
+                    else:
+                        user_data = {'name': user_query.Name, 'value': user_query.WorkNumber, 'type': 'user', 'rid': data.ID, 'did': ''}
+                    # for user in user_query:
+                    #     d2 = db_session.query(DepartmentManager).filter(DepartmentManager.DepartName == user.OrganizationName).first()
+                    #     if d2:
+                    #         user_data = {'name': user.Name, 'value': user.WorkNumber, 'type': 'user', 'rid': data.ID, 'did': d2.ID}
+                    #     else:
+                    #         user_data = {'name': user.Name, 'value': user.WorkNumber, 'type': 'user', 'rid': data.ID, 'did': ''}
+                    user_list['children'].append(user_data)
+            role_list.append(user_list)
+        department_data = {'name': department.DepartName, 'value': department.DepartCode, 'type': 'department', 'did': department.ID, 'factory_name': factory.FactoryName, 'children': role_list}
+        area = db_session.query(AreaMaintain).filter(AreaMaintain.FactoryName == department.DepartLoad).first()
+        if area:
+            department_data['fid'] = area.ID
+        queryset.append(department_data)
+    data = {'name': factory.FactoryName, 'value': factory.AreaCode, 'type': 'factory', 'fid': factory.ID, 'children': queryset}
+    return json.dumps(data, cls=AlchemyEncoder, ensure_ascii=False)
 
-@user_manage.route('/user_manage/userselect')
+
+@user_manager.route('/system_tree/add_department', methods=['POST'])
+def add_department():
+    did = request.json.get('department_code')
+    dname = request.json.get('department_name')
+    fname = request.json.get('factory_name')
+    depart = DepartmentManager(DepartCode=did, DepartName=dname, DepartLoad=fname)
+    db_session.add(depart)
+    db_session.commit()
+    return json.dumps({'code': 10000, 'msg': '新增成功', 'data': {'Did': depart.ID}})
+
+
+@user_manager.route('/system_tree/delete_department', methods=['DELETE'])
+def delete_department():
+    code = request.headers.get('department_code')
+    department = db_session.query(DepartmentManager).filter(DepartmentManager.DepartCode == code).first()
+    role_query = db_session.query(Role).filter(Role.ParentNode == department.DepartCode).all()
+    for item in role_query:
+        item.ParentNode = ''
+    db_session.commit()
+    user_query = db_session.query(User).filter(User.OrganizationName == department.DepartName).all()
+    for item in user_query:
+        item.OrganizationName = ''
+    db_session.commit()
+    db_session.delete(department)
+    db_session.commit()
+    return json.dumps({'code': 10001, 'msg': '删除成功'})
+
+
+@user_manager.route('/system_tree/update_department', methods=['PATCH'])
+def update_department():
+    did = request.json.get('did')
+    code = request.json.get('department_code')
+    department_name = request.json.get('department_name')
+    department = db_session.query(DepartmentManager).filter(DepartmentManager.ID == int(did)).first()
+    role_query = db_session.query(Role).filter(Role.ParentNode == department.DepartCode).all()
+    for item in role_query:
+        item.ParentNode = code
+    department.DepartCode = code
+    department.DepartName = department_name
+    db_session.commit()
+    user_query = db_session.query(User).filter(User.OrganizationName == department.DepartName).all()
+    for user in user_query:
+        user.OrganizationName = department_name
+    db_session.commit()
+    return json.dumps({'code': 10002, 'msg': '更新成功'})
+
+
+@user_manager.route('/system_tree/add_role', methods=['POST'])
+def add_role():
+    rcode = request.json.get('role_code')
+    did = request.json.get('did')
+    rname = request.json.get('role_name')
+    rdes = request.json.get('role_description')
+    department = db_session.query(DepartmentManager).filter(DepartmentManager.ID == int(did)).first()
+    role = Role(RoleCode=rcode, RoleName=rname, Description=rdes, ParentNode=department.DepartCode)
+    db_session.add(role)
+    db_session.commit()
+    return json.dumps({'code': 10003, 'msg': '新增成功', 'data': {'rid': role.ID}})
+
+
+@user_manager.route('/system_tree/delete_role', methods=['DELETE'])
+def delete_role():
+    rid = request.headers.get('rid')
+    role = db_session.query(Role).filter(Role.ID == rid).first()
+    user_query = db_session.query(RoleUser).filter(RoleUser.RoleName == role.RoleName).all()
+    for item in user_query:
+        db_session.delete(item)
+    db_session.delete(role)
+    db_session.commit()
+    return json.dumps({'code': 10004, 'msg': '删除成功'})
+
+
+@user_manager.route('/system_tree/update_role', methods=['PATCH'])
+def update_role():
+    rid = request.json.get('rid')
+    code = request.json.get('role_code')
+    role_name = request.json.get('role_name')
+    rdes = request.json.get('role_description')
+    role = db_session.query(Role).filter(Role.ID == rid).first()
+    user_query = db_session.query(RoleUser).filter(RoleUser.RoleName == role.RoleName).all()
+    for item in user_query:
+        item.RoleName = role_name
+    role.RoleCode = code
+    role.RoleName = role_name
+    role.Description = rdes
+    db_session.commit()
+    return json.dumps({'code': 10005, 'msg': '更新成功'})
+
+
+
+@user_manager.route('/user_manage/userselect')
 def userselect(data):#table, page, rows, fieid, param
     '''
     :param tablename: 查询表
@@ -72,7 +175,7 @@ def userselect(data):#table, page, rows, fieid, param
         insertSyslog("error", "用户查询报错Error：" + str(e), current_user.Name)
 
 
-@user_manage.route('/saveuserusershiftsgroup', methods=['POST', 'GET'])
+@user_manager.route('/saveuserusershiftsgroup', methods=['POST', 'GET'])
 def saveuserusershiftsgroup():
     '''
     用户添加班组
@@ -107,7 +210,7 @@ def saveuserusershiftsgroup():
             logger.error(e)
             insertSyslog("error", "角色添加权限Error：" + str(e), current_user.Name)
 
-@user_manage.route('/selectUserShiftsGroup', methods=['POST', 'GET'])
+@user_manager.route('/selectUserShiftsGroup', methods=['POST', 'GET'])
 def selectUserShiftsGroup():
     '''
     根据用户查班组

@@ -11,7 +11,6 @@ import time
 import datetime
 from common.system import User
 from common.MESLogger import logger
-
 from common.BSFramwork import AlchemyEncoder
 from database.connect_db import CONNECT_DATABASE
 login_manager = LoginManager()
@@ -19,9 +18,6 @@ login_manager = LoginManager()
 engine = create_engine(CONNECT_DATABASE)
 Session = sessionmaker(bind=engine)
 db_session = Session()
-
-# from models.SystemManagement.system import User
-
 # flask_login的初始化
 login_manager = LoginManager()
 login_manager.db_session_protection = 'strong'

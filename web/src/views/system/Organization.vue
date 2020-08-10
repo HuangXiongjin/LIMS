@@ -51,10 +51,10 @@
       </div>
       <el-col :span="24" v-else-if="showTypeValue === '表格视图'">
         <div class="platformContainer" style="margin-bottom: 10px;">
-          <tableView class="blackComponents" :tableData="DepartmentTableData" @getTableData="getDepartmentTable" :relatedTableData="RoleTableData"></tableView>
+          <tableView class="" :tableData="DepartmentTableData" @getTableData="getDepartmentTable" :relatedTableData="RoleTableData"></tableView>
         </div>
         <div class="platformContainer" style="margin-bottom: 10px;">
-          <tableView class="blackComponents" :tableData="RoleTableData" @getTableData="getRoleTable"></tableView>
+          <tableView class="" :tableData="RoleTableData" @getTableData="getRoleTable"></tableView>
         </div>
       </el-col>
 
@@ -182,7 +182,7 @@
               lineStyle:{
                 curveness:0.5,
                 width: 1.5,
-                color: "#ffffff"
+                color: "#A3B1BF"
               },
               roam:false,
               layout:"orthogonal",
@@ -191,11 +191,11 @@
               symbolSize: 8,
               label:{
                 position: 'right',
-                color:"#ffffff"
+                color:"#333"
               },
               itemStyle:{
-                color:"#ffffff",
-                borderColor:"#082F4C"
+                color:"#C6E5FF",
+                borderColor:"#5B8FF9"
               }
             }
           },
@@ -584,7 +584,7 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          var data = JSON.parse(res.data)
+          var data = res.data
           that.DepartmentTableData.data = data.rows
           that.DepartmentTableData.total = data.total
         },res =>{
@@ -601,9 +601,11 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          var data = JSON.parse(res.data)
-          that.RoleTableData.data = data.rows
-          that.RoleTableData.total = data.total
+          if(res.data.code === "200"){
+            var data = res.data.data
+            that.RoleTableData.data = data.rows
+            that.RoleTableData.total = data.total
+          }
         },res =>{
           console.log("请求错误")
         })

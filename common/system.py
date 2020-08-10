@@ -1,3 +1,5 @@
+from tkinter.tix import MAX
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine, Column, DateTime, Integer, Unicode
@@ -670,6 +672,99 @@ class plantCalendarScheduling(Base):
 
     # 结束:
     end = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+
+class TechnologicalProcess(Base):
+    '''流程'''
+    __tablename__ = "TechnologicalProcess"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 流程名:
+    ProcessName = Column(Unicode(80), primary_key=False, autoincrement=False, nullable=True)
+
+    # 流程结构:
+    ProcessStructure = Column(Unicode(MAX), primary_key=False, autoincrement=False, nullable=True)
+
+    # 流程结构:
+    Icon = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 注释:
+    Describtion = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 录入时间:
+    InputDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+# 模块菜单表
+class ModulMenus(Base):
+    __tablename__ = 'ModulMenus'
+    # 模块ID
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+
+    # 模块菜单名字:
+    ModulMenuName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 模块菜单编码:
+    ModulMenuCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 菜单路由:
+    ModulMenuRoute = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 创建时间
+    CreateDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), nullable=True)
+
+    # 父节点
+    ParentNode = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 菜单类型:
+    MenuType = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 菜单图标:
+    MenuLogo = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 菜单创建人:
+    Creator = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+# 流程存储
+class ProcessStorage(Base):
+    '''流程存储'''
+    __tablename__ = 'ProcessStorage'
+    # 模块ID
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+
+    # 流程存储名:
+    ProcessName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 流程存储code:
+    ModulMenuCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 流程存储内容:
+    ModulMenuRoute = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 存储时间
+    CreateDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), nullable=True)
+
+# 首页模块存储
+class HomeModule(Base):
+    '''首页模块存储'''
+    __tablename__ = 'HomeModule'
+    # 模块ID
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+
+    # 模块名称:
+    HomeModuleName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 模块内容:
+    HomeModuleContent = Column(Unicode(500), primary_key=False, autoincrement=False, nullable=True)
+
+    # 描述:
+    Description = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 存储时间
+    CreateDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), nullable=True)
+
+
 
 
 # 生成表单的执行语句

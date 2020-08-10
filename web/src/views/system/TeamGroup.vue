@@ -5,7 +5,7 @@
         <span style="margin-left: 10px;" class="text-size-normol">班组管理</span>
       </div>
       <div class="platformContainer">
-        <tableView class="blackComponents" :tableData="TableData" @getTableData="getRoleTable"></tableView>
+        <tableView class="" :tableData="TableData" @getTableData="getRoleTable"></tableView>
       </div>
     </el-col>
   </el-row>
@@ -60,9 +60,11 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          var data = JSON.parse(res.data)
-          that.TableData.data = data.rows
-          that.TableData.total = data.total
+          if(res.data.code === "200"){
+            var data = res.data.data
+            that.TableData.data = data.rows
+            that.TableData.total = data.total
+          }
         },res =>{
           console.log("请求错误")
         })
