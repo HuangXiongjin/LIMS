@@ -101,6 +101,12 @@ export default {
           {title:"流程管理",icon:"el-icon-share",url:"/flowGraph"},
           {title:"系统日志",icon:"el-icon-notebook-1",url:"/Log"}
           ]},
+        {label: '能耗管理',mainMenu:[
+          {title:"希尔安厂区",icon:"el-icon-s-grid",url:"/Factory",name:'希尔安厂区',children:[{name:'综合车间',title:'综合车间',url:'/Factory?area=综合车间'},{name:'新建综合制剂楼',title:'新建综合制剂楼',url:'/Factory?area=新建综合制剂楼'}]},
+          {title:"能效分析",icon:"el-icon-files",url:"/EnergyAnalysis"},
+          {title:"综合报表",icon:"el-icon-tickets",url:"/ComprehensiveReport"},
+          {title:"数据录入",icon:"el-icon-s-marketing",url:"DataRecord"},
+          ]},
       ],
       mainMenuActive:0,
       mainMenu:[],
@@ -136,6 +142,9 @@ export default {
 
   },
   methods:{
+    clickSubMenu(a){
+     
+    },
     getMenuHeight(){
       if(this.menuIsCollapse){
         this.selfHeight.height = window.innerHeight - 490+'px';
