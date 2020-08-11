@@ -3,7 +3,7 @@
     <!-- 头部 -->
     <el-header class="body-head">
       <div class="head-menu floatLeft">
-        希尔安智能管理系统
+        <router-link to='/home'><span class="color-black">希尔安智能管理系统</span></router-link>
       </div>
       <div class="head-menu floatLeft" style="margin-left: 50px;">
         <ul>
@@ -143,7 +143,7 @@ export default {
   },
   methods:{
     clickSubMenu(a){
-     
+
     },
     getMenuHeight(){
       if(this.menuIsCollapse){

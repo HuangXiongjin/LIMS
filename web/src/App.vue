@@ -10,10 +10,12 @@
   }
 </script>
 <style>
+  @import "../static/css/font.css";
   body {
-    font-family:Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif;
+    font-family:PingFang;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    letter-spacing: 1px;
   }
   li, ul, p, div, body, html, table {
     margin: 0;
@@ -26,6 +28,9 @@
   }
   li {
     list-style: none;
+  }
+  a{
+    text-decoration-line: none
   }
   #app {
     height: 100%;
