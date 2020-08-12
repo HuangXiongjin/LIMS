@@ -7,7 +7,7 @@
       </div>
       <div class="head-menu floatLeft" style="margin-left: 50px;">
         <ul>
-          <li class="mainMenuList" v-for="(item,index) in systemOptions" :key="index" @click="selectSystem(item.label)" v-bind:class="{active:item.label===systemActive}">{{ item.label }}</li>
+          <li class="mainMenuList" v-for="(item,index) in systemOptions" :key="index" @click="selectSystem(index,item.label)" v-bind:class="{active:index===systemActive}">{{ item.label }}</li>
         </ul>
       </div>
       <div class="head-menu floatRight">
@@ -19,7 +19,7 @@
           </li>
           <li>
             <el-dropdown class="head-menu-item" trigger="click" @command="handleCommand">
-              <span class="el-dropdown-link">
+              <span class="el-dropdown-link text-size-16">
                 <i class="dotState bg-lightgreen"></i>{{ this.$store.state.UserName }}<i class="el-icon-arrow-down el-icon--right text-size-12"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
@@ -87,10 +87,24 @@ export default {
       },
       menuIsCollapse: false, //左侧菜单栏是否缩进了
       sideIcon:'el-icon-arrow-left', //左侧菜单栏缩进点击切换图标
-      systemActive:"设备管理",
+      systemActive:0,
       systemOptions:[
+        {label: '生产管理',mainMenu:[
+          {title:"生产监控",icon:"el-icon-view",url:""},
+          // {title:"ERP数据排产",icon:"el-icon-date",url:""},
+          // {title:"生产调度",icon:"el-icon-set-up",url:""},
+          // {title:"数据管理",icon:"el-icon-tickets",url:""},
+          // {title:"工艺质量",icon:"el-icon-s-claim",url:""},
+          // {title:"过程质量分析",icon:"el-icon-s-data",url:""},
+          ]},
         {label: '设备管理',mainMenu:[
           {title:"设备管理",icon:"el-icon-box",url:""},
+          ]},
+        {label: '能耗管理',mainMenu:[
+          {title:"希尔安厂区",icon:"el-icon-s-grid",url:"/Factory",name:'希尔安厂区',children:[{name:'综合车间',title:'综合车间',url:'/Factory?area=综合车间'},{name:'新建综合制剂楼',title:'新建综合制剂楼',url:'/Factory?area=新建综合制剂楼'}]},
+          {title:"能效分析",icon:"el-icon-files",url:"/EnergyAnalysis"},
+          {title:"综合报表",icon:"el-icon-tickets",url:"/ComprehensiveReport"},
+          {title:"数据录入",icon:"el-icon-s-marketing",url:"DataRecord"},
           ]},
         {label: '系统管理',mainMenu:[
           {title:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
@@ -100,12 +114,6 @@ export default {
           {title:"权限维护",icon:"el-icon-lock",url:"/Permission"},
           {title:"流程管理",icon:"el-icon-share",url:"/flowGraph"},
           {title:"系统日志",icon:"el-icon-notebook-1",url:"/Log"}
-          ]},
-        {label: '能耗管理',mainMenu:[
-          {title:"希尔安厂区",icon:"el-icon-s-grid",url:"/Factory",name:'希尔安厂区',children:[{name:'综合车间',title:'综合车间',url:'/Factory?area=综合车间'},{name:'新建综合制剂楼',title:'新建综合制剂楼',url:'/Factory?area=新建综合制剂楼'}]},
-          {title:"能效分析",icon:"el-icon-files",url:"/EnergyAnalysis"},
-          {title:"综合报表",icon:"el-icon-tickets",url:"/ComprehensiveReport"},
-          {title:"数据录入",icon:"el-icon-s-marketing",url:"DataRecord"},
           ]},
       ],
       mainMenuActive:0,
@@ -157,10 +165,10 @@ export default {
         query:moment()
       })
     },
-    selectSystem(a){ //切换系统
-      this.systemActive = a
-      this.systemOptions.forEach(item =>{
-        if(item.label === a){
+    selectSystem(index,a){ //切换系统
+      this.systemActive = index
+      this.systemOptions.forEach((item,i) =>{
+        if(index === i){
           this.mainMenu = item.mainMenu
         }
       })
