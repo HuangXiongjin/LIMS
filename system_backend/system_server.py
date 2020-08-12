@@ -9,6 +9,8 @@ from system_backend.SystemManagement import auth_lib, user_management, Role_mana
     PermissionAssignment, account_auth
 from system_backend.SystemManagement.account_auth import login_auth
 from system_backend.SystemManagement.organization_model import organiza
+from system_backend.SystemManagement.system_manage import selectRedisBykey, addUpdateRedisBykey, \
+    deleteRedisBykey
 from system_backend.SystemManagement.user_management import user_manager
 
 app = Flask(__name__)
@@ -77,7 +79,20 @@ class CUIDList(Resource):
     def delete(self):
         return delete(request.values)
 
+class RedisCUIDList(Resource):
+    def get(self):
+        return selectRedisBykey(request.values)
 
+    def post(self):
+        return addUpdateRedisBykey(request.values)
+
+    def put(self):
+        return addUpdateRedisBykey(request.values)
+
+    def delete(self):
+        return deleteRedisBykey(request.values)
+
+api.add_resource(RedisCUIDList, '/RedisCUID')
 api.add_resource(CUIDList, '/CUID')
 if __name__ == '__main__':
     from livereload import Server

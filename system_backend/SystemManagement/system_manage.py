@@ -14,6 +14,7 @@ from common import MESLogger, autocode
 from flask_login import current_user, LoginManager
 from common.BSFramwork import AlchemyEncoder
 from common.system import Organization, Factory, DepartmentManager, Role
+from database import connect_db
 
 from database.connect_db import CONNECT_DATABASE
 login_manager = LoginManager()
@@ -177,7 +178,7 @@ def getTreeChildrenMap(id, ParentCode, tableName, Name, Code):
     except Exception as e:
         print(e)
         return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
-@system_set.route('/selectTree')#组织结构
+@system_set.route('/selectTree')
 def selectTree():
     '''查询树形结构'''
     data = request.values
@@ -193,5 +194,45 @@ def selectTree():
             print(e)
             insertSyslog("error", "查询树形结构报错Error：" + str(e), current_user.Name)
             return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+
+
+pool = redis.ConnectionPool(host=connect_db.REDIS_HOST,decode_responses=True)
+redis_conn = redis.Redis(connection_pool=pool)
+def selectRedisBykey(data):
+    '''通过key查询增加修改Redis单个的值'''
+    try:
+        key = data.get("key")
+        value = redis_conn.hget(connect_db.REDIS_TABLENAME, key)
+        return json.dumps(value, cls=AlchemyEncoder, ensure_ascii=False)
+    except Exception as e:
+        print(e)
+        insertSyslog("error", "通过key查询Redis单个的值报错Error：" + str(e), current_user.Name)
+        return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+def addUpdateRedisBykey(data):
+    '''通过key查询增加修改Redis单个的值'''
+    try:
+        key = data.get("key")
+        value = data.get("value")
+        redis_conn.hset(connect_db.REDIS_TABLENAME, key, value)
+        return json.dumps("OK", cls=AlchemyEncoder, ensure_ascii=False)
+    except Exception as e:
+        print(e)
+        insertSyslog("error", "增加redis单个值报错Error：" + str(e), current_user.Name)
+        return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+def deleteRedisBykey(data):
+    '''通过key查询增加修改Redis单个的值'''
+    try:
+        key = data.get("key")
+        redis_conn.delete(key)
+        return json.dumps("OK", cls=AlchemyEncoder, ensure_ascii=False)
+    except Exception as e:
+        print(e)
+        insertSyslog("error", "删除redis单个值报错Error：" + str(e), current_user.Name)
+        return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+
 
 
