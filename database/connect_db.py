@@ -12,4 +12,8 @@ HOST = config['DATABASE']['HOST']
 PORT = config['DATABASE']['PORT']
 DB_NAME = config['DATABASE']['DB_NAME']
 
+REDIS_HOST = config['REDIS']['HOST']
+REDIS_TABLENAME = config['REDIS']['REDIS_TABLENAME']
+REDIS_PASSWORD = config['REDIS']['REDIS_PASSWORD']
+
 CONNECT_DATABASE = f"mssql+pymssql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DB_NAME}?charset=utf8"
