@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@antv/g2": "^4.0.14",
     "@antv/g6": "^3.6.0",
     "axios": "^0.19.2",
     "css-loader": "^0.28.11",

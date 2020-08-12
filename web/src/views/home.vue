@@ -10,31 +10,37 @@
     <el-col :span="24" v-if="showDragBoard">
       <el-form :inline="true">
         <el-form-item>
-          <el-button @click="showDragBoard = false">调整完成</el-button>
+          <el-button @click="saveDragBoard">调整完成</el-button>
         </el-form-item>
       </el-form>
       <el-row :gutter="15">
         <el-col :span="18" style="min-height: 400px">
-          <draggable :list="list1" :options="{group:'article', disabled: disabled,sort: true}"
-             @start="start22"
-             @end="end22" class="dragArea11" style="height: 400px;">
-            <el-col :span="item.col" v-for="(item, index) in list1" :key="index">
-              <div class="container-col">
-                <p>{{item.name}}</p>
-                <i class="el-icon-delete" @click="handleDel(index, item.id)"></i>
-              </div>
-            </el-col>
-          </draggable>
+          <div class="platformContainer">
+            <p class="marginBottom">当前界面</p>
+            <draggable :list="list1" v-bind="{group:'article', disabled: disabled,sort: true}"
+               @start="start22"
+               @end="end22" class="dragArea11" style="height: 400px;">
+              <el-col :span="item.col" v-for="(item, index) in list1" :key="index" class="list-complete-item">
+                <div class="container-col">
+                  <span class="text-size-14">{{ item.name }}</span>
+                  <i class="el-icon-delete" @click="handleDel(index, item.id)"></i>
+                </div>
+              </el-col>
+            </draggable>
+          </div>
         </el-col>
         <el-col :span="6">
-          <draggable :list="list2" :options="{group:{name: falgs,pull:'clone'},filter:'.undraggable', sort: true}"
-             @end="end" class="dragArea">
-            <el-col :span="item.col" v-for="item in list2" :key="item.id" :class="{undraggable : item.flag}" class="list-complete-item">
-              <div class="container-col">
-                <p>{{item.name}}</p>
-              </div>
-            </el-col>
-          </draggable>
+          <div class="platformContainer">
+            <p class="marginBottom">可使用的模块</p>
+            <draggable :list="list2" v-bind="{group:{name: falgs,pull:'clone'},filter:'.undraggable', sort: true}"
+               @end="end" class="dragArea">
+              <el-col :span="item.col" v-for="(item,index) in list2" :key="index" :class="{undraggable : item.flag}" class="list-complete-item">
+                <div class="container-col">
+                  <span class="text-size-14">{{ item.name }}</span>
+                </div>
+              </el-col>
+            </draggable>
+          </div>
         </el-col>
       </el-row>
     </el-col>
@@ -51,7 +57,9 @@
         showDragBoard:false,
         falgs: 'article',
         disabled: false,
-        list1: [],
+        list1: [
+          {id: 1, name:"预览",col:6,flag: true},
+        ],
         list2: [
           {id: 1, name:"预览",col:6},
           {id: 2, name:"预警",col:6},
@@ -89,6 +97,10 @@
           return value.id === id
         })
         this.$set(q, 'flag', false)
+      },
+      saveDragBoard(){
+        this.showDragBoard = false
+        console.log(this.list1)
       }
     }
   }
@@ -97,7 +109,8 @@
   .container-col{
     clear: both;
     overflow: hidden;
-    border: 1px solid #a1a1a1;
+    border:1px solid rgba(185,185,185,1);
+    background:rgba(211,237,239,1);
     border-radius: 4px;
     padding: 15px;
     margin-bottom: 15px;
