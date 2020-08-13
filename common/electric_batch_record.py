@@ -18,6 +18,7 @@ Base = declarative_base(engine)
 
 # 电子批记录
 class ElectronicBatch(Base):
+    '''电子批记录'''
     __tablename__ = 'ElectronicBatch'
     # id:
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
@@ -146,6 +147,7 @@ class PUIDMaintain(Base):
 
 # ZYPlan:
 class ZYPlan(Base):
+    '''工艺段生产计划'''
     __tablename__ = "ZYPlan"
 
     # ID:
@@ -216,6 +218,7 @@ class ZYPlan(Base):
 
 # ZYTask:
 class ZYTask(Base):
+    '''每个工艺段下的生产任务'''
     __tablename__ = "ZYTask"
 
     # ID:
@@ -287,6 +290,7 @@ class ZYTask(Base):
 
 # ProductLine:
 class ProductLine(Base):
+    '''工艺路线'''
     __tablename__ = "ProductLine"
 
     # ID:
@@ -316,6 +320,7 @@ class ProductLine(Base):
 
 # ProcessUnit:
 class ProcessUnit(Base):
+    '''工艺段定义'''
     __tablename__ = "ProcessUnit"
 
     # ID:
@@ -357,6 +362,7 @@ class ProcessUnit(Base):
 
 # ProductRule:
 class ProductRule(Base):
+    '''产品定义'''
     __tablename__ = "ProductRule"
 
     # ID:
@@ -386,6 +392,7 @@ class ProductRule(Base):
 
 # ProductUnit:
 class ProductUnit(Base):
+    '''产品段定义'''
     __tablename__ = "ProductUnit"
 
     # ID:
@@ -453,6 +460,7 @@ class ProductControlTask(Base):
 
 # ProductParameter:
 class ProductParameter(Base):
+    '''工艺参数配置'''
     __tablename__ = "ProductParameter"
 
     # ID:
@@ -514,48 +522,52 @@ class ProductUnitRoute(Base):
     # 顺序号:
     Seq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
+#生产计划
 class PlanManager(Base):
-	__tablename__ = "PlanManager"
+    '''生产计划'''
+    __tablename__ = "PlanManager"
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
 
-	# ID:
-	ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    # 调度编号:
+    SchedulePlanCode = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
 
-	# 调度编号:
-	SchedulePlanCode = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+    # 批次号:
+    BatchID = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-	# 批次号:
-	BatchID = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    # 计划重量:
+    PlanQuantity = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
-	# 计划重量:
-	PlanQuantity = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    # 单位:
+    Unit = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-	# 单位:
-	Unit = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    # 品名ID:
+    BrandID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
-	# 品名ID:
-	BrandID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    # 品名:
+    BrandName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-	# 品名:
-	BrandName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    # 计划状态:
+    PlanStatus = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-	# 计划状态:
-	PlanStatus = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 调度计划开始时间:
+    PlanBeginTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
 
-	# 调度计划开始时间:
-	PlanBeginTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    # 计划完成时间:
+    PlanEndTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
 
-	# 计划完成时间:
-	PlanEndTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    # 调度类型:
+    Type = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-	# 调度类型:
-	Type = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-	# # 序号:
-	# Seq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+# # 序号:
+# Seq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
-	# PLineID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
-    #
-	# PLineName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+# PLineID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+#
+# PLineName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+
 
 class TypeDetail(Base):
     '''电子批记录type维护表'''
@@ -570,6 +582,47 @@ class TypeDetail(Base):
     PUID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 注释
     Desc = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
+
+
+class MaterialBOM(Base):
+    '''物料BOM'''
+    __tablename__ = "MaterialBOM"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+
+    # 物料ID:
+    MATID = Column(Integer, nullable=False, primary_key=False)
+
+    # 物料名称:
+    MaterialName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 投料批总重量:
+    BatchTotalWeight = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 投料单一物料重量:
+    BatchSingleMATWeight = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 单位:
+    Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 百分比:
+    BatchPercentage = Column(Float(53), primary_key=False, autoincrement=False, nullable=True)
+
+    # 产品定义ID:
+    ProductRuleID = Column(Integer, nullable=False, primary_key=False)
+
+    # 工艺段ID:
+    PUID = Column(Integer, nullable=False, primary_key=False)
+
+    # 物料类型ID:
+    MATTypeID = Column(Integer, nullable=False, primary_key=False)
+
+    # 顺序号:
+    Seq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 等级:
+    Grade = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
 
 
