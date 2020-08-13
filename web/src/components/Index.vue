@@ -91,6 +91,12 @@ export default {
       systemOptions:[
         {label: '生产管理',mainMenu:[
           {title:"生产监控",icon:"el-icon-view",url:""},
+          {title:"产品定义",icon:"el-icon-office-building",url:"/BrandMaintain"},
+          {title:"产品段定义",icon:"el-icon-office-building",url:"/BrandMaintain"},
+          {title:"产品段任务配置",icon:"el-icon-office-building",url:"/BrandMaintain"},
+          {title:"工艺参数配置",icon:"el-icon-office-building",url:"/BrandMaintain"},
+          {title:"物料BOM",icon:"el-icon-office-building",url:"/BrandMaintain"},
+          {title:"工艺路线",icon:"el-icon-office-building",url:"/BrandMaintain"},
           // {title:"ERP数据排产",icon:"el-icon-date",url:""},
           // {title:"生产调度",icon:"el-icon-set-up",url:""},
           // {title:"数据管理",icon:"el-icon-tickets",url:""},
@@ -99,6 +105,7 @@ export default {
           ]},
         {label: '设备管理',mainMenu:[
           {title:"设备管理",icon:"el-icon-box",url:""},
+         
           ]},
         {label: '能耗管理',mainMenu:[
           {title:"希尔安厂区",icon:"el-icon-s-grid",url:"/Factory",name:'希尔安厂区',children:[{name:'综合车间',title:'综合车间',url:'/Factory?area=综合车间'},{name:'新建综合制剂楼',title:'新建综合制剂楼',url:'/Factory?area=新建综合制剂楼'}]},
@@ -114,7 +121,7 @@ export default {
           {title:"权限维护",icon:"el-icon-lock",url:"/Permission"},
           {title:"流程管理",icon:"el-icon-share",url:"/flowGraph"},
           {title:"系统日志",icon:"el-icon-notebook-1",url:"/Log"}
-          ]},
+          ]}
       ],
       mainMenuActive:0,
       mainMenu:[],

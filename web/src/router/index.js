@@ -14,6 +14,7 @@ import Factory from '@/views/energy/Factory'
 import EnergyAnalysis from '@/views/energy/EnergyAnalysis'
 import ComprehensiveReport from '@/views/energy/ComprehensiveReport'
 import DataRecord from '@/views/energy/DataRecord'
+import BrandMaintain from '@/views/ProductionModel/BrandMaintain'
 
 Vue.use(Router)
 
@@ -37,6 +38,7 @@ export default new Router({
         {path:'/EnergyAnalysis',name:'EnergyAnalysis',meta:{ title:'能效分析'},component:EnergyAnalysis},
         {path:'/ComprehensiveReport',name:'ComprehensiveReport',meta:{ title:'综合报表'},component:ComprehensiveReport},
         {path:'/DataRecord',name:'DataRecord',meta:{ title:'数据录入'},component:DataRecord},
+        {path:'/BrandMaintain',name:'BrandMaintain',meta:{ title:'数据录入'},component:BrandMaintain},
       ]
     },
     {
