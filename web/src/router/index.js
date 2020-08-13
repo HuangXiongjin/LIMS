@@ -14,7 +14,12 @@ import Factory from '@/views/energy/Factory'
 import EnergyAnalysis from '@/views/energy/EnergyAnalysis'
 import ComprehensiveReport from '@/views/energy/ComprehensiveReport'
 import DataRecord from '@/views/energy/DataRecord'
-import BrandMaintain from '@/views/ProductionModel/BrandMaintain'
+import ProductDefinition from '@/views/ProductionModel/ProductDefinition'
+import ProductSegmentDefinition from '@/views/ProductionModel/ProductSegmentDefinition'
+import ProductSegmentConfiguration from '@/views/ProductionModel/ProductSegmentConfiguration'
+import ProcessParameterConfiguration from '@/views/ProductionModel/ProcessParameterConfiguration'
+import MaterialBOM from '@/views/ProductionModel/MaterialBOM'
+import ProcessRoute from '@/views/ProductionModel/ProcessRoute'
 
 Vue.use(Router)
 
@@ -38,7 +43,12 @@ export default new Router({
         {path:'/EnergyAnalysis',name:'EnergyAnalysis',meta:{ title:'能效分析'},component:EnergyAnalysis},
         {path:'/ComprehensiveReport',name:'ComprehensiveReport',meta:{ title:'综合报表'},component:ComprehensiveReport},
         {path:'/DataRecord',name:'DataRecord',meta:{ title:'数据录入'},component:DataRecord},
-        {path:'/BrandMaintain',name:'BrandMaintain',meta:{ title:'数据录入'},component:BrandMaintain},
+        {path:'/ProductDefinition',name:'ProductDefinition',meta:{ title:'产品定义'},component:ProductDefinition},
+        {path:'/ProductSegmentDefinition',name:'ProductSegmentDefinition',meta:{ title:'产品段定义'},component:ProductSegmentDefinition},
+        {path:'/ProductSegmentConfiguration',name:'ProductSegmentConfiguration',meta:{ title:'产品段任务配置'},component:ProductSegmentConfiguration},
+        {path:'/ProcessParameterConfiguration',name:'ProcessParameterConfiguration',meta:{ title:'工艺参数配置'},component:ProcessParameterConfiguration},
+        {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'工艺参数配置'},component:MaterialBOM},
+        {path:'/ProcessRoute',name:'ProcessRoute',meta:{ title:'工艺路线'},component:ProcessRoute},
       ]
     },
     {

@@ -91,12 +91,12 @@ export default {
       systemOptions:[
         {label: '生产管理',mainMenu:[
           {title:"生产监控",icon:"el-icon-view",url:""},
-          {title:"产品定义",icon:"el-icon-office-building",url:"/BrandMaintain"},
-          {title:"产品段定义",icon:"el-icon-office-building",url:"/BrandMaintain"},
-          {title:"产品段任务配置",icon:"el-icon-office-building",url:"/BrandMaintain"},
-          {title:"工艺参数配置",icon:"el-icon-office-building",url:"/BrandMaintain"},
-          {title:"物料BOM",icon:"el-icon-office-building",url:"/BrandMaintain"},
-          {title:"工艺路线",icon:"el-icon-office-building",url:"/BrandMaintain"},
+          {title:"产品定义",icon:"el-icon-office-building",url:"/ProductDefinition"},
+          {title:"产品段定义",icon:"el-icon-office-building",url:"/ProductSegmentDefinition"},
+          {title:"产品段任务配置",icon:"el-icon-office-building",url:"/ProductSegmentConfiguration"},
+          {title:"工艺参数配置",icon:"el-icon-office-building",url:"/ProcessParameterConfiguration"},
+          {title:"物料BOM",icon:"el-icon-office-building",url:"/MaterialBOM"},
+          {title:"工艺路线",icon:"el-icon-office-building",url:"/ProcessRoute"},
           // {title:"ERP数据排产",icon:"el-icon-date",url:""},
           // {title:"生产调度",icon:"el-icon-set-up",url:""},
           // {title:"数据管理",icon:"el-icon-tickets",url:""},
