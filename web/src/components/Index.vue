@@ -52,8 +52,8 @@
               <template v-for="item in mainMenu">
                 <el-menu-item v-if="!item.children" :index="item.url"><i :class="item.icon"></i><span slot="title">{{ item.title }}</span></el-menu-item>
                 <el-submenu v-if="item.children" :index="item.title">
-                  <template slot="title"><i :class="item.icon"></i><span>{{ item.name }}</span></template>
-                  <el-menu-item v-for="(child,childIndex) in item.children" :key="childIndex" :index="child.url" @click="clickSubMenu(child.title)"><span style="margin-left:10px;">{{child.name}}</span></el-menu-item>
+                  <template slot="title"><i :class="item.icon"></i><span>{{ item.title }}</span></template>
+                  <el-menu-item v-for="(child,childIndex) in item.children" :key="childIndex" :index="child.url" @click="clickSubMenu(child.title)"><span style="margin-left:10px;">{{child.title}}</span></el-menu-item>
                 </el-submenu>
               </template>
             </el-menu>
@@ -89,39 +89,70 @@ export default {
       sideIcon:'el-icon-arrow-left', //左侧菜单栏缩进点击切换图标
       systemActive:0,
       systemOptions:[
-        {label: '生产管理',mainMenu:[
-          {title:"生产监控",icon:"el-icon-view",url:""},
-          {title:"产品定义",icon:"el-icon-office-building",url:"/ProductDefinition"},
-          {title:"产品段定义",icon:"el-icon-office-building",url:"/ProductSegmentDefinition"},
-          {title:"产品段任务配置",icon:"el-icon-office-building",url:"/ProductSegmentConfiguration"},
-          {title:"工艺参数配置",icon:"el-icon-office-building",url:"/ProcessParameterConfiguration"},
-          {title:"物料BOM",icon:"el-icon-office-building",url:"/MaterialBOM"},
-          {title:"工艺路线",icon:"el-icon-office-building",url:"/ProcessRoute"},
+        {label: '排产系统',mainMenu:[
+            {title:'排期预览',icon:"el-icon-tickets",url:"/SchedulePreview"},
+            {title:'工厂排产',icon:"el-icon-date",children:[
+             {title:"物料信息录入",icon:"el-icon-edit-outline",url:"/InformationEntry"},
+             {title:"配置计划",icon:"el-icon-view",url:"/ConfigPlan"},
+             {title:"日程管理",icon:"el-icon-date",url:"/ScheduleManagement"},
+             {title:"日历排产",icon:"el-icon-date",url:"/CalendarScheduling"},
+            ]},
+            {title:'计划维护',icon:"el-icon-edit",url:"/PlannedMaintenance"},
+            {title:'计划报表',icon:"el-icon-notebook-2",url:"/PlanningReport"},
+            ]},        
+        {label: '调度系统',mainMenu:[
+            {title:"计划明细",icon:"el-icon-tickets",url:"",children:[
+               {title:"生产计划",icon:"el-icon-office-building",url:"/ProductPlan"},
+               {title:"工艺段生产计划",icon:"el-icon-office-building",url:"/ProductProcessPlan"},
+               {title:"工艺段计划任务",icon:"el-icon-office-building",url:"/ProcessPlanTask"}
+            ]},
+            {title:"计划管理",icon:"el-icon-box",children:[
+                {title:"生成计划",icon:"el-icon-box",url:"/GeneratePlan"},
+                {title:"审核计划",icon:"el-icon-box",url:"/AuditPlan"},
+                {title:"执行计划",icon:"el-icon-box",url:"/ImplementationPlan"},
+                {title:"发送WMS",icon:"el-icon-box",url:"/SendWMS"},
+                ]},
+            {title:"备料",icon:"el-icon-box",url:"/MaterialPreparation"},
+             
+          ]},
+        {label: '生产建模',mainMenu:[
+            {title:"生产建模",name:'生产建模',icon:"el-icon-s-grid",url:""},
+            {title:"产品定义",icon:"el-icon-office-building",url:"/ProductDefinition"},
+            {title:"产品段定义",icon:"el-icon-office-building",url:"/ProductSegmentDefinition"},
+            {title:"产品段任务配置",icon:"el-icon-office-building",url:"/ProductSegmentConfiguration"},
+            {title:"工艺参数配置",icon:"el-icon-office-building",url:"/ProcessParameterConfiguration"},
+            {title:"物料BOM",icon:"el-icon-office-building",url:"/MaterialBOM"},
+            {title:"工艺路线",icon:"el-icon-office-building",url:"/ProcessRoute"},
           // {title:"ERP数据排产",icon:"el-icon-date",url:""},
           // {title:"生产调度",icon:"el-icon-set-up",url:""},
           // {title:"数据管理",icon:"el-icon-tickets",url:""},
           // {title:"工艺质量",icon:"el-icon-s-claim",url:""},
           // {title:"过程质量分析",icon:"el-icon-s-data",url:""},
           ]},
-        {label: '设备管理',mainMenu:[
-          {title:"设备管理",icon:"el-icon-box",url:""},
+        {label: '设备系统',mainMenu:[
+            {title:"设备系统",icon:"el-icon-box",url:""},
          
           ]},
-        {label: '能耗管理',mainMenu:[
-          {title:"希尔安厂区",icon:"el-icon-s-grid",url:"/Factory",name:'希尔安厂区',children:[{name:'综合车间',title:'综合车间',url:'/Factory?area=综合车间'},{name:'新建综合制剂楼',title:'新建综合制剂楼',url:'/Factory?area=新建综合制剂楼'}]},
-          {title:"能效分析",icon:"el-icon-files",url:"/EnergyAnalysis"},
-          {title:"综合报表",icon:"el-icon-tickets",url:"/ComprehensiveReport"},
-          {title:"数据录入",icon:"el-icon-s-marketing",url:"DataRecord"},
+        {label: '物料系统',mainMenu:[
+            {title:"物料系统",icon:"el-icon-box",url:""},
           ]},
         {label: '系统管理',mainMenu:[
-          {title:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
-          {title:"角色管理",icon:"el-icon-s-check",url:"/Role"},
-          {title:"班组管理",icon:"el-icon-receiving",url:"/TeamGroup"},
-          {title:"人员管理",icon:"el-icon-user",url:"/Personnel"},
-          {title:"权限维护",icon:"el-icon-lock",url:"/Permission"},
-          {title:"流程管理",icon:"el-icon-share",url:"/flowGraph"},
-          {title:"系统日志",icon:"el-icon-notebook-1",url:"/Log"}
-          ]}
+            {title:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
+            {title:"角色管理",icon:"el-icon-s-check",url:"/Role"},
+            {title:"班组管理",icon:"el-icon-receiving",url:"/TeamGroup"},
+            {title:"人员管理",icon:"el-icon-user",url:"/Personnel"},
+            {title:"权限维护",icon:"el-icon-lock",url:"/Permission"},
+            {title:"流程管理",icon:"el-icon-share",url:"/flowGraph"},
+            {title:"系统日志",icon:"el-icon-notebook-1",url:"/Log"}
+          ]},
+         {label: '生产数据',mainMenu:[
+            {title:"电子批记录",icon:"el-icon-box",url:"/ElectronicBatchRecord"},
+            {title:"批物料平衡统计",icon:"el-icon-box",url:"/MaterialBalanceStatistics"},
+            {title:"物料追溯",icon:"el-icon-box",url:"/MaterialTraceability"}
+          ]},
+          {label: '工厂监控',mainMenu:[
+            {title:"工厂监控",icon:"el-icon-box",url:""},
+          ]},
       ],
       mainMenuActive:0,
       mainMenu:[],

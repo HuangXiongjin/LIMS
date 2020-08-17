@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">产品段定义</span>
+        <span style="margin-left: 10px;" class="text-size-normol">生产计划</span>
       </div>
       <div class="platformContainer">
         <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
@@ -14,23 +14,23 @@
 <script>
   import tableView from '@/components/CommonTable'
   export default {
-    name: "ProductUnit",
     components:{tableView},
     data(){
       return {
         PermissionTableData:{
+          tableName:"PlanManager",
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"PDUnitCode",label:"产品段编码",type:"input",value:""},
-            {prop:"PDUnitName",label:"产品段名称",type:"input",value:""},
-            {prop:"Desc",label:"描述",type:"input",value:""},
-            {prop:"Duration",label:"持续时间",type:"input",value:""},
-            {prop:"LowLimit",label:"低限",type:"input",value:""},
-            {prop:"HighLimit",label:"高限",type:"input",value:""},
-            {prop:"RelateTaskCount",label:"相关任务数",type:"input",value:""},
-            {prop:"ProductRuleID",label:"产品定义ID",type:"input",value:""},
-            {prop:"PUID",label:"工艺段ID",type:"input",value:""},
-            {prop:"Seq",label:"顺序号",type:"input",value:""},
+            {prop:"SchedulePlanCode",label:"调度编号",type:"input",value:""},
+            {prop:"BatchID",label:" 批次号",type:"input",value:""},
+            {prop:"PlanQuantity",label:"计划重量",type:"input",value:""},
+            {prop:"Unit",label:"单位",type:"input",value:""},
+            {prop:"BrandID",label:"品名ID",type:"input",value:""},
+            {prop:"BrandName",label:"品名",type:"input",value:""},
+            {prop:"PlanStatus",label:"计划状态",type:"input",value:""},
+            {prop:"PlanBeginTime",label:"调度计划开始时间",type:"input",value:""},
+            {prop:"PlanEndTime",label:"计划完成时间",type:"input",value:""},
+            {prop:"Type",label:"调度类型",type:"input",value:""}
           ],
           data:[],
           limit:5,
