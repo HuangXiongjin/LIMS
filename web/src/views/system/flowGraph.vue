@@ -40,11 +40,27 @@
           <el-form :inline="true">
             <el-form-item>
               <el-radio-group v-model="modeRadio" size="mini" @change="changeMode">
-                <el-radio-button v-for="item in modeRadioList" :key="item.value" :value="item.value" :label="item.label"></el-radio-button>
+                <el-radio-button v-for="(item,index) in modeRadioList" :key="index" :label="item.label"></el-radio-button>
               </el-radio-group>
             </el-form-item>
             <el-form-item>
-              <el-button @click="saveFlow" size="mini">保存流程结构</el-button>
+              <div
+                class="container"
+                draggable="false">
+                <div
+                  :class="item.class"
+                  :type="item.type"
+                  v-for="(item,cindex) in group"
+                  :key="cindex"
+                  draggable="true"
+                  @dragstart="onDragstart($event)"
+                  @dragend="onDragend($event)">
+                  {{item.label}}
+                </div>
+              </div>
+            </el-form-item>
+            <el-form-item>
+              <el-button @click="saveFlow" size="small">保存流程结构</el-button>
             </el-form-item>
             <el-form-item>
               <el-button type="danger" @click="delFlow" size="mini">删除流程</el-button>
@@ -53,7 +69,14 @@
           <el-row :gutter="20">
             <el-col :span="20">
               <div class="platformContainer">
-                <div id="container" style="position:relative;width: 100%;height: 600px;"></div>
+                <div
+                  class="onDown"
+                  draggable="false"
+                  @dragover="onDragover($event)"
+                  @dragenter="onDragenter($event)"
+                  @drop="onDrop($event)">
+                  <div id="container" style="position:relative;width: 100%;height: 600px;"></div>
+                </div>
               </div>
             </el-col>
             <el-col :span="4">
@@ -74,6 +97,7 @@
 
 <script>
   import G6 from '@antv/g6';
+  import draggable from 'vuedraggable'
   var moment = require('moment');
   export default {
     name: "flowGraph",
@@ -90,15 +114,21 @@
         selectFlowData:"",
         modeRadio:"拖拽模式",
         modeRadioList:[
-          {label:"拖拽模式",value:"default"},
-          {label:"添加模式",value:"addNode"},
-          {label:"连线模式",value:"addEdge"},
-          {label:"点啥删啥",value:"remove"},
+          {label:"拖拽模式"},
+          {label:"连线模式"},
+          {label:"点啥删啥"},
         ],
         graph:null,
         toolbar:null,
         clickNode:{},
         clickModel:{},
+        group:[
+          {label:"圆形",class:"circleNode",type:"circle"},
+          {label:"矩形",class:"rectNode",type:"rect"},
+          {label:"菱形",class:"diamondNode",type:"diamond"},
+          {label:"三角形",class:"triangleNode",type:"triangle"},
+        ],
+        nodeType:"", //存拖动的元素类型
       }
     },
     mounted() {
@@ -176,6 +206,7 @@
         this.init()
       },
       saveFlow(){
+        console.log(this.graph.save())
         var params = {
           tableName:this.FlowtableName,
           ID:this.selectRow.ID,
@@ -272,29 +303,6 @@
               );
             },
           },'line');
-          //点击添加节点
-          // Register a custom behavior: add a node when user click the blank part of canvas
-          G6.registerBehavior('click-add-node', {
-            // Set the events and the corresponding responsing function for this behavior
-            getEvents() {
-              // The event is canvas:click, the responsing function is onClick
-              return {
-                'canvas:click': 'onClick',
-              };
-            },
-            // Click event
-            onClick(ev) {
-              const self = this;
-              const graph = self.graph;
-              // Add a new node
-              graph.addItem('node', {
-                x: ev.canvasX,
-                y: ev.canvasY,
-                id: Date.now().toString(), // Generate the unique id
-                label:"node",
-              },true);
-            },
-          });
           //点击节点添加连接线
           // Register a custom behavior: click two end nodes to add an edge
           G6.registerBehavior('click-add-edge', {
@@ -407,7 +415,6 @@
               controlPoints: true
             },
             defaultNode: {
-              type: 'rect',
               size: [160, 80],
               style: {
                 fill: '#9EC9FF',
@@ -445,7 +452,7 @@
             const {item, target} = evt
             const targetType = target.get('type')
             const name = target.get('name')
-            if(targetType === 'text' || targetType === 'rect'){
+            if(targetType === 'text' || targetType === 'rect' || targetType === 'path' || targetType === 'circle'){
               that.clickNode = evt.item
               that.clickModel = evt.item.getModel()
             }
@@ -455,8 +462,6 @@
       changeMode(){
         if(this.modeRadio === "拖拽模式"){
           this.graph.setMode("default");
-        }else if(this.modeRadio === "添加模式"){
-          this.graph.setMode("addNode");
         }else if(this.modeRadio === "连线模式"){
           this.graph.setMode("addEdge");
         }else if(this.modeRadio === "点啥删啥"){
@@ -470,11 +475,91 @@
             label:text
           });
         }
+      },
+      onDragstart(e){
+        this.nodeType = e.target.attributes.type.value
+      },
+      onDragend(e){
+        //console.log(e)
+      },
+      onDragover(e){
+        //console.log(e)
+      },
+      onDragenter(e){
+        //console.log(e)
+      },
+      onDrop(e){  //在画布内松开鼠标 添加节点
+        if(this.nodeType === "triangle"){
+          this.graph.addItem('node', {
+            x: e.offsetX,
+            y: e.offsetY,
+            id: Date.now().toString(), // Generate the unique id
+            label:"node",
+            type:this.nodeType,
+            size:[80,80]
+          },true);
+        }else{
+          this.graph.addItem('node', {
+            x: e.offsetX,
+            y: e.offsetY,
+            id: Date.now().toString(), // Generate the unique id
+            label:"node",
+            type:this.nodeType,
+          },true);
+        }
       }
     }
   }
 </script>
 
 <style scoped>
-
+  .circleNode{
+    display: inline-block;
+    margin-right: 20px;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    border: 1px solid #5B8FF9;
+    background: #9EC9FF;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .rectNode{
+    display: inline-block;
+    margin-right: 20px;
+    width: 80px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    border: 1px solid #5B8FF9;
+    background: #9EC9FF;
+    cursor: pointer;
+  }
+  .diamondNode{
+    display: inline-block;
+    margin-right: 20px;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    border: 1px solid #5B8FF9;
+    background: #9EC9FF;
+    -ms-transform: rotateZ(45deg);
+    -moz-transform: rotateZ(45deg);
+    -webkit-transform: rotateZ(45deg);
+    -o-transform: rotateZ(45deg);
+    cursor: pointer;
+  }
+  .triangleNode{
+    display: inline-block;
+    margin-right: 20px;
+    width: 0;
+    height: 0;
+    border-width: 0 40px 40px;
+    border-style: solid;
+    border-color: transparent transparent #9EC9FF;
+    position: relative;
+    white-space: nowrap;
+    cursor: pointer;
+  }
 </style>
