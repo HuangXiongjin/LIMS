@@ -66,9 +66,8 @@
         }
         )
       },
-      getSchedule(){
-          var month=moment(this.dateselected).format('YYYY-MM')
-          console.log(month)
+      getSchedule(){ //点击排产按钮触发
+          var month=moment(this.dateselected).format('YYYY-M')
           var params={
               ID:'8',
               month:month
