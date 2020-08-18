@@ -120,6 +120,43 @@ class SchedulingStandard(Base):
     # 物料重量（kg/批）
     Batch_quantity = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
+# 生产计划表
+class product_plan(Base):
+    '''ERP同步计划'''
+    __tablename__ = "product_plan"
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    # 计划期间（YYYYMM）
+    plan_period = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 产品(即物料)编码
+    product_code = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 产品(即物料)名称
+    product_name = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 计量单位 kg\批
+    product_unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 计量类型 'B' 批次  'W'重量
+    meter_type = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 单据号
+    bill_code = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 计划数量
+    plan_quantity = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 计划类型 'M' 月计划   'W'周计划
+    plan_type = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 插入时间
+    create_time = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    # 数据对接时间
+    transform_time = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    # 数据对接MES 1 已对接 0 未对接
+    transform_flag = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 物料编码
+    Material_code = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 物料名称
+    Material_name = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+    # 计量单位
+    Material_unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 物料类型
+    Material_type = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
 
 # 生成表单的执行语句
 Base.metadata.create_all(engine)

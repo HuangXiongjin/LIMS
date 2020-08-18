@@ -27,9 +27,9 @@ from suds.client import Client
 from datetime import timedelta
 
 from common.batch_plan_model import ProductUnit, ProductRule, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
-    ZYPlanWMS
+    ZYPlanWMS, Material
 from common.schedul_model import Scheduling, plantCalendarScheduling, SchedulingStandard, \
-    scheduledate
+    scheduledate, product_plan, SchedulingStock
 from database.connect_db import CONNECT_DATABASE
 from enum import Enum, IntEnum, unique
 
@@ -78,7 +78,8 @@ def plantCalendarSchedulingSelect():
             insertSyslog("error", "工厂日历查询报错Error：" + str(e), current_user.Name)
             return json.dumps("工厂日历查询报错", cls=AlchemyEncoder, ensure_ascii=False)
 
-@erp_schedul.route('/systemManager_model/planScheduling', methods=['GET', 'POST'])
+
+@erp_schedul.route('/planScheduling', methods=['GET', 'POST'])
 def planScheduling():
     '''
     计划排产
@@ -87,13 +88,29 @@ def planScheduling():
     if request.method == 'POST':
         data = request.values
         try:
-            plan_id = data['plan_id']
-            oc = db_session.query(product_plan).filter(product_plan.plan_id == plan_id).first()
-            month = data['month']
+            ID = data.get("ID")
+            month = data.get("month")
+            oc = db_session.query(product_plan).filter(product_plan.ID == ID).first()
+            count = db_session.query(plantCalendarScheduling).filter(plantCalendarScheduling.start.like("%" + month + "%"),
+                ~plantCalendarScheduling.title.like("%安全库存%")).count()
             mou = month.split("-")
             monthRange = calendar.monthrange(int(mou[0]), int(mou[1]))
-            PRName = db_session.query(ERPproductcode_prname.PRName).filter(ERPproductcode_prname.product_code == oc.product_code).first()[0]
+            SchedulDates = monthRange[1] - count #排产月份有多少天
+            PRName = oc.product_name
             sch = db_session.query(SchedulingStandard).filter(SchedulingStandard.PRName == PRName).first()
+
+            #这批计划要做多少天
+            # batchnums = ""
+            # if oc.meter_type == "W":
+            #     yc = db_session.query(YieldMaintain).filter(YieldMaintain.PRName == PRName).first()
+            #     #计划做多少批
+            #     batchnums = float(oc.plan_quantity)/float(yc.FinishProduct)
+            #     #计划要用到多少原材料
+            #     total = float(yc.TotalQuantity)*batchnums
+            #     # 计划有多少批
+            #     batchnums = total/float(sch.Batch_quantity)
+            # elif oc.meter_type == "B":
+            #     batchnums = int(oc.plan_quantity)
             batchnums = int(oc.plan_quantity)
             days = batchnums/int(sch.DayBatchNumS) #这批计划要做多少天
             re = timeChange(mou[0], mou[1], monthRange[1])
@@ -104,13 +121,13 @@ def planScheduling():
             else:
                 mou = mou[0] + "-" + mou[1]
             schdays = db_session.query(plantCalendarScheduling.start).filter(plantCalendarScheduling.start.like("%" + mou + "%"),
-                                    ~plantCalendarScheduling.title.like("%安全库存%")).all()#----查询休息的天数排产去除员工不上班的时间
+                                    ~plantCalendarScheduling.title.like("%安全库存%")).all()
             undays = []
             if schdays != None:
                 for i in schdays:
                     undays.append(i[0])
 
-            # 删除上一次排产同品名同月份的数据
+            # 删除上一次排产同品名的数据
             solds = db_session.query(Scheduling).filter(Scheduling.PRName == PRName, Scheduling.SchedulingTime.like("%"+mou+"%")).all()
             for old in solds:
                 sql = "DELETE FROM Scheduling WHERE ID = "+str(old.ID)
@@ -146,7 +163,48 @@ def planScheduling():
                     j = j+1
                 k = k + 1
             db_session.commit()
-            return 'OK'
+
+            #工厂日历安全库存提醒
+            sches = db_session.query(Scheduling).filter(Scheduling.PRName == PRName).order_by(("SchedulingTime")).all()
+            stan = db_session.query(SchedulingStandard).filter(SchedulingStandard.PRName == PRName).first()
+            stocks = db_session.query(SchedulingStock).filter(SchedulingStock.product_code == oc.product_code).all()
+            for st in stocks:
+                sto = int(st.StockHouse) - int(st.SafetyStock)#库存-安全库存 库存情况
+                mid = db_session.query(Material.MATCode).filter(Material.MATName == st.MATName).first()[0]
+                BatchPercentage = db_session.query(MaterialBOM.BatchPercentage).filter(MaterialBOM.MATID == mid).first()#此物料的百分比
+                cals = db_session.query(plantCalendarScheduling).filter(
+                    plantCalendarScheduling.title.like("%" + st.MATName + "%")).all()
+                if cals != None:
+                    for c in cals:
+                        db_session.delete(c)
+                        db_session.commit()
+                #物料N每天做多少公斤
+                steverydayKG = (int(stan.DayBatchNumS)*float(stan.Batch_quantity))*float(BatchPercentage[0])
+                #库存可以做多少天
+                stockdays = sto/steverydayKG
+                if "." in str(stockdays):
+                    stockdays = int(str(stockdays).split(".")[0])
+                for i in range(0,len(sches)):
+                    if i == stockdays-1:
+                        ca = plantCalendarScheduling()
+                        ca.start = sches[i].SchedulingTime
+                        ca.title = st.MATName + "已到安全库存" + ":"+ PRName#PRName + "中的物料" +
+                        ca.color = "#e67d7d"
+                        db_session.add(ca)
+                        break
+                # # 存库存消耗表
+                # sms = db_session.query(SchedulingMaterial).filter(SchedulingMaterial.MaterialName == st.MATName).all()
+                # for s in sms:
+                #     db_session.delete(s)
+                # db_session.commit()
+                # for n in range(1,len(daySchedulings)):
+                #     schm = SchedulingMaterial()
+                #     schm.SchedulingTime = daySchedulings[n-1]
+                #     schm.MaterialName = st.MATName
+                #     schm.Surplus_quantity = float(st.StockHouse) - float(steverydayKG*n)
+                #     db_session.add(schm)
+            db_session.commit()
+            return {"code": "200", "message": "OK"}
         except Exception as e:
             print(e)
             db_session.rollback()
