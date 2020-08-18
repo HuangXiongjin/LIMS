@@ -2,9 +2,9 @@
     <el-row>
         <el-col :span='24' class="productionstep  marginBottom" style="marginTop:10px;">
             <el-steps :active="active" finish-status="success">
-                <el-step title="步骤 1" icon="el-icon-edit"></el-step>
-                <el-step title="步骤 2" icon="el-icon-upload"></el-step>
-                <el-step title="步骤 3" icon="el-icon-picture"></el-step>
+                <el-step title="步骤 1" icon="el-icon-circle-check"></el-step>
+                <el-step title="步骤 2" icon="el-icon-circle-check"></el-step>
+                <el-step title="步骤 3" icon="el-icon-circle-check"></el-step>
             </el-steps>
             <!-- <el-button style="margin-top: 12px;" @click="nextStep">下一步</el-button> -->
         </el-col>
