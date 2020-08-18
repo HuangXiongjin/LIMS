@@ -1,16 +1,21 @@
 <template>
-    <div>排期预览</div>
+
 </template>
 <script>
 export default {
-    data() {
-        return {
-            msg: 123
-        }
-    },
-    methods: {
-      
-    },
+  data() {
+    return {
+      resData:{
+
+      }
+    }
+  },
+  mounted(){
+
+  },
+  methods: {
+
+  },
 }
 </script>
 <style scoped>
