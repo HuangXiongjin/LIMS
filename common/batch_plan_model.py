@@ -165,14 +165,14 @@ class ZYPlan(Base):
     # 顺序号:
     PlanSeq = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 工艺段:
-    PUID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    # 工艺段编码:
+    PUCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 计划类型:
     PlanType = Column(Unicode(16), primary_key=False, autoincrement=False, nullable=True)
 
-    # 品名:
-    BrandID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    # 品名编码:
+    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 品名名称:
     BrandName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
@@ -239,8 +239,8 @@ class ZYTask(Base):
     # 顺序号:
     PlanSeq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
-    # 工艺段:
-    PUID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    # 工艺段编码:
+    PUCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 工艺路线名称:
     PDUnitRouteName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
@@ -248,8 +248,8 @@ class ZYTask(Base):
     # 计划类型:
     PlanType = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-    # 牌号编码:
-    BrandID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    # 品名编码:
+    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 牌号名称:
     BrandName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
