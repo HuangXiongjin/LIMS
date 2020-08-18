@@ -25,7 +25,7 @@
             {prop:"BatchID",label:" 批次号",type:"input",value:""},
             {prop:"PlanQuantity",label:"计划重量",type:"input",value:""},
             {prop:"Unit",label:"单位",type:"input",value:""},
-            {prop:"BrandID",label:"品名ID",type:"input",value:""},
+            {prop:"BrandCode",label:"品名ID",type:"input",value:""},
             {prop:"BrandName",label:"品名",type:"input",value:""},
             {prop:"PlanStatus",label:"计划状态",type:"input",value:""},
             {prop:"PlanBeginTime",label:"调度计划开始时间",type:"input",value:""},
