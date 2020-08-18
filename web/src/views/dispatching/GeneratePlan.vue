@@ -8,6 +8,8 @@
             </el-steps>
             <el-button style="margin-top: 12px;" @click="nextStep">下一步</el-button>
     </el-col>
+    <el-col :span='24'>计划实际信息</el-col>
+    <el-col :span='24'>计划实际信息</el-col>
     </el-row>
 </template>
 <script>
