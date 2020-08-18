@@ -290,7 +290,7 @@ class ZYTask(Base):
 
 # ProductLine:
 class ProductLine(Base):
-    '''工艺路线'''
+    '''生产线定义'''
     __tablename__ = "ProductLine"
 
     # ID:
@@ -331,6 +331,9 @@ class ProcessUnit(Base):
 
     # 工艺段名称:
     PUName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 产品定义编码:
+    PRCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 生产线ID:
     PLineID = Column(Integer, autoincrement=False, nullable=False, primary_key=False)
@@ -387,7 +390,7 @@ class ProductRule(Base):
     Appy_date = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
 
     # 是否使用:
-    IsUsed = Column(BIT, primary_key=False, autoincrement=False, nullable=True)
+    IsUsed = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 
 # ProductUnit:
@@ -419,8 +422,8 @@ class ProductUnit(Base):
     # 相关任务数:
     RelateTaskCount = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
-    # 产品定义ID:
-    ProductRuleID = Column(Integer, nullable=False, primary_key=False)
+    # 产品定义编码:
+    PRCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 工艺段ID:
     PUID = Column(Integer, nullable=False, primary_key=False)
