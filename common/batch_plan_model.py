@@ -554,7 +554,7 @@ class PlanManager(Base):
     # 单位:
     Unit = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-    # 品名ID:
+    # 品名编码:
     BrandCode = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
     # 品名:

@@ -76,7 +76,7 @@ def makeZYPlanZYTask(id):
     try:
         ocalss = db_session.query(PlanManager).filter(PlanManager.ID == id).first()
         if ocalss:
-            proclass = db_session.query(ProcessUnit).filter(ProcessUnit.BrandCode == ocalss.BrandCode).order_by().first()
+            proclass = db_session.query(ProcessUnit).filter(ProcessUnit.BrandCode == ocalss.BrandCode).order_by("Seq").first()
             for i in proclass:
                 zyplan = ZYPlan()
                 zyplan.PlanDate = i.PlanDate
