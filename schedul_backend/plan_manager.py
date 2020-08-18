@@ -30,8 +30,8 @@ from datetime import timedelta
 
 from common.batch_plan_model import ProductUnit, ProductRule, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
     ZYPlanWMS
-from common.schedul_model import Scheduling, plantCalendarScheduling, ERPproductcode_prname, SchedulingStandard, \
-    product_plan, scheduledate
+from common.schedul_model import Scheduling, plantCalendarScheduling, SchedulingStandard, \
+    scheduledate
 from database.connect_db import CONNECT_DATABASE
 from enum import Enum, IntEnum, unique
 
