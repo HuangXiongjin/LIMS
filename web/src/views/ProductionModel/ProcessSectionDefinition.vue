@@ -25,6 +25,7 @@
             {prop:"PUCode",label:"工艺段编码",type:"input",value:""},
             {prop:"PUName",label:"工艺段名称",type:"input",value:""},
             {prop:"BrandCode",label:"产品定义编码",type:"input",value:""},
+            {prop:"RelateTaskCount",label:" 相关任务数",type:"input",value:""},
             {prop:"PLineCode",label:"生产线编码",type:"input",value:""},
             {prop:"Desc",label:"描述",type:"input",value:"",searchProp:false,canSubmit:false},
             {prop:"PURateCapacity",label:"工艺段额定生产能力",type:"input",value:"",searchProp:false,canSubmit:false},
