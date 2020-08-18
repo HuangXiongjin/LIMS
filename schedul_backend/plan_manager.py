@@ -1,8 +1,6 @@
 from typing import Optional, Any
 from collections import Counter
 import time
-
-import self as self
 import xlrd
 import xlwt
 from flask import Blueprint, render_template, send_from_directory
