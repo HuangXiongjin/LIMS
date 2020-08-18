@@ -1,0 +1,18 @@
+<template>
+    <div>生成计划</div>
+</template>
+<script>
+export default {
+    data() {
+        return {
+            msg: 123
+        }
+    },
+    methods: {
+        
+    },
+}
+</script>
+<style scoped>
+
+</style>

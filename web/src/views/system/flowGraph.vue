@@ -39,16 +39,44 @@
         <el-col :span="24">
           <el-form :inline="true">
             <el-form-item>
-              <el-button @click="saveFlow">保存流程结构</el-button>
+              <el-radio-group v-model="modeRadio" size="mini" @change="changeMode">
+                <el-radio-button v-for="(item,index) in modeRadioList" :key="index" :label="item.label"></el-radio-button>
+              </el-radio-group>
             </el-form-item>
             <el-form-item>
-              <el-button type="danger" @click="delFlow">删除流程</el-button>
+              <div
+                class="container"
+                draggable="false">
+                <div
+                  :class="item.class"
+                  :type="item.type"
+                  v-for="(item,cindex) in group"
+                  :key="cindex"
+                  draggable="true"
+                  @dragstart="onDragstart($event)"
+                  @dragend="onDragend($event)">
+                  {{item.label}}
+                </div>
+              </div>
+            </el-form-item>
+            <el-form-item>
+              <el-button @click="saveFlow" size="small">保存流程结构</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="danger" @click="delFlow" size="mini">删除流程</el-button>
             </el-form-item>
           </el-form>
           <el-row :gutter="20">
             <el-col :span="20">
               <div class="platformContainer">
-                <div id="container" style="width: 100%;height: 800px;"></div>
+                <div
+                  class="onDown"
+                  draggable="false"
+                  @dragover="onDragover($event)"
+                  @dragenter="onDragenter($event)"
+                  @drop="onDrop($event)">
+                  <div id="container" style="position:relative;width: 100%;height: 600px;"></div>
+                </div>
               </div>
             </el-col>
             <el-col :span="4">
@@ -69,6 +97,8 @@
 
 <script>
   import G6 from '@antv/g6';
+  import draggable from 'vuedraggable'
+  var moment = require('moment');
   export default {
     name: "flowGraph",
     data(){
@@ -82,9 +112,23 @@
         },
         selectRow:"",
         selectFlowData:"",
+        modeRadio:"拖拽模式",
+        modeRadioList:[
+          {label:"拖拽模式"},
+          {label:"连线模式"},
+          {label:"点啥删啥"},
+        ],
         graph:null,
+        toolbar:null,
         clickNode:{},
         clickModel:{},
+        group:[
+          {label:"圆形",class:"circleNode",type:"circle"},
+          {label:"矩形",class:"rectNode",type:"rect"},
+          {label:"菱形",class:"diamondNode",type:"diamond"},
+          {label:"三角形",class:"triangleNode",type:"triangle"},
+        ],
+        nodeType:"", //存拖动的元素类型
       }
     },
     mounted() {
@@ -149,11 +193,10 @@
         this.selectFlowData = {}
         this.FlowData.forEach(item =>{
           if(item.ProcessName === label.ProcessName){
-            if(item.ProcessStructure === '' || item.ProcessStructure === 'None'){
-              this.selectFlowData.id = 'root'
-              this.selectFlowData.label = 'root'
-            }else{
+            if(item.ProcessStructure != 'None'){
               this.selectFlowData = JSON.parse(item.ProcessStructure)
+            }else{
+              this.selectFlowData = {}
             }
           }
         })
@@ -163,6 +206,7 @@
         this.init()
       },
       saveFlow(){
+        console.log(this.graph.save())
         var params = {
           tableName:this.FlowtableName,
           ID:this.selectRow.ID,
@@ -222,240 +266,246 @@
       init(){
         let that = this
         this.$nextTick(() => {
-          const COLLAPSE_ICON = function COLLAPSE_ICON(x, y, r) {
-            return [
-              ['M', x - r, y - r],
-              ['a', r, r, 0, 1, 0, r * 2, 0],
-              ['a', r, r, 0, 1, 0, -r * 2, 0],
-              ['M', x + 2 - r, y - r],
-              ['L', x + r - 2, y - r],
-            ];
-          };
-          const EXPAND_ICON = function EXPAND_ICON(x, y, r) {
-            return [
-              ['M', x - r, y - r],
-              ['a', r, r, 0, 1, 0, r * 2, 0],
-              ['a', r, r, 0, 1, 0, -r * 2, 0],
-              ['M', x + 2 - r, y - r],
-              ['L', x + r - 2, y - r],
-              ['M', x, y - 2 * r + 2],
-              ['L', x, y - 2],
-            ];
-          };
-          G6.Util.traverseTree(that.selectFlowData, d => {
-            d.leftIcon = {
-              style: {
-                fill: '#e6fffb',
-                stroke: '#e6fffb'
-              },
-            }
-            return true
-          })
-          G6.registerNode('icon-node', {
-            options: {
-              size: [80, 20],
-              stroke: '#91d5ff',
-              fill: '#91d5ff'
-            },
-            draw(cfg, group) {
-              const styles = this.getShapeStyle(cfg)
-              const {labelCfg = {}} = cfg
-              const keyShape = group.addShape('rect', {
+          //虚线动画
+          G6.registerEdge('circle-running',{
+            afterDraw(cfg, group) {
+              // get the first shape in the group, it is the edge's path here=
+              const shape = group.get('children')[0];
+              // the start position of the edge's path
+              const startPoint = shape.getPoint(0);
+
+              // add red circle shape
+              const circle = group.addShape('circle', {
                 attrs: {
-                  ...styles,
-                  x: 0,
-                  y: 0
-                }
-              })
-              /**
-               * leftIcon 格式如下：
-               *  {
-               *    style: ShapeStyle;
-               *    img: ''
-               *  }
-               */
-              // 如果不需要动态增加或删除元素，则不需要 add 这两个 marker
-              group.addShape('marker', {
-                attrs: {
-                  x: 40,
-                  y: 52,
-                  r: 6,
-                  stroke: '#73d13d',
-                  cursor: 'pointer',
-                  symbol: EXPAND_ICON
+                  x: startPoint.x,
+                  y: startPoint.y,
+                  fill: '#1890ff',
+                  r: 3,
                 },
-                name: 'add-item'
-              })
-              group.addShape('marker', {
-                attrs: {
-                  x: 80,
-                  y: 52,
-                  r: 6,
-                  stroke: '#ff4d4f',
-                  cursor: 'pointer',
-                  symbol: COLLAPSE_ICON
-                },
-                name: 'remove-item'
-              })
-              if (cfg.label) {
-                group.addShape('text', {
-                  attrs: {
-                    ...labelCfg.style,
-                    text: cfg.label,
-                    x: 35,
-                    y: 25,
-                  }
-                })
-              }
-              return keyShape
-            }
-          }, 'rect')
-          G6.registerEdge('flow-line', {
-            draw(cfg, group) {
-              const startPoint = cfg.startPoint;
-              const endPoint = cfg.endPoint;
-              const {style} = cfg
-              const shape = group.addShape('path', {
-                attrs: {
-                  stroke: style.stroke,
-                  endArrow: style.endArrow,
-                  path: [
-                    ['M', startPoint.x, startPoint.y],
-                    ['L', startPoint.x, (startPoint.y + endPoint.y) / 2],
-                    ['L', endPoint.x, (startPoint.y + endPoint.y) / 2,],
-                    ['L', endPoint.x, endPoint.y],
-                  ],
-                },
+                name: 'circle-shape',
               });
-              return shape;
-            }
+              // animation for the red circle
+              circle.animate(
+                ratio => {
+                  // the operations in each frame. Ratio ranges from 0 to 1 indicating the prograss of the animation. Returns the modified configurations
+                  // get the position on the edge according to the ratio
+                  const tmpPoint = shape.getPoint(ratio);
+                  // returns the modified configurations here, x and y here
+                  return {
+                    x: tmpPoint.x,
+                    y: tmpPoint.y,
+                  };
+                },
+                {
+                  repeat: true, // Whether executes the animation repeatly
+                  duration: 3000, // the duration for executing once
+                },
+              );
+            },
+          },'line');
+          //点击节点添加连接线
+          // Register a custom behavior: click two end nodes to add an edge
+          G6.registerBehavior('click-add-edge', {
+            // Set the events and the corresponding responsing function for this behavior
+            getEvents() {
+              return {
+                'node:click': 'onClick', // The event is canvas:click, the responsing function is onClick
+                mousemove: 'onMousemove', // The event is mousemove, the responsing function is onMousemove
+                'edge:click': 'onEdgeClick', // The event is edge:click, the responsing function is onEdgeClick
+              };
+            },
+            // The responsing function for node:click defined in getEvents
+            onClick(ev) {
+              const self = this;
+              const node = ev.item;
+              const graph = self.graph;
+              // The position where the mouse clicks
+              const point = { x: ev.x, y: ev.y };
+              const model = node.getModel();
+              if (self.addingEdge && self.edge) {
+                graph.updateItem(self.edge, {
+                  target: model.id,
+                });
+                self.edge = null;
+                self.addingEdge = false;
+              } else {
+                // Add anew edge, the end node is the current node user clicks
+                self.edge = graph.addItem('edge', {
+                  source: model.id,
+                  target: model.id,
+                },true);
+                self.addingEdge = true;
+              }
+            },
+            // The responsing function for mousemove defined in getEvents
+            onMousemove(ev) {
+              const self = this;
+              // The current position the mouse clicks
+              const point = { x: ev.x, y: ev.y };
+              if (self.addingEdge && self.edge) {
+                // Update the end node to the current node the mouse clicks
+                self.graph.updateItem(self.edge, {
+                  target: point,
+                });
+              }
+            },
+            // The responsing function for edge:click defined in getEvents
+            onEdgeClick(ev) {
+              const self = this;
+              const currentEdge = ev.item;
+              if (self.addingEdge && self.edge === currentEdge) {
+                self.graph.removeItem(self.edge);
+                self.edge = null;
+                self.addingEdge = false;
+              }
+            },
           });
-          const defaultStateStyles = {
-            click: {
-              stroke: '#228AD5',
-              lineWidth: 2
-            }
-          }
-          const defaultNodeStyle = {
-            fill: '#91d5ff',
-            stroke: '#40a9ff',
-            radius: 5
-          }
-          const defaultEdgeStyle = {
-            stroke: '#91d5ff',
-            endArrow: {
-              path: 'M 0,0 L 12, 6 L 9,0 L 12, -6 Z',
-              fill: '#91d5ff',
-              d: -20
-            }
-          }
-          const defaultLayout = {
-            type: 'compactBox',
-            direction: 'TB',
-            getId: function getId(d) {
-              return d.id;
+          //点击节点和连接线进行删除
+          G6.registerBehavior('click-remove', {
+            getEvents() {
+              return {
+                'node:click': 'onClick',
+                'edge:click': 'onEdgeClick',
+              };
             },
-            getHeight: function getHeight() {
-              return 16;
+            onClick(ev) {
+              const self = this;
+              const node = ev.item;
+              const graph = self.graph;
+              const model = node.getModel();
+              graph.removeItem(model.id,true);
             },
-            getWidth: function getWidth() {
-              return 16;
+            onEdgeClick(ev) {
+              const self = this;
+              const node = ev.item;
+              const model = node.getModel();
+              self.graph.removeItem(model.id,true);
             },
-            getVGap: function getVGap() {
-              return 40;
-            },
-            getHGap: function getHGap() {
-              return 70;
-            },
-          }
-          const defaultLabelCfg = {
-            style: {
-              fill: '#000',
-              fontSize: 12
-            }
-          }
+          });
           const width = document.getElementById('container').scrollWidth;
-          const height = document.getElementById('container').scrollHeight - 150;
-          const minimap = new G6.Minimap({
-            size: [150, 100]
-          })
-          that.graph = new G6.TreeGraph({
+          const height = document.getElementById('container').scrollHeight;
+          that.toolbar = new G6.ToolBar()
+          that.graph = new G6.Graph({
             container: 'container',
             width,
             height,
             linkCenter: true,
-            plugins: [minimap],
+            plugins: [that.toolbar],
+            enabledStack: true, //是否启用redo & undo 栈功能，可进行撤销和回退
             modes: {
               default: [
                 'drag-canvas',
                 'zoom-canvas',
+                'click-select',
                 'drag-node',
               ],
+              addNode: ['click-add-node'],
+              addEdge: ['click-add-edge'],
+              remove: ['click-remove'],
+            },
+            layout: {
+              type: 'dagre',
+              nodesepFunc: d => {
+                if (d.id === '3') {
+                  return 500;
+                }
+                return 50;
+              },
+              ranksep: 70,
+              controlPoints: true
             },
             defaultNode: {
-              type: 'icon-node',
-              size: [120, 40],
-              style: defaultNodeStyle,
-              labelCfg: defaultLabelCfg
+              size: [160, 80],
+              style: {
+                fill: '#9EC9FF',
+                stroke: '#5B8FF9',
+                lineWidth: 3,
+              },
+              labelCfg: {
+                style: {
+                  fill: '#000',
+                  fontSize: 18,
+                },
+              },
             },
-            defaultEdge: {
-              type: 'flow-line',
-              style: defaultEdgeStyle,
+            defaultEdge: {  //连接线
+              type: 'circle-running',
+              style: {
+                endArrow: {
+                  path: G6.Arrow.vee(10,20,40)
+                },
+                lineWidth: 2,
+                stroke: '#000',
+              },
             },
-            nodeStateStyles: defaultStateStyles, //节点状态样式
-            edgeStateStyles: defaultStateStyles,
-            layout: defaultLayout
+            nodeStateStyles: {
+              selected: {
+                stroke: '#d9d9d9',
+                fill: '#5394ef',
+              }
+            },
+            fitView: true,
           });
 
           that.graph.read(that.selectFlowData);
-          that.graph.fitView();
           that.graph.on('node:click', evt => {
             const {item, target} = evt
             const targetType = target.get('type')
             const name = target.get('name')
-            //清楚所有节点的状态
-            that.graph.findAllByState("node", 'click').forEach(node => {
-              that.graph.setItemState(node, 'click', false);
-            });
-            //给当前节点添加状态
-            that.graph.setItemState(item, 'click', true)
-            //点击添加和删除按钮
-            if (targetType === 'marker') {
-              const model = item.getModel()
-              if (name === 'add-item') {  // 增加元素
-                if (!model.children) {
-                  model.children = []
-                }
-                const id = `n-${Math.random()}`;
-                model.children.push({
-                  id,
-                  label: id.substr(0, 8),
-                  leftIcon: {
-                    style: {
-                      fill: '#e6fffb',
-                      stroke: '#e6fffb'
-                    },
-                  }
-                })
-                that.graph.updateChild(model, model.id)
-              } else if (name === 'remove-item') {
-                that.graph.removeChild(model.id)
-              }
-            }else if(targetType === 'rect'){
-              that.clickNode = evt.item
-              that.clickModel = evt.item.getModel()
-            }else if(targetType === 'text'){
+            if(targetType === 'text' || targetType === 'rect' || targetType === 'path' || targetType === 'circle'){
               that.clickNode = evt.item
               that.clickModel = evt.item.getModel()
             }
           })
         })
       },
-      changeNode(){ //修改节点 重新渲染
+      changeMode(){
+        if(this.modeRadio === "拖拽模式"){
+          this.graph.setMode("default");
+        }else if(this.modeRadio === "连线模式"){
+          this.graph.setMode("addEdge");
+        }else if(this.modeRadio === "点啥删啥"){
+          this.graph.setMode("remove");
+        }
+      },
+      changeNode(text){ //修改节点 重新渲染
         let that = this
         if(that.clickModel.label){
-          that.graph.read(that.selectFlowData);
-          that.graph.fitView();
+          that.graph.updateItem(that.clickModel.id,{
+            label:text
+          });
+        }
+      },
+      onDragstart(e){
+        this.nodeType = e.target.attributes.type.value
+      },
+      onDragend(e){
+        //console.log(e)
+      },
+      onDragover(e){
+        //console.log(e)
+      },
+      onDragenter(e){
+        //console.log(e)
+      },
+      onDrop(e){  //在画布内松开鼠标 添加节点
+        if(this.nodeType === "triangle"){
+          this.graph.addItem('node', {
+            x: e.offsetX,
+            y: e.offsetY,
+            id: Date.now().toString(), // Generate the unique id
+            label:"node",
+            type:this.nodeType,
+            size:[80,80]
+          },true);
+        }else{
+          this.graph.addItem('node', {
+            x: e.offsetX,
+            y: e.offsetY,
+            id: Date.now().toString(), // Generate the unique id
+            label:"node",
+            type:this.nodeType,
+          },true);
         }
       }
     }
@@ -463,5 +513,53 @@
 </script>
 
 <style scoped>
-
+  .circleNode{
+    display: inline-block;
+    margin-right: 20px;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    border: 1px solid #5B8FF9;
+    background: #9EC9FF;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .rectNode{
+    display: inline-block;
+    margin-right: 20px;
+    width: 80px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    border: 1px solid #5B8FF9;
+    background: #9EC9FF;
+    cursor: pointer;
+  }
+  .diamondNode{
+    display: inline-block;
+    margin-right: 20px;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    border: 1px solid #5B8FF9;
+    background: #9EC9FF;
+    -ms-transform: rotateZ(45deg);
+    -moz-transform: rotateZ(45deg);
+    -webkit-transform: rotateZ(45deg);
+    -o-transform: rotateZ(45deg);
+    cursor: pointer;
+  }
+  .triangleNode{
+    display: inline-block;
+    margin-right: 20px;
+    width: 0;
+    height: 0;
+    border-width: 0 40px 40px;
+    border-style: solid;
+    border-color: transparent transparent #9EC9FF;
+    position: relative;
+    white-space: nowrap;
+    cursor: pointer;
+  }
 </style>
