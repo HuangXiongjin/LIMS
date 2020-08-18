@@ -64,7 +64,7 @@ export default new Router({
         {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'生产计划'},component:ProcessPlanTask},
         {path:'/SchedulePreview',name:'SchedulePreview',meta:{ title:'排期预览'},component:SchedulePreview},
         {path:'/InformationEntry',name:'InformationEntry',meta:{ title:'物料信息录入'},component:InformationEntry},
-        {path:'/ConfigPlan',name:'ConfigPlan',meta:{ title:'配置计划'},component:ConfigPlan},
+        {path:'/ConfigPlan',name:'ConfigPlan',meta:{ title:'排产配置'},component:ConfigPlan},
         {path:'/ScheduleManagement',name:'ScheduleManagement',meta:{ title:'日程管理'},component:ScheduleManagement},
         {path:'/CalendarScheduling',name:'CalendarScheduling',meta:{ title:'日历排产'},component:CalendarScheduling},
         {path:'/PlannedMaintenance',name:'PlannedMaintenance',meta:{ title:'计划维护'},component:PlannedMaintenance},
