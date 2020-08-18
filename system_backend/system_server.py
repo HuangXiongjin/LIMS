@@ -5,6 +5,8 @@ from flask_login import login_required
 from flask_login import current_user
 import datetime
 from common.common_cuid import accurateSelect
+from schedul_backend.ERP_Schedul import erp_schedul
+from schedul_backend.plan_manager import batch_plan
 from system_backend.SystemManagement import auth_lib, user_management, Role_management, system_manage, \
     PermissionAssignment, account_auth
 from system_backend.SystemManagement.account_auth import login_auth
@@ -37,7 +39,10 @@ app.register_blueprint(organiza)
 # app.register_blueprint(ProcessContinuousData.continuous_data)
 # 组织架构
 app.register_blueprint(user_manager)
-
+# 排产
+app.register_blueprint(erp_schedul)
+#批次计划
+app.register_blueprint(batch_plan)
 
 @app.route('/')
 @login_required
