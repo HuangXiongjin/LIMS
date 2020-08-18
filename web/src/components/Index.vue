@@ -92,8 +92,8 @@ export default {
         {label: '排产系统',mainMenu:[
             {title:'排期预览',icon:"el-icon-tickets",url:"/SchedulePreview"},
             {title:'工厂排产',icon:"el-icon-date",children:[
-             {title:"物料信息录入",icon:"el-icon-edit-outline",url:"/InformationEntry"},
-             {title:"配置计划",icon:"el-icon-view",url:"/ConfigPlan"},
+             {title:"排产计划录入",icon:"el-icon-edit-outline",url:"/InformationEntry"},
+             {title:"排产配置",icon:"el-icon-view",url:"/ConfigPlan"},
              {title:"日程管理",icon:"el-icon-date",url:"/ScheduleManagement"},
              {title:"日历排产",icon:"el-icon-date",url:"/CalendarScheduling"},
             ]},
