@@ -218,7 +218,7 @@ class ZYPlan(Base):
 
 # ZYTask:
 class ZYTask(Base):
-    '''每个工艺段下的生产任务'''
+    '''工艺段计划任务'''
     __tablename__ = "ZYTask"
 
     # ID:
@@ -410,8 +410,14 @@ class ProductUnit(Base):
     # 持续时间:
     Duration = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
-    # 单位:
-    Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 低限:
+    LowLimit = Column(Float(53), primary_key=False, autoincrement=False, nullable=True)
+
+    # 高限:
+    HighLimit = Column(Float(53), primary_key=False, autoincrement=False, nullable=True)
+
+    # 相关任务数:
+    RelateTaskCount = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
     # 产品定义ID:
     ProductRuleID = Column(Integer, nullable=False, primary_key=False)
@@ -425,6 +431,7 @@ class ProductUnit(Base):
 
 # ProductControlTask:
 class ProductControlTask(Base):
+    '''产品段任务配置'''
     __tablename__ = "ProductControlTask"
 
     # ID:
@@ -623,6 +630,56 @@ class MaterialBOM(Base):
 
     # 等级:
     Grade = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+class TaskNoGenerator(Base):
+    '''企业编码'''
+    __tablename__ = "TaskNoGenerator"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+
+    # 单位编码:
+    TaskNoInt = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 单位名称:
+    TaskNoVar = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 描述:
+    Desc = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+class ZYPlanWMS(Base):
+    '''与WMS计划管理'''
+    __tablename__ = 'ZYPlanWMS'
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 批次号:
+    BatchID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 品名ID:
+    BrandID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 品名:
+    BrandName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段
+    PUIDName = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 执行状态
+    ExcuteStatus = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 操作人:
+    OperationPeople = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 描述:
+    Description = Column(Unicode(60), primary_key=False, autoincrement=False, nullable=True)
+
+    # 操作时间:
+    OperationDate = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+
+    #是否发送
+    IsSend = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
 
 
 
