@@ -206,7 +206,6 @@
         this.init()
       },
       saveFlow(){
-        console.log(this.graph.save())
         var params = {
           tableName:this.FlowtableName,
           ID:this.selectRow.ID,

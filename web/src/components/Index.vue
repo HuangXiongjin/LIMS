@@ -49,7 +49,7 @@
           <el-col :span="24">
             <div :style="selfHeight" class="aside-menu">
             <el-menu class="menu-ul" :default-active="defaultActiveUrl" :collapse="menuIsCollapse" :router="true" @select="menuSelect">
-              <template v-for="item in mainMenu">
+              <template v-for="item in mainMenu" :index="item.url">
                 <el-menu-item v-if="!item.children" :index="item.url"><i :class="item.icon"></i><span slot="title">{{ item.title }}</span></el-menu-item>
                 <el-submenu v-if="item.children" :index="item.title">
                   <template slot="title"><i :class="item.icon"></i><span>{{ item.title }}</span></template>
@@ -99,7 +99,7 @@ export default {
             ]},
             {title:'计划维护',icon:"el-icon-edit",url:"/PlannedMaintenance"},
             {title:'计划报表',icon:"el-icon-notebook-2",url:"/PlanningReport"},
-            ]},        
+            ]},
         {label: '调度系统',mainMenu:[
             {title:"计划明细",icon:"el-icon-tickets",url:"",children:[
                {title:"生产计划",icon:"el-icon-office-building",url:"/ProductPlan"},
@@ -113,7 +113,7 @@ export default {
                 {title:"发送WMS",icon:"el-icon-box",url:"/SendWMS"},
                 ]},
             {title:"备料",icon:"el-icon-box",url:"/MaterialPreparation"},
-             
+
           ]},
         {label: '生产建模',mainMenu:[
             {title:"生产建模",name:'生产建模',icon:"el-icon-s-grid",url:""},
@@ -131,7 +131,7 @@ export default {
           ]},
         {label: '设备系统',mainMenu:[
             {title:"设备系统",icon:"el-icon-box",url:""},
-         
+
           ]},
         {label: '物料系统',mainMenu:[
             {title:"物料系统",icon:"el-icon-box",url:""},
@@ -187,6 +187,9 @@ export default {
   destroyed() {
 
   },
+  watch:{
+
+  },
   methods:{
     clickSubMenu(a){
 
@@ -198,7 +201,8 @@ export default {
         this.selfHeight.height = window.innerHeight - 360+'px';
       }
     },
-    menuSelect(key,keyPath){  //点击菜单跳转时  添加query参数避免相同路由跳转时报错
+    menuSelect(url,title){  //点击菜单跳转时  添加query参数避免相同路由跳转时报错
+      this.defaultActiveUrl = url
       this.$router.push({
         query:moment()
       })
@@ -244,6 +248,9 @@ export default {
         }
       }
     },
+    tabsClick(e){
+
+    }
   }
 }
 </script>
