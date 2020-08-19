@@ -26,9 +26,9 @@ class ZYPlanStatus(Enum):
     Clear = "30"  # 清场
 #任务ZYTask
 class TASKSTATUS(Enum):
-    Start = "10"#开始
-    Produncting = "20"#进行
-    End = "30"#结束
+    START = "10"#开始
+    RUN = "20"#进行
+    END = "30"#结束
 
 #计划状态
 class AuditStatus(Enum):

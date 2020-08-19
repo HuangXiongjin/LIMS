@@ -27,7 +27,7 @@ from suds.client import Client
 from datetime import timedelta
 
 from common.batch_plan_model import ProductUnit, ProductRule, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
-    ZYPlanWMS, Material
+    ZYPlanWMS, Material, MaterialBOM
 from common.schedul_model import Scheduling, plantCalendarScheduling, SchedulingStandard, \
     scheduledate, product_plan, SchedulingStock
 from database.connect_db import CONNECT_DATABASE
@@ -97,7 +97,7 @@ def planScheduling():
             monthRange = calendar.monthrange(int(mou[0]), int(mou[1]))
             SchedulDates = monthRange[1] - count #排产月份有多少天
             PRName = oc.product_name
-            sch = db_session.query(SchedulingStandard).filter(SchedulingStandard.PRName == PRName).first()
+            sch = db_session.query(SchedulingStandard).filter(SchedulingStandard.BrandName == PRName).first()
 
             #这批计划要做多少天
             # batchnums = ""
@@ -144,7 +144,7 @@ def planScheduling():
             daySchedulings.sort()
 
             # 排产数据写入数据库
-            dayBatchNum = db_session.query(SchedulingStandard.DayBatchNumS).filter(SchedulingStandard.PRName == PRName).first()[0]
+            dayBatchNum = db_session.query(SchedulingStandard.DayBatchNumS).filter(SchedulingStandard.BrandName == PRName).first()[0]
             j = 1
             k = 1
             for day in daySchedulings:
@@ -166,7 +166,7 @@ def planScheduling():
 
             #工厂日历安全库存提醒
             sches = db_session.query(Scheduling).filter(Scheduling.PRName == PRName).order_by(("SchedulingTime")).all()
-            stan = db_session.query(SchedulingStandard).filter(SchedulingStandard.PRName == PRName).first()
+            stan = db_session.query(SchedulingStandard).filter(SchedulingStandard.BrandName == PRName).first()
             stocks = db_session.query(SchedulingStock).filter(SchedulingStock.product_code == oc.product_code).all()
             for st in stocks:
                 sto = int(st.StockHouse) - int(st.SafetyStock)#库存-安全库存 库存情况
@@ -204,7 +204,7 @@ def planScheduling():
                 #     schm.Surplus_quantity = float(st.StockHouse) - float(steverydayKG*n)
                 #     db_session.add(schm)
             db_session.commit()
-            return {"code": "200", "message": "OK"}
+            return json.dump({"code": "200", "message": "OK"})
         except Exception as e:
             print(e)
             db_session.rollback()
