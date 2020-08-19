@@ -131,11 +131,16 @@ export default {
           // {title:"过程质量分析",icon:"el-icon-s-data",url:""},
           ]},
         {label: '设备系统',mainMenu:[
-            {title:"设备系统",icon:"el-icon-box",url:""},
+            {title:"设备信息",icon:"el-icon-box",url:"/DeviceInformation"},
+            {title:"设备备件管理",icon:"el-icon-box",url:"/EquipmentpartsManage"},
+            {title:"仪器仪表数据管理",icon:"el-icon-box",url:"/InstrumentDataManagement"},
+            {title:"仪器仪表检修管理",icon:"el-icon-box",url:"/InstrumentMaintenanceManagement"},
+            {title:"设备故障管理",icon:"el-icon-box",url:"/EquipmentFailureManagement"},
+            {title:"设备运行记录",icon:"el-icon-box",url:"/EquipmentOperationRecord"},
 
           ]},
         {label: '物料系统',mainMenu:[
-            {title:"物料系统",icon:"el-icon-box",url:""},
+            {title:"物料系统",icon:"el-icon-box",url:"/MaterialInformation"},
           ]},
         {label: '系统管理',mainMenu:[
             {title:"组织架构",icon:"el-icon-office-building",url:"/Organization"},

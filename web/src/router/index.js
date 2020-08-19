@@ -35,6 +35,13 @@ import MaterialPreparation from '@/views/dispatching/MaterialPreparation'
 import ElectronicBatchRecord from '@/views/production/ElectronicBatchRecord'
 import MaterialBalanceStatistics from '@/views/production/MaterialBalanceStatistics'
 import MaterialTraceability from '@/views/production/MaterialTraceability'
+import DeviceInformation from '@/views/Device/DeviceInformation'
+import EquipmentpartsManage from '@/views/Device/EquipmentpartsManage'
+import InstrumentDataManagement from '@/views/Device/InstrumentDataManagement'
+import InstrumentMaintenanceManagement from '@/views/Device/InstrumentMaintenanceManagement'
+import EquipmentFailureManagement from '@/views/Device/EquipmentFailureManagement'
+import EquipmentOperationRecord from '@/views/Device/EquipmentOperationRecord'
+import MaterialInformation from '@/views/material/MaterialInformation'
 
 Vue.use(Router)
 
@@ -79,6 +86,13 @@ export default new Router({
         {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'电子批记录'},component:ElectronicBatchRecord},
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计'},component:MaterialBalanceStatistics},
         {path:'/MaterialTraceability',name:'MaterialTraceability',meta:{ title:'物料追溯'},component:MaterialTraceability},
+        {path:'/DeviceInformation',name:'DeviceInformation',meta:{ title:'设备信息'},component:DeviceInformation},
+        {path:'/EquipmentpartsManage',name:'EquipmentpartsManage',meta:{ title:'设备备件管理'},component:EquipmentpartsManage},
+        {path:'/InstrumentDataManagement',name:'InstrumentDataManagement',meta:{ title:'仪器仪表数据管理'},component:InstrumentDataManagement},
+        {path:'/InstrumentMaintenanceManagement',name:'InstrumentMaintenanceManagement',meta:{ title:'仪器仪表检修管理'},component:InstrumentMaintenanceManagement},
+        {path:'/EquipmentFailureManagement',name:'EquipmentFailureManagement',meta:{ title:'设备故障管理'},component:EquipmentFailureManagement},
+        {path:'/EquipmentOperationRecord',name:'EquipmentOperationRecord',meta:{ title:'设备运行记录'},component:EquipmentOperationRecord},
+        {path:'/MaterialInformation',name:'MaterialInformation',meta:{ title:'物料信息'},component:MaterialInformation},
       ]
     },
     {
