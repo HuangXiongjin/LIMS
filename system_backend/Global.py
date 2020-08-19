@@ -21,29 +21,14 @@ class PlanStatus(Enum):
 
 #计划ZYPlan
 class ZYPlanStatus(Enum):
-    NEW = "10"#新增
-    Realse = "20"#下发
-    Control = "30"#中控已确认
-    ControlChecked = "31"#中控已复核
-    QAChecked = "32"#QA已复核
-    COMFIRM = "40"#确认
-    RUN = "50"#执行
-    FINISH = "60"#完成
-    AgainControl = "61"#中控确认生产结束清场
-    AgainControlChecked = "62"#中控复核生产结束清场
-    AgainQAChecked = "63"#QA清场复核
-
+    READY = "10"  # 准备
+    Produncting = "20"  # 计划进行
+    Clear = "30"  # 清场
 #任务ZYTask
 class TASKSTATUS(Enum):
-    NEW = "10"#新增
-    Realse = "20"#下发
-    COMFIRM = "40"#确认
-    RUN = "50"#执行
-    FINISH = "60"#完成
-    CANCEL = "70"#取消
-    PAUSE = "80"#暂停
-    ERROR = "85"#故障
-    TERMINAL = "90"#中止
+    Start = "10"#开始
+    Produncting = "20"#进行
+    End = "30"#结束
 
 #计划状态
 class AuditStatus(Enum):
