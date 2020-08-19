@@ -2,25 +2,25 @@
     <el-row>
         <el-col :span='24' class="productionstep  marginBottom" style="marginTop:10px;">
             <el-steps :active="active" finish-status="success">
-                <el-step title="步骤 1" icon="el-icon-circle-check"></el-step>
-                <el-step title="步骤 2" icon="el-icon-circle-check"></el-step>
-                <el-step title="步骤 3" icon="el-icon-circle-check"></el-step>
+                <el-step title="批次号品名录入" icon="el-icon-lock"></el-step>
+                <el-step title="批次计划" icon="el-icon-lock"></el-step>
+                <el-step title="计划效验结果" icon="el-icon-lock"></el-step>
             </el-steps>
             <!-- <el-button style="margin-top: 12px;" @click="nextStep">下一步</el-button> -->
         </el-col>
-        <el-col :span='24' class="cardContainer">
+        <el-col :span='24' class="cardContainer" v-if='active===0'>
             <div class="text-size-18 marginBottom">计划实际信息</div>
             <el-form :model="formInline" class="demo-form-inline">
                 <el-form-item>
-                    <el-col :span='2' style="textAlign:center;">制定计划日期</el-col>
+                    <el-col :span='2' style="textAlign:right;paddingRight:8px;">制定计划日期</el-col>
                     <el-col :span='6'>
                         <el-input v-model="formInline.user"></el-input>
                     </el-col>
-                    <el-col :span='2' style="textAlign:center;">制定计划日期</el-col>
+                    <el-col :span='2' style="textAlign:right;paddingRight:8px;">制定计划日期</el-col>
                     <el-col :span='6'>
                         <el-input v-model="formInline.user"></el-input>
                     </el-col>
-                    <el-col :span='2' style="textAlign:center;">品名</el-col>
+                    <el-col :span='2' style="textAlign:right;paddingRight:8px;">品名</el-col>
                     <el-col :span='6'>
                         <el-select v-model="formInline.region" placeholder="请选择品名">
                             <el-option label="区域一" value="shanghai"></el-option>
@@ -29,15 +29,15 @@
                     </el-col>
                 </el-form-item>
                 <el-form-item>
-                    <el-col :span='2' style="textAlign:center;">计划重量</el-col>
+                    <el-col :span='2' style="textAlign:right;paddingRight:8px;">计划重量</el-col>
                     <el-col :span='6'>
                         <el-input v-model="formInline.user"></el-input>
                     </el-col>
-                    <el-col :span='2' style="textAlign:center;">生产线</el-col>
+                    <el-col :span='2' style="textAlign:right;paddingRight:8px;">生产线</el-col>
                     <el-col :span='6'>
                         <el-input v-model="formInline.user"></el-input>
                     </el-col>
-                    <el-col :span='2' style="textAlign:center;">单位</el-col>
+                    <el-col :span='2' style="textAlign:right;paddingRight:8px;">单位</el-col>
                     <el-col :span='6'>
                         <el-select v-model="formInline.region" placeholder="请选择品名">
                             <el-option label="区域一" value="shanghai"></el-option>
@@ -48,8 +48,19 @@
             </el-form>
         </el-col>
         <el-col>
-            <div class="platformContainer">
+            <div class="platformContainer" v-if='active===0'>
                 <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
+            </div>
+        </el-col>
+        <el-col>
+            <div class="platformContainer" v-if='active===1'>
+                <div class="marginBottom text-size-18">生成计划信息</div>
+                <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
+            </div>
+        </el-col>
+        <el-col v-if="active===2">
+            <div class="platformContainer" style="textAlign:center;height:200px;fontSize:20px;lineHeight:200px;">
+              计划检验结果：新增计划成功
             </div>
         </el-col>
         <el-col style="textAlign:right;">
