@@ -79,8 +79,8 @@ class YieldMaintain(Base):
     __tablename__ = "YieldMaintain"
     # ID:
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
-    # 品名
-    PRName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 产品定义名称:
+    BrandName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
     # 得率PRName
     Yield = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 成品总重量
@@ -113,8 +113,8 @@ class SchedulingStandard(Base):
     __tablename__ = "SchedulingStandard"
     # ID:
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
-    # 产品名称
-    PRName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 产品定义名称:
+    BrandName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
     # 批数（批/每天）
     DayBatchNumS = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 物料重量（kg/批）
