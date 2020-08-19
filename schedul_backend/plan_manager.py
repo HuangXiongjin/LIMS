@@ -25,7 +25,7 @@ import openpyxl
 import suds
 from suds.client import Client
 from datetime import timedelta
-
+import system_backend.Global
 from common.batch_plan_model import ProductUnit, ProductRule, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
     ZYPlanWMS, ProcessUnit
 from common.schedul_model import Scheduling, plantCalendarScheduling, SchedulingStandard, \
@@ -41,9 +41,9 @@ db_session = Session()
 
 batch_plan = Blueprint('batch_plan', __name__)
 
-def getTaskNo(self):
+def getTaskNo():
     bReturn = True
-    qry = db_session.query(func.max(TaskNoGenerator.TaskNoInt)).all();
+    qry = db_session.query(func.max(TaskNoGenerator.TaskNoInt)).all()
     intTaskNo = int(qry[0][0])
     varTaskNo = str(intTaskNo + 1)
     if len(varTaskNo) == 1:
@@ -76,26 +76,26 @@ def makeZYPlanZYTask(id):
     try:
         ocalss = db_session.query(PlanManager).filter(PlanManager.ID == id).first()
         if ocalss:
-            proclass = db_session.query(ProcessUnit).filter(ProcessUnit.BrandCode == ocalss.BrandCode).order_by("Seq").first()
+            proclass = db_session.query(ProcessUnit).filter(ProcessUnit.BrandCode == ocalss.BrandCode).order_by("Seq").all()
             for i in proclass:
                 zyplan = ZYPlan()
-                zyplan.PlanDate = i.PlanDate
-                zyplan.PlanNo = i.PlanNo
+                zyplan.PlanDate = ocalss.PlanBeginTime
+                zyplan.PlanNo = ocalss.SchedulePlanCode
                 zyplan.BatchID = ocalss.BatchID
                 zyplan.PlanSeq = i.Seq
-                zyplan.PUID = i.PUID
-                zyplan.PlanType = "调度计划"
-                zyplan.BrandID = ocalss.BrandID
+                zyplan.PUCode = i.PUCode
+                zyplan.PlanType = system_backend.Global.PLANTYPE.SCHEDULE.value
+                zyplan.BrandCode = ocalss.BrandCode
                 zyplan.BrandName = ocalss.BrandName
                 zyplan.ERPOrderNo = ""
                 zyplan.PlanQuantity = ocalss.PlanQuantity
                 zyplan.Unit = ocalss.Unit
-                zyplan.EnterTime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                zyplan.EnterTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 zyplan.PlanBeginTime = ocalss.PlanBeginTime
-                zyplan.ZYPlanStatus = schedul_backend.Global.ZYPlanStatus.NEW.value
-                zyplan.LockStatus = schedul_backend.Global.TASKLOCKSTATUS.UNLOCK.value
-                zyplan.INFStatus = schedul_backend.Global.TASKSTATUS.NEW.value
-                zyplan.WMSStatus = schedul_backend.Global.TASKSTATUS.NEW.value
+                zyplan.ZYPlanStatus = system_backend.Global.ZYPlanStatus.NEW.value
+                zyplan.LockStatus = system_backend.Global.TASKLOCKSTATUS.UNLOCK.value
+                zyplan.INFStatus = system_backend.Global.TASKSTATUS.NEW.value
+                zyplan.WMSStatus = system_backend.Global.TASKSTATUS.NEW.value
                 db_session.add(zyplan)
                 iTaskSeq = 0
                 for j in range(0, i.RelateTaskCount):
@@ -104,21 +104,21 @@ def makeZYPlanZYTask(id):
                     if bReturn == False:
                         return False
                     zytask = ZYTask()
-                    zytask.PlanDate = i.PlanDate
+                    zytask.PlanDate = ocalss.PlanBeginTime
                     zytask.TaskID = strTaskNo
                     zytask.BatchID = ocalss.BatchID
                     zytask.PlanSeq = iTaskSeq
-                    zytask.PUID = i.PUID
-                    zytask.PlanType = schedul_backend.Global.PLANTYPE.SCHEDULE.value
-                    zytask.BrandID = ocalss.BrandID
+                    zytask.PUCode = i.PUCode
+                    zytask.PlanType = system_backend.Global.PLANTYPE.SCHEDULE.value
+                    zytask.BrandCode = ocalss.BrandCode
                     zytask.BrandName = ocalss.BrandName
                     zytask.PlanQuantity = ocalss.PlanQuantity
                     zytask.Unit = ocalss.Unit
-                    zytask.EnterTime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                    zytask.SetRepeatCount = i.RelateTaskCount
-                    zytask.TaskStatus = schedul_backend.Global.TASKSTATUS.NEW.value
-                    zytask.LockStatus = schedul_backend.Global.TASKLOCKSTATUS.UNLOCK.value
-                    zytask.db_session.add(zytask)
+                    zytask.EnterTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    # zytask.SetRepeatCount = i.RelateTaskCount
+                    zytask.TaskStatus = system_backend.Global.TASKSTATUS.NEW.value
+                    zytask.LockStatus = system_backend.Global.TASKLOCKSTATUS.UNLOCK.value
+                    db_session.add(zytask)
             db_session.commit()
     except Exception as ee:
         db_session.rollback()
@@ -142,18 +142,19 @@ def createZYPlanZYtask():
                         returnmsg = makeZYPlanZYTask(id)
                         if (returnmsg == False):
                             return 'NO'
+                        return "成功"
                         oclassplan = db_session.query(PlanManager).filter_by(ID=id).first()
-                        oclassplan.PlanStatus = schedul_backend.Global.PlanStatus.Realse.value
+                        oclassplan.PlanStatus = system_backend.Global.PlanStatus.Realse.value
                         oclassZYPlans = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclassplan.BatchID).all()
                         for zyp in oclassZYPlans:
-                            zyp.ZYPlanStatus = schedul_backend.Global.ZYPlanStatus.Realse.value
+                            zyp.ZYPlanStatus = system_backend.Global.ZYPlanStatus.Realse.value
                         oclassZYTasks = db_session.query(ZYTask).filter(ZYTask.BatchID == oclassplan.BatchID).all()
                         for task in oclassZYTasks:
-                            task.TaskStatus = schedul_backend.Global.TASKSTATUS.Realse.value
+                            task.TaskStatus = system_backend.Global.TASKSTATUS.Realse.value
                         userName = current_user.Name
                         oclassNodeColl = db_session.query(schedul_backend.node.NodeCollection).filter_by(oddNum=id,
                                                                                                name="计划下发").first()
-                        oclassNodeColl.status = schedul_backend.node.NodeStatus.PASSED.value
+                        oclassNodeColl.status = system_backend.node.NodeStatus.PASSED.value
                         oclassNodeColl.oddUser = userName
                         oclassNodeColl.opertionTime = datetime.datetime.now()
                         oclassNodeColl.seq = 2
