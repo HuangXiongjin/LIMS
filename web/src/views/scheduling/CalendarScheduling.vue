@@ -10,7 +10,7 @@
                 <el-date-picker v-model="dateselected" type="month" placeholder="选择月" size='small'></el-date-picker>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="onSubmit" icon='el-icon-s-promotion' size='small'>排产</el-button>
+                <el-button type="primary" @click="getSchedule" icon='el-icon-s-promotion' size='small'>排产</el-button>
             </el-form-item>
         </el-form>
         <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
@@ -21,6 +21,7 @@
 
 <script>
   import tableView from '@/components/CommonTable'
+  import moment from 'moment'
   export default {
     components:{tableView},
     data(){
@@ -65,11 +66,17 @@
         }
         )
       },
-      getSchedule(){
+      getSchedule(){ //点击排产按钮触发
+          var month=moment(this.dateselected).format('YYYY-M')
           var params={
-
+              ID:'8',
+              month:month
           }
-          
+          this.axios.post('/api/planScheduling',this.qs.stringify(params)).then((res) => {
+              console.log(res)
+          })
+
+
       },
       synchronizeToWMS(){
          alert('同步物料到WMS')

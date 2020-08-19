@@ -27,7 +27,7 @@ from suds.client import Client
 from datetime import timedelta
 
 from common.batch_plan_model import ProductUnit, ProductRule, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
-    ZYPlanWMS
+    ZYPlanWMS, ProcessUnit
 from common.schedul_model import Scheduling, plantCalendarScheduling, SchedulingStandard, \
     scheduledate
 from database.connect_db import CONNECT_DATABASE
@@ -76,8 +76,8 @@ def makeZYPlanZYTask(id):
     try:
         ocalss = db_session.query(PlanManager).filter(PlanManager.ID == id).first()
         if ocalss:
-            productunit_class = db_session.query(ProductUnit).filter(ProductUnit.ProductRuleID == ocalss.ProductRuleID).order_by().first()
-            for i in productunit_class:
+            proclass = db_session.query(ProcessUnit).filter(ProcessUnit.BrandCode == ocalss.BrandCode).order_by("Seq").first()
+            for i in proclass:
                 zyplan = ZYPlan()
                 zyplan.PlanDate = i.PlanDate
                 zyplan.PlanNo = i.PlanNo

@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">产品定义</span>
+        <span style="margin-left: 10px;" class="text-size-normol">工艺段定义</span>
       </div>
       <div class="platformContainer">
         <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
@@ -19,16 +19,22 @@
     data(){
       return {
         PermissionTableData:{
-          tableName:"ProductRule",
+          tableName:"ProcessUnit",
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
+            {prop:"PUCode",label:"工艺段编码",type:"input",value:""},
+            {prop:"PUName",label:"工艺段名称",type:"input",value:""},
             {prop:"BrandCode",label:"产品定义编码",type:"input",value:""},
-            {prop:"BrandName",label:" 产品定义名称",type:"input",value:""},
-            {prop:"Version",label:"版本",type:"input",value:""},
-            {prop:"Desc",label:"描述",type:"input",value:""},
-            {prop:"Publish_date",label:"发布日期",type:"input",value:"",searchProp:false,canSubmit:false},
-            {prop:"Appy_date",label:"使用日期",type:"input",value:"",searchProp:false,canSubmit:false},
-            {prop:"IsUsed",label:"是否使用",type:"select",value:"",Downtable:'isFlag',showDownField:'Description'},//显示下拉框，显示是、否
+            {prop:"RelateTaskCount",label:" 相关任务数",type:"input",value:""},
+            {prop:"PLineCode",label:"生产线编码",type:"input",value:""},
+            {prop:"Desc",label:"描述",type:"input",value:"",searchProp:false,canSubmit:false},
+            {prop:"PURateCapacity",label:"工艺段额定生产能力",type:"input",value:"",searchProp:false,canSubmit:false},
+            {prop:"PUPLanCapacity",label:"工艺段计划生产能力",type:"input",value:""},
+            {prop:"Seq",label:"工艺段顺序号",type:"input",value:""},
+            {prop:"CapacityUnit",label:"能力单位",type:"input",value:""},
+            {prop:"PlaceTime",label:"静置时间",type:"input",value:""},
+            {prop:"TimeUnit",label:"时间单位",type:"input",value:""},
+            {prop:"BatchRunTime",label:"批次运行时间",type:"input",value:""},
           ],
           data:[],
           limit:5,

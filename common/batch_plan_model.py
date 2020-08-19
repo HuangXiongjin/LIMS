@@ -165,14 +165,14 @@ class ZYPlan(Base):
     # 顺序号:
     PlanSeq = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 工艺段:
-    PUID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    # 工艺段编码:
+    PUCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 计划类型:
     PlanType = Column(Unicode(16), primary_key=False, autoincrement=False, nullable=True)
 
-    # 品名:
-    BrandID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    # 品名编码:
+    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 品名名称:
     BrandName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
@@ -239,8 +239,8 @@ class ZYTask(Base):
     # 顺序号:
     PlanSeq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
-    # 工艺段:
-    PUID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    # 工艺段编码:
+    PUCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 工艺路线名称:
     PDUnitRouteName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
@@ -248,8 +248,8 @@ class ZYTask(Base):
     # 计划类型:
     PlanType = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-    # 牌号编码:
-    BrandID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    # 品名编码:
+    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 牌号名称:
     BrandName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
@@ -290,7 +290,7 @@ class ZYTask(Base):
 
 # ProductLine:
 class ProductLine(Base):
-    '''工艺路线'''
+    '''生产线定义'''
     __tablename__ = "ProductLine"
 
     # ID:
@@ -332,8 +332,14 @@ class ProcessUnit(Base):
     # 工艺段名称:
     PUName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
-    # 生产线ID:
-    PLineID = Column(Integer, autoincrement=False, nullable=False, primary_key=False)
+    # 产品定义编码:
+    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 生产线:
+    PLineCode = Column(Integer, autoincrement=False, nullable=False, primary_key=False)
+
+    # 相关任务数:
+    RelateTaskCount = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
     # 描述:
     Desc = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
@@ -369,10 +375,10 @@ class ProductRule(Base):
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
 
     # 产品定义编码:
-    PRCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    BrandCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 产品定义名称:
-    PRName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    BrandName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 版本:
     Version = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
@@ -387,7 +393,7 @@ class ProductRule(Base):
     Appy_date = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
 
     # 是否使用:
-    IsUsed = Column(BIT, primary_key=False, autoincrement=False, nullable=True)
+    IsUsed = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 
 # ProductUnit:
@@ -419,8 +425,8 @@ class ProductUnit(Base):
     # 相关任务数:
     RelateTaskCount = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
-    # 产品定义ID:
-    ProductRuleID = Column(Integer, nullable=False, primary_key=False)
+    # 产品定义编码:
+    PRCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 工艺段ID:
     PUID = Column(Integer, nullable=False, primary_key=False)
@@ -548,8 +554,8 @@ class PlanManager(Base):
     # 单位:
     Unit = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-    # 品名ID:
-    BrandID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    # 品名编码:
+    BrandCode = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
     # 品名:
     BrandName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)

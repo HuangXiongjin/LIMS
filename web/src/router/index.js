@@ -12,6 +12,7 @@ import Log from '@/views/system/Log'
 import flowGraph from '@/views/system/flowGraph'
 import ProductDefinition from '@/views/ProductionModel/ProductDefinition'
 import ProductSegmentDefinition from '@/views/ProductionModel/ProductSegmentDefinition'
+import ProcessSectionDefinition from '@/views/ProductionModel/ProcessSectionDefinition'
 import ProductSegmentConfiguration from '@/views/ProductionModel/ProductSegmentConfiguration'
 import ProcessParameterConfiguration from '@/views/ProductionModel/ProcessParameterConfiguration'
 import MaterialBOM from '@/views/ProductionModel/MaterialBOM'
@@ -55,6 +56,7 @@ export default new Router({
         {path:'/flowGraph',name:'flowGraph',meta:{ title:'流程图管理'},component:flowGraph},
         {path:'/ProductDefinition',name:'ProductDefinition',meta:{ title:'产品定义'},component:ProductDefinition},
         {path:'/ProductSegmentDefinition',name:'ProductSegmentDefinition',meta:{ title:'产品段定义'},component:ProductSegmentDefinition},
+        {path:'/ProcessSectionDefinition',name:'ProcessSectionDefinition',meta:{ title:'工艺段定义'},component:ProcessSectionDefinition},
         {path:'/ProductSegmentConfiguration',name:'ProductSegmentConfiguration',meta:{ title:'产品段任务配置'},component:ProductSegmentConfiguration},
         {path:'/ProcessParameterConfiguration',name:'ProcessParameterConfiguration',meta:{ title:'工艺参数配置'},component:ProcessParameterConfiguration},
         {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'工艺参数配置'},component:MaterialBOM},
