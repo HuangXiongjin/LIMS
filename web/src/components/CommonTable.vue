@@ -16,7 +16,7 @@
         <el-button :type="item.type" size="small" @click="tableClickHandleButton(item.label,item.clickEvent)">{{ item.label }}</el-button>
       </el-form-item>
       <el-form-item v-for="(item,index) in tableData.handleType" :key="index" v-if="!item.hasOwnProperty('hasPermissions')">
-        <el-button :type="item.type" size="small" @click="tableClickHandleButton(item.label,item.clickEvent)">{{ item.label }}</el-button>
+        <el-button :type="item.type" size="small" @click="tableClickHandleButton(item.label,item.clickEvent)" :icon='item.icon'>{{ item.label }}</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="tableData.data" border ref="multipleTable" @selection-change="handleSelectionChange" @row-click="handleRowClick">

@@ -272,11 +272,11 @@ class ZYTask(Base):
     # 实际完成时间:
     ActEndTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
 
-    # 设定重复次数:
-    SetRepeatCount = Column(Integer, primary_key=False, autoincrement=False, nullable=True, default=1)
-
-    # 当前重复次数:
-    CurretnRepeatCount = Column(Integer, primary_key=False, autoincrement=False, nullable=True, default=0)
+    # # 设定重复次数:
+    # SetRepeatCount = Column(Integer, primary_key=False, autoincrement=False, nullable=True, default=1)
+    #
+    # # 当前重复次数:
+    # CurretnRepeatCount = Column(Integer, primary_key=False, autoincrement=False, nullable=True, default=0)
 
     # 实际罐号:
     ActTank = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
