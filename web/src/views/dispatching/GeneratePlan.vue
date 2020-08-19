@@ -39,9 +39,9 @@
                     </el-col>
                     <el-col :span='2' style="textAlign:right;paddingRight:8px;">单位</el-col>
                     <el-col :span='6'>
-                        <el-select v-model="formInline.region" placeholder="请选择品名">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
+                        <el-select v-model="formInline.region" placeholder="请选择单位">
+                            <el-option label="kg" value="shanghai"></el-option>
+                            <el-option label="h" value="beijing"></el-option>
                         </el-select>
                     </el-col>
                 </el-form-item>
@@ -49,13 +49,13 @@
         </el-col>
         <el-col>
             <div class="platformContainer" v-if='active===0'>
-                <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
+                <tableView class="" :tableData="PermissionTableData1" @getTableData="getPermissionTable"></tableView>
             </div>
         </el-col>
         <el-col>
             <div class="platformContainer" v-if='active===1'>
                 <div class="marginBottom text-size-18">生成计划信息</div>
-                <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
+                <tableView class="" :tableData="PermissionTableData2" @getTableData="getPermissionTable"></tableView>
             </div>
         </el-col>
         <el-col v-if="active===2">
@@ -79,14 +79,41 @@ export default {
                 user: '',
                 region: ''
             },
-           PermissionTableData:{
-            tableName:"ZYTask",
+           PermissionTableData1:{
+            tableName:"Scheduling",
             column:[
                 {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-                {prop:"EquipmentID",label:"设备ID",type:"input",value:""},
-                {prop:"PlanDate",label:"计划日期",type:"input",value:""},
-                {prop:"TaskID",label:"制药任务单号",type:"input",value:""},
+                {prop:"PRName",label:"产品名称",type:"input",value:""},
+                {prop:"SchedulingTime",label:"排产时间(工厂日历)",type:"input",value:""},
+                {prop:"SchedulingNum",label:"排产序列号",type:"input",value:""},
+                {prop:"BatchNumS",label:"批数",type:"input",value:""},
+                {prop:"SchedulingStatus",label:" 排产状态",type:"input",value:""},
+                {prop:"create_time",label:" 创建时间",type:"input",value:"",canSubmit:false,searchProp:false},
+                {prop:"update_time ",label:" 修改时间",type:"input",value:"",canSubmit:false,searchProp:false},
+            ],
+            data:[],
+            limit:5,
+            offset:1,
+            total:0,
+            tableSelection:true, //是否在第一列添加复选框
+            searchProp:"",
+            searchVal:"",
+            multipleSelection: [],
+        },
+        PermissionTableData2:{
+            tableName:"PlanManager",
+            column:[
+                {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
+                {prop:"SchedulePlanCode",label:"调度编号",type:"input",value:""},
                 {prop:"BatchID",label:"批次号",type:"input",value:""},
+                {prop:"PlanQuantity",label:"计划重量",type:"input",value:""},
+                {prop:"Unit",label:"单位",type:"input",value:""},
+                {prop:"BrandCode",label:" 品名编码",type:"input",value:""},
+                {prop:"BrandName",label:" 品名",type:"input",value:"",canSubmit:false,searchProp:false},
+                {prop:"PlanStatus ",label:"计划状态",type:"input",value:"",canSubmit:false,searchProp:false},
+                {prop:"PlanBeginTime ",label:"调度计划开始时间",type:"input",value:"",canSubmit:false,searchProp:false},
+                {prop:"PlanEndTime ",label:" 计划完成时间",type:"input",value:"",canSubmit:false,searchProp:false},
+                {prop:"Type ",label:"调度类型",type:"input",value:"",canSubmit:false,searchProp:false},
             ],
             data:[],
             limit:5,
@@ -106,17 +133,17 @@ export default {
       getPermissionTable(){
         var that = this
         var params = {
-          tableName: this.PermissionTableData.tableName,
-          limit:this.PermissionTableData.limit,
-          offset:this.PermissionTableData.offset - 1
+          tableName: this.PermissionTableData1.tableName,
+          limit:this.PermissionTableData1.limit,
+          offset:this.PermissionTableData1.offset - 1
         }
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
           if(res.data.code === "200"){
             var data = res.data.data
-            that.PermissionTableData.data = data.rows
-            that.PermissionTableData.total = data.total
+            that.PermissionTableData1.data = data.rows
+            that.PermissionTableData1.total = data.total
           }
         },res =>{
           console.log("请求错误")
