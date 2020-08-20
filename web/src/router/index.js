@@ -17,8 +17,6 @@ import ProcessSectionDefinition from '@/views/ProductionModel/ProcessSectionDefi
 import ProductSegmentConfiguration from '@/views/ProductionModel/ProductSegmentConfiguration'
 import ProcessParameterConfiguration from '@/views/ProductionModel/ProcessParameterConfiguration'
 import ProcessRoute from '@/views/ProductionModel/ProcessRoute'
-import ProductPlan from '@/views/dispatching/ProductPlan'
-import ProductProcessPlan from '@/views/dispatching/ProductProcessPlan'
 import ProcessPlanTask from '@/views/dispatching/ProcessPlanTask'
 
 import schedulingPlan from '@/views/scheduling/schedulingPlan'
@@ -41,7 +39,9 @@ import EquipmentFailureManagement from '@/views/Device/EquipmentFailureManagemen
 import EquipmentOperationRecord from '@/views/Device/EquipmentOperationRecord'
 import MaterialInformation from '@/views/material/MaterialInformation'
 import MaterialBOM from '@/views/material/MaterialBOM'
+
 import ElectronicBatchRecord from '@/views/ElectronicBatchRecord/ElectronicBatchRecord'
+import BatchRecordFiles from '@/views/ElectronicBatchRecord/BatchRecordFiles'
 
 Vue.use(Router)
 const originalPush = Router.prototype.push
@@ -75,14 +75,12 @@ export default new Router({
         {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'工艺参数配置',type:"生产建模"},component:MaterialBOM},
         {path:'/ProcessRoute',name:'ProcessRoute',meta:{ title:'工艺路线',type:"生产建模"},component:ProcessRoute},
 
-        {path:'/ProductPlan',name:'ProductPlan',meta:{ title:'生产计划',type:"调度系统"},component:ProductPlan},
-        {path:'/ProductProcessPlan',name:'ProductProcessPlan',meta:{ title:'工艺段生产计划',type:"调度系统"},component:ProductProcessPlan},
-        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'工艺段计划任务',type:"调度系统"},component:ProcessPlanTask},
+        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'生产调度信息',type:"调度系统"},component:ProcessPlanTask},
         {path:'/GeneratePlan',name:'GeneratePlan',meta:{ title:'生成计划',type:"调度系统"},component:GeneratePlan},
         {path:'/AuditPlan',name:'AuditPlan',meta:{ title:'审核计划',type:"调度系统"},component:AuditPlan},
         {path:'/ImplementationPlan',name:'ImplementationPlan',meta:{ title:'执行计划',type:"调度系统"},component:ImplementationPlan},
         {path:'/SendWMS',name:'SendWMS',meta:{ title:'发送WMS',type:"调度系统"},component:SendWMS},
-        {path:'/MaterialPreparation',name:'MaterialPreparation',meta:{ title:'备料',type:"调度系统"},component:MaterialPreparation},
+        {path:'/MaterialPreparation',name:'MaterialPreparation',meta:{ title:'物料调度管理',type:"调度系统"},component:MaterialPreparation},
 
         {path:'/schedulingPlan',name:'schedulingPlan',meta:{ title:'排产计划',type:"排产系统"},component:schedulingPlan},
         {path:'/scheduling',name:'scheduling',meta:{ title:'工厂排产',type:"排产系统"},component:scheduling},
@@ -95,7 +93,8 @@ export default new Router({
         {path:'/MaterialInformation',name:'MaterialInformation',meta:{ title:'物料信息',type:"物料系统"},component:MaterialInformation},
         {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'物料清单',type:"物料系统"},component:MaterialBOM},
 
-        {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'电子批记录',type:"电子批记录"},component:ElectronicBatchRecord},
+        {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'批生产记录',type:"电子批记录"},component:ElectronicBatchRecord},
+        {path:'/BatchRecordFiles',name:'BatchRecordFiles',meta:{ title:'批记录管理',type:"电子批记录"},component:BatchRecordFiles},
 
         {path:'/DeviceInformation',name:'DeviceInformation',meta:{ title:'设备信息',type:"设备管理"},component:DeviceInformation},
         {path:'/EquipmentpartsManage',name:'EquipmentpartsManage',meta:{ title:'设备备件管理',type:"设备管理"},component:EquipmentpartsManage},

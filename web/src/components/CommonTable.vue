@@ -19,7 +19,7 @@
         <el-button :type="item.type" size="small" @click="tableClickHandleButton(item.label,item.clickEvent)" :icon='item.icon'>{{ item.label }}</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="tableData.data" border ref="multipleTable" @selection-change="handleSelectionChange" @row-click="handleRowClick">
+    <el-table :data="tableData.data" size="small" border ref="multipleTable" @selection-change="handleSelectionChange" @row-click="handleRowClick">
       <el-table-column type="selection" v-if="tableData.tableSelection"></el-table-column>
       <el-table-column v-for="(item,index) in tableData.column" :key="index" :prop="item.prop" :label="item.label" :width="item.width" v-if="item.showField != false">
         <template slot-scope="scope">

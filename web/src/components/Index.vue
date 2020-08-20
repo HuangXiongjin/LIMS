@@ -103,19 +103,13 @@ export default {
         ]},
         {label: '调度系统',icon:"el-icon-s-operation",mainMenu:[
           {title:"生产计划调度管理",icon:"el-icon-box",children:[
-            {title:"生成计划",icon:"el-icon-box",url:"/GeneratePlan"},
-            {title:"审核计划",icon:"el-icon-box",url:"/AuditPlan"},
-            {title:"执行计划",icon:"el-icon-box",url:"/ImplementationPlan"},
-            {title:"发送WMS",icon:"el-icon-box",url:"/SendWMS"},
+            {title:"生成计划",url:"/GeneratePlan"},
+            {title:"审核计划",url:"/AuditPlan"},
+            {title:"执行计划",url:"/ImplementationPlan"},
+            {title:"发送WMS",url:"/SendWMS"},
           ]},
-          {title:"生产计划明细",icon:"el-icon-tickets",children:[
-             {title:"生产计划",icon:"el-icon-office-building",url:"/ProductPlan"},
-             {title:"工艺段生产计划",icon:"el-icon-office-building",url:"/ProductProcessPlan"}
-          ]},
-          {title:"生产任务明细",icon:"el-icon-tickets",children:[
-             {title:"工艺段计划任务",icon:"el-icon-office-building",url:"/ProcessPlanTask"}
-          ]},
-          {title:"物料调度管理",icon:"el-icon-box",url:"/MaterialPreparation"},
+          {title:"生产调度信息",icon:"el-icon-tickets",url:"/ProcessPlanTask"},
+          {title:"物料调度管理",icon:"fa fa-leaf",url:"/MaterialPreparation"},
         ]},
         {label: '生产建模',icon:"el-icon-s-management",mainMenu:[
           {title:"产品定义",icon:"el-icon-office-building",url:"/ProductDefinition"},
@@ -154,16 +148,18 @@ export default {
           {title:"流程管理",icon:"el-icon-share",url:"/flowGraph"},
           {title:"系统日志",icon:"el-icon-notebook-1",url:"/Log"}
         ]},
-         {label: '电子批记录',icon:"el-icon-edit-outline",mainMenu:[
-          {title:"电子批记录",icon:"el-icon-box",url:"/ElectronicBatchRecord"},
-
+        {label: '电子批记录',icon:"el-icon-edit-outline",mainMenu:[
+          {title:"批生产记录",icon:"el-icon-edit-outline",children:[
+            {title:"金蝉止痒颗粒",url:"/ElectronicBatchRecord?DrugName=金蝉止痒颗粒"}
           ]},
-          {label: '仓储管理',icon:"el-icon-takeaway-box",mainMenu:[
+          {title:"批记录管理",icon:"el-icon-folder-opened",url:"/BatchRecordFiles"},
+        ]},
+        {label: '仓储管理',icon:"el-icon-takeaway-box",mainMenu:[
           {title:"库位管理",icon:"el-icon-takeaway-box",url:""},
           {title:"出入库管理",icon:"el-icon-takeaway-box",url:""},
           {title:"库存信息",icon:"el-icon-takeaway-box",url:""},
 
-          ]}
+        ]}
       ],
       mainMenuActive:0,
       mainMenu:[], //左侧导航菜单列表
