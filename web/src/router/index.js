@@ -16,7 +16,6 @@ import ProductSegmentDefinition from '@/views/ProductionModel/ProductSegmentDefi
 import ProcessSectionDefinition from '@/views/ProductionModel/ProcessSectionDefinition'
 import ProductSegmentConfiguration from '@/views/ProductionModel/ProductSegmentConfiguration'
 import ProcessParameterConfiguration from '@/views/ProductionModel/ProcessParameterConfiguration'
-import MaterialBOM from '@/views/ProductionModel/MaterialBOM'
 import ProcessRoute from '@/views/ProductionModel/ProcessRoute'
 import ProductPlan from '@/views/dispatching/ProductPlan'
 import ProductProcessPlan from '@/views/dispatching/ProductProcessPlan'
@@ -33,7 +32,6 @@ import AuditPlan from '@/views/dispatching/AuditPlan'
 import ImplementationPlan from '@/views/dispatching/ImplementationPlan'
 import SendWMS from '@/views/dispatching/SendWMS'
 import MaterialPreparation from '@/views/dispatching/MaterialPreparation'
-import ElectronicBatchRecord from '@/views/production/ElectronicBatchRecord'
 import MaterialBalanceStatistics from '@/views/production/MaterialBalanceStatistics'
 import MaterialTraceability from '@/views/production/MaterialTraceability'
 import DeviceInformation from '@/views/Device/DeviceInformation'
@@ -43,6 +41,8 @@ import InstrumentMaintenanceManagement from '@/views/Device/InstrumentMaintenanc
 import EquipmentFailureManagement from '@/views/Device/EquipmentFailureManagement'
 import EquipmentOperationRecord from '@/views/Device/EquipmentOperationRecord'
 import MaterialInformation from '@/views/material/MaterialInformation'
+import MaterialBOM from '@/views/material/MaterialBOM'
+import ElectronicBatchRecord from '@/views/ElectronicBatchRecord/ElectronicBatchRecord'
 
 Vue.use(Router)
 const originalPush = Router.prototype.push
@@ -59,47 +59,6 @@ export default new Router({
       redirect:'/home', //index主页默认加载home页面
       children:[
         {path:'/home',name:'home',meta:{ title:'工作台'},component:home},
-<<<<<<< HEAD
-        {path:'/Organization',name:'Organization',meta:{ title:'组织架构'},component:Organization},
-        {path:'/Role',name:'Role',meta:{ title:'角色管理'},component:Role},
-        {path:'/TeamGroup',name:'TeamGroup',meta:{ title:'班组管理'},component:TeamGroup},
-        {path:'/Personnel',name:'Personnel',meta:{ title:'人员管理'},component:Personnel},
-        {path:'/Permission',name:'Permission',meta:{ title:'权限维护'},component:Permission},
-        {path:'/Log',name:'Log',meta:{ title:'系统日志'},component:Log},
-        {path:'/flowGraph',name:'flowGraph',meta:{ title:'流程图管理'},component:flowGraph},
-        {path:'/ProductDefinition',name:'ProductDefinition',meta:{ title:'产品定义'},component:ProductDefinition},
-        {path:'/ProductSegmentDefinition',name:'ProductSegmentDefinition',meta:{ title:'产品段定义'},component:ProductSegmentDefinition},
-        {path:'/ProcessSectionDefinition',name:'ProcessSectionDefinition',meta:{ title:'工艺段定义'},component:ProcessSectionDefinition},
-        {path:'/ProductSegmentConfiguration',name:'ProductSegmentConfiguration',meta:{ title:'产品段任务配置'},component:ProductSegmentConfiguration},
-        {path:'/ProcessParameterConfiguration',name:'ProcessParameterConfiguration',meta:{ title:'工艺参数配置'},component:ProcessParameterConfiguration},
-        {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'工艺参数配置'},component:MaterialBOM},
-        {path:'/ProcessRoute',name:'ProcessRoute',meta:{ title:'工艺路线'},component:ProcessRoute},
-        {path:'/ProductPlan',name:'ProductPlan',meta:{ title:'生产计划'},component:ProductPlan},
-        {path:'/ProductProcessPlan',name:'ProductProcessPlan',meta:{ title:'生产计划'},component:ProductProcessPlan},
-        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'生产计划'},component:ProcessPlanTask},
-        {path:'/SchedulePreview',name:'SchedulePreview',meta:{ title:'排期预览'},component:SchedulePreview},
-        {path:'/InformationEntry',name:'InformationEntry',meta:{ title:'物料信息录入'},component:InformationEntry},
-        {path:'/ConfigPlan',name:'ConfigPlan',meta:{ title:'排产配置'},component:ConfigPlan},
-        {path:'/ScheduleManagement',name:'ScheduleManagement',meta:{ title:'日程管理'},component:ScheduleManagement},
-        {path:'/CalendarScheduling',name:'CalendarScheduling',meta:{ title:'日历排产'},component:CalendarScheduling},
-        {path:'/PlannedMaintenance',name:'PlannedMaintenance',meta:{ title:'计划维护'},component:PlannedMaintenance},
-        {path:'/PlanningReport',name:'PlanningReport',meta:{ title:'计划报表'},component:PlanningReport},
-        {path:'/GeneratePlan',name:'GeneratePlan',meta:{ title:'生成计划'},component:GeneratePlan},
-        {path:'/AuditPlan',name:'AuditPlan',meta:{ title:'审核计划'},component:AuditPlan},
-        {path:'/ImplementationPlan',name:'ImplementationPlan',meta:{ title:'执行计划'},component:ImplementationPlan},
-        {path:'/SendWMS',name:'SendWMS',meta:{ title:'发送WMS'},component:SendWMS},
-        {path:'/MaterialPreparation',name:'MaterialPreparation',meta:{ title:'备料'},component:MaterialPreparation},
-        {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'电子批记录'},component:ElectronicBatchRecord},
-        {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计'},component:MaterialBalanceStatistics},
-        {path:'/MaterialTraceability',name:'MaterialTraceability',meta:{ title:'物料追溯'},component:MaterialTraceability},
-        {path:'/DeviceInformation',name:'DeviceInformation',meta:{ title:'设备信息'},component:DeviceInformation},
-        {path:'/EquipmentpartsManage',name:'EquipmentpartsManage',meta:{ title:'设备备件管理'},component:EquipmentpartsManage},
-        {path:'/InstrumentDataManagement',name:'InstrumentDataManagement',meta:{ title:'仪器仪表数据管理'},component:InstrumentDataManagement},
-        {path:'/InstrumentMaintenanceManagement',name:'InstrumentMaintenanceManagement',meta:{ title:'仪器仪表检修管理'},component:InstrumentMaintenanceManagement},
-        {path:'/EquipmentFailureManagement',name:'EquipmentFailureManagement',meta:{ title:'设备故障管理'},component:EquipmentFailureManagement},
-        {path:'/EquipmentOperationRecord',name:'EquipmentOperationRecord',meta:{ title:'设备运行记录'},component:EquipmentOperationRecord},
-        {path:'/MaterialInformation',name:'MaterialInformation',meta:{ title:'物料信息'},component:MaterialInformation},
-=======
         {path:'/switchSystem',name:'switchSystem',meta:{ title:'系统切换',type:"系统管理"},component:switchSystem},
         {path:'/Organization',name:'Organization',meta:{ title:'组织架构',type:"系统管理"},component:Organization},
         {path:'/Role',name:'Role',meta:{ title:'角色管理',type:"系统管理"},component:Role},
@@ -134,10 +93,22 @@ export default new Router({
         {path:'/PlannedMaintenance',name:'PlannedMaintenance',meta:{ title:'计划维护',type:"排产系统"},component:PlannedMaintenance},
         {path:'/PlanningReport',name:'PlanningReport',meta:{ title:'计划报表',type:"排产系统"},component:PlanningReport},
 
-        {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'电子批记录',type:"生产数据系统"},component:ElectronicBatchRecord},
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据系统"},component:MaterialBalanceStatistics},
         {path:'/MaterialTraceability',name:'MaterialTraceability',meta:{ title:'物料追溯',type:"生产数据系统"},component:MaterialTraceability},
->>>>>>> a5d8efe18933a327c6d71dd6e164848f71c1e9f7
+        
+        {path:'/MaterialInformation',name:'MaterialInformation',meta:{ title:'物料信息',type:"物料系统"},component:MaterialInformation},
+        {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'物料清单',type:"物料系统"},component:MaterialBOM},
+
+        {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'电子批记录',type:"电子批记录"},component:ElectronicBatchRecord},
+        
+        {path:'/DeviceInformation',name:'DeviceInformation',meta:{ title:'设备信息',type:"设备管理"},component:DeviceInformation},
+        {path:'/EquipmentpartsManage',name:'EquipmentpartsManage',meta:{ title:'设备备件管理',type:"设备管理"},component:EquipmentpartsManage},
+        {path:'/InstrumentDataManagement',name:'InstrumentDataManagement',meta:{ title:'仪表仪器数据管理',type:"设备管理"},component:InstrumentDataManagement},
+        {path:'/InstrumentMaintenanceManagement',name:'InstrumentMaintenanceManagement',meta:{ title:'仪表仪器检修管理',type:"设备管理"},component:InstrumentMaintenanceManagement},
+        {path:'/EquipmentFailureManagement',name:'EquipmentFailureManagement',meta:{ title:'设备故障管理',type:"设备管理"},component:EquipmentFailureManagement},
+        {path:'/EquipmentOperationRecord',name:'EquipmentOperationRecord',meta:{ title:'设备运行记录',type:"设备管理"},component:EquipmentOperationRecord},
+
+
       ]
     },
     {
