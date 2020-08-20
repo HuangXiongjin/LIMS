@@ -18,16 +18,19 @@
     data(){
       return {
         PermissionTableData:{
-          tableName:"Material",
+          tableName:"PlanManager",
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"MATCode",label:"物料编码",type:"input",value:""},
-            {prop:"MATName",label:"物料名称",type:"input",value:""},
-            {prop:"Desc",label:"物料描述",type:"input",value:""},
-            {prop:"MATTypeID",label:"物料类型ID",type:"input",value:""},
-            {prop:"Seq",label:"顺序号",type:"input",value:""},
-            {prop:"Grade",label:"等级",type:"input",value:""},
-            {prop:"MATBatchNo",label:"物料标识:1为排产所常用表标识",type:"input",value:""}
+            {prop:"SchedulePlanCode",label:"调度编号",type:"input",value:""},
+            {prop:"BatchID",label:" 批次号",type:"input",value:""},
+            {prop:"PlanQuantity",label:"计划重量",type:"input",value:""},
+            {prop:"Unit",label:"单位",type:"input",value:""},
+            {prop:"BrandCode",label:"品名ID",type:"input",value:""},
+            {prop:"BrandName",label:"品名",type:"input",value:""},
+            {prop:"PlanStatus",label:"计划状态",type:"input",value:""},
+            {prop:"PlanBeginTime",label:"调度计划开始时间",type:"input",value:""},
+            {prop:"PlanEndTime",label:"计划完成时间",type:"input",value:""},
+            {prop:"Type",label:"调度类型",type:"input",value:""}
           ],
           data:[],
           limit:5,

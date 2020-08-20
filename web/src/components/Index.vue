@@ -106,19 +106,6 @@ export default {
           {title:'计划维护',icon:"el-icon-edit",url:"/PlannedMaintenance"},
           {title:'计划报表',icon:"el-icon-notebook-2",url:"/PlanningReport"},
           ]},
-<<<<<<< HEAD
-        {label: '设备系统',mainMenu:[
-            {title:"设备信息",icon:"el-icon-box",url:"/DeviceInformation"},
-            {title:"设备备件管理",icon:"el-icon-box",url:"/EquipmentpartsManage"},
-            {title:"仪器仪表数据管理",icon:"el-icon-box",url:"/InstrumentDataManagement"},
-            {title:"仪器仪表检修管理",icon:"el-icon-box",url:"/InstrumentMaintenanceManagement"},
-            {title:"设备故障管理",icon:"el-icon-box",url:"/EquipmentFailureManagement"},
-            {title:"设备运行记录",icon:"el-icon-box",url:"/EquipmentOperationRecord"},
-
-          ]},
-        {label: '物料系统',mainMenu:[
-            {title:"物料系统",icon:"el-icon-box",url:"/MaterialInformation"},
-=======
         {label: '调度系统',icon:"el-icon-s-operation",mainMenu:[
           {title:"计划明细",icon:"el-icon-tickets",children:[
              {title:"生产计划",icon:"el-icon-office-building",url:"/ProductPlan"},
@@ -139,19 +126,22 @@ export default {
           {title:"产品段定义",icon:"el-icon-office-building",url:"/ProductSegmentDefinition"},
           {title:"产品段任务配置",icon:"el-icon-office-building",url:"/ProductSegmentConfiguration"},
           {title:"工艺参数配置",icon:"el-icon-office-building",url:"/ProcessParameterConfiguration"},
-          {title:"物料BOM",icon:"el-icon-office-building",url:"/MaterialBOM"},
           {title:"生产线定义",icon:"el-icon-office-building",url:"/ProcessRoute"},
           ]},
         {label: '设备系统',icon:"fa fa-wrench",mainMenu:[
-          {title:"设备系统",icon:"el-icon-box",url:""},
+          {title:"设备信息",icon:"el-icon-box",url:"/DeviceInformation"},
+          {title:"设备备件管理",icon:"el-icon-box",url:"/EquipmentpartsManage"},
+          {title:"仪表仪器数据管理",icon:"el-icon-box",url:"/InstrumentDataManagement"},
+          {title:"仪表仪器检修管理",icon:"el-icon-box",url:"/InstrumentMaintenanceManagement"},
+          {title:"设备故障管理",icon:"el-icon-box",url:"/EquipmentFailureManagement"},
+          {title:"设备运行记录",icon:"el-icon-box",url:"/EquipmentOperationRecord"},
 
           ]},
         {label: '物料系统',icon:"fa fa-leaf",mainMenu:[
-            {title:"物料系统",icon:"el-icon-box",url:""},
->>>>>>> a5d8efe18933a327c6d71dd6e164848f71c1e9f7
+            {title:"物料管理",icon:"el-icon-box",url:"/MaterialInformation"},
+            {title:"物料清单",icon:"el-icon-box",url:"/MaterialBOM"},
           ]},
         {label: '生产数据系统',icon:"el-icon-s-data",mainMenu:[
-            {title:"电子批记录",icon:"el-icon-box",url:"/ElectronicBatchRecord"},
             {title:"批物料平衡统计",icon:"el-icon-box",url:"/MaterialBalanceStatistics"},
             {title:"物料追溯",icon:"el-icon-box",url:"/MaterialTraceability"}
           ]},
@@ -167,6 +157,16 @@ export default {
           {title:"流程管理",icon:"el-icon-share",url:"/flowGraph"},
           {title:"系统日志",icon:"el-icon-notebook-1",url:"/Log"}
         ]},
+         {label: '电子批记录',icon:"el-icon-edit-outline",mainMenu:[
+          {title:"电子批记录",icon:"el-icon-box",url:"/ElectronicBatchRecord"},
+
+          ]},
+          {label: '仓储管理',icon:"el-icon-takeaway-box",mainMenu:[
+          {title:"库位管理",icon:"el-icon-takeaway-box",url:""},
+          {title:"出入库管理",icon:"el-icon-takeaway-box",url:""},
+          {title:"库存信息",icon:"el-icon-takeaway-box",url:""},
+
+          ]}
       ],
       mainMenuActive:0,
       mainMenu:[], //左侧导航菜单列表
