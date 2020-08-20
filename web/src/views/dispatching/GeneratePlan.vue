@@ -1,10 +1,10 @@
 <template>
     <el-row>
-        <el-col :span='24' class="productionstep  marginBottom" style="marginTop:10px;">
-            <el-steps :active="active" finish-status="success">
-                <el-step title="批次号品名录入" icon="el-icon-lock"></el-step>
-                <el-step title="批次计划" icon="el-icon-lock"></el-step>
-                <el-step title="计划效验结果" icon="el-icon-lock"></el-step>
+        <el-col :span='24'>
+            <el-steps :active="active" align-center class="marginBottom">
+                <el-step title="批次号品名录入"></el-step>
+                <el-step title="批次计划"></el-step>
+                <el-step title="计划效验结果"></el-step>
             </el-steps>
             <!-- <el-button style="margin-top: 12px;" @click="nextStep">下一步</el-button> -->
         </el-col>

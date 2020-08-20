@@ -1,9 +1,6 @@
 <template>
   <el-row>
     <el-col :span="24">
-      <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">日历排产</span>
-      </div>
       <div class="platformContainer">
         <el-form :inline="true">
             <el-form-item>

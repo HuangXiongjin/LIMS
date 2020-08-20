@@ -96,29 +96,26 @@ export default {
       systemActive:"",
       systemOptions:[
         {label: '排产系统',icon:"el-icon-date",mainMenu:[
-          {title:'排期预览',icon:"el-icon-tickets",url:"/SchedulePreview"},
-          {title:'工厂排产',icon:"el-icon-date",children:[
-            {title:"排产计划录入",icon:"el-icon-edit-outline",url:"/InformationEntry"},
-            {title:"排产配置",icon:"el-icon-view",url:"/ConfigPlan"},
-            {title:"日程管理",icon:"el-icon-date",url:"/ScheduleManagement"},
-            {title:"日历排产",icon:"el-icon-date",url:"/CalendarScheduling"},
-          ]},
-          {title:'计划维护',icon:"el-icon-edit",url:"/PlannedMaintenance"},
-          {title:'计划报表',icon:"el-icon-notebook-2",url:"/PlanningReport"},
-          ]},
+          {title:'排产计划',icon:"el-icon-tickets",url:"/schedulingPlan"},
+          {title:'工厂排产',icon:"fa fa-calendar-plus-o",url:"/scheduling"},
+          {title:'工厂日历',icon:"el-icon-date",url:"/calendar"},
+          {title:'排产记录',icon:"fa fa-table",url:"/schedulingLog"},
+        ]},
         {label: '调度系统',icon:"el-icon-s-operation",mainMenu:[
-          {title:"计划明细",icon:"el-icon-tickets",children:[
-             {title:"生产计划",icon:"el-icon-office-building",url:"/ProductPlan"},
-             {title:"工艺段生产计划",icon:"el-icon-office-building",url:"/ProductProcessPlan"},
-             {title:"工艺段计划任务",icon:"el-icon-office-building",url:"/ProcessPlanTask"}
-          ]},
-          {title:"计划管理",icon:"el-icon-box",children:[
+          {title:"生产计划调度管理",icon:"el-icon-box",children:[
             {title:"生成计划",icon:"el-icon-box",url:"/GeneratePlan"},
             {title:"审核计划",icon:"el-icon-box",url:"/AuditPlan"},
             {title:"执行计划",icon:"el-icon-box",url:"/ImplementationPlan"},
             {title:"发送WMS",icon:"el-icon-box",url:"/SendWMS"},
           ]},
-          {title:"备料",icon:"el-icon-box",url:"/MaterialPreparation"},
+          {title:"生产计划明细",icon:"el-icon-tickets",children:[
+             {title:"生产计划",icon:"el-icon-office-building",url:"/ProductPlan"},
+             {title:"工艺段生产计划",icon:"el-icon-office-building",url:"/ProductProcessPlan"}
+          ]},
+          {title:"生产任务明细",icon:"el-icon-tickets",children:[
+             {title:"工艺段计划任务",icon:"el-icon-office-building",url:"/ProcessPlanTask"}
+          ]},
+          {title:"物料调度管理",icon:"el-icon-box",url:"/MaterialPreparation"},
         ]},
         {label: '生产建模',icon:"el-icon-s-management",mainMenu:[
           {title:"产品定义",icon:"el-icon-office-building",url:"/ProductDefinition"},

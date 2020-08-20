@@ -1,7 +1,7 @@
 <template>
   <el-row :gutter="20">
     <el-col :span="5">
-      <div class="scheduleContainer" style="height: 730px;">
+      <div class="scheduleContainer" style="height: 630px;">
         <div id='external-events' class="marginBottom">
           <h4>可拖放的日程</h4>
           <a class='fc-event' v-for="item in scheduleTableData.data" style="padding: 5px;margin: 10px 0;cursor: pointer;" :color="item.color" :style="{ background:item.color,border:'1px solid ' +item.color }">{{item.DateTypeName}}</a>
@@ -22,6 +22,7 @@
                       locale="zh-cn"
                       :header="header"
                       :events="events"
+                      :height="600"
                       :editable="true"
                       :selectable="true"
                       :button-text="buttonText"
