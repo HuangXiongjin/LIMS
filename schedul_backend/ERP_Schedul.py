@@ -127,7 +127,7 @@ def planScheduling():
                 for i in schdays:
                     undays.append(i[0])
 
-            # 删除上一次排产同品名的数据
+            # 删除上一次排产同品名同月份的数据
             solds = db_session.query(Scheduling).filter(Scheduling.PRName == PRName, Scheduling.SchedulingTime.like("%"+mou+"%")).all()
             for old in solds:
                 sql = "DELETE FROM Scheduling WHERE ID = "+str(old.ID)
