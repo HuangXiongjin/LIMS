@@ -3,7 +3,7 @@
     <!-- 头部 -->
     <el-header class="body-head">
       <div class="head-menu floatLeft">
-        <router-link to='/home'><span class="color-black">汉盟智能管理系统</span></router-link>
+        <router-link to='/home'><span class="color-black">希尔安智能管理系统</span></router-link>
       </div>
       <div class="head-menu floatRight">
         <ul>
@@ -96,9 +96,8 @@ export default {
       systemActive:"",
       systemOptions:[
         {label: '排产系统',icon:"el-icon-date",mainMenu:[
-          {title:'排产计划',icon:"el-icon-tickets",url:"/schedulingPlan"},
           {title:'工厂排产',icon:"fa fa-calendar-plus-o",url:"/scheduling"},
-          {title:'工厂日历',icon:"el-icon-date",url:"/calendar"},
+          {title:'排期管理',icon:"el-icon-date",url:"/calendar"},
           {title:'排产记录',icon:"fa fa-table",url:"/schedulingLog"},
         ]},
         {label: '调度系统',icon:"el-icon-s-operation",mainMenu:[

@@ -83,7 +83,7 @@ export default new Router({
 
         {path:'/schedulingPlan',name:'schedulingPlan',meta:{ title:'排产计划',type:"排产系统"},component:schedulingPlan},
         {path:'/scheduling',name:'scheduling',meta:{ title:'工厂排产',type:"排产系统"},component:scheduling},
-        {path:'/calendar',name:'calendar',meta:{ title:'工厂日历',type:"排产系统"},component:calendar},
+        {path:'/calendar',name:'calendar',meta:{ title:'排期管理',type:"排产系统"},component:calendar},
         {path:'/schedulingLog',name:'schedulingLog',meta:{ title:'排产记录',type:"排产系统"},component:schedulingLog},
 
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据系统"},component:MaterialBalanceStatistics},
