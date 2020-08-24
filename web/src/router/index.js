@@ -31,6 +31,7 @@ import SendWMS from '@/views/dispatching/SendWMS'
 import MaterialPreparation from '@/views/dispatching/MaterialPreparation'
 import MaterialBalanceStatistics from '@/views/production/MaterialBalanceStatistics'
 import MaterialTraceability from '@/views/production/MaterialTraceability'
+import TrendQuery from '@/views/production/TrendQuery'
 import DeviceInformation from '@/views/Device/DeviceInformation'
 import EquipmentpartsManage from '@/views/Device/EquipmentpartsManage'
 import InstrumentDataManagement from '@/views/Device/InstrumentDataManagement'
@@ -39,11 +40,6 @@ import EquipmentFailureManagement from '@/views/Device/EquipmentFailureManagemen
 import EquipmentOperationRecord from '@/views/Device/EquipmentOperationRecord'
 import MaterialInformation from '@/views/material/MaterialInformation'
 import MaterialBOM from '@/views/material/MaterialBOM'
-<<<<<<< HEAD
-import TrendQuery from '@/views/material/TrendQuery'
-=======
-
->>>>>>> c7c9a2154f8743553118f8a4290b87b0c0de957f
 import ElectronicBatchRecord from '@/views/ElectronicBatchRecord/ElectronicBatchRecord'
 import BatchRecordFiles from '@/views/ElectronicBatchRecord/BatchRecordFiles'
 
@@ -76,7 +72,6 @@ export default new Router({
         {path:'/ProcessSectionDefinition',name:'ProcessSectionDefinition',meta:{ title:'工艺段定义',type:"生产建模"},component:ProcessSectionDefinition},
         {path:'/ProductSegmentConfiguration',name:'ProductSegmentConfiguration',meta:{ title:'产品段任务配置',type:"生产建模"},component:ProductSegmentConfiguration},
         {path:'/ProcessParameterConfiguration',name:'ProcessParameterConfiguration',meta:{ title:'工艺参数配置',type:"生产建模"},component:ProcessParameterConfiguration},
-        {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'工艺参数配置',type:"生产建模"},component:MaterialBOM},
         {path:'/ProcessRoute',name:'ProcessRoute',meta:{ title:'工艺路线',type:"生产建模"},component:ProcessRoute},
 
         {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'生产调度信息',type:"调度系统"},component:ProcessPlanTask},
@@ -93,10 +88,10 @@ export default new Router({
 
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据系统"},component:MaterialBalanceStatistics},
         {path:'/MaterialTraceability',name:'MaterialTraceability',meta:{ title:'物料追溯',type:"生产数据系统"},component:MaterialTraceability},
+        {path:'/TrendQuery',name:'TrendQuery',meta:{ title:'生产数据趋势分析',type:"生产数据系统"},component:TrendQuery},
 
         {path:'/MaterialInformation',name:'MaterialInformation',meta:{ title:'物料信息',type:"物料系统"},component:MaterialInformation},
         {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'物料清单',type:"物料系统"},component:MaterialBOM},
-        {path:'/TrendQuery',name:'TrendQuery',meta:{ title:'生产数据趋势分析',type:"物料系统"},component:TrendQuery},
 
         {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'批生产记录',type:"电子批记录"},component:ElectronicBatchRecord},
         {path:'/BatchRecordFiles',name:'BatchRecordFiles',meta:{ title:'批记录管理',type:"电子批记录"},component:BatchRecordFiles},
