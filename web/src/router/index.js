@@ -38,12 +38,7 @@ import InstrumentMaintenanceManagement from '@/views/Device/InstrumentMaintenanc
 import EquipmentFailureManagement from '@/views/Device/EquipmentFailureManagement'
 import EquipmentOperationRecord from '@/views/Device/EquipmentOperationRecord'
 import MaterialInformation from '@/views/material/MaterialInformation'
-import MaterialBOM from '@/views/material/MaterialBOM'
-<<<<<<< HEAD
 import TrendQuery from '@/views/material/TrendQuery'
-=======
-
->>>>>>> c7c9a2154f8743553118f8a4290b87b0c0de957f
 import ElectronicBatchRecord from '@/views/ElectronicBatchRecord/ElectronicBatchRecord'
 import BatchRecordFiles from '@/views/ElectronicBatchRecord/BatchRecordFiles'
 
