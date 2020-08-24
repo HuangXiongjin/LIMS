@@ -1,3 +1,5 @@
+from tkinter.tix import MAX
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, ForeignKey, Column, DateTime, Integer, Unicode, Float, BigInteger
@@ -715,6 +717,27 @@ class Material(Base):
     # 物料标识:1为排产所常用表标识
     MATBatchNo = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
+# 批记录模板
+class BatchModel(Base):
+    __tablename__ = "BatchModel"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+
+    # 品名:
+    BrandName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段
+    PUIDName = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段编码:
+    PUCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 文件（文件名）:
+    FileName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 定义参数的字符串:
+    Parameter = Column(Unicode(MAX), primary_key=False, autoincrement=False, nullable=True)
 
 
 
