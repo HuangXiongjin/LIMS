@@ -201,15 +201,23 @@
 .blackComponents .el-timeline-item__timestamp{
   color: #00FAE7;
 }
+/* 图标 */
+.el-menu-item [class^=fa] {
+  margin-right: 5px;
+  width: 24px;
+  text-align: center;
+  font-size: 18px;
+  vertical-align: middle;
+}
 /* 公用组件样式 */
 .platformContainer{
   width: 100%;
   background: #ffffff;
   color: #000;
   border-radius: 4px;
+  border: 1px solid #E6E6E6;
   padding: 15px;
   margin-bottom: 15px;
-  box-shadow:0px 0px 6px rgba(0,0,0,0.16);
   clear: both;
   overflow: hidden;
 }

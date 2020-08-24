@@ -1,14 +1,13 @@
 <template>
     <el-row>
-        <el-col :span='24' class="productionstep  marginBottom" style="marginTop:10px;">
-            <el-steps :active="active" finish-status="success">
-                <el-step title="批次号品名录入" icon="el-icon-lock"></el-step>
-                <el-step title="批次计划" icon="el-icon-lock"></el-step>
-                <el-step title="计划效验结果" icon="el-icon-lock"></el-step>
+        <el-col :span='24'>
+            <el-steps :active="steps" finish-status="wait" align-center class="marginBottom">
+                <el-step @click.native="clickStep(0)" class="cursor-pointer" title="批次号品名录入"></el-step>
+                <el-step @click.native="clickStep(1)" class="cursor-pointer" title="批次计划"></el-step>
+                <el-step @click.native="clickStep(2)" class="cursor-pointer" title="计划效验结果"></el-step>
             </el-steps>
-            <!-- <el-button style="margin-top: 12px;" @click="nextStep">下一步</el-button> -->
         </el-col>
-        <el-col :span='24' class="cardContainer" v-if='active===0'>
+        <el-col :span='24' class="platformContainer" v-if='steps===0'>
             <div class="text-size-18 marginBottom">计划实际信息</div>
             <el-form :model="formInline" class="demo-form-inline">
                 <el-form-item>
@@ -48,23 +47,20 @@
             </el-form>
         </el-col>
         <el-col>
-            <div class="platformContainer" v-if='active===0'>
+            <div class="platformContainer" v-if='steps===0'>
                 <tableView class="" :tableData="PermissionTableData1" @getTableData="getPermissionTable"></tableView>
             </div>
         </el-col>
         <el-col>
-            <div class="platformContainer" v-if='active===1'>
+            <div class="platformContainer" v-if='steps===1'>
                 <div class="marginBottom text-size-18">生成计划信息</div>
                 <tableView class="" :tableData="PermissionTableData2" @getTableData="getPermissionTable"></tableView>
             </div>
         </el-col>
-        <el-col v-if="active===2">
+        <el-col v-if="steps===2">
             <div class="platformContainer" style="textAlign:center;height:200px;fontSize:20px;lineHeight:200px;">
               计划检验结果：新增计划成功
             </div>
-        </el-col>
-        <el-col style="textAlign:right;">
-            <el-button type="primary" @click="nextStep" >下一步</el-button>
         </el-col>
     </el-row>
 </template>
@@ -74,7 +70,7 @@ export default {
     components:{tableView},
     data() {
         return {
-            active:0,
+            steps:0,
             formInline: {
                 user: '',
                 region: ''
@@ -150,11 +146,8 @@ export default {
         }
         )
       },
-      nextStep(){
-          this.active++
-          if(this.active===3){
-              this.active=0
-          }
+      clickStep(index){
+        this.steps = index
       }
     }
 }

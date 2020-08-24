@@ -17,16 +17,13 @@ import ProcessSectionDefinition from '@/views/ProductionModel/ProcessSectionDefi
 import ProductSegmentConfiguration from '@/views/ProductionModel/ProductSegmentConfiguration'
 import ProcessParameterConfiguration from '@/views/ProductionModel/ProcessParameterConfiguration'
 import ProcessRoute from '@/views/ProductionModel/ProcessRoute'
-import ProductPlan from '@/views/dispatching/ProductPlan'
-import ProductProcessPlan from '@/views/dispatching/ProductProcessPlan'
 import ProcessPlanTask from '@/views/dispatching/ProcessPlanTask'
-import SchedulePreview from '@/views/scheduling/SchedulePreview'
-import InformationEntry from '@/views/scheduling/InformationEntry'
-import ConfigPlan from '@/views/scheduling/ConfigPlan'
-import ScheduleManagement from '@/views/scheduling/ScheduleManagement'
-import CalendarScheduling from '@/views/scheduling/CalendarScheduling'
-import PlannedMaintenance from '@/views/scheduling/PlannedMaintenance'
-import PlanningReport from '@/views/scheduling/PlanningReport'
+
+import schedulingPlan from '@/views/scheduling/schedulingPlan'
+import scheduling from '@/views/scheduling/scheduling'
+import calendar from '@/views/scheduling/calendar'
+import schedulingLog from '@/views/scheduling/schedulingLog'
+
 import GeneratePlan from '@/views/dispatching/GeneratePlan'
 import AuditPlan from '@/views/dispatching/AuditPlan'
 import ImplementationPlan from '@/views/dispatching/ImplementationPlan'
@@ -42,8 +39,13 @@ import EquipmentFailureManagement from '@/views/Device/EquipmentFailureManagemen
 import EquipmentOperationRecord from '@/views/Device/EquipmentOperationRecord'
 import MaterialInformation from '@/views/material/MaterialInformation'
 import MaterialBOM from '@/views/material/MaterialBOM'
+<<<<<<< HEAD
 import TrendQuery from '@/views/material/TrendQuery'
+=======
+
+>>>>>>> c7c9a2154f8743553118f8a4290b87b0c0de957f
 import ElectronicBatchRecord from '@/views/ElectronicBatchRecord/ElectronicBatchRecord'
+import BatchRecordFiles from '@/views/ElectronicBatchRecord/BatchRecordFiles'
 
 Vue.use(Router)
 const originalPush = Router.prototype.push
@@ -77,32 +79,28 @@ export default new Router({
         {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'工艺参数配置',type:"生产建模"},component:MaterialBOM},
         {path:'/ProcessRoute',name:'ProcessRoute',meta:{ title:'工艺路线',type:"生产建模"},component:ProcessRoute},
 
-        {path:'/ProductPlan',name:'ProductPlan',meta:{ title:'生产计划',type:"调度系统"},component:ProductPlan},
-        {path:'/ProductProcessPlan',name:'ProductProcessPlan',meta:{ title:'工艺段生产计划',type:"调度系统"},component:ProductProcessPlan},
-        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'工艺段计划任务',type:"调度系统"},component:ProcessPlanTask},
+        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'生产调度信息',type:"调度系统"},component:ProcessPlanTask},
         {path:'/GeneratePlan',name:'GeneratePlan',meta:{ title:'生成计划',type:"调度系统"},component:GeneratePlan},
         {path:'/AuditPlan',name:'AuditPlan',meta:{ title:'审核计划',type:"调度系统"},component:AuditPlan},
         {path:'/ImplementationPlan',name:'ImplementationPlan',meta:{ title:'执行计划',type:"调度系统"},component:ImplementationPlan},
         {path:'/SendWMS',name:'SendWMS',meta:{ title:'发送WMS',type:"调度系统"},component:SendWMS},
-        {path:'/MaterialPreparation',name:'MaterialPreparation',meta:{ title:'备料',type:"调度系统"},component:MaterialPreparation},
+        {path:'/MaterialPreparation',name:'MaterialPreparation',meta:{ title:'物料调度管理',type:"调度系统"},component:MaterialPreparation},
 
-        {path:'/SchedulePreview',name:'SchedulePreview',meta:{ title:'排期预览',type:"排产系统"},component:SchedulePreview},
-        {path:'/InformationEntry',name:'InformationEntry',meta:{ title:'物料信息录入',type:"排产系统"},component:InformationEntry},
-        {path:'/ConfigPlan',name:'ConfigPlan',meta:{ title:'排产配置',type:"排产系统"},component:ConfigPlan},
-        {path:'/ScheduleManagement',name:'ScheduleManagement',meta:{ title:'日程管理',type:"排产系统"},component:ScheduleManagement},
-        {path:'/CalendarScheduling',name:'CalendarScheduling',meta:{ title:'日历排产',type:"排产系统"},component:CalendarScheduling},
-        {path:'/PlannedMaintenance',name:'PlannedMaintenance',meta:{ title:'计划维护',type:"排产系统"},component:PlannedMaintenance},
-        {path:'/PlanningReport',name:'PlanningReport',meta:{ title:'计划报表',type:"排产系统"},component:PlanningReport},
+        {path:'/schedulingPlan',name:'schedulingPlan',meta:{ title:'排产计划',type:"排产系统"},component:schedulingPlan},
+        {path:'/scheduling',name:'scheduling',meta:{ title:'工厂排产',type:"排产系统"},component:scheduling},
+        {path:'/calendar',name:'calendar',meta:{ title:'工厂日历',type:"排产系统"},component:calendar},
+        {path:'/schedulingLog',name:'schedulingLog',meta:{ title:'排产记录',type:"排产系统"},component:schedulingLog},
 
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据系统"},component:MaterialBalanceStatistics},
         {path:'/MaterialTraceability',name:'MaterialTraceability',meta:{ title:'物料追溯',type:"生产数据系统"},component:MaterialTraceability},
-        
+
         {path:'/MaterialInformation',name:'MaterialInformation',meta:{ title:'物料信息',type:"物料系统"},component:MaterialInformation},
         {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'物料清单',type:"物料系统"},component:MaterialBOM},
         {path:'/TrendQuery',name:'TrendQuery',meta:{ title:'生产数据趋势分析',type:"物料系统"},component:TrendQuery},
 
-        {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'电子批记录',type:"电子批记录"},component:ElectronicBatchRecord},
-        
+        {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'批生产记录',type:"电子批记录"},component:ElectronicBatchRecord},
+        {path:'/BatchRecordFiles',name:'BatchRecordFiles',meta:{ title:'批记录管理',type:"电子批记录"},component:BatchRecordFiles},
+
         {path:'/DeviceInformation',name:'DeviceInformation',meta:{ title:'设备信息',type:"设备管理"},component:DeviceInformation},
         {path:'/EquipmentpartsManage',name:'EquipmentpartsManage',meta:{ title:'设备备件管理',type:"设备管理"},component:EquipmentpartsManage},
         {path:'/InstrumentDataManagement',name:'InstrumentDataManagement',meta:{ title:'仪表仪器数据管理',type:"设备管理"},component:InstrumentDataManagement},
