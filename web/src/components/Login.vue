@@ -3,7 +3,7 @@
     <div id="loginBgCanvas">
       <div class="login-center-bg">
         <div class="login-form-box">
-          <div class="login-form-title">汉盟智能管理系统</div>
+          <div class="login-form-title">希尔安智能管理系统</div>
           <div class="login-form-mask"></div>
           <div class="login-form blackComponents">
             <el-form ref="ruleForm" :model="loginForm" :rules="rules" style="width: 100%;">
