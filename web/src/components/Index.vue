@@ -143,7 +143,8 @@ export default {
           ]},
         {label: '生产数据系统',icon:"el-icon-s-data",mainMenu:[
             {title:"批物料平衡统计",icon:"el-icon-box",url:"/MaterialBalanceStatistics"},
-            {title:"物料追溯",icon:"el-icon-box",url:"/MaterialTraceability"}
+            {title:"物料追溯",icon:"el-icon-box",url:"/MaterialTraceability"},
+            {title:"生产数据趋势分析",icon:"el-icon-box",url:"/TrendQuery"}
           ]},
         {label: '工厂监控',icon:"el-icon-view",mainMenu:[
           {title:"工厂监控",icon:"el-icon-box",url:""},

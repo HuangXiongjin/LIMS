@@ -42,6 +42,7 @@ import EquipmentFailureManagement from '@/views/Device/EquipmentFailureManagemen
 import EquipmentOperationRecord from '@/views/Device/EquipmentOperationRecord'
 import MaterialInformation from '@/views/material/MaterialInformation'
 import MaterialBOM from '@/views/material/MaterialBOM'
+import TrendQuery from '@/views/material/TrendQuery'
 import ElectronicBatchRecord from '@/views/ElectronicBatchRecord/ElectronicBatchRecord'
 
 Vue.use(Router)
@@ -98,6 +99,7 @@ export default new Router({
         
         {path:'/MaterialInformation',name:'MaterialInformation',meta:{ title:'物料信息',type:"物料系统"},component:MaterialInformation},
         {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'物料清单',type:"物料系统"},component:MaterialBOM},
+        {path:'/TrendQuery',name:'TrendQuery',meta:{ title:'生产数据趋势分析',type:"物料系统"},component:TrendQuery},
 
         {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'电子批记录',type:"电子批记录"},component:ElectronicBatchRecord},
         
