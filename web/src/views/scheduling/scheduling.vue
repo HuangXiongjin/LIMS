@@ -2,10 +2,10 @@
   <el-row>
     <el-col :span="24">
       <el-steps :active="steps" finish-status="wait" align-center class="marginBottom">
-        <el-step @click.native="clickStep(0)" class="cursor-pointer" title="物料信息录入"></el-step>
-        <el-step @click.native="clickStep(1)" class="cursor-pointer" title="参数配置"></el-step>
+        <el-step @click.native="clickStep(0)" class="cursor-pointer" title="生产计划"></el-step>
+        <el-step @click.native="clickStep(1)" class="cursor-pointer" title="产能定义"></el-step>
         <el-step @click.native="clickStep(2)" class="cursor-pointer" title="其他日程"></el-step>
-        <el-step @click.native="clickStep(3)" class="cursor-pointer" title="排产"></el-step>
+        <el-step @click.native="clickStep(3)" class="cursor-pointer" title="日计划排产"></el-step>
       </el-steps>
       <InformationEntry v-if="steps == 0"></InformationEntry>
       <ConfigPlan v-if="steps == 1"></ConfigPlan>

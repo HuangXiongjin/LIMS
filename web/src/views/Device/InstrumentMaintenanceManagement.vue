@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">设备备件管理</span>
+        <span style="margin-left: 10px;" class="text-size-normol">仪器仪表检修管理</span>
       </div>
       <div class="platformContainer">
         <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>

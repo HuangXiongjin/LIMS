@@ -3,7 +3,7 @@
     <!-- 头部 -->
     <el-header class="body-head">
       <div class="head-menu floatLeft">
-        <router-link to='/home'><span class="color-black">汉盟智能管理系统</span></router-link>
+        <router-link to='/home'><span class="color-black">希尔安智能管理系统</span></router-link>
       </div>
       <div class="head-menu floatRight">
         <ul>
@@ -96,9 +96,8 @@ export default {
       systemActive:"",
       systemOptions:[
         {label: '排产系统',icon:"el-icon-date",mainMenu:[
-          {title:'排产计划',icon:"el-icon-tickets",url:"/schedulingPlan"},
           {title:'工厂排产',icon:"fa fa-calendar-plus-o",url:"/scheduling"},
-          {title:'工厂日历',icon:"el-icon-date",url:"/calendar"},
+          {title:'排期管理',icon:"el-icon-date",url:"/calendar"},
           {title:'排产记录',icon:"fa fa-table",url:"/schedulingLog"},
         ]},
         {label: '调度系统',icon:"el-icon-s-operation",mainMenu:[
@@ -134,7 +133,8 @@ export default {
           ]},
         {label: '生产数据系统',icon:"el-icon-s-data",mainMenu:[
             {title:"批物料平衡统计",icon:"el-icon-box",url:"/MaterialBalanceStatistics"},
-            {title:"物料追溯",icon:"el-icon-box",url:"/MaterialTraceability"}
+            {title:"物料追溯",icon:"el-icon-box",url:"/MaterialTraceability"},
+            {title:"生产数据趋势分析",icon:"el-icon-box",url:"/TrendQuery"}
           ]},
         {label: '工厂监控',icon:"el-icon-view",mainMenu:[
           {title:"工厂监控",icon:"el-icon-box",url:""},

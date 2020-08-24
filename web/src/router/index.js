@@ -31,6 +31,7 @@ import SendWMS from '@/views/dispatching/SendWMS'
 import MaterialPreparation from '@/views/dispatching/MaterialPreparation'
 import MaterialBalanceStatistics from '@/views/production/MaterialBalanceStatistics'
 import MaterialTraceability from '@/views/production/MaterialTraceability'
+import TrendQuery from '@/views/production/TrendQuery'
 import DeviceInformation from '@/views/Device/DeviceInformation'
 import EquipmentpartsManage from '@/views/Device/EquipmentpartsManage'
 import InstrumentDataManagement from '@/views/Device/InstrumentDataManagement'
@@ -39,7 +40,6 @@ import EquipmentFailureManagement from '@/views/Device/EquipmentFailureManagemen
 import EquipmentOperationRecord from '@/views/Device/EquipmentOperationRecord'
 import MaterialInformation from '@/views/material/MaterialInformation'
 import MaterialBOM from '@/views/material/MaterialBOM'
-
 import ElectronicBatchRecord from '@/views/ElectronicBatchRecord/ElectronicBatchRecord'
 import BatchRecordFiles from '@/views/ElectronicBatchRecord/BatchRecordFiles'
 
@@ -72,7 +72,6 @@ export default new Router({
         {path:'/ProcessSectionDefinition',name:'ProcessSectionDefinition',meta:{ title:'工艺段定义',type:"生产建模"},component:ProcessSectionDefinition},
         {path:'/ProductSegmentConfiguration',name:'ProductSegmentConfiguration',meta:{ title:'产品段任务配置',type:"生产建模"},component:ProductSegmentConfiguration},
         {path:'/ProcessParameterConfiguration',name:'ProcessParameterConfiguration',meta:{ title:'工艺参数配置',type:"生产建模"},component:ProcessParameterConfiguration},
-        {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'工艺参数配置',type:"生产建模"},component:MaterialBOM},
         {path:'/ProcessRoute',name:'ProcessRoute',meta:{ title:'工艺路线',type:"生产建模"},component:ProcessRoute},
 
         {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'生产调度信息',type:"调度系统"},component:ProcessPlanTask},
@@ -84,11 +83,12 @@ export default new Router({
 
         {path:'/schedulingPlan',name:'schedulingPlan',meta:{ title:'排产计划',type:"排产系统"},component:schedulingPlan},
         {path:'/scheduling',name:'scheduling',meta:{ title:'工厂排产',type:"排产系统"},component:scheduling},
-        {path:'/calendar',name:'calendar',meta:{ title:'工厂日历',type:"排产系统"},component:calendar},
+        {path:'/calendar',name:'calendar',meta:{ title:'排期管理',type:"排产系统"},component:calendar},
         {path:'/schedulingLog',name:'schedulingLog',meta:{ title:'排产记录',type:"排产系统"},component:schedulingLog},
 
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据系统"},component:MaterialBalanceStatistics},
         {path:'/MaterialTraceability',name:'MaterialTraceability',meta:{ title:'物料追溯',type:"生产数据系统"},component:MaterialTraceability},
+        {path:'/TrendQuery',name:'TrendQuery',meta:{ title:'生产数据趋势分析',type:"生产数据系统"},component:TrendQuery},
 
         {path:'/MaterialInformation',name:'MaterialInformation',meta:{ title:'物料信息',type:"物料系统"},component:MaterialInformation},
         {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'物料清单',type:"物料系统"},component:MaterialBOM},
