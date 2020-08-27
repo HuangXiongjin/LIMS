@@ -2,9 +2,18 @@
   position: relative;
   height: 100%;
 }
-.body-container{
-  background: #F6F9F9;
+.white-theme{
+  .body-container{
+    background: #F6F9F9;
+  }
 }
+.black-theme{
+  .body-container{
+    background: #000000;
+  }
+}
+
+
 /* 主页头部 */
 .el-header{
   overflow: hidden;
@@ -43,6 +52,17 @@
 }
 .mainMenuList.active{
   color: #000;
+}
+/* 主题切换 */
+.themeItem{
+  display: inline-block;
+  border: 2px solid #B9B9B9;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+.themeItem.active{
+  border: 2px solid #06ACB5;
 }
 /* 侧边导航栏 */
 .menu-ul{

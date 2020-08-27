@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="white-theme">
     <router-view/>
   </div>
 </template>
@@ -9,8 +9,9 @@
     name: 'App'
   }
 </script>
-<style>
+<style lang="less">
   @import "../static/css/font.css";
+  @import './assets/common.less';
   body {
     font-family:PingFang;
     -webkit-font-smoothing: antialiased;
