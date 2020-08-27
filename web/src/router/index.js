@@ -32,12 +32,7 @@ import MaterialPreparation from '@/views/dispatching/MaterialPreparation'
 import MaterialBalanceStatistics from '@/views/production/MaterialBalanceStatistics'
 import MaterialTraceability from '@/views/production/MaterialTraceability'
 import TrendQuery from '@/views/production/TrendQuery'
-import DeviceInformation from '@/views/Device/DeviceInformation'
-import EquipmentpartsManage from '@/views/Device/EquipmentpartsManage'
-import InstrumentDataManagement from '@/views/Device/InstrumentDataManagement'
-import InstrumentMaintenanceManagement from '@/views/Device/InstrumentMaintenanceManagement'
-import EquipmentFailureManagement from '@/views/Device/EquipmentFailureManagement'
-import EquipmentOperationRecord from '@/views/Device/EquipmentOperationRecord'
+
 import MaterialInformation from '@/views/material/MaterialInformation'
 import MaterialBOM from '@/views/material/MaterialBOM'
 import ElectronicBatchRecord from '@/views/ElectronicBatchRecord/ElectronicBatchRecord'
@@ -96,12 +91,6 @@ export default new Router({
         {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'批生产记录',type:"电子批记录"},component:ElectronicBatchRecord},
         {path:'/BatchRecordFiles',name:'BatchRecordFiles',meta:{ title:'批记录管理',type:"电子批记录"},component:BatchRecordFiles},
 
-        {path:'/DeviceInformation',name:'DeviceInformation',meta:{ title:'设备信息',type:"设备管理"},component:DeviceInformation},
-        {path:'/EquipmentpartsManage',name:'EquipmentpartsManage',meta:{ title:'设备备件管理',type:"设备管理"},component:EquipmentpartsManage},
-        {path:'/InstrumentDataManagement',name:'InstrumentDataManagement',meta:{ title:'仪表仪器数据管理',type:"设备管理"},component:InstrumentDataManagement},
-        {path:'/InstrumentMaintenanceManagement',name:'InstrumentMaintenanceManagement',meta:{ title:'仪表仪器检修管理',type:"设备管理"},component:InstrumentMaintenanceManagement},
-        {path:'/EquipmentFailureManagement',name:'EquipmentFailureManagement',meta:{ title:'设备故障管理',type:"设备管理"},component:EquipmentFailureManagement},
-        {path:'/EquipmentOperationRecord',name:'EquipmentOperationRecord',meta:{ title:'设备运行记录',type:"设备管理"},component:EquipmentOperationRecord},
 
 
       ]

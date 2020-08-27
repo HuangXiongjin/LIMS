@@ -3,7 +3,7 @@
     <!-- 头部 -->
     <el-header class="body-head">
       <div class="head-menu floatLeft">
-        <router-link to='/home'><span class="color-black">希尔安智能管理系统</span></router-link>
+        <router-link to='/home'><span class="color-black">重庆希尔安MES管理系统</span></router-link>
       </div>
       <div class="head-menu floatRight">
         <ul>
@@ -95,6 +95,9 @@ export default {
       sideIcon:'el-icon-arrow-left', //左侧菜单栏缩进点击切换图标
       systemActive:"",
       systemOptions:[
+        {label: '工厂监控',icon:"el-icon-view",mainMenu:[
+          {title:"工厂监控",icon:"el-icon-box",url:""},
+        ]},
         {label: '排产系统',icon:"el-icon-date",mainMenu:[
           {title:'工厂排产',icon:"fa fa-calendar-plus-o",url:"/scheduling"},
           {title:'排期管理',icon:"el-icon-date",url:"/calendar"},
@@ -118,26 +121,20 @@ export default {
           {title:"工艺参数配置",icon:"el-icon-office-building",url:"/ProcessParameterConfiguration"},
           {title:"生产线定义",icon:"el-icon-office-building",url:"/ProcessRoute"},
           ]},
-        {label: '设备系统',icon:"fa fa-wrench",mainMenu:[
-          {title:"设备信息",icon:"el-icon-box",url:"/DeviceInformation"},
-          {title:"设备备件管理",icon:"el-icon-box",url:"/EquipmentpartsManage"},
-          {title:"仪表仪器数据管理",icon:"el-icon-box",url:"/InstrumentDataManagement"},
-          {title:"仪表仪器检修管理",icon:"el-icon-box",url:"/InstrumentMaintenanceManagement"},
-          {title:"设备故障管理",icon:"el-icon-box",url:"/EquipmentFailureManagement"},
-          {title:"设备运行记录",icon:"el-icon-box",url:"/EquipmentOperationRecord"},
-
-          ]},
         {label: '物料系统',icon:"fa fa-leaf",mainMenu:[
-            {title:"物料管理",icon:"el-icon-box",url:"/MaterialInformation"},
-            {title:"物料清单",icon:"el-icon-box",url:"/MaterialBOM"},
-          ]},
+          {title:"物料管理",icon:"el-icon-box",url:"/MaterialInformation"},
+          {title:"物料清单",icon:"el-icon-box",url:"/MaterialBOM"},
+        ]},
         {label: '生产数据系统',icon:"el-icon-s-data",mainMenu:[
-            {title:"批物料平衡统计",icon:"el-icon-box",url:"/MaterialBalanceStatistics"},
-            {title:"物料追溯",icon:"el-icon-box",url:"/MaterialTraceability"},
-            {title:"生产数据趋势分析",icon:"el-icon-box",url:"/TrendQuery"}
+          {title:"批物料平衡统计",icon:"el-icon-box",url:"/MaterialBalanceStatistics"},
+          {title:"物料追溯",icon:"el-icon-box",url:"/MaterialTraceability"},
+          {title:"生产数据趋势分析",icon:"el-icon-box",url:"/TrendQuery"}
+        ]},
+        {label: '电子批记录',icon:"el-icon-edit-outline",mainMenu:[
+          {title:"批生产记录",icon:"el-icon-edit-outline",children:[
+            {title:"金蝉止痒颗粒",url:"/ElectronicBatchRecord?DrugName=金蝉止痒颗粒"}
           ]},
-        {label: '工厂监控',icon:"el-icon-view",mainMenu:[
-          {title:"工厂监控",icon:"el-icon-box",url:""},
+          {title:"批记录管理",icon:"el-icon-folder-opened",url:"/BatchRecordFiles"},
         ]},
         {label: '系统管理',icon:"el-icon-s-tools",mainMenu:[
           {title:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
@@ -148,18 +145,6 @@ export default {
           {title:"流程管理",icon:"el-icon-share",url:"/flowGraph"},
           {title:"系统日志",icon:"el-icon-notebook-1",url:"/Log"}
         ]},
-        {label: '电子批记录',icon:"el-icon-edit-outline",mainMenu:[
-          {title:"批生产记录",icon:"el-icon-edit-outline",children:[
-            {title:"金蝉止痒颗粒",url:"/ElectronicBatchRecord?DrugName=金蝉止痒颗粒"}
-          ]},
-          {title:"批记录管理",icon:"el-icon-folder-opened",url:"/BatchRecordFiles"},
-        ]},
-        {label: '仓储管理',icon:"el-icon-takeaway-box",mainMenu:[
-          {title:"库位管理",icon:"el-icon-takeaway-box",url:""},
-          {title:"出入库管理",icon:"el-icon-takeaway-box",url:""},
-          {title:"库存信息",icon:"el-icon-takeaway-box",url:""},
-
-        ]}
       ],
       mainMenuActive:0,
       mainMenu:[], //左侧导航菜单列表
