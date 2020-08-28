@@ -33,7 +33,7 @@
     "sortablejs": "^1.10.2",
     "style-loader": "^1.2.1",
     "three": "^0.119.0",
-    "v-charts": "^1.19.0",
+    "v-charts": "^1.18.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuedraggable": "^2.24.0",

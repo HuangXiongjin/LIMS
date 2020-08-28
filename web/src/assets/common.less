@@ -1,6 +1,8 @@
 .el-container,.el-aside,.el-aside .el-row,.el-aside .el-row .el-col{
   position: relative;
   height: 100%;
+  clear: both;
+  overflow: hidden;
 }
 .white-theme{
   .body-container{
@@ -103,6 +105,17 @@
     clear: both;
     overflow: hidden;
   }
+  .colItemContainer{
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #E6E6E6;
+    color: #000;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 15px;
+    clear: both;
+    overflow: hidden;
+  }
   .page-title{
     width: 100%;
     margin-bottom:15px;
@@ -186,9 +199,14 @@
     background-color: #06ACB5;
     color: #ffffff;
   }
-  .el-menu-item, .el-submenu__title{
+  .el-submenu__title{
     height: 45px;
     line-height: 45px;
+    color: #ffffff;
+  }
+  .el-submenu__title:hover{
+    background: #ffffff;
+    color: #1E222B;
   }
   .left-aside{
     background: #1E222B;
@@ -306,6 +324,16 @@
   .cardContainer{
     width: 100%;
     background: #3D4048;
+    color: #ffffff;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 15px;
+    clear: both;
+    overflow: hidden;
+  }
+  .colItemContainer{
+    width: 100%;
+    background: #585B62;
     color: #ffffff;
     border-radius: 4px;
     padding: 15px;
