@@ -4,7 +4,7 @@
         <div class="page-title">
             <span style="margin-left: 10px;" class="text-size-normol">排产进度表</span>
         </div>
-            <div class="platformContainer" style="backgroundColor:#555;">
+            <div class="platformContainer" style="backgroundColor:#3D4048;">
                 <div id="main" style="width:100%; height:750px;" v-loading="loading">数据图表</div>
             </div>
         </el-col>
@@ -39,7 +39,6 @@ export default {
                     textStyle: {
                       color: '#fff' //设置图例文字颜色
                   }
-            
                 },
                 grid: {
                     containLabel: true,
@@ -52,7 +51,6 @@ export default {
                 yAxis: {
                     data: ['任务一', '任务二', '任务三', '任务四', '任务五', '任务六', '任务七'],
                     axisLine: { lineStyle: { color: '#fff' } }  //控制y轴坐标文字颜色
-            
                 },
                 tooltip: {
                     trigger: 'axis',
@@ -73,7 +71,6 @@ export default {
                     }
                 },
                 series: [
-            
                     {
                         name: '计划开始时间',
                         type: 'bar',
