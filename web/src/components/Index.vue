@@ -3,7 +3,7 @@
     <!-- 头部 -->
     <el-header class="body-head">
       <div class="head-menu floatLeft">
-        <router-link to='/home'><span class="color-black">重庆希尔安MES管理系统</span></router-link>
+        <router-link to='/home'><span class="head-title">重庆希尔安MES管理系统</span></router-link>
       </div>
       <div class="head-menu floatRight">
         <ul>
