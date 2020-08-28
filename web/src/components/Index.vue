@@ -108,18 +108,15 @@
           {label: '工厂监控',icon:"el-icon-view",mainMenu:[
             {title:"工厂监控",icon:"el-icon-box",url:""},
           ]},
-          {label: '排产系统',icon:"el-icon-date",mainMenu:[
+          {label: '排产调度系统',icon:"el-icon-date",mainMenu:[
+            {title:'排产进度表',icon:"fa fa-calendar-plus-o",url:"/ProductionSchedule"},
             {title:'工厂排产',icon:"fa fa-calendar-plus-o",url:"/scheduling"},
             {title:'排期管理',icon:"el-icon-date",url:"/calendar"},
             {title:'排产记录',icon:"fa fa-table",url:"/schedulingLog"},
-          ]},
-          {label: '调度系统',icon:"el-icon-s-operation",mainMenu:[
-            {title:"生产计划调度管理",icon:"el-icon-box",children:[
-              {title:"生成计划",url:"/GeneratePlan"},
-              {title:"审核计划",url:"/AuditPlan"},
-              {title:"执行计划",url:"/ImplementationPlan"},
-              {title:"发送WMS",url:"/SendWMS"},
-            ]},
+            {title:"生成计划",url:"/GeneratePlan"},
+            {title:"审核计划",url:"/AuditPlan"},
+            {title:"执行计划",url:"/ImplementationPlan"},
+            {title:"发送WMS",url:"/SendWMS"},
             {title:"生产调度信息",icon:"el-icon-tickets",url:"/ProcessPlanTask"},
             {title:"物料调度管理",icon:"fa fa-leaf",url:"/MaterialPreparation"},
           ]},
