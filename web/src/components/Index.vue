@@ -3,7 +3,7 @@
     <!-- 头部 -->
     <el-header class="body-head">
       <div class="head-menu floatLeft">
-        <router-link to='/home'><span class="color-black">希尔安智能管理系统</span></router-link>
+        <router-link to='/home'><span class="head-title">重庆希尔安MES管理系统</span></router-link>
       </div>
       <div class="head-menu floatRight">
         <ul>
@@ -15,6 +15,16 @@
           <li>
             <el-tooltip class="head-menu-item" effect="dark" content="切换系统" placement="bottom">
               <i class="el-icon-menu" @click="switchSystem"></i>
+            </el-tooltip>
+          </li>
+          <li>
+            <el-tooltip class="head-menu-item" effect="light" placement="bottom">
+              <div slot="content">
+                <ul>
+                  <li class="themeItem" v-for="(item,index) in themeList" :class="{ active:item.value===themeValue }" :key="index" :style="{background:item.color}" @click="changeTheme(item.value)"></li>
+                </ul>
+              </div>
+              <i class="el-icon-brush" @click="switchSystem"></i>
             </el-tooltip>
           </li>
           <li>
@@ -82,194 +92,196 @@
 </template>
 
 <script>
-var moment = require('moment');
-import screenfull from "screenfull"
-export default {
-  name: 'Index',
-  data () {
-    return {
-      selfHeight:{ //自适应高度
-        height:''
-      },
-      menuIsCollapse: false, //左侧菜单栏是否缩进了
-      sideIcon:'el-icon-arrow-left', //左侧菜单栏缩进点击切换图标
-      systemActive:"",
-      systemOptions:[
-        {label: '排产系统',icon:"el-icon-date",mainMenu:[
-          {title:'工厂排产',icon:"fa fa-calendar-plus-o",url:"/scheduling"},
-          {title:'排期管理',icon:"el-icon-date",url:"/calendar"},
-          {title:'排产记录',icon:"fa fa-table",url:"/schedulingLog"},
-        ]},
-        {label: '调度系统',icon:"el-icon-s-operation",mainMenu:[
-          {title:"生产计划调度管理",icon:"el-icon-box",children:[
+  var moment = require('moment');
+  import screenfull from "screenfull"
+  export default {
+    name: 'Index',
+    data () {
+      return {
+        selfHeight:{ //自适应高度
+          height:''
+        },
+        menuIsCollapse: false, //左侧菜单栏是否缩进了
+        sideIcon:'el-icon-arrow-left', //左侧菜单栏缩进点击切换图标
+        systemActive:"",
+        systemOptions:[
+          {label: '工厂监控',icon:"el-icon-view",mainMenu:[
+            {title:"工厂监控",icon:"el-icon-box",url:""},
+          ]},
+          {label: '排产调度系统',icon:"el-icon-date",mainMenu:[
+            {title:'排产进度表',icon:"fa fa-calendar-plus-o",url:"/ProductionSchedule"},
+            {title:'工厂排产',icon:"fa fa-calendar-plus-o",url:"/scheduling"},
+            {title:'排期管理',icon:"el-icon-date",url:"/calendar"},
+            {title:'排产记录',icon:"fa fa-table",url:"/schedulingLog"},
             {title:"生成计划",url:"/GeneratePlan"},
             {title:"审核计划",url:"/AuditPlan"},
             {title:"执行计划",url:"/ImplementationPlan"},
             {title:"发送WMS",url:"/SendWMS"},
+            {title:"生产调度信息",icon:"el-icon-tickets",url:"/ProcessPlanTask"},
+            {title:"物料调度管理",icon:"fa fa-leaf",url:"/MaterialPreparation"},
           ]},
-          {title:"生产调度信息",icon:"el-icon-tickets",url:"/ProcessPlanTask"},
-          {title:"物料调度管理",icon:"fa fa-leaf",url:"/MaterialPreparation"},
-        ]},
-        {label: '生产建模',icon:"el-icon-s-management",mainMenu:[
-          {title:"产品定义",icon:"el-icon-office-building",url:"/ProductDefinition"},
-          {title:"工艺段定义",icon:"el-icon-office-building",url:"/ProcessSectionDefinition"},
-          {title:"产品段定义",icon:"el-icon-office-building",url:"/ProductSegmentDefinition"},
-          {title:"产品段任务配置",icon:"el-icon-office-building",url:"/ProductSegmentConfiguration"},
-          {title:"工艺参数配置",icon:"el-icon-office-building",url:"/ProcessParameterConfiguration"},
-          {title:"生产线定义",icon:"el-icon-office-building",url:"/ProcessRoute"},
-          ]},
-        {label: '设备系统',icon:"fa fa-wrench",mainMenu:[
-          {title:"设备信息",icon:"el-icon-box",url:"/DeviceInformation"},
-          {title:"设备备件管理",icon:"el-icon-box",url:"/EquipmentpartsManage"},
-          {title:"仪表仪器数据管理",icon:"el-icon-box",url:"/InstrumentDataManagement"},
-          {title:"仪表仪器检修管理",icon:"el-icon-box",url:"/InstrumentMaintenanceManagement"},
-          {title:"设备故障管理",icon:"el-icon-box",url:"/EquipmentFailureManagement"},
-          {title:"设备运行记录",icon:"el-icon-box",url:"/EquipmentOperationRecord"},
-
-          ]},
-        {label: '物料系统',icon:"fa fa-leaf",mainMenu:[
+          {label: '生产建模',icon:"el-icon-s-management",mainMenu:[
+            {title:"产品定义",icon:"el-icon-office-building",url:"/ProductDefinition"},
+            {title:"工艺段定义",icon:"el-icon-office-building",url:"/ProcessSectionDefinition"},
+            {title:"产品段定义",icon:"el-icon-office-building",url:"/ProductSegmentDefinition"},
+            {title:"产品段任务配置",icon:"el-icon-office-building",url:"/ProductSegmentConfiguration"},
+            {title:"工艺参数配置",icon:"el-icon-office-building",url:"/ProcessParameterConfiguration"},
+            {title:"生产线定义",icon:"el-icon-office-building",url:"/ProcessRoute"},
+            ]},
+          {label: '物料系统',icon:"fa fa-leaf",mainMenu:[
             {title:"物料管理",icon:"el-icon-box",url:"/MaterialInformation"},
             {title:"物料清单",icon:"el-icon-box",url:"/MaterialBOM"},
           ]},
-        {label: '生产数据系统',icon:"el-icon-s-data",mainMenu:[
+          {label: '生产数据系统',icon:"el-icon-s-data",mainMenu:[
             {title:"批物料平衡统计",icon:"el-icon-box",url:"/MaterialBalanceStatistics"},
             {title:"物料追溯",icon:"el-icon-box",url:"/MaterialTraceability"},
             {title:"生产数据趋势分析",icon:"el-icon-box",url:"/TrendQuery"}
           ]},
-        {label: '工厂监控',icon:"el-icon-view",mainMenu:[
-          {title:"工厂监控",icon:"el-icon-box",url:""},
-        ]},
-        {label: '系统管理',icon:"el-icon-s-tools",mainMenu:[
-          {title:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
-          {title:"角色管理",icon:"el-icon-s-check",url:"/Role"},
-          {title:"班组管理",icon:"el-icon-receiving",url:"/TeamGroup"},
-          {title:"人员管理",icon:"el-icon-user",url:"/Personnel"},
-          {title:"权限维护",icon:"el-icon-lock",url:"/Permission"},
-          {title:"流程管理",icon:"el-icon-share",url:"/flowGraph"},
-          {title:"系统日志",icon:"el-icon-notebook-1",url:"/Log"}
-        ]},
-        {label: '电子批记录',icon:"el-icon-edit-outline",mainMenu:[
-          {title:"批生产记录",icon:"el-icon-edit-outline",children:[
-            {title:"金蝉止痒颗粒",url:"/ElectronicBatchRecord?DrugName=金蝉止痒颗粒"}
+          {label: '电子批记录',icon:"el-icon-edit-outline",mainMenu:[
+            {title:"批生产记录",icon:"el-icon-edit-outline",children:[
+              {title:"金蝉止痒颗粒",url:"/ElectronicBatchRecord?DrugName=金蝉止痒颗粒"}
+            ]},
+            {title:"批记录管理",icon:"el-icon-folder-opened",url:"/BatchRecordFiles"},
           ]},
-          {title:"批记录管理",icon:"el-icon-folder-opened",url:"/BatchRecordFiles"},
-        ]},
-        {label: '仓储管理',icon:"el-icon-takeaway-box",mainMenu:[
-          {title:"库位管理",icon:"el-icon-takeaway-box",url:""},
-          {title:"出入库管理",icon:"el-icon-takeaway-box",url:""},
-          {title:"库存信息",icon:"el-icon-takeaway-box",url:""},
-
-        ]}
-      ],
-      mainMenuActive:0,
-      mainMenu:[], //左侧导航菜单列表
-      defaultActiveUrl:"",
-      dialogUserVisible:false, //是否弹出个人信息
-      userInfo:{},
-      isFullScreen:false, //是否全屏
-      areaObj:{
-        areaName:""
-      },
-    }
-  },
-  //依赖注入传值
-  provide(){
-    return{
-      newAreaName:this.areaObj
-    }
-  },
-  mounted(){
-
-  },
-  created(){
-    window.addEventListener('resize', this.getMenuHeight);
-    this.getMenuHeight()
-    if(sessionStorage.getItem("LoginStatus")) {
-      this.$store.commit('setUser',sessionStorage.getItem('WorkNumber'))
-    }else{
-      this.$router.push("/login");
-    }
-    if(this.$route.path === "/home"){ //判断当前路由 设置当前路由对应的菜单
-      this.getMainMenu(this.systemOptions[0].mainMenu)
-      this.getsystemActive(0)
-    }else{
-      this.systemOptions.forEach((menu,i) =>{
-        if(menu.label === this.$route.meta.type){
-          this.mainMenu = menu.mainMenu
-          this.defaultActiveUrl = this.$route.path
-        }
-      })
-    }
-  },
-  destroyed() {
-
-  },
-  watch:{
-    $route:{
-      handler(val,oldval){
-        this.defaultActiveUrl = val.path
-      },
-      deep: true,
-    }
-  },
-  methods:{
-    getMenuHeight(){
-      if(this.menuIsCollapse){
-        this.selfHeight.height = window.innerHeight - 490+'px';
+          {label: '系统管理',icon:"el-icon-s-tools",mainMenu:[
+            {title:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
+            {title:"角色管理",icon:"el-icon-s-check",url:"/Role"},
+            {title:"班组管理",icon:"el-icon-receiving",url:"/TeamGroup"},
+            {title:"人员管理",icon:"el-icon-user",url:"/Personnel"},
+            {title:"权限维护",icon:"el-icon-lock",url:"/Permission"},
+            {title:"流程管理",icon:"el-icon-share",url:"/flowGraph"},
+            {title:"系统日志",icon:"el-icon-notebook-1",url:"/Log"}
+          ]},
+        ],
+        mainMenuActive:0,
+        mainMenu:[], //左侧导航菜单列表
+        defaultActiveUrl:"",
+        dialogUserVisible:false, //是否弹出个人信息
+        userInfo:{},
+        isFullScreen:false, //是否全屏
+        areaObj:{
+          areaName:""
+        },
+        themeValue:"0",
+        themeList:[
+          {color:"#ffffff",value:"0"},
+          {color:"#1E222B",value:"1"},
+        ],
+      }
+    },
+    //依赖注入传值
+    provide(){
+      return{
+        newAreaName:this.areaObj
+      }
+    },
+    mounted(){
+      if(localStorage.getItem('theme') === "1"){
+        this.themeValue = "1"
+        $("#app").addClass("black-theme").removeClass("white-theme")
       }else{
-        this.selfHeight.height = window.innerHeight - 360+'px';
+        this.themeValue = "0"
+        $("#app").addClass("white-theme").removeClass("black-theme")
       }
     },
-    getMainMenu(data){ //从子组件选择的系统获取菜单
-      this.mainMenu = data
-    },
-    getsystemActive(data){ //从子组件选择的系统索引
-      this.systemActive = data
-    },
-    menuSelect(url,title){  //点击菜单跳转时  添加query参数避免相同路由跳转时报错
-      this.$router.push({
-        query:moment()
-      })
-    },
-    switchSystem(){ //点击切换系统页面
-      this.$router.push("/switchSystem")
-    },
-    handleCommand(command) {  //判断用户下拉点击
-      if(command === "a"){
-        this.dialogUserVisible = true
-        this.userInfo.LastLoginTime = sessionStorage.getItem('LastLoginTime')
-        this.userInfo.WorkNumber = sessionStorage.getItem('WorkNumber')
-        this.userInfo.Name = sessionStorage.getItem('UserName')
-        this.userInfo.Permissions = JSON.parse(sessionStorage.getItem('Permissions')).join('，')
-      }else if(command === "b"){
-        this.$store.commit('removeUser')
-        this.$router.replace("/login")
-      }
-    },
-    iconToggle() {  //折叠菜单
-      this.menuIsCollapse = !this.menuIsCollapse
+    created(){
+      window.addEventListener('resize', this.getMenuHeight);
       this.getMenuHeight()
-      if(this.menuIsCollapse){
-        this.sideIcon = 'el-icon-arrow-right'
-        $(".left-aside").animate({"width":"64px"})
+      if(sessionStorage.getItem("LoginStatus")) {
+        this.$store.commit('setUser',sessionStorage.getItem('WorkNumber'))
       }else{
-        this.sideIcon = 'el-icon-arrow-left'
-        $(".left-aside").animate({"width":"220px"})
+        this.$router.push("/login");
+      }
+      if(this.$route.path === "/home"){ //判断当前路由 设置当前路由对应的菜单
+        this.getMainMenu(this.systemOptions[0].mainMenu)
+        this.getsystemActive(0)
+      }else{
+        this.systemOptions.forEach((menu,i) =>{
+          if(menu.label === this.$route.meta.type){
+            this.mainMenu = menu.mainMenu
+            this.defaultActiveUrl = this.$route.path
+          }
+        })
       }
     },
-    getFullCreeen () {  //全屏
-      if (screenfull.isEnabled) {
-        screenfull.toggle()
-        if(screenfull.isFullscreen){
-          this.isFullScreen = false
+    destroyed() {
+
+    },
+    watch:{
+      $route:{
+        handler(val,oldval){
+          this.defaultActiveUrl = val.path
+        },
+        deep: true,
+      }
+    },
+    methods:{
+      getMenuHeight(){
+        if(this.menuIsCollapse){
+          this.selfHeight.height = window.innerHeight - 490+'px';
         }else{
-          this.isFullScreen = true
+          this.selfHeight.height = window.innerHeight - 360+'px';
+        }
+      },
+      getMainMenu(data){ //从子组件选择的系统获取菜单
+        this.mainMenu = data
+      },
+      getsystemActive(data){ //从子组件选择的系统索引
+        this.systemActive = data
+      },
+      menuSelect(url,title){  //点击菜单跳转时  添加query参数避免相同路由跳转时报错
+        this.$router.push({
+          query:moment()
+        })
+      },
+      switchSystem(){ //点击切换系统页面
+        this.$router.push("/switchSystem")
+      },
+      handleCommand(command) {  //判断用户下拉点击
+        if(command === "a"){
+          this.dialogUserVisible = true
+          this.userInfo.LastLoginTime = sessionStorage.getItem('LastLoginTime')
+          this.userInfo.WorkNumber = sessionStorage.getItem('WorkNumber')
+          this.userInfo.Name = sessionStorage.getItem('UserName')
+          this.userInfo.Permissions = JSON.parse(sessionStorage.getItem('Permissions')).join('，')
+        }else if(command === "b"){
+          this.$store.commit('removeUser')
+          this.$router.replace("/login")
+        }
+      },
+      iconToggle() {  //折叠菜单
+        this.menuIsCollapse = !this.menuIsCollapse
+        this.getMenuHeight()
+        if(this.menuIsCollapse){
+          this.sideIcon = 'el-icon-arrow-right'
+          $(".left-aside").animate({"width":"64px"})
+        }else{
+          this.sideIcon = 'el-icon-arrow-left'
+          $(".left-aside").animate({"width":"220px"})
+        }
+      },
+      getFullCreeen () {  //全屏
+        if (screenfull.isEnabled) {
+          screenfull.toggle()
+          if(screenfull.isFullscreen){
+            this.isFullScreen = false
+          }else{
+            this.isFullScreen = true
+          }
+        }
+      },
+      changeTheme(value){
+        this.themeValue = value
+        localStorage.setItem('theme', value);
+        if(value === "0"){
+          $("#app").addClass("white-theme").removeClass("black-theme")
+        }else if(value === "1"){
+          $("#app").addClass("black-theme").removeClass("white-theme")
         }
       }
     }
   }
-}
 </script>
-<style>
+<style lang="less">
 
 </style>

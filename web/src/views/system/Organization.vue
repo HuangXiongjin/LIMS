@@ -46,7 +46,7 @@
           </el-radio-group>
         </el-form-item>
       </el-form>
-      <div class="platformContainer" v-if="showTypeValue === '看板视图'">
+      <div class="platformContainer" style="background: #585B62;" v-if="showTypeValue === '看板视图'">
         <ve-tree :data="chartData" :settings="chartSettings" :events="events" height="600px"></ve-tree>
       </div>
       <el-col :span="24" v-else-if="showTypeValue === '表格视图'">
@@ -191,7 +191,7 @@
               symbolSize: 8,
               label:{
                 position: 'right',
-                color:"#333"
+                color:"#fff"
               },
               itemStyle:{
                 color:"#C6E5FF",

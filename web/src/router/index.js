@@ -19,6 +19,7 @@ import ProcessParameterConfiguration from '@/views/ProductionModel/ProcessParame
 import ProcessRoute from '@/views/ProductionModel/ProcessRoute'
 import ProcessPlanTask from '@/views/dispatching/ProcessPlanTask'
 
+import ProductionSchedule from '@/views/scheduling/ProductionSchedule'
 import schedulingPlan from '@/views/scheduling/schedulingPlan'
 import scheduling from '@/views/scheduling/scheduling'
 import calendar from '@/views/scheduling/calendar'
@@ -32,12 +33,7 @@ import MaterialPreparation from '@/views/dispatching/MaterialPreparation'
 import MaterialBalanceStatistics from '@/views/production/MaterialBalanceStatistics'
 import MaterialTraceability from '@/views/production/MaterialTraceability'
 import TrendQuery from '@/views/production/TrendQuery'
-import DeviceInformation from '@/views/Device/DeviceInformation'
-import EquipmentpartsManage from '@/views/Device/EquipmentpartsManage'
-import InstrumentDataManagement from '@/views/Device/InstrumentDataManagement'
-import InstrumentMaintenanceManagement from '@/views/Device/InstrumentMaintenanceManagement'
-import EquipmentFailureManagement from '@/views/Device/EquipmentFailureManagement'
-import EquipmentOperationRecord from '@/views/Device/EquipmentOperationRecord'
+
 import MaterialInformation from '@/views/material/MaterialInformation'
 import MaterialBOM from '@/views/material/MaterialBOM'
 import ElectronicBatchRecord from '@/views/ElectronicBatchRecord/ElectronicBatchRecord'
@@ -74,17 +70,17 @@ export default new Router({
         {path:'/ProcessParameterConfiguration',name:'ProcessParameterConfiguration',meta:{ title:'工艺参数配置',type:"生产建模"},component:ProcessParameterConfiguration},
         {path:'/ProcessRoute',name:'ProcessRoute',meta:{ title:'工艺路线',type:"生产建模"},component:ProcessRoute},
 
-        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'生产调度信息',type:"调度系统"},component:ProcessPlanTask},
-        {path:'/GeneratePlan',name:'GeneratePlan',meta:{ title:'生成计划',type:"调度系统"},component:GeneratePlan},
-        {path:'/AuditPlan',name:'AuditPlan',meta:{ title:'审核计划',type:"调度系统"},component:AuditPlan},
-        {path:'/ImplementationPlan',name:'ImplementationPlan',meta:{ title:'执行计划',type:"调度系统"},component:ImplementationPlan},
-        {path:'/SendWMS',name:'SendWMS',meta:{ title:'发送WMS',type:"调度系统"},component:SendWMS},
-        {path:'/MaterialPreparation',name:'MaterialPreparation',meta:{ title:'物料调度管理',type:"调度系统"},component:MaterialPreparation},
-
-        {path:'/schedulingPlan',name:'schedulingPlan',meta:{ title:'排产计划',type:"排产系统"},component:schedulingPlan},
-        {path:'/scheduling',name:'scheduling',meta:{ title:'工厂排产',type:"排产系统"},component:scheduling},
-        {path:'/calendar',name:'calendar',meta:{ title:'排期管理',type:"排产系统"},component:calendar},
-        {path:'/schedulingLog',name:'schedulingLog',meta:{ title:'排产记录',type:"排产系统"},component:schedulingLog},
+        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'生产调度信息',type:"排产调度系统"},component:ProcessPlanTask},
+        {path:'/GeneratePlan',name:'GeneratePlan',meta:{ title:'生成计划',type:"排产调度系统"},component:GeneratePlan},
+        {path:'/AuditPlan',name:'AuditPlan',meta:{ title:'审核计划',type:"排产调度系统"},component:AuditPlan},
+        {path:'/ImplementationPlan',name:'ImplementationPlan',meta:{ title:'执行计划',type:"排产调度系统"},component:ImplementationPlan},
+        {path:'/SendWMS',name:'SendWMS',meta:{ title:'发送WMS',type:"排产调度系统"},component:SendWMS},
+        {path:'/MaterialPreparation',name:'MaterialPreparation',meta:{ title:'物料调度管理',type:"排产调度系统"},component:MaterialPreparation},
+        {path:'/ProductionSchedule',name:'ProductionSchedule',meta:{ title:'排产进度表',type:"排产调度系统"},component:ProductionSchedule},
+        {path:'/schedulingPlan',name:'schedulingPlan',meta:{ title:'排产计划',type:"排产调度系统"},component:schedulingPlan},
+        {path:'/scheduling',name:'scheduling',meta:{ title:'工厂排产',type:"排产调度系统"},component:scheduling},
+        {path:'/calendar',name:'calendar',meta:{ title:'排期管理',type:"排产调度系统"},component:calendar},
+        {path:'/schedulingLog',name:'schedulingLog',meta:{ title:'排产记录',type:"排产调度系统"},component:schedulingLog},
 
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据系统"},component:MaterialBalanceStatistics},
         {path:'/MaterialTraceability',name:'MaterialTraceability',meta:{ title:'物料追溯',type:"生产数据系统"},component:MaterialTraceability},
@@ -96,12 +92,6 @@ export default new Router({
         {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'批生产记录',type:"电子批记录"},component:ElectronicBatchRecord},
         {path:'/BatchRecordFiles',name:'BatchRecordFiles',meta:{ title:'批记录管理',type:"电子批记录"},component:BatchRecordFiles},
 
-        {path:'/DeviceInformation',name:'DeviceInformation',meta:{ title:'设备信息',type:"设备管理"},component:DeviceInformation},
-        {path:'/EquipmentpartsManage',name:'EquipmentpartsManage',meta:{ title:'设备备件管理',type:"设备管理"},component:EquipmentpartsManage},
-        {path:'/InstrumentDataManagement',name:'InstrumentDataManagement',meta:{ title:'仪表仪器数据管理',type:"设备管理"},component:InstrumentDataManagement},
-        {path:'/InstrumentMaintenanceManagement',name:'InstrumentMaintenanceManagement',meta:{ title:'仪表仪器检修管理',type:"设备管理"},component:InstrumentMaintenanceManagement},
-        {path:'/EquipmentFailureManagement',name:'EquipmentFailureManagement',meta:{ title:'设备故障管理',type:"设备管理"},component:EquipmentFailureManagement},
-        {path:'/EquipmentOperationRecord',name:'EquipmentOperationRecord',meta:{ title:'设备运行记录',type:"设备管理"},component:EquipmentOperationRecord},
 
 
       ]

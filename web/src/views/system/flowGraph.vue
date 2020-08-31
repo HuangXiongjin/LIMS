@@ -6,20 +6,20 @@
       </div>
       <el-row :gutter="20">
         <el-col :span="24">
-          <div class="platformContainer">
+          <div class="cardContainer">
             <el-col :span="6" v-for="(item,index) in FlowData" :key="index">
-              <el-card shadow="hover" class="marginBottom text-center cursor-pointer">
+              <div class="colItemContainer text-center">
                 <div @click="toG6(item)" :class="{'color-lightgreen':item.ProcessName===selectRow.ProcessName}">
                   <p class="marginBottom-10 text-size-48"><i :class="item.Icon"></i></p>
                   <p class="text-size-16">{{ item.ProcessName }}</p>
                 </div>
-              </el-card>
+              </div>
             </el-col>
             <el-col :span="6">
-              <el-card shadow="never" class="text-center cursor-pointer">
-                <p class="marginBottom marginTop color-grayblack text-size-48" @click="addFlow"><i class="el-icon-circle-plus-outline"></i></p>
-              </el-card>
-              <el-dialog title="添加流程" :visible.sync="dialogVisible" width="50%">
+              <div class="colItemContainer text-center">
+                <p class="marginBottom marginTop text-size-48" @click="addFlow"><i class="el-icon-circle-plus-outline"></i></p>
+              </div>
+              <el-dialog title="添加流程" :visible.sync="dialogVisible" width="50%" :append-to-body="true">
                 <el-form :model="formParameters" label-width="110px">
                   <el-form-item label="流程名称" >
                     <el-input v-model="formParameters.ProcessName"></el-input>
