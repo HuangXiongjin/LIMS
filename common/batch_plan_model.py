@@ -739,6 +739,146 @@ class BatchModel(Base):
     # 定义参数的字符串:
     Parameter = Column(Unicode(MAX), primary_key=False, autoincrement=False, nullable=True)
 
+# 原料单检验
+class StapleProducts(Base):
+    __tablename__ = 'StapleProducts'
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 单据号:
+    BillNo = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 批次号:
+    BatchNo = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    #关联SAP的采购订单号
+    product_code = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 单据类型
+    btype = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 物料编码:
+    mid = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 计划数量
+    Num = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 实际数量
+    FinishNum = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 库房编码
+    StoreDef_ID = Column(Unicode(25), default="1", primary_key=False, autoincrement=False, nullable=True)
+
+    # 确认人:
+    Confirmer = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 确认状态
+    ConfirmStatus = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 复核人:
+    CheckedPeople = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 复核状态
+    CheckedStatus = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 审核人:
+    Reviewer = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 审核状态
+    ReviewStatus = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 质保确认:
+    QAConfirmer = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 质保确认状态
+    QAConfirmStatus = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 修改日期:
+    OperationDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 是否关联:
+    IsRelevance= Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+# WMS对应托盘信息
+class WMSTrayNumber(Base):
+    __tablename__ = 'WMSTrayNumber'
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 批次号:
+    BatchNo = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 桶号:
+    TrayNum = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 产品编号
+    MID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 托盘号:
+    PalletID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 配方号:
+    FormulaID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 重量:
+    MWeight = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 设备名称:
+    EQPName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 进罐时间
+    inTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 出罐时间
+    outTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 更新时间
+    UpdateTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+
+
+# 排产库存表
+class SchedulingStock(Base):
+    __tablename__ = "SchedulingStock"
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    # 产品(即物料)编码
+    product_code = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+    # 物料名称
+    MATName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 仓库库存
+    StockHouse = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 安全库存
+    SafetyStock = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 创建时间
+    create_time = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    # 修改时间
+    update_time = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+
+# 与WMS状态同步表
+class WMStatusLoad(Base):
+    __tablename__ = 'WMStatusLoad'
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 工单号:
+    BillNo = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 物料编码:
+    mid = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 批次号:
+    BatchNo = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 库房号（缺省值为1）
+    StoreDef_ID = Column(Unicode(25), default="1",primary_key=False, autoincrement=False, nullable=True)
+
+    # 原状态
+    OldStatus = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 新状态
+    NewStatus = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
 
 
 # 生成表单的执行语句
