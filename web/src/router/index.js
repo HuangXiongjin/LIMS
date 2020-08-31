@@ -12,11 +12,7 @@ import Permission from '@/views/system/Permission'
 import Log from '@/views/system/Log'
 import flowGraph from '@/views/system/flowGraph'
 import ProductDefinition from '@/views/ProductionModel/ProductDefinition'
-import ProductSegmentDefinition from '@/views/ProductionModel/ProductSegmentDefinition'
 import ProcessSectionDefinition from '@/views/ProductionModel/ProcessSectionDefinition'
-import ProductSegmentConfiguration from '@/views/ProductionModel/ProductSegmentConfiguration'
-import ProcessParameterConfiguration from '@/views/ProductionModel/ProcessParameterConfiguration'
-import ProcessRoute from '@/views/ProductionModel/ProcessRoute'
 import ProcessPlanTask from '@/views/dispatching/ProcessPlanTask'
 
 import ProductionSchedule from '@/views/scheduling/ProductionSchedule'
@@ -38,6 +34,8 @@ import MaterialInformation from '@/views/material/MaterialInformation'
 import MaterialBOM from '@/views/material/MaterialBOM'
 import ElectronicBatchRecord from '@/views/ElectronicBatchRecord/ElectronicBatchRecord'
 import BatchRecordFiles from '@/views/ElectronicBatchRecord/BatchRecordFiles'
+
+import ProductionMonitoring from '@/views/monitor/ProductionMonitoring'
 
 Vue.use(Router)
 const originalPush = Router.prototype.push
@@ -64,11 +62,7 @@ export default new Router({
         {path:'/flowGraph',name:'flowGraph',meta:{ title:'流程图管理',type:"系统管理"},component:flowGraph},
 
         {path:'/ProductDefinition',name:'ProductDefinition',meta:{ title:'产品定义',type:"生产建模"},component:ProductDefinition},
-        {path:'/ProductSegmentDefinition',name:'ProductSegmentDefinition',meta:{ title:'产品段定义',type:"生产建模"},component:ProductSegmentDefinition},
         {path:'/ProcessSectionDefinition',name:'ProcessSectionDefinition',meta:{ title:'工艺段定义',type:"生产建模"},component:ProcessSectionDefinition},
-        {path:'/ProductSegmentConfiguration',name:'ProductSegmentConfiguration',meta:{ title:'产品段任务配置',type:"生产建模"},component:ProductSegmentConfiguration},
-        {path:'/ProcessParameterConfiguration',name:'ProcessParameterConfiguration',meta:{ title:'工艺参数配置',type:"生产建模"},component:ProcessParameterConfiguration},
-        {path:'/ProcessRoute',name:'ProcessRoute',meta:{ title:'工艺路线',type:"生产建模"},component:ProcessRoute},
 
         {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'生产调度信息',type:"排产调度系统"},component:ProcessPlanTask},
         {path:'/GeneratePlan',name:'GeneratePlan',meta:{ title:'生成计划',type:"排产调度系统"},component:GeneratePlan},
@@ -92,7 +86,7 @@ export default new Router({
         {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'批生产记录',type:"电子批记录"},component:ElectronicBatchRecord},
         {path:'/BatchRecordFiles',name:'BatchRecordFiles',meta:{ title:'批记录管理',type:"电子批记录"},component:BatchRecordFiles},
 
-
+        {path:'/ProductionMonitoring',name:'ProductionMonitoring',meta:{ title:'生产监控',type:"工厂监控"},component:ProductionMonitoring},
 
       ]
     },

@@ -106,7 +106,7 @@
         systemActive:"",
         systemOptions:[
           {label: '工厂监控',icon:"el-icon-view",mainMenu:[
-            {title:"工厂监控",icon:"el-icon-box",url:""},
+            {title:"生产监控",icon:"el-icon-box",url:"/ProductionMonitoring"},
           ]},
           {label: '排产调度系统',icon:"el-icon-date",mainMenu:[
             {title:'排产进度表',icon:"fa fa-calendar-plus-o",url:"/ProductionSchedule"},
@@ -121,12 +121,8 @@
             {title:"物料调度管理",icon:"fa fa-leaf",url:"/MaterialPreparation"},
           ]},
           {label: '生产建模',icon:"el-icon-s-management",mainMenu:[
-            {title:"产品定义",icon:"el-icon-office-building",url:"/ProductDefinition"},
-            {title:"工艺段定义",icon:"el-icon-office-building",url:"/ProcessSectionDefinition"},
-            {title:"产品段定义",icon:"el-icon-office-building",url:"/ProductSegmentDefinition"},
-            {title:"产品段任务配置",icon:"el-icon-office-building",url:"/ProductSegmentConfiguration"},
-            {title:"工艺参数配置",icon:"el-icon-office-building",url:"/ProcessParameterConfiguration"},
-            {title:"生产线定义",icon:"el-icon-office-building",url:"/ProcessRoute"},
+            {title:"产品定义",icon:"fa fa-list",url:"/ProductDefinition"},
+            {title:"工艺段定义",icon:"fa fa-list-alt",url:"/ProcessSectionDefinition"},
             ]},
           {label: '物料系统',icon:"fa fa-leaf",mainMenu:[
             {title:"物料管理",icon:"el-icon-box",url:"/MaterialInformation"},
