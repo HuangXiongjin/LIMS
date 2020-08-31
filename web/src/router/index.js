@@ -11,30 +11,39 @@ import Personnel from '@/views/system/Personnel'
 import Permission from '@/views/system/Permission'
 import Log from '@/views/system/Log'
 import flowGraph from '@/views/system/flowGraph'
+
+//生产建模
 import ProductDefinition from '@/views/ProductionModel/ProductDefinition'
 import ProcessSectionDefinition from '@/views/ProductionModel/ProcessSectionDefinition'
-import ProcessPlanTask from '@/views/dispatching/ProcessPlanTask'
-
+import ProductSectionDefinition from '@/views/ProductionModel/ProductSectionDefinition'
+import ProductParameter from '@/views/ProductionModel/ProductParameter'
+import Area from '@/views/ProductionModel/Area'
+import Equipment from '@/views/ProductionModel/Equipment'
+import ProductLineDefinition from '@/views/ProductionModel/ProductLineDefinition'
+//排产
 import ProductionSchedule from '@/views/scheduling/ProductionSchedule'
 import schedulingPlan from '@/views/scheduling/schedulingPlan'
 import scheduling from '@/views/scheduling/scheduling'
 import calendar from '@/views/scheduling/calendar'
 import schedulingLog from '@/views/scheduling/schedulingLog'
-
+//调度
 import GeneratePlan from '@/views/dispatching/GeneratePlan'
 import AuditPlan from '@/views/dispatching/AuditPlan'
 import ImplementationPlan from '@/views/dispatching/ImplementationPlan'
 import SendWMS from '@/views/dispatching/SendWMS'
 import MaterialPreparation from '@/views/dispatching/MaterialPreparation'
+import ProcessPlanTask from '@/views/dispatching/ProcessPlanTask'
+//生产数据
 import MaterialBalanceStatistics from '@/views/production/MaterialBalanceStatistics'
 import MaterialTraceability from '@/views/production/MaterialTraceability'
 import TrendQuery from '@/views/production/TrendQuery'
-
+//物料管理
 import MaterialInformation from '@/views/material/MaterialInformation'
 import MaterialBOM from '@/views/material/MaterialBOM'
+//批记录
 import ElectronicBatchRecord from '@/views/ElectronicBatchRecord/ElectronicBatchRecord'
 import BatchRecordFiles from '@/views/ElectronicBatchRecord/BatchRecordFiles'
-
+//工厂监控
 import ProductionMonitoring from '@/views/monitor/ProductionMonitoring'
 
 Vue.use(Router)
@@ -63,6 +72,11 @@ export default new Router({
 
         {path:'/ProductDefinition',name:'ProductDefinition',meta:{ title:'产品定义',type:"生产建模"},component:ProductDefinition},
         {path:'/ProcessSectionDefinition',name:'ProcessSectionDefinition',meta:{ title:'工艺段定义',type:"生产建模"},component:ProcessSectionDefinition},
+        {path:'/ProductSectionDefinition',name:'ProductSectionDefinition',meta:{ title:'产品定义工艺段',type:"生产建模"},component:ProductSectionDefinition},
+        {path:'/ProductParameter',name:'ProductParameter',meta:{ title:'产品工艺段参数',type:"生产建模"},component:ProductParameter},
+        {path:'/Area',name:'Area',meta:{ title:'区域(车间)定义',type:"生产建模"},component:Area},
+        {path:'/Equipment',name:'Equipment',meta:{ title:'生产设备定义',type:"生产建模"},component:Equipment},
+        {path:'/ProductLineDefinition',name:'ProductLineDefinition',meta:{ title:'生产线定义',type:"生产建模"},component:ProductLineDefinition},
 
         {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'生产调度信息',type:"排产调度系统"},component:ProcessPlanTask},
         {path:'/GeneratePlan',name:'GeneratePlan',meta:{ title:'生成计划',type:"排产调度系统"},component:GeneratePlan},

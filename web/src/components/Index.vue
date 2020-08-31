@@ -123,6 +123,11 @@
           {label: '生产建模',icon:"el-icon-s-management",mainMenu:[
             {title:"产品定义",icon:"fa fa-list",url:"/ProductDefinition"},
             {title:"工艺段定义",icon:"fa fa-list-alt",url:"/ProcessSectionDefinition"},
+            {title:"区域(车间)定义",icon:"fa fa-list-alt",url:"/Area"},
+            {title:"生产设备定义",icon:"fa fa-list-alt",url:"/Equipment"},
+            {title:"产品定义工艺段",icon:"fa fa-list-alt",url:"/ProductSectionDefinition"},
+            {title:"产品工艺段参数",icon:"fa fa-list-alt",url:"/ProductParameter"},
+            {title:"生产线定义",icon:"fa fa-list-alt",url:"/ProductLineDefinition"},
             ]},
           {label: '物料系统',icon:"fa fa-leaf",mainMenu:[
             {title:"物料管理",icon:"el-icon-box",url:"/MaterialInformation"},
