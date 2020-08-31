@@ -8,7 +8,6 @@
   var moment = require('moment');
   export default {
     name: "SystemMonitor",
-    components:{TabControl},
     data(){
       return {
         websock:null,
