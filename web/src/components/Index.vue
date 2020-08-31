@@ -106,7 +106,7 @@
         systemActive:"",
         systemOptions:[
           {label: '工厂监控',icon:"el-icon-view",mainMenu:[
-            {title:"工厂监控",icon:"el-icon-box",url:""},
+            {title:"生产监控",icon:"el-icon-box",url:"/ProductionMonitoring"},
           ]},
           {label: '排产调度系统',icon:"el-icon-date",mainMenu:[
             {title:'排产进度表',icon:"fa fa-calendar-plus-o",url:"/ProductionSchedule"},
