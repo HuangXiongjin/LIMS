@@ -27,7 +27,7 @@ from suds.client import Client
 from datetime import timedelta
 import system_backend.Global
 from common.batch_plan_model import ProductUnit, ProductRule, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
-    ZYPlanWMS, ProcessUnit, StapleProducts, WMSTrayNumber, MaterialBOM, SchedulingStock, WMStatusLoad
+    ZYPlanWMS, ProcessUnit, StapleProducts, WMSTrayNumber, MaterialBOM, SchedulingStock, WMStatusLoad, SchedulePlan
 from common.schedul_model import Scheduling, plantCalendarScheduling, SchedulingStandard, \
     scheduledate
 from database.connect_db import CONNECT_DATABASE
@@ -126,6 +126,50 @@ def makeZYPlanZYTask(id):
         logger.error(ee)
         insertSyslog("error", "下发计划生成ZY计划、任务报错Error" + str(ee), current_user.Name)
         return 'NO'
+
+# 计划向导生成计划
+@batch_plan.route('/makePlan', methods=['POST', 'GET'])
+def makePlan():
+    if request.method == 'POST':
+        data = request.values  # 返回请求中的参数和form
+        try:
+            json_str = json.dumps(data.to_dict())
+            if len(json_str) > 10:
+                PlanQuantity = data.get('PlanQuantity')  # 计划重量
+                PlanDate = data.get('PlanDate')  # 计划生产日期
+                BatchID = data.get('BatchID')  # 批次号
+                BrandCode = data.get('BrandCode')
+                BrandName = data.get('BrandName')  # 产品名称
+                BrandCode = data.get("BrandCode")
+                PLineName = data.get('PLineName')  # 生产线名字
+                Unit = data.get('Unit') # d单位
+                pm = PlanManager()
+                pm.SchedulePlanCode = PlanDate
+                pm.BatchID = BatchID
+                pm.PlanQuantity = PlanQuantity
+                pm.Unit = Unit
+                pm.BrandCode = BrandCode
+                pm.BrandName = BrandName
+                pm.PlanStatus = system_backend.Global.PlanStatus.NEW.value
+                pm.PlanBeginTime = datetime.datetime.now().strptime('%Y-%m-%d %H:%M:%S')
+                pm.PlanEndTime = ""
+                db_session.add(pm)
+                sp = SchedulePlan()
+                SchedulePlanCode = PlanDate
+                Desc = system_backend.Global.SCHEDULETYPE.DAY.value
+                dEndTime = datetime.strptime(PlanDate, '%Y-%m-%d') + timedelta(days=1)
+                PlanBeginTime =str(PlanDate) + " " + system_backend.Global.GLOBAL_PLANSTARTTIME
+                PlanEndTime = dEndTime.strftime('%Y-%m-%d') + " " + system_backend.Global.GLOBAL_PLANENDTIME
+                Type = system_backend.Global.SCHEDULETYPE.DAY.value
+                db_session.add(sp)
+                db_session.commit()
+                return json.dumps({"code": "200", "message": "OK"})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "计划向导生成计划报错Error：" + str(e), current_user.Name)
+            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
 
 @batch_plan.route('/createZYPlanZYtask', methods=['POST', 'GET'])
 def createZYPlanZYtask():
@@ -333,10 +377,26 @@ class WMS_Interface(ServiceBase):
             return json.dumps(e)
 
 
+import urllib2
+import json
+
+
+def http_post(url, data_json):
+    jdata = json.dumps(data_json)
+    req = urllib2.Request(url, jdata)
+    response = urllib2.urlopen(req)
+    return response.read()
+
+
+url = 'http://192.168.0.107:8000/medi_test'
+data_json = {'name': 'cuiyongyuan', 'job': 'hero'}
+resp = http_post(url, data_json)
+print(resp)
+
 
 @batch_plan.route('/WMS_SendPlan', methods=['GET', 'POST'])
 def WMS_SendPlan():
-    '''发送备料计划到WMS'''
+    '''发送投料计划到WMS'''
     if request.method == 'POST':
         data = request.values
         try:

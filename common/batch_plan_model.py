@@ -304,8 +304,11 @@ class ProductLine(Base):
     # 生产线名称:
     PLineName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
-    # 车间ID:
-    AreaID = Column(Integer, autoincrement=False, nullable=False, primary_key=False)
+    # 区域编码:
+    AreaCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 区域名称:
+    AreaName = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
 
     # 描述:
     Desc = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
@@ -334,12 +337,6 @@ class ProcessUnit(Base):
     # 工艺段名称:
     PUName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
-    # 产品定义编码:
-    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
-    # 生产线:
-    PLineCode = Column(Integer, autoincrement=False, nullable=False, primary_key=False)
-
     # 相关任务数:
     RelateTaskCount = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
@@ -351,9 +348,6 @@ class ProcessUnit(Base):
 
     # 工艺段计划生产能力:
     PUPLanCapacity = Column(Unicode(30), primary_key=False, autoincrement=False, nullable=True)
-
-    # 工艺段顺序号:
-    Seq = Column(Unicode(30), primary_key=False, autoincrement=False, nullable=True)
 
     # 能力单位:
     CapacityUnit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
@@ -466,9 +460,6 @@ class ProductControlTask(Base):
     # 产品定义ID:
     ProductRuleID = Column(Integer, nullable=False, primary_key=False)
 
-    # 工艺段ID:
-    PUID = Column(Integer, nullable=False, primary_key=False)
-
     # 顺序号:
     Seq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
@@ -487,6 +478,18 @@ class ProductParameter(Base):
     # 产品段工艺参数名称:
     PDParaName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
+    # 品名编码:
+    BrandCode = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 品名:
+    BrandName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段编码:
+    PUCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段名称:
+    PUName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
     # 描述:
     Desc = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
@@ -496,18 +499,11 @@ class ProductParameter(Base):
     # 单位:
     Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 产品定义ID:
-    ProductRuleID = Column(Integer, nullable=False, primary_key=False)
-
-    # 工艺段ID:
-    PUID = Column(Integer, nullable=False, primary_key=False)
-
-    # 顺序号:
-    Seq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
 
 # ProductUnitRoute:
 class ProductUnitRoute(Base):
+    '''工艺路线'''
     __tablename__ = "ProductUnitRoute"
 
     # ID:
@@ -878,6 +874,52 @@ class WMStatusLoad(Base):
 
     # 新状态
     NewStatus = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+
+# SchedulePlan:
+class SchedulePlan(Base):
+    __tablename__ = "SchedulePlan"
+
+    # ID:
+    ID = Column(BigInteger, primary_key=True, autoincrement=True, nullable=True)
+
+    # 调度编号:
+    SchedulePlanCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 描述:
+    Desc = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 调度计划开始时间:
+    PlanBeginTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+
+    # 调度计划结束时间:
+    PlanEndTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+
+    # 调度类型:
+    Type = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+class ProductEquipment(Base):
+    '''生产设备定义（用于维护工艺段下的生产设备）'''
+    __tablename__ = "ProductEquipment"
+
+    # ID:
+    ID = Column(BigInteger, primary_key=True, autoincrement=True, nullable=True)
+
+    # 设备编码:
+    EQPCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 设备名称:
+    EQPName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段编码:
+    PUCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段名称:
+    PUName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 描述:
+    Desc = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
 
 
 
