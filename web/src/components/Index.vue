@@ -106,7 +106,7 @@
         systemActive:"",
         systemOptions:[
           {label: '工厂监控',icon:"el-icon-view",mainMenu:[
-            {title:"工厂监控",icon:"el-icon-box",url:""},
+            {title:"生产监控",icon:"el-icon-box",url:"/ProductionMonitoring"},
           ]},
           {label: '排产调度系统',icon:"el-icon-date",mainMenu:[
             {title:'排产进度表',icon:"fa fa-calendar-plus-o",url:"/ProductionSchedule"},
@@ -121,12 +121,13 @@
             {title:"物料调度管理",icon:"fa fa-leaf",url:"/MaterialPreparation"},
           ]},
           {label: '生产建模',icon:"el-icon-s-management",mainMenu:[
-            {title:"产品定义",icon:"el-icon-office-building",url:"/ProductDefinition"},
-            {title:"工艺段定义",icon:"el-icon-office-building",url:"/ProcessSectionDefinition"},
-            {title:"产品段定义",icon:"el-icon-office-building",url:"/ProductSegmentDefinition"},
-            {title:"产品段任务配置",icon:"el-icon-office-building",url:"/ProductSegmentConfiguration"},
-            {title:"工艺参数配置",icon:"el-icon-office-building",url:"/ProcessParameterConfiguration"},
-            {title:"生产线定义",icon:"el-icon-office-building",url:"/ProcessRoute"},
+            {title:"产品定义",icon:"fa fa-list-ul",url:"/ProductDefinition"},
+            {title:"工艺段定义",icon:"fa fa-list-alt",url:"/ProcessSectionDefinition"},
+            {title:"区域(车间)定义",icon:"el-icon-location-information",url:"/Area"},
+            {title:"生产设备定义",icon:"el-icon-odometer",url:"/Equipment"},
+            {title:"产品定义工艺段",icon:"el-icon-c-scale-to-original",url:"/ProductSectionDefinition"},
+            {title:"产品工艺段参数",icon:"el-icon-data-board",url:"/ProductParameter"},
+            {title:"生产线定义",icon:"fa fa-sort-numeric-asc",url:"/ProductLineDefinition"},
             ]},
           {label: '物料系统',icon:"fa fa-leaf",mainMenu:[
             {title:"物料管理",icon:"el-icon-box",url:"/MaterialInformation"},
@@ -145,6 +146,8 @@
           ]},
           {label: '系统管理',icon:"el-icon-s-tools",mainMenu:[
             {title:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
+            {title:"企业管理",icon:"el-icon-school",url:"/EnterpriseManagement"},
+            {title:"工厂管理",icon:"el-icon-office-building",url:"/FactoryManagement"},
             {title:"角色管理",icon:"el-icon-s-check",url:"/Role"},
             {title:"班组管理",icon:"el-icon-receiving",url:"/TeamGroup"},
             {title:"人员管理",icon:"el-icon-user",url:"/Personnel"},

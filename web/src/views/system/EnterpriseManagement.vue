@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">产品段定义</span>
+        <span style="margin-left: 10px;" class="text-size-normol">产品定义</span>
       </div>
       <div class="platformContainer">
         <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
@@ -14,23 +14,21 @@
 <script>
   import tableView from '@/components/CommonTable'
   export default {
-    name: "ProductUnit",
+    name: "Permission",
     components:{tableView},
     data(){
       return {
         PermissionTableData:{
+          tableName:"Enterprise",
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"PDUnitCode",label:"产品段编码",type:"input",value:""},
-            {prop:"PDUnitName",label:"产品段名称",type:"input",value:""},
+            {prop:"ParentNode",label:"上级企业",type:"input",value:""},
+            {prop:"Type",label:" 企业类型",type:"input",value:""},
             {prop:"Desc",label:"描述",type:"input",value:""},
-            {prop:"Duration",label:"持续时间",type:"input",value:""},
-            {prop:"LowLimit",label:"低限",type:"input",value:""},
-            {prop:"HighLimit",label:"高限",type:"input",value:""},
-            {prop:"RelateTaskCount",label:"相关任务数",type:"input",value:""},
-            {prop:"ProductRuleID",label:"产品定义ID",type:"input",value:""},
-            {prop:"PUID",label:"工艺段ID",type:"input",value:""},
-            {prop:"Seq",label:"顺序号",type:"input",value:""},
+            {prop:"ParentNodeName",label:"父节点名称",type:"input",value:"",searchProp:false,canSubmit:false},
+            {prop:"EnterpriseNo",label:"企业代码",type:"input",value:"",searchProp:false,canSubmit:false},
+            {prop:"EnterpriseName",label:"企业名称",type:"select",value:"",Downtable:'isFlag',showDownField:'Description'},//显示下拉框，显示是、否
+            {prop:"EnterpriseCode",label:"企业编码",type:"select",value:"",Downtable:'isFlag',showDownField:'Description'},//显示下拉框，显示是、否
           ],
           data:[],
           limit:5,

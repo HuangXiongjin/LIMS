@@ -2,10 +2,10 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">工艺参数配置</span>
+        <span style="margin-left: 10px;" class="text-size-normol">产品工艺段参数</span>
       </div>
       <div class="platformContainer">
-        <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
+        <tableView :tableData="ProductParameterTableData" @getTableData="getProductParameterTable"></tableView>
       </div>
     </el-col>
   </el-row>
@@ -14,21 +14,22 @@
 <script>
   import tableView from '@/components/CommonTable'
   export default {
+    name: "ProductParameter",
     components:{tableView},
     data(){
       return {
-        PermissionTableData:{
+        ProductParameterTableData:{
           tableName:"ProductParameter",
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"PDParaCode",label:"产品段工艺参数编码",type:"input",value:""},
-            {prop:"PDParaName",label:"产品段工艺参数名称",type:"input",value:""},
-            {prop:"Desc",label:"描述",type:"input",value:""},
+            {prop:"PDParaCode",label:"工艺参数编码",type:"input",value:""},
+            {prop:"PDParaName",label:"工艺参数名称",type:"input",value:""},
             {prop:"Value",label:"值",type:"input",value:""},
-            {prop:"Unit",label:"单位",type:"input",value:""},
-            {prop:"ProductRuleID",label:"产品定义ID",type:"Unit",value:""},
-            {prop:"PUID",label:"工艺段ID",type:"Unit",value:""},
-            {prop:"Seq",label:"顺序号",type:"Unit",value:""},
+            {prop:"BrandCode",label:"品名编码",type:"input",value:""},
+            {prop:"BrandName",label:"品名",type:"input",value:""},
+            {prop:"PUCode",label:"工艺段编码",type:"input",value:""},
+            {prop:"PUName",label:"工艺段名称",type:"input",value:""},
+            {prop:"Desc",label:"描述",type:"input",value:""},
           ],
           data:[],
           limit:5,
@@ -49,23 +50,23 @@
       }
     },
     created(){
-      this.getPermissionTable()
+      this.getProductParameterTable()
     },
     methods:{
-      getPermissionTable(){
+      getProductParameterTable(){
         var that = this
         var params = {
-          tableName: this.PermissionTableData.tableName,
-          limit:this.PermissionTableData.limit,
-          offset:this.PermissionTableData.offset - 1
+          tableName: this.ProductParameterTableData.tableName,
+          limit:this.ProductParameterTableData.limit,
+          offset:this.ProductParameterTableData.offset - 1
         }
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
           if(res.data.code === "200"){
             var data = res.data.data
-            that.PermissionTableData.data = data.rows
-            that.PermissionTableData.total = data.total
+            that.ProductParameterTableData.data = data.rows
+            that.ProductParameterTableData.total = data.total
           }
         },res =>{
           console.log("请求错误")

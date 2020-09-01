@@ -2,8 +2,7 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">工艺段定义</span>
-        <span style="margin-left: 10px;" class="text-size-12 color-grayblack">维护所有生产工序</span>
+        <span style="margin-left: 10px;" class="text-size-normol">产品定义</span>
       </div>
       <div class="platformContainer">
         <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
@@ -15,24 +14,17 @@
 <script>
   import tableView from '@/components/CommonTable'
   export default {
-    name: "ProcessSectionDefinition",
+    name: "Permission",
     components:{tableView},
     data(){
       return {
         PermissionTableData:{
-          tableName:"ProcessUnit",
+          tableName:"Factory",
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"PUCode",label:"工艺段编码",type:"input",value:""},
-            {prop:"PUName",label:"工艺段名称",type:"input",value:""},
-            {prop:"RelateTaskCount",label:" 相关任务数",type:"input",value:""},
-            {prop:"Desc",label:"描述",type:"input",value:"",searchProp:false,canSubmit:false},
-            {prop:"PURateCapacity",label:"额定生产能力",type:"input",value:"",searchProp:false,canSubmit:false},
-            {prop:"PUPLanCapacity",label:"计划生产能力",type:"input",value:""},
-            {prop:"CapacityUnit",label:"能力单位",type:"input",value:""},
-            {prop:"PlaceTime",label:"静置时间",type:"input",value:""},
-            {prop:"TimeUnit",label:"时间单位",type:"input",value:""},
-            {prop:"BatchRunTime",label:"批次运行时间",type:"input",value:""},
+            {prop:"EnterpriseName",label:"所属企业",type:"input",value:""},
+            {prop:"FactoryName",label:"厂名",type:"input",value:""},
+            {prop:"Region",label:"所在地区",type:"input",value:""},
           ],
           data:[],
           limit:5,

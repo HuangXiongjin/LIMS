@@ -2,10 +2,10 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">工艺路线</span>
+        <span style="margin-left: 10px;" class="text-size-normol">生产设备定义</span>
       </div>
       <div class="platformContainer">
-        <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
+        <tableView class="" :tableData="EquipmentTableData" @getTableData="getEquipmentTable"></tableView>
       </div>
     </el-col>
   </el-row>
@@ -14,20 +14,19 @@
 <script>
   import tableView from '@/components/CommonTable'
   export default {
+    name: "Equipment",
     components:{tableView},
     data(){
       return {
-        PermissionTableData:{
-          tableName:"ProductLine",
+        EquipmentTableData:{
+          tableName:"Equipment",
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"PLineCode",label:"生产线编码",type:"input",value:""},
-            {prop:"PLineName",label:"生产线名称",type:"input",value:""},
-            {prop:"AreaID",label:"车间ID",type:"input",value:""},
+            {prop:"EQPCode",label:"设备编码",type:"input",value:""},
+            {prop:"EQPName",label:"设备名称",type:"input",value:""},
+            {prop:"PUCode",label:"工艺段编码",type:"input",value:""},
+            {prop:"PUName",label:"工艺段名称",type:"input",value:""},
             {prop:"Desc",label:"描述",type:"input",value:""},
-            {prop:"PLineCapacity",label:"产线能力",type:"input",value:""},
-            {prop:"Unit",label:"单位",type:"input",value:""},
-            {prop:"Seq",label:"计划类型",type:"input",value:""},
           ],
           data:[],
           limit:5,
@@ -48,23 +47,23 @@
       }
     },
     created(){
-      this.getPermissionTable()
+      this.getEquipmentTable()
     },
     methods:{
-      getPermissionTable(){
+      getEquipmentTable(){
         var that = this
         var params = {
-          tableName: this.PermissionTableData.tableName,
-          limit:this.PermissionTableData.limit,
-          offset:this.PermissionTableData.offset - 1
+          tableName: this.EquipmentTableData.tableName,
+          limit:this.EquipmentTableData.limit,
+          offset:this.EquipmentTableData.offset - 1
         }
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
           if(res.data.code === "200"){
             var data = res.data.data
-            that.PermissionTableData.data = data.rows
-            that.PermissionTableData.total = data.total
+            that.EquipmentTableData.data = data.rows
+            that.EquipmentTableData.total = data.total
           }
         },res =>{
           console.log("请求错误")
