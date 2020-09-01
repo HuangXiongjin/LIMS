@@ -422,10 +422,16 @@ class ProductUnit(Base):
     RelateTaskCount = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
     # 产品定义编码:
-    PRCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    BrandCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-    # 工艺段ID:
-    PUID = Column(Integer, nullable=False, primary_key=False)
+    # 产品定义名称:
+    BrandName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段编码:
+    PUCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段名称:
+    PUName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
     # 顺序号:
     Seq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
