@@ -1,6 +1,8 @@
 <template>
   <el-row :gutter="15">
-      <el-col class='SysMonbg MainContain'></el-col>
+      <el-col :span='24' style="background: #34383E;overflow: hidden;position: relative;">
+        <div class='SysMonbg MainContain'  @mousedown="move" data-move></div>
+      </el-col>
   </el-row>
 </template>
 

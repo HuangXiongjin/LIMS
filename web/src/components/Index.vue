@@ -146,6 +146,8 @@
           ]},
           {label: '系统管理',icon:"el-icon-s-tools",mainMenu:[
             {title:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
+            {title:"企业管理",icon:"el-icon-school",url:"/EnterpriseManagement"},
+            {title:"工厂管理",icon:"el-icon-office-building",url:"/FactoryManagement"},
             {title:"角色管理",icon:"el-icon-s-check",url:"/Role"},
             {title:"班组管理",icon:"el-icon-receiving",url:"/TeamGroup"},
             {title:"人员管理",icon:"el-icon-user",url:"/Personnel"},
