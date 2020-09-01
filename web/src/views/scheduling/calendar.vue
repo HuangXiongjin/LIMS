@@ -4,7 +4,7 @@
       <div class="scheduleContainer" style="height: 630px;">
         <div id='external-events' class="marginBottom">
           <h4>可拖放需要插单的品名</h4>
-          <el-autocomplete v-model="productName" :fetch-suggestions="querySearch" placeholder="请输入品名" @select="handleSelectProductName"></el-autocomplete>
+          <el-input v-model="productName" placeholder="请输入品名" @change="handleChangeProductName"></el-input>
           <a class='fc-event' v-for="item in results" style="padding: 5px;margin: 10px 0;cursor: pointer;">{{item.BrandName}}</a>
         </div>
       </div>
@@ -75,8 +75,7 @@
       });
     },
     methods:{
-      querySearch(queryString, cb) {
-        console.log(queryString)
+      handleChangeProductName(queryString){
         if(queryString != ""){
           this.results = this.scheduleTableData.filter((string) =>{
             return Object.keys(string).some(function(key) {
@@ -86,13 +85,8 @@
         }else{
           this.results = this.scheduleTableData
         }
-        cb(this.results);
-      },
-      handleSelectProductName(){
-
       },
       getScheduleTableData(){ //获取可拖动的品名
-        var arr = []
         var that = this
         var params = {
           tableName: "ProductRule",
