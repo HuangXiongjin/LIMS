@@ -400,27 +400,6 @@ class ProductUnit(Base):
     # ID:
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
 
-    # 产品段编码:
-    PDUnitCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
-
-    # 产品段名称:
-    PDUnitName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
-
-    # 描述:
-    Desc = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
-
-    # 持续时间:
-    Duration = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
-
-    # 低限:
-    LowLimit = Column(Float(53), primary_key=False, autoincrement=False, nullable=True)
-
-    # 高限:
-    HighLimit = Column(Float(53), primary_key=False, autoincrement=False, nullable=True)
-
-    # 相关任务数:
-    RelateTaskCount = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
-
     # 产品定义编码:
     BrandCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
