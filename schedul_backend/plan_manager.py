@@ -382,17 +382,17 @@ import urllib3
 import json
 
 
-def http_post(url, data_json):
-    jdata = json.dumps(data_json)
-    req = urllib3.Request(url, jdata)
-    response = urllib3.urlopen(req)
-    return response.read()
-
-
-url = 'http://192.168.0.107:8000/medi_test'
-data_json = {'name': 'cuiyongyuan', 'job': 'hero'}
-resp = http_post(url, data_json)
-print(resp)
+# def http_post(url, data_json):
+#     jdata = json.dumps(data_json)
+#     req = urllib3.Request(url, jdata)
+#     response = urllib3.urlopen(req)
+#     return response.read()
+#
+#
+# url = 'http://192.168.0.107:8000/medi_test'
+# data_json = {'name': 'cuiyongyuan', 'job': 'hero'}
+# resp = http_post(url, data_json)
+# print(resp)
 
 
 @batch_plan.route('/WMS_SendPlan', methods=['GET', 'POST'])
