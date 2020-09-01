@@ -221,6 +221,23 @@
           return value.ID === id
         })
         this.$set(q, 'flag', false)
+        var params = {
+          tableName:"ProductUnit",
+          delete_data:"[{id:" + id + "}]"
+        }
+        this.axios.delete("/api/CUID",{
+          params: params
+        }).then(res =>{
+          if(res.data.code === "200"){
+            this.$message({
+              type: 'success',
+              message: res.data.message
+            });
+            this.getBrandProcessTableData(this.BrandActive)
+          }
+        },res =>{
+          console.log("请求错误")
+        })
       },
     }
   }
