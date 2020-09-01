@@ -397,7 +397,7 @@ import json
 
 @batch_plan.route('/WMS_SendPlan', methods=['GET', 'POST'])
 def WMS_SendPlan():
-    '''发送投料计划到WMS'''
+    '''发送备料计划到WMS'''
     if request.method == 'POST':
         data = request.values
         try:
