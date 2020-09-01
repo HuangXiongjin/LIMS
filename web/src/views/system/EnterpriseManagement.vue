@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">产品定义</span>
+        <span style="margin-left: 10px;" class="text-size-normol">企业管理</span>
       </div>
       <div class="platformContainer">
         <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
@@ -25,10 +25,10 @@
             {prop:"ParentNode",label:"上级企业",type:"input",value:""},
             {prop:"Type",label:" 企业类型",type:"input",value:""},
             {prop:"Desc",label:"描述",type:"input",value:""},
-            {prop:"ParentNodeName",label:"父节点名称",type:"input",value:"",searchProp:false,canSubmit:false},
-            {prop:"EnterpriseNo",label:"企业代码",type:"input",value:"",searchProp:false,canSubmit:false},
-            {prop:"EnterpriseName",label:"企业名称",type:"select",value:"",Downtable:'isFlag',showDownField:'Description'},//显示下拉框，显示是、否
-            {prop:"EnterpriseCode",label:"企业编码",type:"select",value:"",Downtable:'isFlag',showDownField:'Description'},//显示下拉框，显示是、否
+            {prop:"ParentNodeName",label:"父节点名称",type:"input",value:""},
+            {prop:"EnterpriseNo",label:"企业代码",type:"input",value:""},
+            {prop:"EnterpriseName",label:"企业名称",type:"input",value:""},
+            {prop:"EnterpriseCode",label:"企业编码",type:"input",value:""},
           ],
           data:[],
           limit:5,
