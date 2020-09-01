@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-col>
+    <el-col :span="24">
       <div class="page-title">
         <span style="margin-left: 10px;" class="text-size-normol">生产设备定义</span>
       </div>

@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-col>
+    <el-col :span="24">
       <div class="page-title">
         <span style="margin-left: 10px;" class="text-size-normol">产品工艺段参数</span>
       </div>
@@ -25,6 +25,9 @@
             {prop:"PDParaCode",label:"工艺参数编码",type:"input",value:""},
             {prop:"PDParaName",label:"工艺参数名称",type:"input",value:""},
             {prop:"Value",label:"值",type:"input",value:""},
+            {prop:"BrandCode",label:"品名编码",type:"input",value:""},
+            {prop:"BrandName",label:"品名",type:"input",value:""},
+            {prop:"PUCode",label:"工艺段编码",type:"input",value:""},
             {prop:"PUName",label:"工艺段名称",type:"input",value:""},
             {prop:"Desc",label:"描述",type:"input",value:""},
           ],
