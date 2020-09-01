@@ -2,8 +2,8 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">工艺段定义</span>
-        <span style="margin-left: 10px;" class="text-size-12 color-grayblack">维护所有生产工序</span>
+        <span>工艺段定义</span>
+        <span class="text-size-12 color-grayblack marginLeft">维护所有生产工序</span>
       </div>
       <div class="platformContainer">
         <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>

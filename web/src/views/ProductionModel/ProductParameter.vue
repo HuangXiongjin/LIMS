@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">产品工艺段参数</span>
+        <span>产品工艺段参数</span>
       </div>
       <div class="platformContainer">
         <tableView :tableData="ProductParameterTableData" @getTableData="getProductParameterTable"></tableView>

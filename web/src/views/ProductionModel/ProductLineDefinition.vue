@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">生产线定义</span>
+        <span>生产线定义</span>
       </div>
       <div class="platformContainer">
         <tableView :tableData="ProductLineTableData" @getTableData="getProductLineTable"></tableView>

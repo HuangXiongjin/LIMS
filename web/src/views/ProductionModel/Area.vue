@@ -2,7 +2,7 @@
   <el-row>
     <el-col>
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">区域(车间)定义</span>
+        <span>区域(车间)定义</span>
       </div>
       <div class="platformContainer">
         <tableView class="" :tableData="AreaTableData" @getTableData="getAreaTable"></tableView>
