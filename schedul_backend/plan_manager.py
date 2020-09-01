@@ -78,11 +78,12 @@ def makeZYPlanZYTask(id):
         if ocalss:
             proclass = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == ocalss.BrandCode).order_by("Seq").all()
             for i in proclass:
+                pu = db_session.query(ProcessUnit).filter(ProcessUnit.PUCode == i.PUCode).first()
                 zyplan = ZYPlan()
                 zyplan.PlanDate = ocalss.PlanBeginTime
                 zyplan.PlanNo = ocalss.SchedulePlanCode
                 zyplan.BatchID = ocalss.BatchID
-                zyplan.PlanSeq = i.Seq
+                zyplan.PlanSeq = pu.Seq
                 zyplan.PUCode = i.PUCode
                 zyplan.PlanType = system_backend.Global.PLANTYPE.SCHEDULE.value
                 zyplan.BrandCode = ocalss.BrandCode
@@ -98,7 +99,7 @@ def makeZYPlanZYTask(id):
                 zyplan.WMSStatus = system_backend.Global.TASKSTATUS.NEW.value
                 db_session.add(zyplan)
                 iTaskSeq = 0
-                for j in range(0, i.RelateTaskCount):
+                for j in range(0, pu.RelateTaskCount):
                     iTaskSeq = iTaskSeq + 1
                     bReturn, strTaskNo = getTaskNo()
                     if bReturn == False:
@@ -377,14 +378,14 @@ class WMS_Interface(ServiceBase):
             return json.dumps(e)
 
 
-import urllib2
+import urllib3
 import json
 
 
 def http_post(url, data_json):
     jdata = json.dumps(data_json)
-    req = urllib2.Request(url, jdata)
-    response = urllib2.urlopen(req)
+    req = urllib3.Request(url, jdata)
+    response = urllib3.urlopen(req)
     return response.read()
 
 
