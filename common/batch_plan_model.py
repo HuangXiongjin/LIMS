@@ -606,7 +606,7 @@ class MaterialBOM(Base):
     Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 百分比:
-    BatchPercentage = Column(Float(53), primary_key=False, autoincrement=False, nullable=True)
+    BatchPercentage = Column(Unicode(53), primary_key=False, autoincrement=False, nullable=True)
 
     # 品名编码:
     BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
