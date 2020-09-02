@@ -21,6 +21,7 @@
               </el-form-item>
             </el-form>
             <el-table :data="BOMList" border size="small" @selection-change="handleSelectionChange">
+              <el-table-column type="selection"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="MATCode" label="物料编码"></el-table-column>
               <el-table-column prop="MATName" label="物料名称"></el-table-column>
@@ -258,6 +259,7 @@
                 type: 'success',
                 message: res.data.message
               });
+              this.dialogVisible = false
               this.getBOMTable(this.BrandActive)
             }else{
               this.$message({
@@ -288,6 +290,7 @@
                 type: 'success',
                 message: res.data.message
               });
+              this.dialogVisible = false
               this.getBOMTable(this.BrandActive)
             }else{
               this.$message({
