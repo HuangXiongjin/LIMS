@@ -16,6 +16,7 @@ class OrderStatus(Enum):
 class PlanStatus(Enum):
     NEW = "10"#新增
     Checked = "11"#已审核
+    UnChecked = "12"#审核未通过
     Realse = "20"#已下发
     Recall = "40"#撤回
     RUN = "50"#执行

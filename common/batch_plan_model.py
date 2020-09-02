@@ -555,6 +555,9 @@ class PlanManager(Base):
     # 调度类型:
     Type = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
+    #描述
+    Describtion = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
 
 # # 序号:
 # Seq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
@@ -587,11 +590,11 @@ class MaterialBOM(Base):
     # ID:
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
 
-    # 物料ID:
-    MATID = Column(Integer, nullable=False, primary_key=False)
+    # 物料编码:
+    MATCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 物料名称:
-    MaterialName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    MATName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 投料批总重量:
     BatchTotalWeight = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
@@ -605,17 +608,11 @@ class MaterialBOM(Base):
     # 百分比:
     BatchPercentage = Column(Float(53), primary_key=False, autoincrement=False, nullable=True)
 
-    # 产品定义ID:
-    ProductRuleID = Column(Integer, nullable=False, primary_key=False)
+    # 品名编码:
+    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 工艺段ID:
-    PUID = Column(Integer, nullable=False, primary_key=False)
-
-    # 物料类型ID:
-    MATTypeID = Column(Integer, nullable=False, primary_key=False)
-
-    # 顺序号:
-    Seq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    # 品名名称:
+    BrandName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 等级:
     Grade = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
