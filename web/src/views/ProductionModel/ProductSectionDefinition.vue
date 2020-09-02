@@ -8,7 +8,7 @@
         <el-col :span="4">
           <div class="platformContainer">
             <p class="marginBottom">选择要设置工序的品名</p>
-            <el-input class="marginBottom" v-model="productName" placeholder="搜索品名" @change="handleChangeProductName"></el-input>
+            <el-input class="marginBottom" v-model="productName" placeholder="关键字搜索" @change="handleChangeProductName"></el-input>
             <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in results" :key="index" v-bind:effect="item.BrandName===BrandActive?'dark':'plain'" @click="clickBrandTag(item.BrandName,item.BrandCode)">{{item.BrandName}}</el-tag>
           </div>
         </el-col>
