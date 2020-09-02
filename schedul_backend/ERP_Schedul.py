@@ -322,5 +322,3 @@ def addscheduledates():
             logger.error(e)
             insertSyslog("error", "添加工作日休息日报错Error：" + str(e), current_user.Name)
             return json.dumps("添加工作日休息日报错", cls=AlchemyEncoder, ensure_ascii=False)
-
-

@@ -91,9 +91,9 @@ def makeZYPlanZYTask(id):
                 zyplan.ERPOrderNo = ""
                 zyplan.PlanQuantity = ocalss.PlanQuantity
                 zyplan.Unit = ocalss.Unit
-                zyplan.EnterTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                zyplan.PlanBeginTime = ocalss.PlanBeginTime
-                zyplan.ZYPlanStatus = system_backend.Global.ZYPlanStatus.NEW.value
+                zyplan.EnterTime = ""
+                zyplan.PlanBeginTime = ""
+                zyplan.ZYPlanStatus = ""
                 zyplan.LockStatus = system_backend.Global.TASKLOCKSTATUS.UNLOCK.value
                 zyplan.INFStatus = system_backend.Global.TASKSTATUS.NEW.value
                 zyplan.WMSStatus = system_backend.Global.TASKSTATUS.NEW.value
@@ -115,7 +115,7 @@ def makeZYPlanZYTask(id):
                     zytask.BrandName = ocalss.BrandName
                     zytask.PlanQuantity = ocalss.PlanQuantity
                     zytask.Unit = ocalss.Unit
-                    zytask.EnterTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    zytask.EnterTime = ""
                     # zytask.SetRepeatCount = i.RelateTaskCount
                     zytask.TaskStatus = system_backend.Global.TASKSTATUS.NEW.value
                     zytask.LockStatus = system_backend.Global.TASKLOCKSTATUS.UNLOCK.value
@@ -326,13 +326,16 @@ class WMS_Interface(ServiceBase):
                 BatchID = i.get("BatchID")
                 BrandName = i.get("BrandName")
                 status = i.get("status")
+                PUCode = i.get("PUCode")
                 if BatchID != None:
                     zy = db_session.query(ZYPlan).filter(ZYPlan.BatchID == BatchID,
-                                                         ZYPlan.BrandName == BrandName,ZYPlan.PUID == 1).first()
+                                                         ZYPlan.BrandName == BrandName,ZYPlan.PUCode == PUCode).first()
                     if zy != None:
                         if status == "1":
+                            zy.ZYPlanStatus = system_backend.Global.ZYPlanStatus.READY.value
                             zy.ActBeginTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                         elif status == "3":
+                            zy.ZYPlanStatus = system_backend.Global.ZYPlanStatus.Clear.value
                             zy.ActEndTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     db_session.commit()
                 else:
