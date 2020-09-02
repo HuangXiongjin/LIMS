@@ -7,6 +7,7 @@ import datetime
 from common.common_cuid import accurateSelect
 from schedul_backend.ERP_Schedul import erp_schedul
 from schedul_backend.plan_manager import batch_plan
+from schedul_backend.interface_manage import interface_manage
 from system_backend.SystemManagement import auth_lib, user_management, Role_management, system_manage, \
     PermissionAssignment, account_auth
 from system_backend.SystemManagement.account_auth import login_auth
@@ -43,6 +44,8 @@ app.register_blueprint(user_manager)
 app.register_blueprint(erp_schedul)
 #批次计划
 app.register_blueprint(batch_plan)
+#接口
+app.register_blueprint(interface_manage)
 
 @app.route('/')
 @login_required

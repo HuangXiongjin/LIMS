@@ -10,7 +10,7 @@ from suds.client import Client
 from spyne import Application
 from wsgiref.simple_server import make_server
 
-from schedul_backend.plan_manager import WMS_Interface
+from schedul_backend.interface_manage import WMS_Interface
 
 soap_app = Application([WMS_Interface], 'WMS_Interface', in_protocol=Soap11(validator='lxml'),
                        out_protocol=Soap11())
@@ -23,8 +23,8 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     logging.getLogger('spyne.protocol.xml').setLevel(logging.DEBUG)
 
-    logging.info("listening to http://192.168.0.100:5001/")
-    logging.info("wsdl is at: http://192.168.0.100:5001/?wsdl")
+    logging.info("listening to http://192.168.7.100:5001/")
+    logging.info("wsdl is at: http://192.168.7.100:5001/?wsdl")
 
     server = make_server('127.0.0.1', 5001, wsgi_app)
     server.serve_forever()
