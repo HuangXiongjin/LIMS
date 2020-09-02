@@ -200,7 +200,7 @@
             });
           }
         }else if(label === "删除"){
-          var params = {tableName:""}
+          var params = {tableName:"MaterialBOM"}
           var mulId = []
           if(this.multipleSelection.length >= 1){
             this.multipleSelection.forEach(item =>{
