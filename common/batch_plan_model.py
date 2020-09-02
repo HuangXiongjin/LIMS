@@ -597,10 +597,10 @@ class MaterialBOM(Base):
     MATName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 投料批总重量:
-    BatchTotalWeight = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    BatchTotalWeight = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 投料单一物料重量:
-    BatchSingleMATWeight = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    BatchSingleMATWeight = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 单位:
     Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
@@ -615,7 +615,7 @@ class MaterialBOM(Base):
     BrandName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 等级:
-    Grade = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    Grade = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 class TaskNoGenerator(Base):
     '''企业编码'''
