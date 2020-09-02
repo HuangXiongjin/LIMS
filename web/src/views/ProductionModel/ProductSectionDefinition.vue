@@ -14,29 +14,31 @@
         </el-col>
         <el-col :span="20">
           <el-row>
-            <el-col :span="24" v-if="BrandActive">
+            <el-col :span="24">
               <div class="platformContainer">
-                <p class="marginBottom"><span>{{ BrandActive }}</span>的工序 <span class="text-size-12 color-grayblack">请按照工艺顺序排列</span></p>
-                <draggable :list="inProcessList" v-bind="{group:'article', disabled: disabled,sort: true}"
-                   @start="start22"
-                   @end="end22" class="dragArea11">
-                  <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID">
+                <p class="marginBottom">全部工序 <span class="text-size-12 color-grayblack">拖动工序到虚线框内来设置产品的工序</span></p>
+                <draggable :list="processList" v-bind="{group:{name: flags,pull:'clone'}, sort: true}"
+                  @end="end" class="dragArea">
+                  <div v-for="(item,index) in processList" :key="index" class="list-complete-item" :data-pcode="item.PUCode" :data-pname="item.PUName">
                     <div class="container-col">
                       <span class="text-size-14">{{ item.PUName }}</span>
-                      <i class="el-icon-delete" @click="handleDel(index, item.ID)"></i>
                     </div>
                   </div>
                 </draggable>
               </div>
             </el-col>
-            <el-col :span="24">
+            <el-col :span="24" v-if="BrandActive">
               <div class="platformContainer">
-                <p class="marginBottom">全部工序</p>
-                <draggable :list="processList" v-bind="{group:{name: falgs,pull:'clone'}, sort: true}"
-                  @end="end" class="dragArea">
-                  <div v-for="(item,index) in processList" :key="index" class="list-complete-item" :data-pcode="item.PUCode" :data-pname="item.PUName">
+                <p class="marginBottom">
+                  <span>{{ BrandActive }}</span>的工序 <span class="text-size-12 color-grayblack">请按照工艺顺序排列，如遇到顺序号相同时，可原处拖动一下，将会自动修改。</span>
+                </p>
+                <draggable :list="inProcessList" v-bind="{group:'article', disabled: disabled,sort: true}"
+                   @start="start22"
+                   @end="end22" class="dragArea11" style="border: 1px dashed #B9B9B9;padding: 10px;">
+                  <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID">
                     <div class="container-col">
                       <span class="text-size-14">{{ item.PUName }}</span>
+                      <i class="el-icon-delete" @click="handleDel(index, item.ID)"></i>
                     </div>
                   </div>
                 </draggable>
@@ -71,7 +73,7 @@
         productName:"",
         BrandActive:"",
         BrandCode:"",
-        falgs: 'article',
+        flags: 'article',
         disabled: false,
         processList:[],
         inProcessList:[],
@@ -128,7 +130,14 @@
           params: params
         }).then(res => {
           if(res.data.code === "200"){
-            that.inProcessList = res.data.data.rows
+            function compare(property){
+              return function(a,b){
+                var value1 = a[property];
+                var value2 = b[property];
+                return value1 - value2;
+              }
+            }
+            that.inProcessList = res.data.data.rows.sort(compare('Seq'))
           }else{
             that.$message({
               type: 'info',
@@ -158,7 +167,7 @@
       end (ev) {
         //判断是否拖进了品名工序的范围
         if (ev.to.className === 'dragArea11') {
-          this.$set(this.processList[ev.oldIndex], 'flag', true)
+          this.$set(this.processList[ev.oldIndex], 'flags', true)
           var PUCode = ev.clone.attributes['data-pcode'].value
           var PUName = ev.clone.attributes['data-pname'].value
           var params = {
@@ -175,6 +184,7 @@
                 type: 'success',
                 message: res.data.message
               });
+              this.getBrandProcessTableData(this.BrandActive)
             }else{
               this.$message({
                 type: 'info',
@@ -187,10 +197,10 @@
         }
       },
       start22 (event) {
-        this.falgs = '222222'
+        this.flags = '222222'
       },
       end22 (ev) {
-        this.falgs = 'article'
+        this.flags = 'article'
         //修改产品工序的顺序
         var idd = ev.clone.attributes['data-idd'].value
         var params = {
@@ -217,10 +227,6 @@
       },
       handleDel (index, id) {
         this.inProcessList.splice(index, 1)
-        let q = this.processList.find((value, index, arr) => {
-          return value.ID === id
-        })
-        this.$set(q, 'flag', false)
         var params = {
           tableName:"ProductUnit",
           delete_data:"[{id:" + id + "}]"
