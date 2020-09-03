@@ -57,7 +57,7 @@
               </el-form>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="save">保 存</el-button>
+                <el-button type="primary" @click="save" :disabled="addloading">保 存</el-button>
               </span>
             </el-dialog>
           </div>
@@ -95,7 +95,8 @@
           Unit:"",
           BatchPercentage:"",
           Grade:"",
-        }
+        },
+        addloading:false,
       }
     },
     created(){
@@ -241,6 +242,7 @@
       },
       save(){
         if(this.dialogTitle === "添加"){
+          this.addloading= true
           var params = {
             tableName:"MaterialBOM",
             MATCode:this.formField.MATCode,
@@ -254,6 +256,7 @@
             BrandCode:this.BrandCode,
           }
           this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
+            this.addloading= false
             if(res.data.code === "200"){
               this.$message({
                 type: 'success',
@@ -269,6 +272,7 @@
             }
           },res =>{
             console.log("请求错误")
+            this.addloading= false
           })
         }else if(this.dialogTitle === "修改"){
           var params = {
