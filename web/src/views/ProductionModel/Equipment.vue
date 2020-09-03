@@ -32,7 +32,7 @@
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="save">保存</el-button>
+                <el-button type="primary" @click="save" :disabled='addloading'>保存</el-button>
               </div>
           </el-dialog>
     </el-col>
@@ -62,6 +62,7 @@
         Processtab:[], //提取工艺
         radio1:'',
         tableData: [],
+        addloading:false
       }
     },
     created(){
@@ -148,6 +149,7 @@
       },
       save(){
         if(this.OperationName === "添加"){
+          this.addloading=true
           var params = {
             tableName:"ProductEquipment",
             EQPCode:this.submitForm.EQPCode,
@@ -157,7 +159,7 @@
             Desc:this.submitForm.Desc,
           }
           this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
-            console.log(res)
+            this.addloading=false
             if(res.data.code === "200"){
               this.$message({
                 type: 'success',
@@ -173,7 +175,8 @@
             }
           },res =>{
             console.log("请求错误")
-          })
+            this.addloading=false
+})
         }else if(this.OperationName === "修改"){
           var params = {
             tableName:"ProductEquipment",
