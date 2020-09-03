@@ -79,6 +79,7 @@
       getCurrentprocess(name,code,id){ //点击展示对应的流程工艺
         this.PUName=name
         this.PUCode=code
+        this.Searcheq()
       },
       MakeOperation(e){ //点击进行设备的增删查改
           this.OperationName=e
@@ -95,7 +96,7 @@
         }else if(this.OperationName==='修改'){
            if(this.multipleSelection.length == 1){
             this.dialogVisible=true
-            this.formField = {
+            this.submitForm = {
               EQPCode:this.multipleSelection[0].EQPCode,
               EQPName:this.multipleSelection[0].EQPName,
               Desc:this.multipleSelection[0].Desc,
@@ -103,24 +104,60 @@
           }else{
             this.$message({
               type: 'info',
-              message: "请选择一项工艺段"
+              message: "请选择一项工艺段设备"
             });
           }
-        }else{
-
+        }else if(this.OperationName==='删除'){
+          var params = {tableName:"ProductEquipment"}
+          var mulId = []
+          if(this.multipleSelection.length >= 1){
+            this.multipleSelection.forEach(item =>{
+              mulId.push({id:item.ID});
+            })
+            params.delete_data = JSON.stringify(mulId)
+            this.$confirm('确定删除所选记录？', '提示', {
+              distinguishCancelAndClose:true,
+              type: 'warning'
+            }).then(()  => {
+              this.axios.delete("/api/CUID",{
+                params: params
+              }).then(res =>{
+                if(res.data.code === "200"){
+                  this.$message({
+                    type: 'success',
+                    message: res.data.message
+                  });
+                }
+                this.Searcheq()
+              },res =>{
+                console.log("请求错误")
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              });
+            });
+          }else{
+            this.$message({
+              message: '至少选择一条数据进行删除',
+              type: 'warning'
+            });
+          }
         }
       },
       save(){
         if(this.OperationName === "添加"){
           var params = {
-            tableName:"Equipment",
+            tableName:"ProductEquipment",
             EQPCode:this.submitForm.EQPCode,
             EQPName:this.submitForm.EQPName,
-            Desc:this.submitForm.Desc,
-            PUName:this.PUName,
             PUCode:this.PUCode,
+            PUName:this.PUName,
+            Desc:this.submitForm.Desc,
           }
           this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
+            console.log(res)
             if(res.data.code === "200"){
               this.$message({
                 type: 'success',
@@ -139,7 +176,7 @@
           })
         }else if(this.OperationName === "修改"){
           var params = {
-            tableName:"Equipment",
+            tableName:"ProductEquipment",
             ID:this.multipleSelection[0].ID,
             EQPCode:this.submitForm.EQPCode,
             EQPName:this.submitForm.EQPName,
@@ -171,15 +208,13 @@
       },
       Searcheq(){
         var params={
-          tableName:'Equipment',
+          tableName:'ProductEquipment',
           field:'PUName',
-          fieldvalue:this.OperationName
+          fieldvalue:this.PUName
         }
-          this.axios.get("/api/CUID",{
-          params: params
-        }).then(res => {
+        this.axios.get("/api/CUID",{params: params}).then(res => {
           if(res.data.code === "200"){
-            this.Processtab = res.data.data.rows
+            this.tableData = res.data.data.rows
           }else{
             this.$message({
               type: 'info',
