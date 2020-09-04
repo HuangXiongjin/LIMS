@@ -19,12 +19,11 @@
     data(){
       return {
         AreaTableData:{
-          tableName:"Area",
+          tableName:"AreaMaintain",
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
             {prop:"AreaCode",label:"区域编码",type:"input",value:""},
             {prop:"AreaName",label:"区域名称",type:"input",value:""},
-            {prop:"Desc",label:"描述",type:"input",value:""},
             {prop:"FactoryName",label:"所属厂区",type:"input",value:""},
           ],
           data:[],
