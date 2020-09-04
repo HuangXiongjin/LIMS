@@ -273,9 +273,6 @@
   .list-complete-item.sortable-ghost {
     color: #30B08F;
   }
-  .dragArea11{
-    height: 70px;
-  }
   .list-complete-enter,.list-complete-leave-active {
     opacity: 0;
   }
