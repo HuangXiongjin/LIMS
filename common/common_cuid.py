@@ -157,9 +157,9 @@ def update(data):
                 aud.User = current_user.Name
                 db_session.add(aud)
                 db_session.commit()
-                return {"code": "200", "message": "请求成功"}
+                return {"code": "200", "message": "修改成功"}
             else:
-                return {"code": "200", "message": "请求成功", "data": "当前记录不存在"}
+                return {"code": "200", "message": "修改成功", "data": "当前记录不存在"}
         except Exception as e:
             db_session.rollback()
             logger.error(e)
