@@ -22,6 +22,7 @@ import ProductParameter from '@/views/ProductionModel/ProductParameter'
 import Area from '@/views/ProductionModel/Area'
 import Equipment from '@/views/ProductionModel/Equipment'
 import ProductLineDefinition from '@/views/ProductionModel/ProductLineDefinition'
+import Unit from '@/views/ProductionModel/Unit'
 //排产
 import ProductionSchedule from '@/views/scheduling/ProductionSchedule'
 import schedulingPlan from '@/views/scheduling/schedulingPlan'
@@ -81,6 +82,7 @@ export default new Router({
         {path:'/Area',name:'Area',meta:{ title:'区域(车间)定义',type:"生产建模"},component:Area},
         {path:'/Equipment',name:'Equipment',meta:{ title:'生产设备定义',type:"生产建模"},component:Equipment},
         {path:'/ProductLineDefinition',name:'ProductLineDefinition',meta:{ title:'生产线定义',type:"生产建模"},component:ProductLineDefinition},
+        {path:'/Unit',name:'Unit',meta:{ title:'生产线定义',type:"生产建模"},component:Unit},
 
         {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'生产调度信息',type:"排产调度系统"},component:ProcessPlanTask},
         {path:'/GeneratePlan',name:'GeneratePlan',meta:{ title:'生成计划',type:"排产调度系统"},component:GeneratePlan},
