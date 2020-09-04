@@ -24,7 +24,7 @@
                   <li class="themeItem" v-for="(item,index) in themeList" :class="{ active:item.value===themeValue }" :key="index" :style="{background:item.color}" @click="changeTheme(item.value)"></li>
                 </ul>
               </div>
-              <i class="el-icon-brush" @click="switchSystem"></i>
+              <i class="el-icon-brush"></i>
             </el-tooltip>
           </li>
           <li>
@@ -113,10 +113,12 @@
             {title:'工厂排产',icon:"fa fa-calendar-plus-o",url:"/scheduling"},
             {title:'排期管理',icon:"el-icon-date",url:"/calendar"},
             {title:'排产记录',icon:"fa fa-table",url:"/schedulingLog"},
-            {title:"生成计划",url:"/GeneratePlan"},
-            {title:"审核计划",url:"/AuditPlan"},
-            {title:"执行计划",url:"/ImplementationPlan"},
-            {title:"发送WMS",url:"/SendWMS"},
+            {title:"生产计划调度",icon:"el-icon-folder-checked",children:[
+              {title:"生成计划",url:"/GeneratePlan"},
+              {title:"审核计划",url:"/AuditPlan"},
+              {title:"执行计划",url:"/ImplementationPlan"},
+              {title:"发送WMS",url:"/SendWMS"},
+            ]},
             {title:"生产调度信息",icon:"el-icon-tickets",url:"/ProcessPlanTask"},
             {title:"物料调度管理",icon:"fa fa-leaf",url:"/MaterialPreparation"},
           ]},
