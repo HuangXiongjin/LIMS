@@ -1,27 +1,23 @@
 <template>
   <el-row>
-    <el-col>
-      <div class="page-title">
-        <span>生产订单管理</span>
-      </div>
+    <el-col :span="24">
       <div class="platformContainer">
-          <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
+        <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
       </div>
     </el-col>
   </el-row>
 </template>
 
 <script>
- import tableView from '@/components/CommonTable'
+  import tableView from '@/components/CommonTable'
   export default {
     components:{tableView},
-    name:'planOrder',
     data(){
       return {
         PermissionTableData:{
           tableName:"product_plan",
           column:[
-            {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
+             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
             {prop:"plan_period",label:"计划期间",type:"input",value:""},
             {prop:"product_code",label:"产品编码",type:"input",value:""},
             {prop:"product_name",label:"产品名称",type:"input",value:""},
@@ -52,6 +48,8 @@
             {type:"primary",label:"添加"},
             {type:"warning",label:"修改"},
             {type:"danger",label:"删除"},
+            // {type:"primary",label:"同步物料到WMS",clickEvent:'synchronizeToWMS'},
+            // {type:"primary",label:"同步物料到备料段",clickEvent:'synchronizeToPrepareSection'},
           ],
         },
       }
@@ -79,7 +77,13 @@
           console.log("请求错误")
         }
         )
-      }
+      },
+      synchronizeToWMS(){
+         alert('同步物料到WMS')
+      },
+      synchronizeToPrepareSection(){
+         alert('同步物料到备料段')
+      },
 
     }
   }
