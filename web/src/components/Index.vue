@@ -115,7 +115,6 @@
             {title:'排期进度预览',icon:"fa fa-calendar-plus-o",url:"/ProductionSchedule"},
             {title:"生产计划调度管理",icon:"el-icon-folder-checked",url:"/planningScheduling"},
             {title:"调度计划明细",icon:"el-icon-tickets",url:"/ProcessPlanTask"},
-            {title:"物料调度管理",icon:"fa fa-leaf",url:"/MaterialPreparation"},
           ]},
           {label: '生产建模',icon:"el-icon-s-management",mainMenu:[
             {title:"产品定义",icon:"fa fa-list-ul",url:"/ProductDefinition"},

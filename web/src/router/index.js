@@ -82,7 +82,6 @@ export default new Router({
         {path:'/planOrder',name:'planOrder',meta:{ title:'生产订单管理',type:"排产调度系统"},component:planOrder},
         {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度管理',type:"排产调度系统"},component:planningScheduling},
         {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'调度计划明细',type:"排产调度系统"},component:ProcessPlanTask},
-        {path:'/MaterialPreparation',name:'MaterialPreparation',meta:{ title:'物料调度管理',type:"排产调度系统"},component:MaterialPreparation},
         {path:'/ProductionSchedule',name:'ProductionSchedule',meta:{ title:'排期进度预览',type:"排产调度系统"},component:ProductionSchedule},
         {path:'/schedulingPlan',name:'schedulingPlan',meta:{ title:'排产计划',type:"排产调度系统"},component:schedulingPlan},
         {path:'/scheduling',name:'scheduling',meta:{ title:'工厂排产',type:"排产调度系统"},component:scheduling},
