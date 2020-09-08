@@ -274,3 +274,22 @@ def createZYPlanZYtask():
             return 'NO'
 
 
+ALLOWED_EXTENSIONS = ['doc','docx']
+def allowe_file(filename):
+    '''
+    限制上传的文件格式
+    :param filename:
+    :return:
+    '''
+    return '.' in filename and filename.rsplit('.',1)[1] in ALLOWED_EXTENSIONS
+#批记录模板导入
+@batch_plan.route('/batchmodelexport', methods=['GET', 'POST'])
+def batchmodelexport():
+    if request.method == 'POST':
+        file = request.files['file']
+        file_path = os.path.join(os.path.realpath("files"),file.filename)
+        file.save(file_path)
+        # if allowe_file(file_path) == True:
+        #     return read_Excel(file_path)
+        # else:
+        #     return "请上传xlsx格式的excel！"
