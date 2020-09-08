@@ -287,9 +287,9 @@ def allowe_file(filename):
 def batchmodelexport():
     if request.method == 'POST':
         file = request.files['file']
-        file_path = os.path.join(os.path.realpath("files"),file.filename)
-        file.save(file_path)
-        # if allowe_file(file_path) == True:
-        #     return read_Excel(file_path)
-        # else:
-        #     return "请上传xlsx格式的excel！"
+        file_path = os.path.join(os.path.realpath(r"system_backend\files"), file.filename)
+        if allowe_file(file_path) == True:
+            file.save(file_path)
+            return json.dumps({"code": "200", "message": "上传成功！"})
+        else:
+            return json.dumps({"code": "200", "message": "请上传.doc或.docx！"})
