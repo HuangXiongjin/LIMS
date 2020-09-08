@@ -103,7 +103,6 @@
         multipleSelection:[],
         handleType:[
           {type:"primary",label:"添加"},
-          {type:"warning",label:"修改"},
           {type:"danger",label:"删除"},
         ],
         dialogVisible:false,
