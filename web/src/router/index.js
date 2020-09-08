@@ -23,19 +23,14 @@ import Area from '@/views/ProductionModel/Area'
 import Equipment from '@/views/ProductionModel/Equipment'
 import ProductLineDefinition from '@/views/ProductionModel/ProductLineDefinition'
 import Unit from '@/views/ProductionModel/Unit'
-//排产
+//排产调度
+import planOrder from '@/views/scheduling/planOrder'
 import ProductionSchedule from '@/views/scheduling/ProductionSchedule'
 import schedulingPlan from '@/views/scheduling/schedulingPlan'
 import scheduling from '@/views/scheduling/scheduling'
-import calendar from '@/views/scheduling/calendar'
 import schedulingLog from '@/views/scheduling/schedulingLog'
-//调度
-import GeneratePlan from '@/views/dispatching/GeneratePlan'
-import AuditPlan from '@/views/dispatching/AuditPlan'
-import ImplementationPlan from '@/views/dispatching/ImplementationPlan'
-import SendWMS from '@/views/dispatching/SendWMS'
-import MaterialPreparation from '@/views/dispatching/MaterialPreparation'
-import ProcessPlanTask from '@/views/dispatching/ProcessPlanTask'
+import planningScheduling from '@/views/scheduling/planningScheduling'
+import ProcessPlanTask from '@/views/scheduling/ProcessPlanTask'
 //生产数据
 import MaterialBalanceStatistics from '@/views/production/MaterialBalanceStatistics'
 import MaterialTraceability from '@/views/production/MaterialTraceability'
@@ -84,16 +79,12 @@ export default new Router({
         {path:'/ProductLineDefinition',name:'ProductLineDefinition',meta:{ title:'生产线定义',type:"生产建模"},component:ProductLineDefinition},
         {path:'/Unit',name:'Unit',meta:{ title:'生产线定义',type:"生产建模"},component:Unit},
 
-        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'生产调度信息',type:"排产调度系统"},component:ProcessPlanTask},
-        {path:'/GeneratePlan',name:'GeneratePlan',meta:{ title:'生成计划',type:"排产调度系统"},component:GeneratePlan},
-        {path:'/AuditPlan',name:'AuditPlan',meta:{ title:'审核计划',type:"排产调度系统"},component:AuditPlan},
-        {path:'/ImplementationPlan',name:'ImplementationPlan',meta:{ title:'执行计划',type:"排产调度系统"},component:ImplementationPlan},
-        {path:'/SendWMS',name:'SendWMS',meta:{ title:'发送WMS',type:"排产调度系统"},component:SendWMS},
-        {path:'/MaterialPreparation',name:'MaterialPreparation',meta:{ title:'物料调度管理',type:"排产调度系统"},component:MaterialPreparation},
-        {path:'/ProductionSchedule',name:'ProductionSchedule',meta:{ title:'排产进度表',type:"排产调度系统"},component:ProductionSchedule},
+        {path:'/planOrder',name:'planOrder',meta:{ title:'生产订单管理',type:"排产调度系统"},component:planOrder},
+        {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度管理',type:"排产调度系统"},component:planningScheduling},
+        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'调度计划明细',type:"排产调度系统"},component:ProcessPlanTask},
+        {path:'/ProductionSchedule',name:'ProductionSchedule',meta:{ title:'排期进度预览',type:"排产调度系统"},component:ProductionSchedule},
         {path:'/schedulingPlan',name:'schedulingPlan',meta:{ title:'排产计划',type:"排产调度系统"},component:schedulingPlan},
         {path:'/scheduling',name:'scheduling',meta:{ title:'工厂排产',type:"排产调度系统"},component:scheduling},
-        {path:'/calendar',name:'calendar',meta:{ title:'排期管理',type:"排产调度系统"},component:calendar},
         {path:'/schedulingLog',name:'schedulingLog',meta:{ title:'排产记录',type:"排产调度系统"},component:schedulingLog},
 
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据系统"},component:MaterialBalanceStatistics},
