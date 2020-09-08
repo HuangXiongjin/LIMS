@@ -9,14 +9,14 @@
       </el-steps>
       <el-row :gutter="15">
         <el-col :span="24" v-if="steps == 0">
-          <el-col :span="6">
+          <el-col :span="4">
             <div class="platformContainer">
               <p class="marginBottom">请根据品名查询计划</p>
               <el-input class="marginBottom" v-model="productName" placeholder="关键字搜索" @change="handleChangeProductName"></el-input>
               <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in scheduleList" :key="index" v-bind:effect="item.BrandName===BrandActive?'dark':'plain'" @click="clickBrandTag(item.BrandName,item.BrandCode)">{{item.BrandName}}</el-tag>
             </div>
           </el-col>
-          <el-col :span="18">
+          <el-col :span="20">
             <div class="platformContainer">
               <p class="marginBottom">当前选择的是{{ BrandActive }}</p>
               <el-form :inline="true">
@@ -58,7 +58,7 @@
                     <el-input v-model="formField.Unit"></el-input>
                   </el-form-item>
                   <el-form-item label="计划生产日期">
-                    <el-date-picker v-model="formField.PlanDate" type="date" placeholder="选择日期">
+                    <el-date-picker v-model="formField.PlanDate" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
                     </el-date-picker>
                   </el-form-item>
                 </el-form>
@@ -82,6 +82,7 @@
 </template>
 
 <script>
+  var moment = require('moment');
   export default {
     name: "scheduling",
     components:{
