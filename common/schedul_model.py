@@ -128,9 +128,9 @@ class product_plan(Base):
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     # 计划期间（YYYYMM）
     plan_period = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 产品(即物料)编码
+    # 产品编码
     product_code = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 产品(即物料)名称
+    # 产品名称
     product_name = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 计量单位 kg\批
     product_unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
@@ -157,6 +157,24 @@ class product_plan(Base):
     # 物料类型
     Material_type = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
+
+# 设备批次运行时间统计表
+class EquipmentBatchRunTime(Base):
+    __tablename__ = "EquipmentBatchRunTime"
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    # 批次号
+    plan_period = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 设备名称
+    product_code = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 设备编号
+    product_name = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 工艺段
+    product_unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 批次开始运行时间
+    meter_type = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 批次结束运行时间
+    bill_code = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 # 生成表单的执行语句
 Base.metadata.create_all(engine)
