@@ -31,10 +31,12 @@
                 :limit="3"
                 :before-remove="beforeRemove"
                 :before-upload="handleBeforeUpload"
+                :on-remove="handleRemove"
                 :on-exceed="handleExceed"
                 :on-success='submitSuccess'
+                :on-error='submitError'
                 :file-list="fileList">
-                <el-button size="small" type="primary">点击上传</el-button>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 <div slot="tip" class="el-upload__tip">只能上传.docx 批记录表</div>
               </el-upload>
             </div>
@@ -137,9 +139,15 @@
       },
       submitSuccess(){
           this.$message({
-            message: "上传成功！",
+            message: "上传文件成功！",
             type: 'success'
         });
+      },
+      submitError(){
+        this.$message({
+          message:'上传失败，请重新上传文件',
+          type:'error'
+        })
       },
       handleBeforeUpload(file){
         var FileExt = file.name.replace(/.+\./, ""); 
@@ -147,6 +155,9 @@
           this.$message({ type: 'warning', message: '请上传后缀名为[doc,docx]的附件！' });
           return false; 
           }
+      },
+      handleRemove(){
+        alert('文件已经删除掉了')
       }
     }
   }
