@@ -157,13 +157,13 @@ def makePlan():
                 pm.BrandCode = BrandCode
                 pm.BrandName = BrandName
                 pm.PlanStatus = system_backend.Global.PlanStatus.NEW.value
-                pm.PlanBeginTime = datetime.datetime.now().strptime('%Y-%m-%d %H:%M:%S')
+                pm.PlanBeginTime = PlanDate + " " + system_backend.Global.GLOBAL_PLANSTARTTIME
                 pm.PlanEndTime = ""
                 db_session.add(pm)
                 sp = SchedulePlan()
                 SchedulePlanCode = PlanDate
                 Desc = system_backend.Global.SCHEDULETYPE.DAY.value
-                dEndTime = datetime.strptime(PlanDate, '%Y-%m-%d') + timedelta(days=1)
+                dEndTime = datetime.datetime.strptime(PlanDate, '%Y-%m-%d') + timedelta(days=1)
                 PlanBeginTime =str(PlanDate) + " " + system_backend.Global.GLOBAL_PLANSTARTTIME
                 PlanEndTime = dEndTime.strftime('%Y-%m-%d') + " " + system_backend.Global.GLOBAL_PLANENDTIME
                 Type = system_backend.Global.SCHEDULETYPE.DAY.value
