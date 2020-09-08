@@ -141,9 +141,14 @@ def makePlan():
                 BatchID = data.get('BatchID')  # 批次号
                 BrandCode = data.get('BrandCode')
                 BrandName = data.get('BrandName')  # 产品名称
-                BrandCode = data.get("BrandCode")
-                PLineName = data.get('PLineName')  # 生产线名字
+                # PLineName = data.get('PLineName')  # 生产线名字
                 Unit = data.get('Unit') # d单位
+
+                #批次号判重
+                pcBatchID = db_session.query(PlanManager.BatchID).filter(PlanManager.BatchID == BatchID,
+                                                                       PlanManager.BrandCode == BrandCode).first()
+                if pcBatchID:
+                    return json.dumps({"code": "201", "message": "批次号重复！"})
                 pm = PlanManager()
                 pm.SchedulePlanCode = PlanDate
                 pm.BatchID = BatchID

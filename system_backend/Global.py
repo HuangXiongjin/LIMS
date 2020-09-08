@@ -3,8 +3,8 @@ from enum import Enum, IntEnum, unique
 #连接WMS接口URL
 WMSurl = "http://192.168.20.55:8090/"
 
-GLOBAL_PLANSTARTTIME= "09:00:00"
-GLOBAL_PLANENDTIME= "08:59:59"
+GLOBAL_PLANSTARTTIME= "08:30:00"
+GLOBAL_PLANENDTIME= "08:29:59"
 
 #与WMS单据状态
 class OrderStatus(Enum):
@@ -15,6 +15,7 @@ class OrderStatus(Enum):
 #计划planmanager
 class PlanStatus(Enum):
     NEW = "10"#新增
+    Confirmed = "13"#已选择设备
     Checked = "11"#已审核
     UnChecked = "12"#审核未通过
     Realse = "20"#已下发
