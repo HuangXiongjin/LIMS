@@ -141,7 +141,7 @@
             type: 'success'
         });
       },
-      handleBeforeUpload(){
+      handleBeforeUpload(file){
         var FileExt = file.name.replace(/.+\./, ""); 
         if (['doc', 'docx'].indexOf(FileExt.toLowerCase()) === -1){ 
           this.$message({ type: 'warning', message: '请上传后缀名为[doc,docx]的附件！' });
