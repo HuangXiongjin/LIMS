@@ -8,12 +8,12 @@
           <div class="login-form blackComponents">
             <el-form ref="ruleForm" :model="loginForm" :rules="rules" style="width: 100%;">
               <el-form-item prop="WorkNumber">
-                <el-input placeholder="请输入工号" v-model="loginForm.WorkNumber">
+                <el-input placeholder="请输入工号" v-model="loginForm.WorkNumber" @keyup.enter.native="submitForm('ruleForm')">
                   <i slot="prefix" class="el-input__icon el-icon-s-custom"></i>
                 </el-input>
               </el-form-item>
               <el-form-item prop="password">
-                <el-input placeholder="请输入密码" v-model="loginForm.password" show-password>
+                <el-input placeholder="请输入密码" v-model="loginForm.password" show-password @keyup.enter.native="submitForm('ruleForm')">
                   <i slot="prefix" class="el-input__icon el-icon-lock"></i>
                 </el-input>
               </el-form-item>
@@ -61,6 +61,9 @@
         windowHalfX: window.innerWidth / 2,
         windowHalfY : window.innerHeight  / 2,
       }
+    },
+    created(){
+
     },
     mounted(){
       this.getCookie()

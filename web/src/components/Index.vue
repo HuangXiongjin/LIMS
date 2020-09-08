@@ -110,7 +110,7 @@
           ]},
           {label: '排产调度系统',icon:"el-icon-date",mainMenu:[
             {title:'生产订单管理',icon:"el-icon-s-order",url:"/planOrder"},
-            {title:'工厂排产',icon:"fa fa-calendar-plus-o",url:"/scheduling"},
+            {title:'计划排产',icon:"fa fa-calendar-plus-o",url:"/scheduling"},
             {title:'排产记录',icon:"fa fa-table",url:"/schedulingLog"},
             {title:'排期进度预览',icon:"el-icon-date",url:"/ProductionSchedule"},
             {title:"生产计划调度管理",icon:"el-icon-s-claim",url:"/planningScheduling"},

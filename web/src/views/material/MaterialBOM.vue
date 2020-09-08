@@ -9,7 +9,7 @@
           <div class="platformContainer">
             <p class="marginBottom">选择要维护BOM的品名</p>
             <el-input class="marginBottom" v-model="productName" placeholder="关键字搜索" @change="handleChangeProductName"></el-input>
-            <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in results" :key="index" v-bind:effect="item.BrandName===BrandActive?'dark':'plain'" @click="clickBrandTag(item.BrandName,item.BrandCode,item.ID)">{{item.BrandName}}</el-tag>
+            <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in results" :key="index" v-bind:effect="item.BrandName===BrandActive?'dark':'plain'" @click="clickBrandTag(item.BrandName,item.BrandCode)">{{item.BrandName}}</el-tag>
           </div>
         </el-col>
         <el-col :span="20">
@@ -77,7 +77,6 @@
         scheduleTableData:[],
         BrandActive:"",
         BrandCode:"",
-        BrandID:"",
         BOMList:[],
         multipleSelection:[],
         handleType:[
@@ -133,10 +132,9 @@
           this.results = this.scheduleTableData
         }
       },
-      clickBrandTag(BrandName,BrandCode,ID){
+      clickBrandTag(BrandName,BrandCode){
         this.BrandActive = BrandName
         this.BrandCode = BrandCode
-        this.BrandID = ID
         this.getBOMTable(BrandName)
       },
       getBOMTable(BrandName){
