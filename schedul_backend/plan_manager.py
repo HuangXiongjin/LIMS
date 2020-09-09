@@ -374,14 +374,15 @@ def ManualDelete():
                     try:
                         oclass = db_session.query(BatchModel).filter(
                             BatchModel.ID == id).first()
-                        db_session.delete(oclass)
-                        os.remove(oclass.FilePath)
-                        db_session.commit()
+                        if oclass:
+                            db_session.delete(oclass)
+                            os.remove(oclass.FilePath)
                     except Exception as ee:
                         db_session.rollback()
                         print(ee)
                         logger.error(ee)
                         return json.dumps({"code": "500", "message": "批记录模板删除报错"})
+                db_session.commit()
                 return json.dumps({"code": "200", "message": "删除成功！"})
         except Exception as e:
             print(e)
