@@ -323,7 +323,13 @@ def batchmodelinsert():
             db_session.add(bm)
             db_session.commit()
             oclass = db_session.query(BatchModel).filter(BatchModel.BrandCode == BrandCode, BatchModel.PUCode == PUCode).all()
-            return json.dumps({"code": "200", "message": oclass})
+            dir_list = []
+            for oc in oclass:
+                dir = {}
+                dir["FileName"] = oc.FileName
+                dir["FilePath"] = oc.FilePath
+                dir_list.append(dir)
+            return json.dumps({"code": "200", "message": dir_list})
         except Exception as e:
             db_session.rollback()
             print(e)
