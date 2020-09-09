@@ -384,6 +384,8 @@ def ManualDelete():
                         return json.dumps({"code": "500", "message": "批记录模板删除报错"})
                 db_session.commit()
                 return json.dumps({"code": "200", "message": "删除成功！"})
+            else:
+                return json.dumps({"code": "200", "message": "id为空！"})
         except Exception as e:
             print(e)
             logger.error(e)
