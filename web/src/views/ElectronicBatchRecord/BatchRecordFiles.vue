@@ -59,7 +59,7 @@
           PUName:'',
           inProcessList:[],
           fileList: [],
-          ActiveIndex:0,
+          ActiveIndex:10,
           FileName:''
       }
     },
@@ -67,12 +67,19 @@
       this.getScheduleTableData()
     },
     methods:{
-      showPGL(e,item){
+      showPGL(e,item){ //点击工艺按钮 
         //发起请求获取当前工艺pgl
         this.PUName=item.PUName
         this.PUCode=item.PUCode
+        this.BrandCode=item.BrandCode
         this.ActiveIndex=e
-        this.fileList=[]
+        var params={
+          PUCode:this.PUCode,
+          BrandCode:this.BrandCode
+        }
+        this.axios.get('/api/batchmodelselect',{params:params}).then((res) => {
+          console.log(res)
+        })
       },
        getScheduleTableData(){ //获取品名
         var that = this
@@ -158,7 +165,7 @@
         })
       },
       handleBeforeUpload(file){
-        var FileExt = file.name.replace(/.+\./, ""); 
+        var FileExt = file.name.replace(/.+\./, "");
         if (['doc', 'docx'].indexOf(FileExt.toLowerCase()) === -1){ 
           this.$message({ type: 'warning', message: '请上传后缀名为[doc,docx]的附件！' });
           return false; 
@@ -172,13 +179,15 @@
               FileName:this.FileName,
             }
             this.axios.post('/api/batchmodelinsert',this.qs.stringify(params)).then((res) => {
-              console.log(res)
+              if(res.code==='200'){
+                console.log('成功')
+              }
             })
           }
             
       },
-      handleRemove(){
-        alert('文件已经删除掉了')
+      handleRemove(file){
+        console.log(file)
       }
     }
   }
