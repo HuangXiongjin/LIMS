@@ -714,8 +714,11 @@ class BatchModel(Base):
     # 工艺段编码:
     PUCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
-    # 文件（文件名）:
+    # 文件（文件名）:FilePath
     FileName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 文件路径（文件名）:
+    FilePath = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
 
     # 上传人:
     UserName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
