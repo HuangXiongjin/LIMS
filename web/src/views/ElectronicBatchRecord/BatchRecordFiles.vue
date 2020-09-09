@@ -168,13 +168,14 @@
               BrandName:this.BrandActive,
               BrandCode:this.BrandCode,
               PUCode:this.PUCode,
-              PUIDName:this.PUIDName,
+              PUIDName:this.PUName,
               FileName:this.FileName,
             }
-            this.axios.get('/api/batchmodelinsert',{params:params}).then((res) => {
+            this.axios.post('/api/batchmodelinsert',this.qs.stringify(params)).then((res) => {
               console.log(res)
             })
           }
+            
       },
       handleRemove(){
         alert('文件已经删除掉了')
