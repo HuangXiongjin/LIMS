@@ -1,5 +1,5 @@
 import redis
-from flask import Blueprint, render_template, request, make_response
+from flask import Blueprint, render_template, request, make_response, send_from_directory
 from sqlalchemy.ext.automap import automap_base
 import json
 import arrow
@@ -233,6 +233,16 @@ def deleteRedisBykey(data):
         insertSyslog("error", "删除redis单个值报错Error：" + str(e), current_user.Name)
         return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
 
-
+import os
+dirpath = os.path.join(system_set.root_path,'files')
+@system_set.route('/ManualDownload', methods=['get'])
+def ManualDownload():
+    fname = request.values.get('FileName', '')
+    if os.path.isfile(os.path.join(dirpath, fname)):
+        response = make_response(send_from_directory(dirpath, fname, as_attachment=True))
+        response.headers["Content-Disposition"] = "attachment; filename={}".format(fname.encode().decode('latin-1'))
+        return response
+    else:
+        json.dumps({"code": "200", "message": "参数错误！"})
 
 

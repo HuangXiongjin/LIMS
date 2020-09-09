@@ -322,6 +322,22 @@ def batchmodelinsert():
             bm.UserName = current_user.Name
             db_session.add(bm)
             db_session.commit()
+
+            return json.dumps({"code": "200", "message": "上传成功！"})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "批记录模板导入报错Error：" + str(e), current_user.Name)
+            return json.dumps({"code": "500", "message": "后端报错"})
+@batch_plan.route('/batchmodelselect', methods=['GET', 'POST'])
+def batchmodelselect():
+    '''查询批记录模'''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            PUCode = data.get("PUCode")
+            BrandCode = data.get("BrandCode")
             oclass = db_session.query(BatchModel).filter(BatchModel.BrandCode == BrandCode, BatchModel.PUCode == PUCode).all()
             dir_list = []
             for oc in oclass:
@@ -334,5 +350,5 @@ def batchmodelinsert():
             db_session.rollback()
             print(e)
             logger.error(e)
-            insertSyslog("error", "批记录模板导入报错Error：" + str(e), current_user.Name)
+            insertSyslog("error", "查询批记录模报错Error：" + str(e), current_user.Name)
             return json.dumps({"code": "500", "message": "后端报错"})
