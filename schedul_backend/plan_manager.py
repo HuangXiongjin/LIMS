@@ -27,7 +27,8 @@ from suds.client import Client
 from datetime import timedelta
 import system_backend.Global
 from common.batch_plan_model import ProductUnit, ProductRule, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
-    ZYPlanWMS, ProcessUnit, StapleProducts, WMSTrayNumber, MaterialBOM, SchedulingStock, WMStatusLoad, SchedulePlan
+    ZYPlanWMS, ProcessUnit, StapleProducts, WMSTrayNumber, MaterialBOM, SchedulingStock, WMStatusLoad, SchedulePlan, \
+    BatchModel
 from common.schedul_model import Scheduling, plantCalendarScheduling, SchedulingStandard, \
     scheduledate
 from database.connect_db import CONNECT_DATABASE
@@ -282,14 +283,49 @@ def allowe_file(filename):
     :return:
     '''
     return '.' in filename and filename.rsplit('.',1)[1] in ALLOWED_EXTENSIONS
-#批记录模板导入
 @batch_plan.route('/batchmodelexport', methods=['GET', 'POST'])
 def batchmodelexport():
+    '''批记录模板导入'''
     if request.method == 'POST':
-        file = request.files['file']
-        file_path = os.path.join(os.path.realpath(r"system_backend\files"), file.filename)
-        if allowe_file(file_path) == True:
-            file.save(file_path)
+        try:
+            file = request.files['file']
+            file_path = os.path.join(os.path.realpath(r"system_backend\files"), file.filename)
+            if allowe_file(file_path) == True:
+                file.save(file_path)
+                return json.dumps({"code": "200", "message": "上传成功！"})
+            else:
+                return json.dumps({"code": "200", "message": "请上传.doc或.docx！"})
+
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "批记录模板导入报错Error：" + str(e), current_user.Name)
+            return json.dumps({"code": "500", "message": "后端报错"})
+@batch_plan.route('/batchmodelinsert', methods=['GET', 'POST'])
+def batchmodelinsert():
+    '''批记录模板名称路径储存'''
+    if request.method == 'POST':
+        data = request.values
+        try:
+            BrandName = data.get("BrandName")
+            PUCode = data.get("PUCode")
+            BrandCode = data.get("BrandCode")
+            PUIDName = data.get("PUIDName")
+            FileName = data.get("FileName")
+            BrandName = data.get("BrandName")
+            bm = BatchModel()
+            bm.BrandName = BrandName
+            bm.PUCode = PUCode
+            bm.BrandCode = BrandCode
+            bm.PUIDName = PUIDName
+            bm.FilePath = os.path.join(os.path.realpath(r"system_backend\files"), FileName)
+            bm.UserName = current_user.Name
+            db_session.add(bm)
+            db_session.commit()
             return json.dumps({"code": "200", "message": "上传成功！"})
-        else:
-            return json.dumps({"code": "200", "message": "请上传.doc或.docx！"})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "批记录模板导入报错Error：" + str(e), current_user.Name)
+            return json.dumps({"code": "500", "message": "后端报错"})

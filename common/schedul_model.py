@@ -164,17 +164,21 @@ class EquipmentBatchRunTime(Base):
     # id:
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     # 批次号
-    plan_period = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 设备名称
-    product_code = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 设备编号
-    product_name = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    BatchID = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    # 设备编码:
+    EQPCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    # 设备名称:
+    EQPName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
     # 工艺段
-    product_unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    PUCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+    # 工艺段名称:
+    PUName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
     # 批次开始运行时间
-    meter_type = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    StartTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 批次结束运行时间
-    bill_code = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    EndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+
 
 # 生成表单的执行语句
 Base.metadata.create_all(engine)

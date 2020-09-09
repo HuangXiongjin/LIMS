@@ -702,7 +702,10 @@ class BatchModel(Base):
     # ID:
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
 
-    # 品名:
+    # 品名编码:
+    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 品名名称:
     BrandName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 工艺段
@@ -713,6 +716,9 @@ class BatchModel(Base):
 
     # 文件（文件名）:
     FileName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 上传人:
+    UserName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 定义参数的字符串:
     Parameter = Column(Unicode(MAX), primary_key=False, autoincrement=False, nullable=True)
