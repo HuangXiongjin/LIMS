@@ -78,7 +78,16 @@
           BrandCode:this.BrandCode
         }
         this.axios.get('/api/batchmodelselect',{params:params}).then((res) => {
-          console.log(res)
+          if(res.data.code==='200'){
+            this.fileList=res.data.message.map(item=>{
+              return {name:item.FileName,url:item.FilePath,ID:item.ID}
+            })
+          }else{
+             this.$message({
+              type: 'error',
+              message: '获取批记录文档失败'
+            });
+          }
         })
       },
        getScheduleTableData(){ //获取品名
@@ -188,6 +197,13 @@
       },
       handleRemove(file){
         console.log(file)
+        var fileID=file.ID
+        var params={
+          id:fileID
+        }
+        this.axios.post('/api/ManualDelete',this.qs.stringify(params)).then((res) => {
+          console.log(res)
+        })
       }
     }
   }
