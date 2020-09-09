@@ -312,6 +312,13 @@ def batchmodelinsert():
             BrandCode = data.get("BrandCode")
             PUIDName = data.get("PUIDName")
             FileName = data.get("FileName")
+            #删除之前存的
+            oclass = db_session.query(BatchModel).filter(BatchModel.BrandCode == BrandCode,
+                                                         BatchModel.PUCode == PUCode).all()
+            db_session.delete(oclass)
+            os.remove(oclass.FilePath)
+            db_session.commit()
+            #新添加的
             bm = BatchModel()
             bm.BrandName = BrandName
             bm.PUCode = PUCode
@@ -322,7 +329,6 @@ def batchmodelinsert():
             bm.UserName = current_user.Name
             db_session.add(bm)
             db_session.commit()
-
             return json.dumps({"code": "200", "message": "上传成功！"})
         except Exception as e:
             db_session.rollback()
@@ -339,16 +345,37 @@ def batchmodelselect():
             PUCode = data.get("PUCode")
             BrandCode = data.get("BrandCode")
             oclass = db_session.query(BatchModel).filter(BatchModel.BrandCode == BrandCode, BatchModel.PUCode == PUCode).all()
-            dir_list = []
-            for oc in oclass:
-                dir = {}
-                dir["FileName"] = oc.FileName
-                dir["FilePath"] = oc.FilePath
-                dir_list.append(dir)
-            return json.dumps({"code": "200", "message": dir_list})
+            return json.dumps({"code": "200", "message": oclass})
         except Exception as e:
             db_session.rollback()
             print(e)
             logger.error(e)
             insertSyslog("error", "查询批记录模报错Error：" + str(e), current_user.Name)
             return json.dumps({"code": "500", "message": "后端报错"})
+@batch_plan.route('/ManualDelete', methods=['GET', 'POST'])
+def ManualDelete():
+    '''批记录模板删除'''
+    if request.method == 'POST':
+        data = request.values  # 返回请求中的参数和form
+        try:
+            jsonstr = json.dumps(data.to_dict())
+            if len(jsonstr) > 10:
+                jsonnumber = re.findall(r"\d+\.?\d*", jsonstr)
+                for key in jsonnumber:
+                    id = int(key)
+                    try:
+                        oclass = db_session.query(BatchModel).filter(
+                            BatchModel.ID == id).first()
+                        db_session.delete(oclass)
+                        os.remove(oclass.FilePath)
+                    except Exception as ee:
+                        db_session.rollback()
+                        print(ee)
+                        logger.error(ee)
+                        return json.dumps({"code": "500", "message": "批记录模板删除报错"})
+                return json.dumps({"code": "200", "message": "删除成功！"})
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "路由：/ManualDelete，说明书删除Error：" + str(e), current_user.Name)
+            return json.dumps({"code": "500", "message": "批记录模板删除报错"})
