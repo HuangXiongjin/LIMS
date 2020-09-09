@@ -14,8 +14,8 @@
               <p>当前选择的品名：{{BrandActive}}</p>
             </div>
             <div class="platformContainer">
-              <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer" @click='showPGL'>
-                    <div class="container-col">
+              <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer" @click='showPGL(index,item)'>
+                    <div class="container-col" :class='{"pactive":index===ActiveIndex}'>
                       <span class="text-size-14">{{ item.PUName }}</span>
                     </div>
               </div>
@@ -54,16 +54,24 @@
           productName:'',
           results:[],
           BrandActive:'',
+          BrandCode:'',
+          PUCode:'',
+          PUName:'',
           inProcessList:[],
-          fileList: []
+          fileList: [],
+          ActiveIndex:0,
+          FileName:''
       }
     },
     created(){
       this.getScheduleTableData()
     },
     methods:{
-      showPGL(){
+      showPGL(e,item){
         //发起请求获取当前工艺pgl
+        this.PUName=item.PUName
+        this.PUCode=item.PUCode
+        this.ActiveIndex=e
         this.fileList=[]
       },
        getScheduleTableData(){ //获取品名
@@ -154,6 +162,18 @@
         if (['doc', 'docx'].indexOf(FileExt.toLowerCase()) === -1){ 
           this.$message({ type: 'warning', message: '请上传后缀名为[doc,docx]的附件！' });
           return false; 
+          }else{
+            this.FileName=file.name
+            var params={
+              BrandName:this.BrandActive,
+              BrandCode:this.BrandCode,
+              PUCode:this.PUCode,
+              PUIDName:this.PUIDName,
+              FileName:this.FileName,
+            }
+            this.axios.get('/api/batchmodelinsert',{params:params}).then((res) => {
+              console.log(res)
+            })
           }
       },
       handleRemove(){
@@ -168,10 +188,13 @@
     clear: both;
     overflow: hidden;
     border:1px solid rgba(185,185,185,1);
-    background:rgba(211,237,239,1);
+    background:#fff;
     border-radius: 4px;
     padding: 15px;
     margin-bottom: 15px;
     height: 50px;
+  }
+  .pactive{
+    background-color:rgba(211,237,239,1);
   }
 </style>
