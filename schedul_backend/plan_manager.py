@@ -376,6 +376,7 @@ def ManualDelete():
                             BatchModel.ID == id).first()
                         db_session.delete(oclass)
                         os.remove(oclass.FilePath)
+                        db_session.commit()
                     except Exception as ee:
                         db_session.rollback()
                         print(ee)
