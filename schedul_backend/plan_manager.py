@@ -312,7 +312,6 @@ def batchmodelinsert():
             BrandCode = data.get("BrandCode")
             PUIDName = data.get("PUIDName")
             FileName = data.get("FileName")
-            BrandName = data.get("BrandName")
             bm = BatchModel()
             bm.BrandName = BrandName
             bm.PUCode = PUCode
