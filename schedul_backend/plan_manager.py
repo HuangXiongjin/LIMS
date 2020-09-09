@@ -315,8 +315,9 @@ def batchmodelinsert():
             #删除之前存的
             oclass = db_session.query(BatchModel).filter(BatchModel.BrandCode == BrandCode,
                                                          BatchModel.PUCode == PUCode).all()
-            db_session.delete(oclass)
-            os.remove(oclass.FilePath)
+            for oc in oclass:
+                db_session.delete(oc)
+                os.remove(oc.FilePath)
             db_session.commit()
             #新添加的
             bm = BatchModel()
