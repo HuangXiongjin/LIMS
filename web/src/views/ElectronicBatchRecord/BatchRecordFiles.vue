@@ -60,7 +60,8 @@
           inProcessList:[],
           fileList: [],
           ActiveIndex:10,
-          FileName:''
+          FileName:'',
+          currentitem:{}
       }
     },
     created(){
@@ -69,9 +70,11 @@
     methods:{
       showPGL(e,item){ //点击工艺按钮 
         //发起请求获取当前工艺pgl
+        console.log(item)
         this.PUName=item.PUName
         this.PUCode=item.PUCode
         this.BrandCode=item.BrandCode
+        this.currentitem=item
         this.ActiveIndex=e
         var params={
           PUCode:this.PUCode,
@@ -196,13 +199,14 @@
             
       },
       handleRemove(file){
-        console.log(file)
         var fileID=file.ID
+        console.log(fileID)
         var params={
           id:fileID
         }
         this.axios.post('/api/ManualDelete',this.qs.stringify(params)).then((res) => {
           console.log(res)
+          this.showPGL(this.ActiveIndex,this.currentitem)
         })
       }
     }
