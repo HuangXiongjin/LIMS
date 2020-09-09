@@ -200,13 +200,13 @@
       },
       handleRemove(file){
         var fileID=file.ID
-        console.log(fileID)
+        console.log(file)
         var params={
           id:fileID
         }
         this.axios.post('/api/ManualDelete',this.qs.stringify(params)).then((res) => {
           console.log(res)
-          this.showPGL(this.ActiveIndex,this.currentitem)
+          // this.showPGL(this.ActiveIndex,this.currentitem)
         })
       }
     }
