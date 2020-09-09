@@ -346,7 +346,13 @@ def batchmodelselect():
             PUCode = data.get("PUCode")
             BrandCode = data.get("BrandCode")
             oclass = db_session.query(BatchModel).filter(BatchModel.BrandCode == BrandCode, BatchModel.PUCode == PUCode).all()
-            return json.dumps({"code": "200", "message": oclass})
+            dir_list = []
+            for oc in oclass:
+                dir = {}
+                dir["ID"] = oc.ID
+                dir["FilePath"] = oc.FilePath
+                dir["FileName"] = oc.FileName
+            return json.dumps({"code": "200", "message": dir_list})
         except Exception as e:
             db_session.rollback()
             print(e)
