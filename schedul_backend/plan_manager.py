@@ -352,6 +352,7 @@ def batchmodelselect():
                 dir["ID"] = oc.ID
                 dir["FilePath"] = oc.FilePath
                 dir["FileName"] = oc.FileName
+                dir_list.append(dir)
             return json.dumps({"code": "200", "message": dir_list})
         except Exception as e:
             db_session.rollback()
