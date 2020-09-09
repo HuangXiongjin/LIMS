@@ -317,11 +317,13 @@ def batchmodelinsert():
             bm.PUCode = PUCode
             bm.BrandCode = BrandCode
             bm.PUIDName = PUIDName
+            bm.FileName = FileName
             bm.FilePath = os.path.join(os.path.realpath(r"system_backend\files"), FileName)
             bm.UserName = current_user.Name
             db_session.add(bm)
             db_session.commit()
-            return json.dumps({"code": "200", "message": "上传成功！"})
+            oclass = db_session.query(BatchModel).filter(BatchModel.BrandCode == BrandCode, BatchModel.PUCode == PUCode).all()
+            return json.dumps({"code": "200", "message": oclass})
         except Exception as e:
             db_session.rollback()
             print(e)
