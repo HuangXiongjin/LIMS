@@ -79,14 +79,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '正在下载....'
-          });
-          this.axios.get('/api/ManualDownload',{params:params}).then((res) => {
-            console.log('-----------下载请求结果为下')
-            console.log(res)
-          })
+          window.open("/api/ManualDownload?FileName="+FileName) //下载文件
         }).catch(() => {
           this.$message({
             type: 'info',
