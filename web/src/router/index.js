@@ -24,11 +24,10 @@ import Equipment from '@/views/ProductionModel/Equipment'
 import ProductLineDefinition from '@/views/ProductionModel/ProductLineDefinition'
 import Unit from '@/views/ProductionModel/Unit'
 //排产调度
-import planOrder from '@/views/scheduling/planOrder'
+import schedulingBoard from '@/views/scheduling/board'
 import ProductionSchedule from '@/views/scheduling/ProductionSchedule'
 import schedulingPlan from '@/views/scheduling/schedulingPlan'
 import scheduling from '@/views/scheduling/scheduling'
-import schedulingLog from '@/views/scheduling/schedulingLog'
 import planningScheduling from '@/views/scheduling/planningScheduling'
 import ProcessPlanTask from '@/views/scheduling/ProcessPlanTask'
 //生产数据
@@ -79,13 +78,12 @@ export default new Router({
         {path:'/ProductLineDefinition',name:'ProductLineDefinition',meta:{ title:'生产线定义',type:"生产建模"},component:ProductLineDefinition},
         {path:'/Unit',name:'Unit',meta:{ title:'生产线定义',type:"生产建模"},component:Unit},
 
-        {path:'/planOrder',name:'planOrder',meta:{ title:'生产订单管理',type:"排产调度系统"},component:planOrder},
-        {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度管理',type:"排产调度系统"},component:planningScheduling},
-        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'调度计划明细',type:"排产调度系统"},component:ProcessPlanTask},
-        {path:'/ProductionSchedule',name:'ProductionSchedule',meta:{ title:'排期进度预览',type:"排产调度系统"},component:ProductionSchedule},
-        {path:'/schedulingPlan',name:'schedulingPlan',meta:{ title:'排产计划',type:"排产调度系统"},component:schedulingPlan},
+        {path:'/schedulingBoard',name:'schedulingBoard',meta:{ title:'排产看板',type:"排产调度系统"},component:schedulingBoard},
+        {path:'/ProductionSchedule',name:'ProductionSchedule',meta:{ title:'排期进度',type:"排产调度系统"},component:ProductionSchedule},
         {path:'/scheduling',name:'scheduling',meta:{ title:'工厂排产',type:"排产调度系统"},component:scheduling},
-        {path:'/schedulingLog',name:'schedulingLog',meta:{ title:'排产记录',type:"排产调度系统"},component:schedulingLog},
+        {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度',type:"排产调度系统"},component:planningScheduling},
+        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'调度计划明细',type:"排产调度系统"},component:ProcessPlanTask},
+        {path:'/schedulingPlan',name:'schedulingPlan',meta:{ title:'排产计划',type:"排产调度系统"},component:schedulingPlan},
 
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据系统"},component:MaterialBalanceStatistics},
         {path:'/MaterialTraceability',name:'MaterialTraceability',meta:{ title:'物料追溯',type:"生产数据系统"},component:MaterialTraceability},
