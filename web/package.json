@@ -19,6 +19,7 @@
     "@fullcalendar/timegrid": "^4.4.0",
     "@fullcalendar/vue": "^4.4.0",
     "axios": "^0.19.2",
+    "babel-polyfill": "^6.26.0",
     "css-loader": "^0.28.11",
     "echarts": "^4.0.2",
     "element-ui": "^2.13.2",

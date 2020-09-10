@@ -24,7 +24,8 @@
                   <li class="themeItem" v-for="(item,index) in themeList" :class="{ active:item.value===themeValue }" :key="index" :style="{background:item.color}" @click="changeTheme(item.value)"></li>
                 </ul>
               </div>
-              <i class="el-icon-brush"></i>
+              <span>🥼</span>
+              <!--<i class="el-icon-brush"></i>-->
             </el-tooltip>
           </li>
           <li>
