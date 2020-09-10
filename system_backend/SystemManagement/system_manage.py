@@ -237,7 +237,10 @@ import os
 dirpath = os.path.join(system_set.root_path,'files')
 @system_set.route('/ManualDownload', methods=['get'])
 def ManualDownload():
+    # fname = request.values.get('FileName', '')
     fname = request.values.get('FileName', '')
+    print(fname)
+    print(os.path.join(dirpath, fname))
     if os.path.isfile(os.path.join(dirpath, fname)):
         response = make_response(send_from_directory(dirpath, fname, as_attachment=True))
         response.headers["Content-Disposition"] = "attachment; filename={}".format(fname.encode().decode('latin-1'))

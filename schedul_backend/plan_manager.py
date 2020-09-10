@@ -289,7 +289,7 @@ def batchmodelexport():
     if request.method == 'POST':
         try:
             file = request.files['file']
-            file_path = os.path.join(os.path.realpath(r"system_backend\files"), file.filename)
+            file_path = os.path.join(os.path.realpath(r"system_backend\SystemManagement\files"), file.filename)
             if allowe_file(file_path) == True:
                 file.save(file_path)
                 return json.dumps({"code": "200", "message": "上传成功！"})
@@ -326,7 +326,7 @@ def batchmodelinsert():
             bm.BrandCode = BrandCode
             bm.PUIDName = PUIDName
             bm.FileName = FileName
-            bm.FilePath = os.path.join(os.path.realpath(r"system_backend\files"), FileName)
+            bm.FilePath = os.path.join(os.path.realpath(r"system_backend\SystemManagement\files"), FileName)
             bm.UserName = current_user.Name
             db_session.add(bm)
             db_session.commit()
