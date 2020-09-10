@@ -14,7 +14,7 @@
               <p>当前选择的品名：{{BrandActive}}</p>
             </div>
             <div class="platformContainer">
-              <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer" @click='showPGL(index,item)'>
+              <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer" @click='showPGL(item.PUName,item.PUCode,index)'>
                     <div class="container-col" :class='{"pactive":index===ActiveIndex}'>
                       <span class="text-size-14">{{ item.PUName }}</span>
                     </div>
@@ -29,6 +29,7 @@
                 accept=".doc,.docx"
                 action="/api/batchmodelexport"
                 :limit="3"
+                :on-preview="handlePreview"
                 :before-remove="beforeRemove"
                 :before-upload="handleBeforeUpload"
                 :on-remove="handleRemove"
@@ -36,6 +37,7 @@
                 :on-success='submitSuccess'
                 :on-error='submitError'
                 :file-list="fileList">
+                <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 <div slot="tip" class="el-upload__tip">只能上传.docx 批记录表</div>
               </el-upload>
@@ -61,20 +63,41 @@
           fileList: [],
           ActiveIndex:10,
           FileName:'',
-          currentitem:{}
       }
     },
     created(){
       this.getScheduleTableData()
     },
     methods:{
-      showPGL(e,item){ //点击工艺按钮 
+      handlePreview(file){
+        var FileName=file.name
+        var params={
+          FileName:FileName
+        }
+         this.$confirm('是否下载该文件到本地?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '正在下载....'
+          });
+          this.axios.get('/api/ManualDownload',{params:params}).then((res) => {
+            console.log('-----------下载请求结果为下')
+            console.log(res)
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消下载'
+          });          
+        });        
+      },
+      showPGL(PUName,PUCode,e){ //点击工艺按钮 
         //发起请求获取当前工艺pgl
-        console.log(item)
-        this.PUName=item.PUName
-        this.PUCode=item.PUCode
-        this.BrandCode=item.BrandCode
-        this.currentitem=item
+        this.PUName=PUName
+        this.PUCode=PUCode
         this.ActiveIndex=e
         var params={
           PUCode:this.PUCode,
@@ -191,22 +214,22 @@
               FileName:this.FileName,
             }
             this.axios.post('/api/batchmodelinsert',this.qs.stringify(params)).then((res) => {
-              if(res.code==='200'){
-                console.log('成功')
+              if(res.data.code==='200'){
+                this.showPGL(this.PUName,this.PUCode,this.ActiveIndex)
               }
             })
           }
             
       },
-      handleRemove(file){
+      handleRemove(file,fileList){
         var fileID=file.ID
-        console.log(file)
         var params={
           id:fileID
         }
         this.axios.post('/api/ManualDelete',this.qs.stringify(params)).then((res) => {
-          console.log(res)
-          // this.showPGL(this.ActiveIndex,this.currentitem)
+          if(res.data.code==='200'){
+             this.showPGL(this.PUName,this.PUCode,this.ActiveIndex)
+          }
         })
       }
     }
