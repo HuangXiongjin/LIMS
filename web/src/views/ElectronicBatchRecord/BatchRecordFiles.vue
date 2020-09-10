@@ -29,6 +29,7 @@
                 accept=".doc,.docx"
                 action="/api/batchmodelexport"
                 :limit="3"
+                :on-preview="handlePreview"
                 :before-remove="beforeRemove"
                 :before-upload="handleBeforeUpload"
                 :on-remove="handleRemove"
@@ -36,6 +37,7 @@
                 :on-success='submitSuccess'
                 :on-error='submitError'
                 :file-list="fileList">
+                <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 <div slot="tip" class="el-upload__tip">只能上传.docx 批记录表</div>
               </el-upload>
@@ -67,6 +69,31 @@
       this.getScheduleTableData()
     },
     methods:{
+      handlePreview(file){
+        var FileName=file.name
+        var params={
+          FileName:FileName
+        }
+         this.$confirm('是否下载该文件到本地?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '正在下载....'
+          });
+          this.axios.get('/api/ManualDownload',{params:params}).then((res) => {
+            console.log('-----------下载请求结果为下')
+            console.log(res)
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消下载'
+          });          
+        });        
+      },
       showPGL(PUName,PUCode,e){ //点击工艺按钮 
         //发起请求获取当前工艺pgl
         this.PUName=PUName
