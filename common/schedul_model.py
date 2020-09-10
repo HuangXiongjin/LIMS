@@ -126,36 +126,27 @@ class product_plan(Base):
     __tablename__ = "product_plan"
     # id:
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-    # 计划期间（YYYYMM）
-    plan_period = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 产品编码
-    product_code = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 产品名称
-    product_name = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 计量单位 kg\批
-    product_unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 计量类型 'B' 批次  'W'重量
-    meter_type = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 单据号
-    bill_code = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 计划数量
-    plan_quantity = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 计划类型 'M' 月计划   'W'周计划
-    plan_type = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 插入时间
-    create_time = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
-    # 数据对接时间
-    transform_time = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
-    # 数据对接MES 1 已对接 0 未对接
-    transform_flag = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 物料编码
-    Material_code = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 物料名称
-    Material_name = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
-    # 计量单位
-    Material_unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 物料类型
-    Material_type = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 品名编码:
+    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 品名名称:
+    BrandName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 编号
+    PlanNum = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 药品类型
+    BrandType = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 计划产值
+    PlanQuantity = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 计划时长
+    PlanTimeLen = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 创建时间
+    CreateTimeTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 计划交付时间
+    FinishTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 备注
+    Description = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+    # 状态
+    PlanStatus = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
 
 
 # 设备批次运行时间统计表

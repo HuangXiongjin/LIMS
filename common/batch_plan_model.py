@@ -376,6 +376,9 @@ class ProductRule(Base):
     # 产品定义名称:
     BrandName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
+    # 药品类型
+    BrandType = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
     # 版本:
     Version = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
