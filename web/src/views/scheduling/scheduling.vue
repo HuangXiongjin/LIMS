@@ -74,69 +74,64 @@
         </el-col>
       </el-row>
       <el-row :gutter="15" v-show="steps == 1">
-        <el-col :span="4">
-          <div class="platformContainer">
-            <p class="marginBottom">请根据品名查询计划</p>
-            <el-input class="marginBottom" v-model="productName" placeholder="关键字搜索" @change="handleChangeProductName"></el-input>
-            <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in scheduleList" :key="index" v-bind:effect="item.BrandName===BrandActive?'dark':'plain'" @click="clickBrandTag(item.BrandName,item.BrandCode)">{{item.BrandName}}</el-tag>
+        <el-col :span="24">
+          <div class="platformContainer" style="min-height: 550px;">
+            <p class="marginBottom" v-if="BrandActive">当前选择的是{{ BrandActive }}</p>
+            <el-form :inline="true">
+              <el-form-item v-for="(item,index) in PlanManagerTableData.handleType" :key="index">
+                <el-button :type="item.type" size="small" @click="handleFormPlanManager(item.label)">{{ item.label }}</el-button>
+              </el-form-item>
+            </el-form>
+            <el-table :data="PlanManagerTableData.data" border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
+              <el-table-column type="selection"></el-table-column>
+              <el-table-column prop="PlanNum" label="计划编号"></el-table-column>
+              <el-table-column prop="BatchID" label="批次号"></el-table-column>
+              <el-table-column prop="PlanQuantity" label="计划成品重量"></el-table-column>
+              <el-table-column prop="Unit" label="单位"></el-table-column>
+              <el-table-column prop="BrandName" label="品名"></el-table-column>
+              <el-table-column prop="BrandType" label="产品类型"></el-table-column>
+              <el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>
+              <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
+              <el-table-column prop="PlanBeginTime" label="计划开始时间"></el-table-column>
+              <el-table-column prop="PlanEndTime" label="计划完成时间"></el-table-column>
+              <el-table-column prop="Describtion" label="描述"></el-table-column>
+            </el-table>
+            <div class="paginationClass">
+              <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
+               :total="PlanManagerTableData.total"
+               :current-page="PlanManagerTableData.offset"
+               :page-sizes="[5,10,20]"
+               :page-size="PlanManagerTableData.limit"
+               @size-change="handleSizeChangePlanManager"
+               @current-change="handleCurrentChangePlanManager">
+              </el-pagination>
+            </div>
+            <el-dialog :title="PlanManagerTableData.dialogTitle" :visible.sync="PlanManagerTableData.dialogVisible" width="40%" :append-to-body="true">
+              <el-form :model="PlanManagerTableData.formField" label-width="110px">
+                <el-form-item label="批次号">
+                  <el-input v-model="PlanManagerTableData.formField.BatchID"></el-input>
+                </el-form-item>
+                <el-form-item label="计划产量">
+                  <el-input v-model="PlanManagerTableData.formField.PlanQuantity"></el-input>
+                </el-form-item>
+                <el-form-item label="单位">
+                  <el-select v-model="PlanManagerTableData.formField.Unit" placeholder="请选择">
+                    <el-option v-for="(item,index) in unitOptions" :key="index" :label="item.UnitValue" :value="item.UnitValue">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="计划生产日期">
+                  <el-date-picker v-model="PlanManagerTableData.formField.PlanDate" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
+                  </el-date-picker>
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="PlanManagerTableData.dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="savePlanManager">保 存</el-button>
+              </span>
+            </el-dialog>
           </div>
         </el-col>
-        <!--<el-col :span="20">-->
-          <!--<div class="platformContainer" style="min-height: 550px;">-->
-            <!--<p class="marginBottom" v-if="BrandActive">当前选择的是{{ BrandActive }}</p>-->
-            <!--<el-form :inline="true">-->
-              <!--<el-form-item v-for="(item,index) in handleType" :key="index">-->
-                <!--<el-button :type="item.type" size="small" @click="handleForm(item.label)">{{ item.label }}</el-button>-->
-              <!--</el-form-item>-->
-            <!--</el-form>-->
-            <!--<el-table :data="tableData" border size="small" ref="multipleTable" @selection-change="handleSelectionChange" @row-click="handleRowClick">-->
-              <!--<el-table-column type="selection"></el-table-column>-->
-              <!--<el-table-column prop="BatchID" label="批次号"></el-table-column>-->
-              <!--<el-table-column prop="PlanQuantity" label="计划成品重量"></el-table-column>-->
-              <!--<el-table-column prop="Unit" label="单位"></el-table-column>-->
-              <!--<el-table-column prop="BrandName" label="品名"></el-table-column>-->
-              <!--<el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>-->
-              <!--<el-table-column prop="PlanStatus" label="计划状态"></el-table-column>-->
-              <!--<el-table-column prop="PlanBeginTime" label="计划开始时间"></el-table-column>-->
-              <!--<el-table-column prop="PlanEndTime" label="计划完成时间"></el-table-column>-->
-              <!--<el-table-column prop="Describtion" label="描述"></el-table-column>-->
-            <!--</el-table>-->
-            <!--<div class="paginationClass">-->
-              <!--<el-pagination background  layout="total, sizes, prev, pager, next, jumper"-->
-               <!--:total="total"-->
-               <!--:current-page="offset"-->
-               <!--:page-sizes="[5,10,20]"-->
-               <!--:page-size="limit"-->
-               <!--@size-change="handleSizeChange"-->
-               <!--@current-change="handleCurrentChange">-->
-              <!--</el-pagination>-->
-            <!--</div>-->
-            <!--<el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" :append-to-body="true">-->
-              <!--<el-form :model="formField" label-width="110px">-->
-                <!--<el-form-item label="批次号">-->
-                  <!--<el-input v-model="formField.BatchID"></el-input>-->
-                <!--</el-form-item>-->
-                <!--<el-form-item label="计划成品重量">-->
-                  <!--<el-input v-model="formField.PlanQuantity"></el-input>-->
-                <!--</el-form-item>-->
-                <!--<el-form-item label="单位">-->
-                  <!--<el-select v-model="formField.Unit" placeholder="请选择">-->
-                    <!--<el-option v-for="(item,index) in unitOptions" :key="index" :label="item.UnitValue" :value="item.UnitValue">-->
-                    <!--</el-option>-->
-                  <!--</el-select>-->
-                <!--</el-form-item>-->
-                <!--<el-form-item label="计划生产日期">-->
-                  <!--<el-date-picker v-model="formField.PlanDate" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">-->
-                  <!--</el-date-picker>-->
-                <!--</el-form-item>-->
-              <!--</el-form>-->
-              <!--<span slot="footer" class="dialog-footer">-->
-                <!--<el-button @click="dialogVisible = false">取 消</el-button>-->
-                <!--<el-button type="primary" @click="save">保 存</el-button>-->
-              <!--</span>-->
-            <!--</el-dialog>-->
-          <!--</div>-->
-        <!--</el-col>-->
       </el-row>
       <el-row :gutter="15" v-show="steps == 2">
 
@@ -183,6 +178,26 @@
             Description:""
           },
         },
+        unitOptions:[],
+        PlanManagerTableData:{
+          data:[],
+          limit: 5,
+          offset: 1,
+          total: 0,
+          multipleSelection: [],
+          handleType:[
+            {type:"primary",label:"添加"},
+            {type:"danger",label:"删除"},
+          ],
+          dialogVisible:false,
+          dialogTitle:"",
+          formField:{
+            BatchID:"",
+            PlanQuantity:"",
+            Unit:"",
+            PlanDate:""
+          },
+        },
         processList:[
           {PUName:"备料",PUCode:"4534",
             eqList:[
@@ -205,9 +220,17 @@
     methods:{
       nextStep(){
         if(this.steps == 0){
-          this.steps++
-        }else if(this.steps == 1){
           if(this.planTableData.multipleSelection.length == 1){
+            this.steps++
+            this.getPlanManagerTableData()
+          }else{
+            this.$message({
+              type: 'info',
+              message: "请选择一条ERP计划"
+            });
+          }
+        }else if(this.steps == 1){
+          if(this.PlanManagerTableData.multipleSelection.length == 1){
             this.steps++
           }else{
             this.$message({
@@ -346,6 +369,7 @@
       save(){
         if(this.planTableData.dialogTitle === "添加"){
           var params = {
+            tableName:"product_plan",
             PlanNum:this.planTableData.formField.PlanNum,
             PlanQuantity:this.planTableData.formField.PlanQuantity,
             PlanTimeLen:this.planTableData.formField.PlanTimeLen,
@@ -355,7 +379,7 @@
             BrandCode:this.BrandCode,
             BrandType:this.BrandType,
           }
-          this.axios.post("/api/product_plan",this.qs.stringify(params)).then(res =>{
+          this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
             if(res.data.code === "200"){
               this.$message({
                 type: 'success',
@@ -373,7 +397,127 @@
             console.log("请求错误")
           })
         }
-      }
+      },
+      //批次计划
+      getPlanManagerTableData(){
+        var that = this
+        var params = {
+          tableName: "PlanManager",
+          field:"PlanNum",
+          fieldvalue:this.planTableData.multipleSelection[0].PlanNum,
+          limit:this.PlanManagerTableData.limit,
+          offset:this.PlanManagerTableData.offset - 1
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.PlanManagerTableData.data = res.data.data.rows
+            that.PlanManagerTableData.total = res.data.data.total
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
+      handleSizeChangePlanManager(limit){ //每页条数切换
+        this.PlanManagerTableData.limit = limit
+        this.getPlanManagerTableData()
+      },
+      handleCurrentChangePlanManager(offset) { // 页码切换
+        this.PlanManagerTableData.offset = offset
+        this.getPlanManagerTableData()
+      },
+      handleSelectionChangePlanManager(row){
+        this.PlanManagerTableData.multipleSelection = row
+      },
+      handleRowClickPlanManager(row){
+        this.$refs.multipleTablePlanManager.clearSelection();
+        this.$refs.multipleTablePlanManager.toggleRowSelection(row)
+      },
+      handleFormPlanManager(label){
+        if(label === "添加"){
+          if(this.BrandActive){
+            this.PlanManagerTableData.dialogVisible = true
+            this.PlanManagerTableData.dialogTitle = label
+          }else{
+            this.$message({
+              type: 'info',
+              message: '请选择品名'
+            });
+          }
+        }else if(label === "删除"){
+          var params = {tableName:"PlanManager"}
+          var mulId = []
+          if(this.PlanManagerTableData.multipleSelection.length >= 1){
+            this.PlanManagerTableData.multipleSelection.forEach(item =>{
+              mulId.push({id:item.ID});
+            })
+            params.delete_data = JSON.stringify(mulId)
+            this.$confirm('确定删除所选记录？', '提示', {
+              distinguishCancelAndClose:true,
+              type: 'warning'
+            }).then(()  => {
+              this.axios.delete("/api/CUID",{
+                params: params
+              }).then(res =>{
+                if(res.data.code === "200"){
+                  this.$message({
+                    type: 'success',
+                    message: res.data.message
+                  });
+                }
+                this.getPlanManagerTableData()
+              },res =>{
+                console.log("请求错误")
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              });
+            });
+          }else{
+            this.$message({
+              message: '至少选择一条数据进行删除',
+              type: 'warning'
+            });
+          }
+        }
+      },
+      savePlanManager(){
+        if(this.PlanManagerTableData.dialogTitle === "添加"){
+          var params = {
+            BrandName:this.BrandActive,
+            BrandCode:this.BrandCode,
+            BrandType:this.BrandType,
+            PlanNum:this.planTableData.multipleSelection[0].PlanNum,
+            BatchID:this.PlanManagerTableData.formField.BatchID,
+            PlanQuantity:this.PlanManagerTableData.formField.PlanQuantity,
+            Unit:this.PlanManagerTableData.formField.Unit,
+            PlanDate:this.PlanManagerTableData.formField.PlanDate
+          }
+          this.axios.post("/api/makePlan",this.qs.stringify(params)).then(res =>{
+            if(res.data.code === "200"){
+              this.$message({
+                type: 'success',
+                message: res.data.message
+              });
+              this.PlanManagerTableData.dialogVisible = false
+              this.getPlanManagerTableData()
+            }else{
+              this.$message({
+                type: 'info',
+                message: res.data.message
+              });
+            }
+          },res =>{
+            console.log("请求错误")
+          })
+        }
+      },
     }
   }
 </script>
