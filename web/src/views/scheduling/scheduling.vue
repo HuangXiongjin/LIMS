@@ -2,69 +2,71 @@
   <el-row>
     <el-col :span="24">
       <el-steps :active="steps" finish-status="wait" align-center class="marginBottom">
-        <el-step class="cursor-pointer" title="批次计划信息"></el-step>
-        <el-step class="cursor-pointer" title="分配工艺设备"></el-step>
-        <el-step class="cursor-pointer" title="排产确认"></el-step>
+        <el-step title="选择ERP计划"></el-step>
+        <el-step title="选择批次计划"></el-step>
+        <el-step title="生产配置"></el-step>
+        <el-step title="甘特图"></el-step>
+        <el-step title="排产清单"></el-step>
       </el-steps>
       <el-row :gutter="15" v-show="steps == 0">
         <el-col :span="4">
           <div class="platformContainer">
             <p class="marginBottom">请根据品名查询计划</p>
             <el-input class="marginBottom" v-model="productName" placeholder="关键字搜索" @change="handleChangeProductName"></el-input>
-            <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in scheduleList" :key="index" v-bind:effect="item.BrandName===BrandActive?'dark':'plain'" @click="clickBrandTag(item.BrandName,item.BrandCode)">{{item.BrandName}}</el-tag>
+            <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in scheduleList" :key="index" v-bind:effect="item.BrandName===BrandActive?'dark':'plain'" @click="clickBrandTag(item.BrandName,item.BrandCode,item.BrandType)">{{item.BrandName}}</el-tag>
           </div>
         </el-col>
         <el-col :span="20">
           <div class="platformContainer" style="min-height: 550px;">
             <p class="marginBottom" v-if="BrandActive">当前选择的是{{ BrandActive }}</p>
             <el-form :inline="true">
-              <el-form-item v-for="(item,index) in handleType" :key="index">
+              <el-form-item v-for="(item,index) in planTableData.handleType" :key="index">
                 <el-button :type="item.type" size="small" @click="handleForm(item.label)">{{ item.label }}</el-button>
               </el-form-item>
             </el-form>
-            <el-table :data="tableData" border size="small" ref="multipleTable" @selection-change="handleSelectionChange" @row-click="handleRowClick">
+            <el-table :data="planTableData.data" border size="small" ref="multipleTable" @selection-change="handleSelectionChange" @row-click="handleRowClick">
               <el-table-column type="selection"></el-table-column>
-              <el-table-column prop="BatchID" label="批次号"></el-table-column>
-              <el-table-column prop="PlanQuantity" label="计划成品重量"></el-table-column>
-              <el-table-column prop="Unit" label="单位"></el-table-column>
+              <el-table-column prop="PlanNum" label="编号"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
-              <el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>
+              <el-table-column prop="BrandType" label="药品类型"></el-table-column>
+              <el-table-column prop="PlanQuantity" label="计划产值"></el-table-column>
+              <el-table-column prop="PlanTimeLen" label="计划时长"></el-table-column>
+              <el-table-column prop="FinishTime" label="计划交付时间"></el-table-column>
               <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
-              <el-table-column prop="PlanBeginTime" label="计划开始时间"></el-table-column>
-              <el-table-column prop="PlanEndTime" label="计划完成时间"></el-table-column>
-              <el-table-column prop="Describtion" label="描述"></el-table-column>
+              <el-table-column prop="Description" label="备注"></el-table-column>
+              <el-table-column prop="CreateTimeTime" label="创建时间"></el-table-column>
             </el-table>
             <div class="paginationClass">
               <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
-               :total="total"
-               :current-page="offset"
+               :total="planTableData.total"
+               :current-page="planTableData.offset"
                :page-sizes="[5,10,20]"
-               :page-size="limit"
+               :page-size="planTableData.limit"
                @size-change="handleSizeChange"
                @current-change="handleCurrentChange">
               </el-pagination>
             </div>
-            <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" :append-to-body="true">
-              <el-form :model="formField" label-width="110px">
-                <el-form-item label="批次号">
-                  <el-input v-model="formField.BatchID"></el-input>
+            <el-dialog :title="planTableData.dialogTitle" :visible.sync="planTableData.dialogVisible" width="40%" :append-to-body="true">
+              <el-form :model="planTableData.formField" label-width="110px">
+                <el-form-item label="编号">
+                  <el-input v-model="planTableData.formField.PlanNum"></el-input>
                 </el-form-item>
                 <el-form-item label="计划成品重量">
-                  <el-input v-model="formField.PlanQuantity"></el-input>
+                  <el-input v-model="planTableData.formField.PlanQuantity"></el-input>
                 </el-form-item>
-                <el-form-item label="单位">
-                  <el-select v-model="formField.Unit" placeholder="请选择">
-                    <el-option v-for="(item,index) in unitOptions" :key="index" :label="item.UnitValue" :value="item.UnitValue">
-                    </el-option>
-                  </el-select>
+                <el-form-item label="计划时长">
+                  <el-input v-model="planTableData.formField.PlanTimeLen"></el-input>
                 </el-form-item>
-                <el-form-item label="计划生产日期">
-                  <el-date-picker v-model="formField.PlanDate" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
+                <el-form-item label="计划交付时间">
+                  <el-date-picker v-model="planTableData.formField.FinishTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
                   </el-date-picker>
+                </el-form-item>
+                <el-form-item label="备注">
+                  <el-input v-model="planTableData.formField.Description"></el-input>
                 </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button @click="planTableData.dialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="save">保 存</el-button>
               </span>
             </el-dialog>
@@ -72,6 +74,71 @@
         </el-col>
       </el-row>
       <el-row :gutter="15" v-show="steps == 1">
+        <el-col :span="4">
+          <div class="platformContainer">
+            <p class="marginBottom">请根据品名查询计划</p>
+            <el-input class="marginBottom" v-model="productName" placeholder="关键字搜索" @change="handleChangeProductName"></el-input>
+            <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in scheduleList" :key="index" v-bind:effect="item.BrandName===BrandActive?'dark':'plain'" @click="clickBrandTag(item.BrandName,item.BrandCode)">{{item.BrandName}}</el-tag>
+          </div>
+        </el-col>
+        <!--<el-col :span="20">-->
+          <!--<div class="platformContainer" style="min-height: 550px;">-->
+            <!--<p class="marginBottom" v-if="BrandActive">当前选择的是{{ BrandActive }}</p>-->
+            <!--<el-form :inline="true">-->
+              <!--<el-form-item v-for="(item,index) in handleType" :key="index">-->
+                <!--<el-button :type="item.type" size="small" @click="handleForm(item.label)">{{ item.label }}</el-button>-->
+              <!--</el-form-item>-->
+            <!--</el-form>-->
+            <!--<el-table :data="tableData" border size="small" ref="multipleTable" @selection-change="handleSelectionChange" @row-click="handleRowClick">-->
+              <!--<el-table-column type="selection"></el-table-column>-->
+              <!--<el-table-column prop="BatchID" label="批次号"></el-table-column>-->
+              <!--<el-table-column prop="PlanQuantity" label="计划成品重量"></el-table-column>-->
+              <!--<el-table-column prop="Unit" label="单位"></el-table-column>-->
+              <!--<el-table-column prop="BrandName" label="品名"></el-table-column>-->
+              <!--<el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>-->
+              <!--<el-table-column prop="PlanStatus" label="计划状态"></el-table-column>-->
+              <!--<el-table-column prop="PlanBeginTime" label="计划开始时间"></el-table-column>-->
+              <!--<el-table-column prop="PlanEndTime" label="计划完成时间"></el-table-column>-->
+              <!--<el-table-column prop="Describtion" label="描述"></el-table-column>-->
+            <!--</el-table>-->
+            <!--<div class="paginationClass">-->
+              <!--<el-pagination background  layout="total, sizes, prev, pager, next, jumper"-->
+               <!--:total="total"-->
+               <!--:current-page="offset"-->
+               <!--:page-sizes="[5,10,20]"-->
+               <!--:page-size="limit"-->
+               <!--@size-change="handleSizeChange"-->
+               <!--@current-change="handleCurrentChange">-->
+              <!--</el-pagination>-->
+            <!--</div>-->
+            <!--<el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="40%" :append-to-body="true">-->
+              <!--<el-form :model="formField" label-width="110px">-->
+                <!--<el-form-item label="批次号">-->
+                  <!--<el-input v-model="formField.BatchID"></el-input>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="计划成品重量">-->
+                  <!--<el-input v-model="formField.PlanQuantity"></el-input>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="单位">-->
+                  <!--<el-select v-model="formField.Unit" placeholder="请选择">-->
+                    <!--<el-option v-for="(item,index) in unitOptions" :key="index" :label="item.UnitValue" :value="item.UnitValue">-->
+                    <!--</el-option>-->
+                  <!--</el-select>-->
+                <!--</el-form-item>-->
+                <!--<el-form-item label="计划生产日期">-->
+                  <!--<el-date-picker v-model="formField.PlanDate" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">-->
+                  <!--</el-date-picker>-->
+                <!--</el-form-item>-->
+              <!--</el-form>-->
+              <!--<span slot="footer" class="dialog-footer">-->
+                <!--<el-button @click="dialogVisible = false">取 消</el-button>-->
+                <!--<el-button type="primary" @click="save">保 存</el-button>-->
+              <!--</span>-->
+            <!--</el-dialog>-->
+          <!--</div>-->
+        <!--</el-col>-->
+      </el-row>
+      <el-row :gutter="15" v-show="steps == 2">
 
       </el-row>
       <el-col :span="24" style="text-align: right;">
@@ -86,35 +153,35 @@
   var moment = require('moment');
   export default {
     name: "scheduling",
-    components:{
-
-    },
+    components:{},
     data(){
       return{
         steps:0,
-        activeSearch:"PlanStatus",
         productName:"",
         scheduleTableData:[],
         scheduleList:[],
         BrandActive:"",
         BrandCode:"",
-        unitOptions:[],
-        tableData:[],
-        limit:5,
-        offset:1,
-        total:0,
-        multipleSelection:[],
-        handleType:[
-          {type:"primary",label:"添加"},
-          {type:"danger",label:"删除"},
-        ],
-        dialogVisible:false,
-        dialogTitle:"",
-        formField:{
-          BatchID:"",
-          PlanQuantity:"",
-          Unit:"",
-          PlanDate:""
+        BrandType:"",
+        planTableData:{
+          data:[],
+          limit: 5,
+          offset: 1,
+          total: 0,
+          multipleSelection: [],
+          handleType:[
+            {type:"primary",label:"添加"},
+            {type:"danger",label:"删除"},
+          ],
+          dialogVisible:false,
+          dialogTitle:"",
+          formField:{
+            PlanNum:"",
+            PlanQuantity:"",
+            PlanTimeLen:"",
+            FinishTime:"",
+            Description:""
+          },
         },
         processList:[
           {PUName:"备料",PUCode:"4534",
@@ -133,13 +200,14 @@
       }
     },
     mounted(){
-      this.getUnitData()
       this.getScheduleTableData()
     },
     methods:{
       nextStep(){
-        if(this.steps != 2){
-          if(this.multipleSelection.length == 1){
+        if(this.steps == 0){
+          this.steps++
+        }else if(this.steps == 1){
+          if(this.planTableData.multipleSelection.length == 1){
             this.steps++
           }else{
             this.$message({
@@ -185,23 +253,23 @@
       clickBrandTag(BrandName,BrandCode){
         this.BrandActive = BrandName
         this.BrandCode = BrandCode
-        this.getTableData(this.BrandActive)
+        this.getPlanTableData(this.BrandActive)
       },
-      getTableData(BrandName){
+      getPlanTableData(BrandName){
         var that = this
         var params = {
-          tableName: "PlanManager",
+          tableName: "product_plan",
           field:"BrandName",
           fieldvalue:BrandName,
-          limit:this.limit,
-          offset:this.offset - 1
+          limit:this.planTableData.limit,
+          offset:this.planTableData.offset - 1
         }
         this.axios.get("/api/CUID",{
           params: params
         }).then(res => {
           if(res.data.code === "200"){
-            that.tableData = res.data.data.rows
-            that.total = res.data.data.total
+            that.planTableData.data = res.data.data.rows
+            that.planTableData.total = res.data.data.total
           }else{
             that.$message({
               type: 'info',
@@ -211,43 +279,25 @@
         })
       },
       handleSizeChange(limit){ //每页条数切换
-        this.limit = limit
-        this.getTableData(this.BrandActive)
+        this.planTableData.limit = limit
+        this.getPlanTableData(this.BrandActive)
       },
       handleCurrentChange(offset) { // 页码切换
-        this.offset = offset
-        this.getTableData(this.BrandActive)
+        this.planTableData.offset = offset
+        this.getPlanTableData(this.BrandActive)
       },
       handleSelectionChange(row){
-        this.multipleSelection = row
+        this.planTableData.multipleSelection = row
       },
       handleRowClick(row){
         this.$refs.multipleTable.clearSelection();
         this.$refs.multipleTable.toggleRowSelection(row)
       },
-      getUnitData(){  //获取单位表数据
-        var that = this
-        var params = {
-          tableName: "Unit",
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res => {
-          if(res.data.code === "200"){
-            that.unitOptions = res.data.data.rows
-          }else{
-            that.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        })
-      },
       handleForm(label){
         if(label === "添加"){
           if(this.BrandActive){
-            this.dialogVisible = true
-            this.dialogTitle = label
+            this.planTableData.dialogVisible = true
+            this.planTableData.dialogTitle = label
           }else{
             this.$message({
               type: 'info',
@@ -255,10 +305,10 @@
             });
           }
         }else if(label === "删除"){
-          var params = {tableName:"PlanManager"}
+          var params = {tableName:"product_plan"}
           var mulId = []
-          if(this.multipleSelection.length >= 1){
-            this.multipleSelection.forEach(item =>{
+          if(this.planTableData.multipleSelection.length >= 1){
+            this.planTableData.multipleSelection.forEach(item =>{
               mulId.push({id:item.ID});
             })
             params.delete_data = JSON.stringify(mulId)
@@ -275,7 +325,7 @@
                     message: res.data.message
                   });
                 }
-                this.getTableData(this.BrandActive)
+                this.getPlanTableData(this.BrandActive)
               },res =>{
                 console.log("请求错误")
               })
@@ -294,23 +344,25 @@
         }
       },
       save(){
-        if(this.dialogTitle === "添加"){
+        if(this.planTableData.dialogTitle === "添加"){
           var params = {
-            BatchID:this.formField.BatchID,
-            PlanQuantity:this.formField.PlanQuantity,
-            Unit:this.formField.Unit,
-            PlanDate:this.formField.PlanDate,
+            PlanNum:this.planTableData.formField.PlanNum,
+            PlanQuantity:this.planTableData.formField.PlanQuantity,
+            PlanTimeLen:this.planTableData.formField.PlanTimeLen,
+            FinishTime:this.planTableData.formField.FinishTime,
+            Description:this.planTableData.formField.Description,
             BrandName:this.BrandActive,
-            BrandCode:this.BrandCode
+            BrandCode:this.BrandCode,
+            BrandType:this.BrandType,
           }
-          this.axios.post("/api/makePlan",this.qs.stringify(params)).then(res =>{
+          this.axios.post("/api/product_plan",this.qs.stringify(params)).then(res =>{
             if(res.data.code === "200"){
               this.$message({
                 type: 'success',
                 message: res.data.message
               });
-              this.dialogVisible = false
-              this.getTableData(this.BrandActive)
+              this.planTableData.dialogVisible = false
+              this.getPlanTableData(this.BrandActive)
             }else{
               this.$message({
                 type: 'info',

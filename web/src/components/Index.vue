@@ -24,8 +24,7 @@
                   <li class="themeItem" v-for="(item,index) in themeList" :class="{ active:item.value===themeValue }" :key="index" :style="{background:item.color}" @click="changeTheme(item.value)"></li>
                 </ul>
               </div>
-              <span>🥼</span>
-              <!--<i class="el-icon-brush"></i>-->
+              <i class="el-icon-brush"></i>
             </el-tooltip>
           </li>
           <li>
@@ -106,15 +105,11 @@
         sideIcon:'el-icon-arrow-left', //左侧菜单栏缩进点击切换图标
         systemActive:"",
         systemOptions:[
-          {label: '工厂监控',icon:"el-icon-view",mainMenu:[
-            {title:"生产监控",icon:"el-icon-box",url:"/ProductionMonitoring"},
-          ]},
           {label: '排产调度系统',icon:"el-icon-date",mainMenu:[
-            {title:'生产订单管理',icon:"el-icon-s-order",url:"/planOrder"},
-            {title:'计划排产',icon:"fa fa-calendar-plus-o",url:"/scheduling"},
-            {title:'排产记录',icon:"fa fa-table",url:"/schedulingLog"},
-            {title:'排期进度预览',icon:"el-icon-date",url:"/ProductionSchedule"},
-            {title:"生产计划调度管理",icon:"el-icon-s-claim",url:"/planningScheduling"},
+            {title:'排产看板',icon:"el-icon-s-home",url:"/schedulingBoard"},
+            {title:'工厂排产',icon:"fa fa-calendar-plus-o",url:"/scheduling"},
+            {title:'排期进度',icon:"el-icon-date",url:"/ProductionSchedule"},
+            {title:"生产计划调度",icon:"el-icon-s-claim",url:"/planningScheduling"},
             {title:"调度计划明细",icon:"el-icon-tickets",url:"/ProcessPlanTask"},
           ]},
           {label: '生产建模',icon:"el-icon-s-management",mainMenu:[
@@ -141,6 +136,9 @@
               {title:"金蝉止痒颗粒",url:"/ElectronicBatchRecord?DrugName=金蝉止痒颗粒"}
             ]},
             {title:"批记录管理",icon:"el-icon-folder-opened",url:"/BatchRecordFiles"},
+          ]},
+          {label: '工厂监控',icon:"el-icon-view",mainMenu:[
+            {title:"生产监控",icon:"el-icon-box",url:"/ProductionMonitoring"},
           ]},
           {label: '系统管理',icon:"el-icon-s-tools",mainMenu:[
             {title:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
