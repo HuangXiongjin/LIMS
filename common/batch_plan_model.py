@@ -531,6 +531,9 @@ class PlanManager(Base):
     # 调度编号:
     SchedulePlanCode = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
 
+    # 计划编号
+    PlanNum = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
     # 批次号:
     BatchID = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
@@ -545,6 +548,9 @@ class PlanManager(Base):
 
     # 品名:
     BrandName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 药品类型
+    BrandType = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 计划状态:
     PlanStatus = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
@@ -911,8 +917,11 @@ class ProductEquipment(Base):
     # 工艺段名称:
     PUName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
+    # 设备状态:
+    EQPStatus = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
     # 描述:
-    Desc = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
 
 # 生成表单的执行语句
