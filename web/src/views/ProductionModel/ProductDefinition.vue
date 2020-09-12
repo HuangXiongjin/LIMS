@@ -22,8 +22,9 @@
           tableName:"ProductRule",
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"BrandCode",label:"产品定义编码",type:"input",value:""},
-            {prop:"BrandName",label:" 产品定义名称",type:"input",value:""},
+            {prop:"BrandCode",label:"产品编码",type:"input",value:""},
+            {prop:"BrandName",label:" 产品名称",type:"input",value:""},
+            {prop:"BrandType",label:" 产品类型",type:"input",value:""},
             {prop:"Version",label:"版本",type:"input",value:""},
             {prop:"Desc",label:"描述",type:"input",value:""},
             {prop:"Publish_date",label:"发布日期",type:"input",value:"",searchProp:false,canSubmit:false},
