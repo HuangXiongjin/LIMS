@@ -1,12 +1,37 @@
 <template>
-    <el-row>
-        <el-col :span="24">
-        <div class="page-title">
-            <span style="margin-left: 10px;" class="text-size-normol">排产进度表</span>
-        </div>
-            <div class="platformContainer" style="backgroundColor:#3D4048;">
-                <div id="main" style="width:100%; height:750px;" v-loading="loading">数据图表</div>
+    <el-row :gutter="15">
+        <el-col :span="4">
+            <div class="platformContainer">
+                <p class="marginBottom">请选择要展示的品名</p>
+                <el-input class="marginBottom" v-model="productName" placeholder="关键字搜索" @change="handleChangeProductName"></el-input>
+                <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in results" :key="index" v-bind:effect="item.BrandName===BrandActive?'dark':'plain'" @click="clickBrandTag(item.BrandName,item.BrandCode)">{{item.BrandName}}</el-tag>
             </div>
+        </el-col>
+        <el-col :span='20'>
+            <el-row>
+                <el-col :span='24'>
+                    <div class="platformContainer">
+                        <el-form :inline="true" :model="formInline">
+                            <el-form-item style="width:230px;">
+                                <p>当前展示的品名：{{BrandActive}}</p>
+                            </el-form-item>
+                            <el-form-item label="品名编码"  style="paddingLeft:150px;">
+                                <el-select v-model="formInline.CurrentBrandNum" placeholder="品名编码">
+                                    <el-option v-for="(item,index) in selectBrandNum" :key='index'  :label='item.BrandCodelabel'  :value="item.BrandCodevalue" ></el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="onSubmit">查询甘特图</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                </el-col>
+                <el-col :span='24'>
+                    <div class="platformContainer" style="backgroundColor:#3D4048;">
+                    <div id="main" style="width:100%; height:750px;" v-loading="loading">排产进度表</div>
+                </div>
+                </el-col>
+            </el-row>
         </el-col>
     </el-row>
 </template>
@@ -16,14 +41,51 @@ export default {
     data(){
         return {
             loading:false,
-
+            productName:'',
+            results:[],
+            BrandActive:'',
+            BrandCode:'',
+            PUCode:'',
+            PUName:'',
+            inProcessList:[],
+            fileList: [],
+            ActiveIndex:10,
+            FileName:'',
+            scheduleTableData:[],
+            formInline: {CurrentBrandNum: ''},
+            selectBrandNum:[],
+            ydata:[],
+            PlanStartTime:[],
+            PlanEndTime:[]
         }
     },
-    mounted(){
-        this.drawPic()
+     created(){
+      this.getScheduleTableData()
     },
     methods: {
-        drawPic() {
+        onSubmit(){
+           var params = {
+                tableName: "PlanManager",
+                field:"PlanNum",
+                fieldvalue:this.formInline.CurrentBrandNum
+                }
+            this.axios.get("/api/CUID",{
+                params: params
+            }).then(res => {
+                var arr=res.data.data.rows
+                this.ydata=arr.map((res) => {
+                    return '批次'+res.BatchID
+                })
+                this.PlanStartTime=arr.map((res) => {
+                    return new Date(res.PlanBeginTime.replace('-', '/'))
+                })
+                this.PlanEndTime=arr.map((res) => {
+                    return new Date(res.PlanEndTime.replace('-', '/'))
+                })
+                this.drawPic(this.ydata,this.PlanStartTime,this.PlanEndTime)
+        })
+        },
+        drawPic(ydata,planstarttime,planendtime) {
             var myCharts = echarts.init(document.getElementById('main'));
             var option = {
                 title: {
@@ -35,7 +97,7 @@ export default {
                 },
                 legend: {
                     y: 'top',
-                    data: ['计划时间', '实际时间'], //修改的地方1,
+                    data: ['计划时间'], //修改的地方1,
                     textStyle: {
                       color: '#fff' //设置图例文字颜色
                   }
@@ -49,7 +111,7 @@ export default {
                     axisLine: { lineStyle: { color: '#fff' } } //控制x轴坐标文字颜色
                 },
                 yAxis: {
-                    data: ['任务一', '任务二', '任务三', '任务四', '任务五', '任务六', '任务七'],
+                    data:[...ydata],
                     axisLine: { lineStyle: { color: '#fff' } }  //控制y轴坐标文字颜色
                 },
                 tooltip: {
@@ -58,17 +120,12 @@ export default {
                         var res = params[0].name + "</br>"
                         var date0 = params[0].data;
                         var date1 = params[1].data;
-                        var date2 = params[2].data;
-                        var date3 = params[3].data;
-                        date0 = date0.getFullYear() + "-" + (date0.getMonth() + 1) + "-" + date0.getDate();
-                        date1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate();
-                        date2 = date2.getFullYear() + "-" + (date2.getMonth() + 1) + "-" + date2.getDate();
-                        date3 = date3.getFullYear() + "-" + (date3.getMonth() + 1) + "-" + date3.getDate();
+                        date0 = date0.getFullYear() + "-" + (date0.getMonth() + 1) + "-" + (date0.getDate().toString().padStart(2,0))+ "  " + (date0.getHours().toString().padStart(2,0))+':'+date0.getMinutes()+':'+(date0.getSeconds().toString().padStart(2,0));
+                        date1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + (date1.getDate().toString().padStart(2,0))+ "  " + (date1.getHours().toString().padStart(2,0))+':'+date1.getMinutes()+':'+(date1.getSeconds().toString().padStart(2,0));
                         res += params[0].seriesName + "~" + params[1].seriesName + ":</br>" + date0 + "~" + date1 + "</br>"
-                        res += params[2].seriesName + "~" + params[3].seriesName + ":</br>" + date2 + "~" + date3 + "</br>"
-                        // console.log(params[0]);
                         return res;
                     }
+
                 },
                 series: [
                     {
@@ -80,15 +137,7 @@ export default {
                                 color: 'rgba(0,0,0,0)'
                             }
                         },
-                        data: [
-                            new Date("2015/09/2"),
-                            new Date("2015/09/8"),
-                            new Date("2015/09/13"),
-                            new Date("2015/09/18"),
-                            new Date("2015/09/23"),
-                            new Date("2015/09/30"),
-                            new Date("2015/10/06")
-                        ]
+                        data:planstarttime
                     },
                     {
                         name: '计划时间',
@@ -100,59 +149,70 @@ export default {
                                 color: '#06ACB5'
                             }
                         },
-                        data: [
-                            new Date("2015/09/12"),
-                            new Date("2015/09/20"),
-                            new Date("2015/09/25"),
-                            new Date("2015/10/05"),
-                            new Date("2015/10/07"),
-                            new Date("2015/10/09"),
-                            new Date("2015/10/12")
-                        ]
-                    },
-                    {
-                        name: '实际开始时间',
-                        type: 'bar',
-                        stack: 'test2',
-                        itemStyle: {
-                            normal: {
-                                color: 'rgba(0,0,0,0)'
-                            }
-                        },
-                        data: [
-                            new Date("2015/09/2"),
-                            new Date("2015/09/15"),
-                            new Date("2015/09/15"),
-                            new Date("2015/10/03"),
-                            new Date("2015/10/04"),
-                            new Date("2015/10/05"),
-                            new Date("2015/10/06")
-                        ]
-                    },
-                    {
-                        name: '实际时间',
-                        type: 'bar',
-                        stack: 'test2',
-                        //修改地方3
-                        itemStyle: {
-                            normal: {
-                                color: '#A2E068'
-                            }
-                        },
-                        data: [
-                            new Date("2015/09/6"),
-                            new Date("2015/09/20"),
-                            new Date("2015/09/27"),
-                            new Date("2015/10/11"),
-                            new Date("2015/10/16"),
-                            new Date("2015/10/18"),
-                            new Date("2015/10/17")
-                        ]
+                        data:planendtime
                     }
                 ]
             };
             myCharts.setOption(option);
+        },
+        getScheduleTableData(){ //获取品名
+        var that = this
+        var params = {
+          tableName: "ProductRule",
         }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.scheduleTableData = res.data.data.rows
+            that.results = that.scheduleTableData
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
+        handleChangeProductName(queryString){ //左侧模糊查询
+            if(queryString != ""){
+            this.results = this.scheduleTableData.filter((string) =>{
+                return Object.keys(string).some(function(key) {
+                return String(string[key]).toLowerCase().indexOf(queryString) > -1
+                })
+            })
+            }else{
+            this.results = this.scheduleTableData
+            }
+      },
+       clickBrandTag(BrandName,BrandCode){
+        this.BrandActive = BrandName
+        this.BrandCode = BrandCode
+        this.getBrandCode(BrandName)
+      },
+       getBrandCode(BrandName){ //查询当前品名绑定的工序
+        var that = this
+        var params = {
+          tableName: "product_plan",
+          field:"BrandName",
+          fieldvalue:BrandName,
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+           var arr=res.data.data.rows
+           this.selectBrandNum=arr.map((res, index) => {
+               return {BrandCodelabel:this.BrandActive+(index+1),BrandCodevalue:res.PlanNum}
+           })
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      }
     },
 }
 </script>
