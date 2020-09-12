@@ -342,6 +342,7 @@ def batchequimentselect():
                     dir_list_i = {}
                     dir_list_i["PUName"] = pre.PUName
                     dir_list_i["PUCode"] = pre.PUCode
+                    dir_list_i["Seq"] = pre.Seq
                     eqList = []
                     eqps = db_session.query(ProductEquipment).filter(ProductEquipment.PUCode == pre.PUCode).all()
                     for eqp in eqps:
