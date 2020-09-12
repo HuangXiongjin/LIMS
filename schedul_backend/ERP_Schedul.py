@@ -27,9 +27,9 @@ from suds.client import Client
 from datetime import timedelta
 
 from common.batch_plan_model import ProductUnit, ProductRule, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
-    ZYPlanWMS, Material, MaterialBOM
+    ZYPlanWMS, Material, MaterialBOM, ProductEquipment
 from common.schedul_model import Scheduling, plantCalendarScheduling, SchedulingStandard, \
-    scheduledate, product_plan, SchedulingStock
+    scheduledate, product_plan, SchedulingStock, EquipmentBatchRunTime
 from database.connect_db import CONNECT_DATABASE
 from enum import Enum, IntEnum, unique
 
@@ -322,3 +322,49 @@ def addscheduledates():
             logger.error(e)
             insertSyslog("error", "添加工作日休息日报错Error：" + str(e), current_user.Name)
             return json.dumps("添加工作日休息日报错", cls=AlchemyEncoder, ensure_ascii=False)
+
+@erp_schedul.route('/batchequimentselect', methods=['GET', 'POST'])
+def batchequimentselect():
+    '''
+    查询批次下对应的设备
+    :return:
+    '''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            BatchID = data['BatchID']
+            oclass = db_session.query(PlanManager).filter(PlanManager.BatchID == BatchID).first()
+            dir = {}
+            if oclass:
+                pres = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == oclass.BrandCode).all()
+                dir_list = []
+                for pre in pres:
+                    dir_list_i = {}
+                    dir_list_i["PUName"] = pre.PUName
+                    dir_list_i["PUCode"] = pre.PUCode
+                    eqList = []
+                    eqps = db_session.query(ProductEquipment).filter(ProductEquipment.PUCode == pre.PUCode).all()
+                    for eqp in eqps:
+                        eqp_dir = {}
+                        eqp_dir["EQPCode"] = eqp.EQPCode
+                        eqp_dir["EQPName"] = eqp.EQPName
+                        eqp_dir["EQPStatus"] = "True"
+                        begin = db_session.query(EquipmentBatchRunTime).filter(
+                            EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
+                            EquipmentBatchRunTime.StartTime.between(oclass.PlanBeginTime,oclass.PlanEndTime)).first()
+                        end = db_session.query(EquipmentBatchRunTime).filter(
+                            EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
+                            EquipmentBatchRunTime.StartTime.between(oclass.PlanBeginTime, oclass.PlanEndTime)).first()
+                        if begin != None or end != None:
+                            eqp_dir["EQPStatus"] = "False"
+                        eqList.append(eqp_dir)
+                    dir_list_i["eqList"] = eqList
+                    dir_list.append(dir_list_i)
+                dir["processList"] = dir_list
+            return json.dumps({"code": "200", "message": "查询成功！", "data": dir})
+        except Exception as e:
+            db_session.rollback()
+            logger.error(e)
+            insertSyslog("error", "查询批次下对应的设备报错Error：" + str(e), current_user.Name)
+            return json.dumps("查询批次下对应的设备报错", cls=AlchemyEncoder, ensure_ascii=False)
+

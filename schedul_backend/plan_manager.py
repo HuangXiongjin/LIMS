@@ -170,7 +170,7 @@ def makePlan():
                 Type = system_backend.Global.SCHEDULETYPE.DAY.value
                 db_session.add(sp)
                 db_session.commit()
-                return json.dumps({"code": "200", "message": "OK"})
+                return json.dumps({"code": "200", "message": "添加成功！"})
         except Exception as e:
             db_session.rollback()
             print(e)
