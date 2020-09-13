@@ -27,7 +27,7 @@
                     </div>
                 </el-col>
                 <el-col :span='24'>
-                    <div class="platformContainer" style="backgroundColor:#3D4048;">
+                    <div class="platformContainer" style="backgroundColor:#fff;">
                     <div id="main" style="width:100%; height:750px;" v-loading="loading">排产进度表</div>
                 </div>
                 </el-col>
@@ -92,14 +92,14 @@ export default {
                     text: '排产进度表',
                     left: 10,
                     textStyle: {
-                      color: '#fff'  //设置title文字颜色
+                      color: '#ccc'  //设置title文字颜色
                   }
                 },
                 legend: {
                     y: 'top',
                     data: ['计划时间'], //修改的地方1,
                     textStyle: {
-                      color: '#fff' //设置图例文字颜色
+                      color: '#ccc' //设置图例文字颜色
                   }
                 },
                 grid: {
@@ -108,11 +108,11 @@ export default {
                 },
                 xAxis: {
                     type: 'time',
-                    axisLine: { lineStyle: { color: '#fff' } } //控制x轴坐标文字颜色
+                    axisLine: { lineStyle: { color: '#ccc' } } //控制x轴坐标文字颜色
                 },
                 yAxis: {
                     data:[...ydata],
-                    axisLine: { lineStyle: { color: '#fff' } }  //控制y轴坐标文字颜色
+                    axisLine: { lineStyle: { color: '#ccc' } }  //控制y轴坐标文字颜色
                 },
                 tooltip: {
                     trigger: 'axis',
@@ -188,6 +188,8 @@ export default {
        clickBrandTag(BrandName,BrandCode){
         this.BrandActive = BrandName
         this.BrandCode = BrandCode
+        this.selectBrandNum=[{BrandCodelabel:'',BrandCodevalue:''}]
+        this.formInline.CurrentBrandNum=''
         this.getBrandCode(BrandName)
       },
        getBrandCode(BrandName){ //查询当前品名绑定的工序
@@ -203,7 +205,7 @@ export default {
           if(res.data.code === "200"){
            var arr=res.data.data.rows
            this.selectBrandNum=arr.map((res, index) => {
-               return {BrandCodelabel:this.BrandActive+(index+1),BrandCodevalue:res.PlanNum}
+               return {BrandCodelabel:'计划编号'+res.PlanNum,BrandCodevalue:res.PlanNum}
            })
           }else{
             that.$message({
