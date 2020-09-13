@@ -168,6 +168,10 @@ class EquipmentBatchRunTime(Base):
     StartTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 批次结束运行时间
     EndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 设备运行时长
+    WorkTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 设备等待时长
+    WaitTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 
 

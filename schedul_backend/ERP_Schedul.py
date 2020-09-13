@@ -349,7 +349,18 @@ def batchequimentselect():
                         eqp_dir = {}
                         eqp_dir["EQPCode"] = eqp.EQPCode
                         eqp_dir["EQPName"] = eqp.EQPName
-                        eqp_dir["EQPStatus"] = "True"
+                        eqp_dir["EQPStatus"] = True
+                        runeqp = db_session.query(EquipmentBatchRunTime).filter(
+                            EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
+                            EquipmentBatchRunTime.BatchID == BatchID).first()
+                        if runeqp:
+                            eqp_dir["isSelected"] = True
+                            eqp_dir["workTime"] = runeqp.WorkTime
+                            eqp_dir["waitTime"] = runeqp.WaitTime
+                        else:
+                            eqp_dir["isSelected"] = False
+                            eqp_dir["workTime"] = ""
+                            eqp_dir["waitTime"] = ""
                         begin = db_session.query(EquipmentBatchRunTime).filter(
                             EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
                             EquipmentBatchRunTime.StartTime.between(oclass.PlanBeginTime,oclass.PlanEndTime)).first()
@@ -357,7 +368,7 @@ def batchequimentselect():
                             EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
                             EquipmentBatchRunTime.StartTime.between(oclass.PlanBeginTime, oclass.PlanEndTime)).first()
                         if begin != None or end != None:
-                            eqp_dir["EQPStatus"] = "False"
+                            eqp_dir["EQPStatus"] = False
                         eqList.append(eqp_dir)
                     dir_list_i["eqList"] = eqList
                     dir_list.append(dir_list_i)
