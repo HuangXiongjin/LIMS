@@ -15,8 +15,8 @@
                             <el-form-item style="width:230px;">
                                 <p>当前展示的品名：{{BrandActive}}</p>
                             </el-form-item>
-                            <el-form-item label="品名编码"  style="paddingLeft:150px;">
-                                <el-select v-model="formInline.CurrentBrandNum" placeholder="品名编码">
+                            <el-form-item label="计划编码"  style="paddingLeft:150px;">
+                                <el-select v-model="formInline.CurrentBrandNum" placeholder="计划编码">
                                     <el-option v-for="(item,index) in selectBrandNum" :key='index'  :label='item.BrandCodelabel'  :value="item.BrandCodevalue" ></el-option>
                                 </el-select>
                             </el-form-item>
@@ -92,14 +92,14 @@ export default {
                     text: '排产进度表',
                     left: 10,
                     textStyle: {
-                      color: '#ccc'  //设置title文字颜色
+                      color: '#666'  //设置title文字颜色
                   }
                 },
                 legend: {
                     y: 'top',
                     data: ['计划时间'], //修改的地方1,
                     textStyle: {
-                      color: '#ccc' //设置图例文字颜色
+                      color: '#666' //设置图例文字颜色
                   }
                 },
                 grid: {
@@ -108,11 +108,11 @@ export default {
                 },
                 xAxis: {
                     type: 'time',
-                    axisLine: { lineStyle: { color: '#ccc' } } //控制x轴坐标文字颜色
+                    axisLine: { lineStyle: { color: '#666' } } //控制x轴坐标文字颜色
                 },
                 yAxis: {
                     data:[...ydata],
-                    axisLine: { lineStyle: { color: '#ccc' } }  //控制y轴坐标文字颜色
+                    axisLine: { lineStyle: { color: '#666' } }  //控制y轴坐标文字颜色
                 },
                 tooltip: {
                     trigger: 'axis',
