@@ -63,6 +63,7 @@
           fileList: [],
           ActiveIndex:10,
           FileName:'',
+          scheduleTableData:[]
       }
     },
     created(){
