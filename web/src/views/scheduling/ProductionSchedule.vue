@@ -137,7 +137,8 @@ export default {
                                 color: 'rgba(0,0,0,0)'
                             }
                         },
-                        data:planstarttime
+                        data:planstarttime,
+                        barMaxWidth: 30,
                     },
                     {
                         name: '计划时间',
@@ -149,7 +150,8 @@ export default {
                                 color: '#06ACB5'
                             }
                         },
-                        data:planendtime
+                        data:planendtime,
+                        barMaxWidth:20,
                     }
                 ]
             };
