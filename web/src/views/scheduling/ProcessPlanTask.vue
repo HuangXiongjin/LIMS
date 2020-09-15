@@ -4,203 +4,198 @@
       <div class="page-title">
         <span style="margin-left: 10px;" class="text-size-normol">生产调度信息</span>
       </div>
-      <div class="platformContainer">
-        <tableView class="" :tableData="PlanTableData" @getTableData="getPlanTable"></tableView>
-      </div>
-      <div class="platformContainer">
-        <tableView class="" :tableData="ProcessPlanTableData" @getTableData="getProcessPlanTable"></tableView>
-      </div>
-      <div class="platformContainer">
-        <tableView class="" :tableData="ProcessTaskTableData" @getTableData="getProcessTaskTable"></tableView>
-      </div>
+      <el-row :gutter="15">
+        <el-col :span="4">
+          <div class="platformContainer">
+            <el-form>
+              <el-form-item label="选择品名">
+                <el-select v-model="BrandName" filterable placeholder="输入关键字" @change="getProductPlan">
+                  <el-option
+                    v-for="item in BrandOptions"
+                    :key="item.ID"
+                    :label="item.BrandName"
+                    :value="item.BrandName">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="选择订单计划">
+                <el-select v-model="PlanNum" filterable placeholder="选择计划编号" @change="getPlanManagerTable">
+                  <el-option
+                    v-for="item in ProductPlanTableData"
+                    :key="item.ID"
+                    :label="item.PlanNum"
+                    :value="item.PlanNum">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="选择批次号">
+                <el-select v-model="BatchID" filterable placeholder="选择批次号" @change="getZYPlanTable">
+                  <el-option
+                    v-for="item in PlanManagerTableData"
+                    :key="item.ID"
+                    :label="item.BatchID"
+                    :value="item.BatchID">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-col>
+        <el-col :span="20">
+          <div class="platformContainer">
+            工艺段计划
+          </div>
+          <div class="platformContainer">
+            <el-table :data="ZYPlanTableData.data" border size="small" @selection-change="handleSelectionZYPlanTable">
+              <el-table-column type="selection"></el-table-column>
+              <el-table-column prop="PUName" label="工艺名称"></el-table-column>
+              <el-table-column prop="PlanDate" label="计划日期"></el-table-column>
+              <el-table-column prop="PlanNo" label="制药计划单号"></el-table-column>
+              <el-table-column prop="ERPOrderNo" label="ERP订单号"></el-table-column>
+              <el-table-column prop="PlanQuantity" label="计划重量"></el-table-column>
+              <el-table-column prop="ActQuantity" label="实际重量"></el-table-column>
+              <el-table-column prop="Unit" label="单位"></el-table-column>
+              <el-table-column prop="PlanBeginTime" label="计划开始时间"></el-table-column>
+              <el-table-column prop="PlanEndTime" label="计划结束时间"></el-table-column>
+              <el-table-column prop="ActBeginTime" label="实际开始时间"></el-table-column>
+              <el-table-column prop="ActEndTime" label="实际完成时间"></el-table-column>
+              <el-table-column prop="ZYPlanStatus" label="计划状态"></el-table-column>
+            </el-table>
+          </div>
+          <div class="platformContainer">
+            设备任务
+          </div>
+          <div class="platformContainer">
+            <el-table :data="ZYTaskTableData.data" border size="small" @selection-change="handleSelectionZYTaskTable">
+              <el-table-column type="selection"></el-table-column>
+              <el-table-column prop="PUName" label="工艺名称"></el-table-column>
+              <el-table-column prop="EQPName" label="设备名称"></el-table-column>
+              <el-table-column prop="PlanDate" label="计划日期"></el-table-column>
+              <el-table-column prop="TaskID" label="制药任务单号"></el-table-column>
+              <el-table-column prop="PlanQuantity" label="计划重量"></el-table-column>
+              <el-table-column prop="ActQuantity" label="实际重量"></el-table-column>
+              <el-table-column prop="Unit" label="单位"></el-table-column>
+              <el-table-column prop="PlanBeginTime" label="计划开始时间"></el-table-column>
+              <el-table-column prop="PlanEndTime" label="计划结束时间"></el-table-column>
+              <el-table-column prop="ActBeginTime" label="实际开始时间"></el-table-column>
+              <el-table-column prop="ActEndTime" label="实际完成时间"></el-table-column>
+            </el-table>
+          </div>
+        </el-col>
+      </el-row>
     </el-col>
   </el-row>
 </template>
 
 <script>
-  import tableView from '@/components/CommonTable'
   export default {
-    components:{tableView},
+    name:"ProcessPlanTask",
     data(){
       return {
-        PlanTableData:{
-          tableName:"PlanManager",
-          column:[
-            {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"SchedulePlanCode",label:"调度编号",type:"input",value:""},
-            {prop:"BatchID",label:" 批次号",type:"input",value:""},
-            {prop:"PlanQuantity",label:"计划重量",type:"input",value:""},
-            {prop:"Unit",label:"单位",type:"input",value:""},
-            {prop:"BrandCode",label:"品名ID",type:"input",value:""},
-            {prop:"BrandName",label:"品名",type:"input",value:""},
-            {prop:"PlanStatus",label:"计划状态",type:"input",value:""},
-            {prop:"PlanBeginTime",label:"调度计划开始时间",type:"input",value:""},
-            {prop:"PlanEndTime",label:"计划完成时间",type:"input",value:""},
-            {prop:"Type",label:"调度类型",type:"input",value:""}
-          ],
+        BrandName:"",
+        BrandOptions:[],
+        PlanNum:"",
+        ProductPlanTableData:[],
+        BatchID:"",
+        PlanManagerTableData:[],
+        ZYPlanTableData:{
           data:[],
           limit:5,
           offset:1,
           total:0,
-          tableSelection:true, //是否在第一列添加复选框
-          searchProp:"",
-          searchVal:"",
-          multipleSelection: [],
-          dialogVisible: false,
-          dialogTitle:'',
-          handleType:[
-            {type:"primary",label:"添加"},
-            {type:"warning",label:"修改"},
-            {type:"danger",label:"删除"},
-          ],
+          multipleSelection:[]
         },
-        ProcessPlanTableData:{
-          tableName:"ZYPlan",
-          column:[
-            {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"PlanDate",label:"计划日期",type:"input",value:""},
-            {prop:"PlanNo",label:"制药计划单号",type:"input",value:""},
-            {prop:"BatchID",label:"批次号",type:"input",value:""},
-            {prop:"PlanSeq",label:" 顺序号",type:"input",value:""},
-            {prop:"PUCode",label:"工艺段编码",type:"input",value:""},
-            {prop:"PlanType",label:" 计划类型",type:"input",value:""},
-            {prop:"BrandCode",label:"品名",type:"input",value:""},
-            {prop:"BrandName",label:"品名名称",type:"input",value:""},
-            {prop:"ERPOrderNo",label:"ERP订单号",type:"input",value:""},
-            {prop:"PlanQuantity",label:"计划重量",type:"input",value:""},
-            {prop:"ActQuantity",label:"实际重量",type:"input",value:""},
-            {prop:"Unit",label:"单位",type:"input",value:""},
-            {prop:"EnterTime",label:"录入时间",type:"input",value:""},
-            {prop:"PlanBeginTime",label:"计划开始时间",type:"input",value:""},
-            {prop:"PlanEndTime",label:"计划结束时间",type:"input",value:""},
-            {prop:"ActBeginTime",label:"实际开始时间",type:"input",value:""},
-            {prop:"ActEndTime",label:"实际结束时间",type:"input",value:""},
-            {prop:"ZYPlanStatus",label:"计划状态",type:"input",value:""},
-            {prop:"LockStatus",label:"计划锁定状态",type:"input",value:""},
-          ],
+        ZYTaskTableData:{
           data:[],
           limit:5,
           offset:1,
           total:0,
-          tableSelection:true, //是否在第一列添加复选框
-          searchProp:"",
-          searchVal:"",
-          multipleSelection: [],
-          dialogVisible: false,
-          dialogTitle:'',
-          handleType:[
-            {type:"primary",label:"添加"},
-            {type:"warning",label:"修改"},
-            {type:"danger",label:"删除"},
-          ],
-        },
-        ProcessTaskTableData:{
-          tableName:"ZYTask",
-          column:[
-            {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"EquipmentID",label:"设备ID",type:"input",value:""},
-            {prop:"PlanDate",label:"计划日期",type:"input",value:""},
-            {prop:"TaskID",label:"制药任务单号",type:"input",value:""},
-            {prop:"BatchID",label:"批次号",type:"input",value:""},
-            {prop:"PlanSeq ",label:"顺序号",type:"input",value:""},
-            {prop:"PUCode",label:"工艺段编码",type:"input",value:""},
-            {prop:"PDUnitRouteName",label:"工艺路线名称",type:"input",value:""},
-            {prop:"PlanType",label:"计划类型",type:"input",value:""},
-            {prop:"BrandCode",label:"品名编码",type:"input",value:""},
-            {prop:"BrandName",label:"牌号名称",type:"input",value:""},
-            {prop:"PlanQuantity",label:"计划重量",type:"input",value:""},
-            {prop:"ActQuantity",label:"实际重量",type:"input",value:""},
-            {prop:"Unit",label:"单位",type:"input",value:""},
-            {prop:"EnterTime",label:"录入时间",type:"input",value:""},
-            {prop:"ActBeginTime",label:"实际开始时间",type:"input",value:""},
-            {prop:"ActEndTime",label:"实际完成时间",type:"input",value:""},
-            {prop:"SetRepeatCount",label:"设定重复次数",type:"input",value:""},
-            {prop:"CurretnRepeatCount",label:"当前重复次数",type:"input",value:""},
-          ],
-          data:[],
-          limit:5,
-          offset:1,
-          total:0,
-          tableSelection:true, //是否在第一列添加复选框
-          searchProp:"",
-          searchVal:"",
-          multipleSelection: [],
-          dialogVisible: false,
-          dialogTitle:'',
-          handleType:[
-            {type:"primary",label:"添加"},
-            {type:"warning",label:"修改"},
-            {type:"danger",label:"删除"},
-          ],
+          multipleSelection:[]
         },
       }
     },
     created(){
-      this.getPlanTable()
-      this.getProcessTaskTable()
-      this.getProcessPlanTable()
+      this.getBrandTable()
     },
     methods:{
-      getPlanTable(){
+      getBrandTable(){
         var that = this
         var params = {
-          tableName: this.PlanTableData.tableName,
-          limit:this.PlanTableData.limit,
-          offset:this.PlanTableData.offset - 1
+          tableName: "ProductRule",
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.BrandOptions = res.data.data.rows
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
+      getProductPlan(){
+        var that = this
+        var params = {
+          tableName: "product_plan",
+          field:"BrandName",
+          fieldvalue:this.BrandName,
         }
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
           if(res.data.code === "200"){
             var data = res.data.data
-            that.PlanTableData.data = data.rows
-            that.PlanTableData.total = data.total
+            that.ProductPlanTableData = data.rows
           }
         },res =>{
           console.log("请求错误")
-        }
-        )
+        })
       },
-      getProcessPlanTable(){
+      getPlanManagerTable(){
         var that = this
         var params = {
-          tableName: this.ProcessPlanTableData.tableName,
-          limit:this.ProcessPlanTableData.limit,
-          offset:this.ProcessPlanTableData.offset - 1
+          tableName: "PlanManager",
+          field:"PlanNum",
+          fieldvalue:this.PlanNum,
         }
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
           if(res.data.code === "200"){
             var data = res.data.data
-            that.ProcessPlanTableData.data = data.rows
-            that.ProcessPlanTableData.total = data.total
+            that.PlanManagerTableData = data.rows
           }
         },res =>{
           console.log("请求错误")
-        }
-        )
+        })
       },
-      getProcessTaskTable(){
+      getZYPlanTable(){
         var that = this
         var params = {
-          tableName: this.ProcessTaskTableData.tableName,
-          limit:this.ProcessTaskTableData.limit,
-          offset:this.ProcessTaskTableData.offset - 1
+          tableName: "ZYPlan",
+          field:"BatchID",
+          fieldvalue:this.BatchID,
         }
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
           if(res.data.code === "200"){
             var data = res.data.data
-            that.ProcessTaskTableData.data = data.rows
-            that.ProcessTaskTableData.total = data.total
+            that.ZYPlanTableData.data = data.rows
           }
         },res =>{
           console.log("请求错误")
-        }
-        )
+        })
       },
+      handleSelectionZYPlanTable(row){
+        this.ZYPlanTableData.multipleSelection = row
+      },
+      handleSelectionZYTaskTable(row){
+        this.ZYTaskTableData.multipleSelection = row
+      }
     }
   }
 </script>
