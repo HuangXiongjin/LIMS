@@ -168,7 +168,10 @@ class ZYPlan(Base):
     PlanSeq = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 工艺段编码:
-    PUCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    PUCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段名称:
+    PUName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
     # 计划类型:
     PlanType = Column(Unicode(16), primary_key=False, autoincrement=False, nullable=True)
@@ -226,8 +229,11 @@ class ZYTask(Base):
     # ID:
     ID = Column(BigInteger, primary_key=True, autoincrement=True, nullable=True)
 
-    # 设备ID:
-    EquipmentID = Column(Unicode(30), primary_key=False, autoincrement=True, nullable=True)
+    # 设备编码:
+    EQPCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 设备名称:
+    EQPName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 计划日期:
     PlanDate = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
@@ -242,7 +248,10 @@ class ZYTask(Base):
     PlanSeq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
     # 工艺段编码:
-    PUCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    PUCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段名称:
+    PUName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
     # 工艺路线名称:
     PDUnitRouteName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)

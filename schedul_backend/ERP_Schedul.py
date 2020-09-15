@@ -380,3 +380,59 @@ def batchequimentselect():
             insertSyslog("error", "查询批次下对应的设备报错Error：" + str(e), current_user.Name)
             return json.dumps("查询批次下对应的设备报错", cls=AlchemyEncoder, ensure_ascii=False)
 
+@erp_schedul.route('/planschedul', methods=['GET', 'POST'])
+def planschedul():
+    '''
+    计划排产
+    :return:
+    '''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            BatchID = data['BatchID']
+            oclass = db_session.query(PlanManager).filter(PlanManager.BatchID == BatchID).first()
+            dir = {}
+            if oclass:
+                pres = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == oclass.BrandCode).all()
+                dir_list = []
+                for pre in pres:
+                    dir_list_i = {}
+                    dir_list_i["PUName"] = pre.PUName
+                    dir_list_i["PUCode"] = pre.PUCode
+                    dir_list_i["Seq"] = pre.Seq
+                    eqList = []
+                    eqps = db_session.query(ProductEquipment).filter(ProductEquipment.PUCode == pre.PUCode).all()
+                    for eqp in eqps:
+                        eqp_dir = {}
+                        eqp_dir["EQPCode"] = eqp.EQPCode
+                        eqp_dir["EQPName"] = eqp.EQPName
+                        eqp_dir["EQPStatus"] = True
+                        runeqp = db_session.query(EquipmentBatchRunTime).filter(
+                            EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
+                            EquipmentBatchRunTime.BatchID == BatchID).first()
+                        if runeqp:
+                            eqp_dir["isSelected"] = True
+                            eqp_dir["workTime"] = runeqp.WorkTime
+                            eqp_dir["waitTime"] = runeqp.WaitTime
+                        else:
+                            eqp_dir["isSelected"] = False
+                            eqp_dir["workTime"] = ""
+                            eqp_dir["waitTime"] = ""
+                        begin = db_session.query(EquipmentBatchRunTime).filter(
+                            EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
+                            EquipmentBatchRunTime.StartTime.between(oclass.PlanBeginTime,oclass.PlanEndTime)).first()
+                        end = db_session.query(EquipmentBatchRunTime).filter(
+                            EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
+                            EquipmentBatchRunTime.StartTime.between(oclass.PlanBeginTime, oclass.PlanEndTime)).first()
+                        if begin != None or end != None:
+                            eqp_dir["EQPStatus"] = False
+                        eqList.append(eqp_dir)
+                    dir_list_i["eqList"] = eqList
+                    dir_list.append(dir_list_i)
+                dir["processList"] = dir_list
+            return json.dumps({"code": "200", "message": "查询成功！", "data": dir})
+        except Exception as e:
+            db_session.rollback()
+            logger.error(e)
+            insertSyslog("error", "查询批次下对应的设备报错Error：" + str(e), current_user.Name)
+            return json.dumps("查询批次下对应的设备报错", cls=AlchemyEncoder, ensure_ascii=False)
