@@ -107,9 +107,10 @@
         systemOptions:[
           {label: '排产调度系统',icon:"el-icon-date",mainMenu:[
             {title:'排产看板',icon:"el-icon-s-home",url:"/schedulingBoard"},
+            {title:'ERP计划信息',icon:"el-icon-connection"},
             {title:'工厂排产',icon:"fa fa-calendar-plus-o",url:"/scheduling"},
             {title:'排期进度',icon:"el-icon-date",url:"/ProductionSchedule"},
-            {title:"生产计划调度",icon:"el-icon-s-claim",url:"/planningScheduling"},
+            {title:"生产调度",icon:"el-icon-s-claim",url:"/planningScheduling"},
             {title:"调度计划明细",icon:"el-icon-tickets",url:"/ProcessPlanTask"},
           ]},
           {label: '生产建模',icon:"el-icon-s-management",mainMenu:[

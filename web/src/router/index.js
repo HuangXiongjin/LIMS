@@ -81,8 +81,8 @@ export default new Router({
         {path:'/schedulingBoard',name:'schedulingBoard',meta:{ title:'排产看板',type:"排产调度系统"},component:schedulingBoard},
         {path:'/ProductionSchedule',name:'ProductionSchedule',meta:{ title:'排期进度',type:"排产调度系统"},component:ProductionSchedule},
         {path:'/scheduling',name:'scheduling',meta:{ title:'工厂排产',type:"排产调度系统"},component:scheduling},
-        {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度',type:"排产调度系统"},component:planningScheduling},
-        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'调度计划明细',type:"排产调度系统"},component:ProcessPlanTask},
+        {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产调度',type:"排产调度系统"},component:planningScheduling},
+        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'调度明细',type:"排产调度系统"},component:ProcessPlanTask},
         {path:'/schedulingPlan',name:'schedulingPlan',meta:{ title:'排产计划',type:"排产调度系统"},component:schedulingPlan},
 
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据系统"},component:MaterialBalanceStatistics},
