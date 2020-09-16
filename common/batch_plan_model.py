@@ -602,7 +602,7 @@ class TypeDetail(Base):
 
 
 class MaterialBOM(Base):
-    '''物料BOM'''
+    '''物料BOM表'''
     __tablename__ = "MaterialBOM"
 
     # ID:
@@ -617,7 +617,7 @@ class MaterialBOM(Base):
     # 投料批总重量:
     BatchTotalWeight = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 投料单一物料重量:
+    # 投料单一物料计划重量:
     BatchSingleMATWeight = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 单位:
@@ -685,8 +685,8 @@ class ZYPlanWMS(Base):
     IsSend = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
 
 
-# 物料信息
 class Material(Base):
+    '''物料基础信息表'''
     __tablename__ = "Material"
 
     # ID:
@@ -712,6 +712,33 @@ class Material(Base):
 
     # 物料标识:1为排产所常用表标识
     MATBatchNo = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+
+class BatchMaterialInfo(Base):
+    '''物料明细表'''
+    __tablename__ = "BatchMaterialInfo"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+
+    # 批次号:
+    BatchID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 投料顺序:
+    FeedingSeq = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 桶号:
+    BucketNum = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 重量:
+    BucketWeight = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 单位:
+    Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 描述:
+    Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
 
 # 批记录模板
 class BatchModel(Base):
