@@ -52,7 +52,7 @@ export default {
             ActiveIndex:10,
             FileName:'',
             scheduleTableData:[],
-            formInline: {CurrentBrandNum: ''},
+            formInline: {CurrentBrandNum: '23'},
             selectBrandNum:[],
             ydata:[],
             PlanStartTime:[],
@@ -61,6 +61,7 @@ export default {
     },
      created(){
       this.getScheduleTableData()
+      this.onSubmit() //初始化展示效果添加
     },
     methods: {
         onSubmit(){

@@ -13,11 +13,12 @@
               </div>
             </div>
         </div>
-        <div class="platformContainer" style="height:600px;overflow:auto;">
+        <div class="platformContainer" style="height:900px;overflow:auto;">
           <div style="height:40px;borderBottom:1px solid #ccc;fontSize:16px;fontWeight:700;">计划列表</div>
               <el-table
                   :data="sidetableData"
                   highlight-current-row
+                  size='small'
                   @row-click="TabCurrentChange"
                   style="width: 100%">
                    <el-table-column
@@ -27,10 +28,9 @@
                   <el-table-column v-for="item in tableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
               </el-table>
               <div class="paginationClass">
-                  <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
+                  <el-pagination background  layout="total,prev, pager, next, jumper"
                   :total="planTableData.total"
                   :current-page="planTableData.offset"
-                  :page-sizes="[5,10,20]"
                   :page-size="planTableData.limit"
                   @size-change="handleSizeChange"
                   @current-change="handleCurrentChange">
@@ -40,7 +40,7 @@
       </div>
     </el-col>
     <el-col :span='15'>
-      <BatchInformation :currentSBatch='currentFBatch'></BatchInformation>
+      <BatchInformation :currentSBatch='currentFBatch' ref='BatchInfo'></BatchInformation>
     </el-col>
   </el-row>
 </template>
@@ -55,14 +55,14 @@ import BatchInformation from '@/components/BatchInformatin.vue'
           planTableData:{
             tableName:"PlanManager",
             data:[],
-            limit: 5,//当前显示多少条
+            limit: 10,//当前显示多少条
             offset: 1,//当前处于多少页
             total: 0,//总的多少页
         },
          BrandActive:'',
          sidetableData: [{
             BatchID:'LPL20200825H',
-            BrandName:'黄皮',
+            BrandName:'血府逐淤片',
             PlanStatus: '待执行',
             PlanBeginTime: '2016-05-02 08:00:00',
             PlanEndTime: '2016-05-02 08:00:00',
@@ -100,8 +100,8 @@ import BatchInformation from '@/components/BatchInformatin.vue'
           }],
           mydata:[],
           currentFBatch:{},
-          steps:[{title:'计划申请',decription:'开始时间 2020-09-10'},{title:'计划申请',decription:'开始时间 2020-09-10'},{title:'计划申请',decription:'开始时间 2020-09-10'}],
-          tableconfig:[{prop:'BatchID',label:"批次号",width:'90'},{prop:'BrandName',label:'品名',width:'100'},{prop:'PlanStatus',label:'计划状态',width:'90'},{prop:'PlanBeginTime',label:'计划开始时间',width:'190'},{prop:'PlanEndTime',label:'计划完成时间',width:'190'},{prop:'PlanNum',label:'计划单号',width:90}],
+          currentBrandName:'',
+          tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
       }
     },
     created(){
@@ -132,6 +132,8 @@ import BatchInformation from '@/components/BatchInformatin.vue'
       },
       TabCurrentChange(e){ //点击显示当前的tab行显示详细信息
         this.currentFBatch=e
+        this.currentBrandName=e.BrandName
+        this.$refs.BatchInfo.getMaterialBom(this.currentBrandName)
       },
       handleSizeChange(limit){ //每页条数切换
         this.planTableData.limit = limit
@@ -140,29 +142,6 @@ import BatchInformation from '@/components/BatchInformatin.vue'
        handleCurrentChange(offset) { // 页码切换
         this.planTableData.offset = offset
         this.getBatchTable()
-      },
-      getPlanTableData(BrandName){ //查询当前计划单号
-        var that = this
-        var params = {
-          tableName: "product_plan",
-          field:"BrandName",
-          fieldvalue:BrandName,
-          limit:this.planTableData.limit,
-          offset:this.planTableData.offset - 1
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res => {
-          if(res.data.code === "200"){
-            that.planTableData.data = res.data.data.rows
-            that.planTableData.total = res.data.data.total
-          }else{
-            that.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        })
       }
     }
   }
