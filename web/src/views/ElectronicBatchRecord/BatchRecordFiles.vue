@@ -28,7 +28,7 @@
                 drag
                 accept=".doc,.docx"
                 action="/api/batchmodelexport"
-                :limit="3"
+                :limit="1"
                 :on-preview="handlePreview"
                 :before-remove="beforeRemove"
                 :before-upload="handleBeforeUpload"

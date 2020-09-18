@@ -23,6 +23,12 @@
                             <el-form-item>
                                 <el-button type="primary" @click="onSubmit">查询甘特图</el-button>
                             </el-form-item>
+                            <el-form-item>
+                                <el-radio-group v-model="datesection">
+                                    <el-radio-button label="月"></el-radio-button>
+                                    <el-radio-button label="季"></el-radio-button>
+                                </el-radio-group>
+                            </el-form-item>
                         </el-form>
                     </div>
                 </el-col>
@@ -40,6 +46,7 @@ import echarts from '@/assets/js/echarts.js'
 export default {
     data(){
         return {
+            datesection:'月',
             loading:false,
             productName:'',
             results:[],
@@ -74,6 +81,7 @@ export default {
                 params: params
             }).then(res => {
                 var arr=res.data.data.rows
+                console.log(arr)
                 this.ydata=arr.map((res) => {
                     return '批次'+res.BatchID
                 })
