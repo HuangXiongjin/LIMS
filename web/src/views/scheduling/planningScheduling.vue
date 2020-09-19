@@ -13,12 +13,13 @@
               </div>
             </div>
         </div>
-        <div class="platformContainer" style="height:600px;overflow:auto;">
+        <div class="platformContainer" style="height:900px;overflow:auto;">
           <div style="height:40px;borderBottom:1px solid #ccc;fontSize:16px;fontWeight:700;">计划列表</div>
               <el-table
                   :data="sidetableData"
                   highlight-current-row
-                  @row-click="handleCurrentChange"
+                  size='small'
+                  @row-click="TabCurrentChange"
                   style="width: 100%">
                    <el-table-column
                     type="index"
@@ -26,11 +27,20 @@
                   </el-table-column>
                   <el-table-column v-for="item in tableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
               </el-table>
+              <div class="paginationClass">
+                  <el-pagination background  layout="total,prev, pager, next, jumper"
+                  :total="planTableData.total"
+                  :current-page="planTableData.offset"
+                  :page-size="planTableData.limit"
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange">
+                  </el-pagination>
+            </div>
         </div>
       </div>
     </el-col>
     <el-col :span='15'>
-      <BatchInformation :currentSBatch='currentFBatch'></BatchInformation>
+      <BatchInformation :currentSBatch='currentFBatch' ref='BatchInfo'></BatchInformation>
     </el-col>
   </el-row>
 </template>
@@ -42,46 +52,96 @@ import BatchInformation from '@/components/BatchInformatin.vue'
     components:{BatchInformation},
     data(){
       return {
+          planTableData:{
+            tableName:"PlanManager",
+            data:[],
+            limit: 10,//当前显示多少条
+            offset: 1,//当前处于多少页
+            total: 0,//总的多少页
+        },
+         BrandActive:'',
          sidetableData: [{
             BatchID:'LPL20200825H',
-            area: '新建综合制剂楼',
-            date: '2016-05-02 08:00:00',
-            status: '待执行'
+            BrandName:'血府逐淤片',
+            PlanStatus: '待执行',
+            PlanBeginTime: '2016-05-02 08:00:00',
+            PlanEndTime: '2016-05-02 08:00:00',
+            PlanNum:'HP002456'
           },{
-            BatchID:'LCK20200825H',
-            area: '固体制剂车间',
-            date: '2016-05-03 12:00:00',
-            status: '待执行'
+            BatchID:'LPL20200825H',
+            BrandName:'黄芪',
+            PlanStatus: '待执行',
+            PlanBeginTime: '2016-06-02 18:00:00',
+            PlanEndTime: '2016-06-02 18:15:00',
+            PlanNum:'HQ003145'
           },{
-            BatchID:'LCS20200825H',
-            area: '前提取车间',
-            date: '2016-05-05 18:00:00',
-            status: '待执行'
+            BatchID:'LPL20200825H',
+            BrandName:'白芍',
+            PlanStatus: '待执行',
+            PlanBeginTime: '2016-05-04 03:00:00',
+            PlanEndTime: '2016-05-04 14:00:00',
+            PlanNum:'BS007895'
           },
           {
-            BatchID:'LCS20200825PL',
-            area: '后提取车间',
-            date: '2016-05-05 18:00:00',
-            status: '待执行'
+            BatchID:'LPL20200825H',
+            BrandName:'花椒',
+            PlanStatus: '待执行',
+            PlanBeginTime: '2016-05-10 08:00:00',
+            PlanEndTime: '2016-05-12 18:00:00',
+            PlanNum:'HJ00675'
           },
           {
-            BatchID:'LFGHH20200825H',
-            area: '锅炉房',
-            date: '2016-05-05 18:00:00',
-            status: '待执行'
+            BatchID:'LPL20200825H',
+            BrandName:'陈皮',
+            PlanStatus: '待执行',
+            PlanBeginTime: '2016-05-02 08:00:00',
+            PlanEndTime: '2016-05-02 08:00:00',
+            PlanNum:'CP440455'
           }],
           mydata:[],
           currentFBatch:{},
-          steps:[{title:'计划申请',decription:'开始时间 2020-09-10'},{title:'计划申请',decription:'开始时间 2020-09-10'},{title:'计划申请',decription:'开始时间 2020-09-10'}],
-          tableconfig:[{prop:'BatchID',label:"生产批次",width:'90'},{prop:'area',label:'生产区域',width:'100'},{prop:'date',label:'生产日期',width:'190'},{prop:'status',label:'状态',width:'70'}],
-
+          currentBrandName:'',
+          tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
       }
+    },
+    created(){
+      this.getBatchTable()
     },
     mounted(){
     },
     methods:{
-      handleCurrentChange(e){
+      getBatchTable(){ //初始化获取表的内容
+        var that = this
+        var params = {
+          tableName: this.planTableData.tableName,
+          limit:this.planTableData.limit,
+          offset:this.planTableData.offset - 1
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res =>{
+          if(res.data.code === "200"){
+            var data = res.data.data
+            that.planTableData.data = data.rows
+            that.planTableData.total = data.total
+          }
+        },res =>{
+          console.log("请求错误")
+        }
+        )
+      },
+      TabCurrentChange(e){ //点击显示当前的tab行显示详细信息
         this.currentFBatch=e
+        this.currentBrandName=e.BrandName
+        this.$refs.BatchInfo.getMaterialBom(this.currentBrandName)
+      },
+      handleSizeChange(limit){ //每页条数切换
+        this.planTableData.limit = limit
+        this.getBatchTable()
+      },
+       handleCurrentChange(offset) { // 页码切换
+        this.planTableData.offset = offset
+        this.getBatchTable()
       }
     }
   }
