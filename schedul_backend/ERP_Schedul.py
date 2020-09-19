@@ -18,6 +18,7 @@ from io import StringIO
 import calendar
 
 import schedul_backend
+import system_backend
 from common.BSFramwork import AlchemyEncoder
 from common.common_cuid import logger,insertSyslog,insert,delete,update,select
 import os
@@ -389,50 +390,27 @@ def planschedul():
     if request.method == 'GET':
         data = request.values
         try:
-            BatchID = data['BatchID']
-            oclass = db_session.query(PlanManager).filter(PlanManager.BatchID == BatchID).first()
+            PlanNum = data['PlanNum']
+            BatchSum = data['BatchSum']
+            BatchDuration = data['BatchDuration']
+            oclass = db_session.query(product_plan).filter(product_plan.PlanNum == PlanNum).first()
             dir = {}
             if oclass:
-                pres = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == oclass.BrandCode).all()
-                dir_list = []
-                for pre in pres:
-                    dir_list_i = {}
-                    dir_list_i["PUName"] = pre.PUName
-                    dir_list_i["PUCode"] = pre.PUCode
-                    dir_list_i["Seq"] = pre.Seq
-                    eqList = []
-                    eqps = db_session.query(ProductEquipment).filter(ProductEquipment.PUCode == pre.PUCode).all()
-                    for eqp in eqps:
-                        eqp_dir = {}
-                        eqp_dir["EQPCode"] = eqp.EQPCode
-                        eqp_dir["EQPName"] = eqp.EQPName
-                        eqp_dir["EQPStatus"] = True
-                        runeqp = db_session.query(EquipmentBatchRunTime).filter(
-                            EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
-                            EquipmentBatchRunTime.BatchID == BatchID).first()
-                        if runeqp:
-                            eqp_dir["isSelected"] = True
-                            eqp_dir["workTime"] = runeqp.WorkTime
-                            eqp_dir["waitTime"] = runeqp.WaitTime
-                        else:
-                            eqp_dir["isSelected"] = False
-                            eqp_dir["workTime"] = ""
-                            eqp_dir["waitTime"] = ""
-                        begin = db_session.query(EquipmentBatchRunTime).filter(
-                            EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
-                            EquipmentBatchRunTime.StartTime.between(oclass.PlanBeginTime,oclass.PlanEndTime)).first()
-                        end = db_session.query(EquipmentBatchRunTime).filter(
-                            EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
-                            EquipmentBatchRunTime.StartTime.between(oclass.PlanBeginTime, oclass.PlanEndTime)).first()
-                        if begin != None or end != None:
-                            eqp_dir["EQPStatus"] = False
-                        eqList.append(eqp_dir)
-                    dir_list_i["eqList"] = eqList
-                    dir_list.append(dir_list_i)
-                dir["processList"] = dir_list
-            return json.dumps({"code": "200", "message": "查询成功！", "data": dir})
+                for BatchNo in range(1,int(BatchSum)):
+                    pm = PlanManager()
+                    pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
+                    pm.BatchID = BatchNo
+                    pm.PlanQuantity = float(oclass.PlanQuantity)/int(BatchSum)
+                    pm.Unit = "KG"
+                    pm.BrandCode = oclass.BrandCode
+                    pm.BrandName = oclass.BrandName
+                    pm.PlanStatus = system_backend.Global.PlanStatus.NEW.value
+                    pm.PlanBeginTime = ""
+                    pm.PlanEndTime = ""
+                    db_session.add(pm)
+            return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
             logger.error(e)
-            insertSyslog("error", "查询批次下对应的设备报错Error：" + str(e), current_user.Name)
-            return json.dumps("查询批次下对应的设备报错", cls=AlchemyEncoder, ensure_ascii=False)
+            insertSyslog("error", "计划排产报错Error：" + str(e), current_user.Name)
+            return json.dumps("计划排产报错", cls=AlchemyEncoder, ensure_ascii=False)

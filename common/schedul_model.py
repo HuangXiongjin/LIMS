@@ -141,7 +141,9 @@ class product_plan(Base):
     # 创建时间
     CreateTimeTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 计划交付时间
-    FinishTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    PlanFinishTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 实际完成时间
+    ActFinishTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 备注
     Description = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
     # 状态

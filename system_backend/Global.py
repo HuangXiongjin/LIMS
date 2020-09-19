@@ -14,15 +14,14 @@ class OrderStatus(Enum):
 
 #计划planmanager
 class PlanStatus(Enum):
-    NEW = "10"#新增
-    Confirmed = "13"#已选择设备
-    Checked = "11"#已审核
-    UnChecked = "12"#审核未通过
-    Realse = "20"#已下发
-    Recall = "40"#撤回
-    RUN = "50"#执行
-    FINISH = "60"#已完成
-    QApass = "70"#QA放行
+    NEW = "新增"#10
+    Confirmed = "已选择设备"#已选择设备
+    Checked = "已审核"#已审核
+    UnChecked = "审核未通过"#审核未通过
+    Realse = "已下发"#已下发
+    Recall = "撤回"#撤回
+    RUN = "执行"#执行
+    FINISH = "已完成"#已完成
 
 #计划ZYPlan
 class ZYPlanStatus(Enum):
