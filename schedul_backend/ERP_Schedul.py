@@ -398,6 +398,7 @@ def planschedul():
             if oclass:
                 for BatchNo in range(1,int(BatchSum)):
                     pm = PlanManager()
+                    pm.PlanNum = PlanNum
                     pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
                     pm.BatchID = BatchNo
                     pm.PlanQuantity = float(oclass.PlanQuantity)/int(BatchSum)
