@@ -174,8 +174,8 @@
       },
       handleExceed(files, fileList) {
           this.$message({
-          message: '上传的文件已经三条了',
-          type: 'warning'
+          message: '限制只能上传一条数据',
+          type: 'error'
         });
       },
       beforeRemove(file, fileList) {
