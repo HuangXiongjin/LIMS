@@ -81,14 +81,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-        mammoth.convertToHtml({path:"/api/ManualDownload?FileName="+FileName})
-        .then(function(result){
-        var html = result.value; // The generated HTML
-        var messages = result.messages; // Any messages, such as warnings during conversion
-        console.log(html)
-        console.log(messages)
-    }).done();
-          // window.open("/api/ManualDownload?FileName="+FileName) //下载文件
+          window.open("/api/ManualDownload?FileName="+FileName) //下载文件
         }).catch(() => {
           this.$message({
             type: 'info',
