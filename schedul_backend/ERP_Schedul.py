@@ -419,6 +419,7 @@ def planschedul():
             return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
+            print(e)
             logger.error(e)
             insertSyslog("error", "计划排产报错Error：" + str(e), current_user.Name)
             return json.dumps("计划排产报错", cls=AlchemyEncoder, ensure_ascii=False)
