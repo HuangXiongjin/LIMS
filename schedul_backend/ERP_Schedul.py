@@ -405,9 +405,17 @@ def planschedul():
                     pm.BrandCode = oclass.BrandCode
                     pm.BrandName = oclass.BrandName
                     pm.PlanStatus = system_backend.Global.PlanStatus.NEW.value
-                    pm.PlanBeginTime = ""
-                    pm.PlanEndTime = ""
+                    #计算计划开始时间结束时间
+                    b = int(BatchSum)*int(BatchDuration)
+                    e = int(BatchSum)*int(BatchDuration)-int(BatchDuration)
+                    PlanBeginTime = (datetime.datetime.strptime(oclass.PlanFinishTime, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(hours=-(int(BatchSum)*int(BatchDuration)))).strftime("%Y-%m-%d %H:%M:%S")
+                    PlanEndTime = (datetime.datetime.strptime(oclass.PlanFinishTime,
+                                                                "%Y-%m-%d %H:%M:%S") + datetime.timedelta(
+                        hours=-(int(BatchSum)*int(BatchDuration)-int(BatchDuration)))).strftime("%Y-%m-%d %H:%M:%S")
+                    pm.PlanBeginTime = PlanBeginTime
+                    pm.PlanEndTime = PlanEndTime
                     db_session.add(pm)
+                db_session.commit()
             return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
