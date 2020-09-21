@@ -24,7 +24,7 @@
           <el-col :span='24'>
             <div class='platformContainer' style='height:500px;'>
               <el-upload
-                class="myupload"
+                class="marginBottom"
                 drag
                 accept=".doc,.docx"
                 action="/api/batchmodelexport"
@@ -49,6 +49,7 @@
 </template>
 
 <script>
+  var mammoth = require("mammoth");
   export default {
     name: "BatchRecordFiles",
     data(){

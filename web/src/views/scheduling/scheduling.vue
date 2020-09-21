@@ -168,10 +168,10 @@
           </div>
           <div class="platformContainer">
             <el-row :gutter="15">
-              <el-col :span="6">
+              <el-col :span="4">
                 <div class="marginBottom text-size-20">备料</div>
               </el-col>
-              <el-col :span="6" v-for="(item,index) in processList" :key="index">
+              <el-col :span="4" v-for="(item,index) in processList" :key="index">
                 <div class="marginBottom text-size-20">{{ item.PUName }}</div>
                 <el-popover
                   placement="right"
@@ -184,9 +184,14 @@
                 </el-popover>
                 <el-button type="primary" size="small">自动分配</el-button>
                 <p class="marginTop marginBottom-10 text-size-16">已分配设备</p>
-                <p class="marginBottom-10" v-for="eq in item.eqList" :key="eq.EQPCode" v-if="eq.isSelected">
-                  {{ eq.EQPName }}-等待期：<el-input type="text" v-model="eq.waitTime"></el-input>
-                </p>
+                <div class="marginBottom-10" v-for="eq in item.eqList" :key="eq.EQPCode" v-if="eq.isSelected">
+                  <p>{{ eq.EQPName }}</p>
+                  <el-form label-width="60px">
+                    <el-form-item label="等待期">
+                      <el-input type="text" v-model="eq.waitTime"></el-input>
+                    </el-form-item>
+                  </el-form>
+                </div>
               </el-col>
             </el-row>
           </div>
@@ -196,7 +201,7 @@
         <el-button type="info" v-show="steps != 0" @click="resetStep">重置</el-button>
         <el-button type="primary" v-show="steps != 0" @click="lastStep">上一步</el-button>
         <el-button type="primary" v-show="steps == 2">保存</el-button>
-        <el-button type="primary" @click="nextStep">下一步</el-button>
+        <el-button type="primary" v-show="steps != 4" @click="nextStep">下一步</el-button>
       </el-col>
     </el-col>
   </el-row>
@@ -288,8 +293,8 @@
               message: "请选择一条批次计划"
             });
           }
-        }else if(this.steps == 2){
-
+        }else{
+          this.steps++
         }
       },
       lastStep(){
