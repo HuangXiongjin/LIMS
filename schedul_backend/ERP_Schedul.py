@@ -387,7 +387,7 @@ def planschedul():
     计划排产
     :return:
     '''
-    if request.method == 'GET':
+    if request.method == 'POST':
         data = request.values
         try:
             PlanNum = data['PlanNum']
