@@ -396,7 +396,7 @@ def planschedul():
             oclass = db_session.query(product_plan).filter(product_plan.PlanNum == PlanNum).first()
             dir = {}
             if oclass:
-                for BatchNo in range(1,int(BatchSum)):
+                for BatchNo in range(1,int(BatchSum)+1):
                     pm = PlanManager()
                     pm.PlanNum = PlanNum
                     pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
