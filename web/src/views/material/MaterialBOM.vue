@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span>物料清单</span>
+        <span>物料BOM</span>
       </div>
       <el-row :gutter="15">
         <el-col :span="4">

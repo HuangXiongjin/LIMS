@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">物料基础信息</span>
+        <span style="margin-left: 10px;" class="text-size-normol">物料明细</span>
       </div>
       <div class="platformContainer">
         <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
@@ -18,16 +18,15 @@
     data(){
       return {
         PermissionTableData:{
-          tableName:"Material",
+          tableName:"BatchMaterialInfo",
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"MATCode",label:"物料编码",type:"input",value:""},
-            {prop:"MATName",label:"物料名称",type:"input",value:""},
-            {prop:"Desc",label:"物料描述",type:"input",value:""},
-            {prop:"MATTypeID",label:"物料类型ID",type:"input",value:""},
-            {prop:"Seq",label:"顺序号",type:"input",value:""},
-            {prop:"Grade",label:"等级",type:"input",value:""},
-            {prop:"MATBatchNo",label:"物料标识:1为排产所常用表标识",type:"input",value:""}
+            {prop:"BatchID",label:"批次号",type:"input",value:""},
+            {prop:"FeedingSeq",label:"投料顺序",type:"input",value:""},
+            {prop:"BucketNum",label:"桶号",type:"input",value:""},
+            {prop:"BucketWeight",label:"重量",type:"input",value:""},
+            {prop:"Unit",label:"单位",type:"input",value:""},
+            {prop:"Description",label:"描述",type:"input",value:""}
           ],
           data:[],
           limit:5,

@@ -124,8 +124,9 @@
             {title:"生产线定义",icon:"fa fa-server",url:"/ProductLineDefinition"},
           ]},
           {label: '物料系统',icon:"fa fa-leaf",mainMenu:[
-            {title:"物料管理",icon:"el-icon-box",url:"/MaterialInformation"},
-            {title:"物料清单",icon:"el-icon-box",url:"/MaterialBOM"},
+            {title:"物料基础信息",icon:"el-icon-box",url:"/MaterialInformation"},
+            {title:"物料BOM表",icon:"el-icon-box",url:"/MaterialBOM"},
+            {title:"物料明细表",icon:"el-icon-box",url:"/MaterialDetail"},
           ]},
           {label: '生产数据系统',icon:"el-icon-s-data",mainMenu:[
             {title:"批物料平衡统计",icon:"el-icon-box",url:"/MaterialBalanceStatistics"},
