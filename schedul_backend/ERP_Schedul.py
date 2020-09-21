@@ -396,23 +396,23 @@ def planschedul():
             oclass = db_session.query(product_plan).filter(product_plan.PlanNum == PlanNum).first()
             dir = {}
             if oclass:
-                for BatchNo in range(1,int(BatchSum)+1):
+                for BatchNo in range(0,int(BatchSum)):
                     pm = PlanManager()
                     pm.PlanNum = PlanNum
                     pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
-                    pm.BatchID = BatchNo
+                    pm.BatchID = BatchNo + 1
                     pm.PlanQuantity = float(oclass.PlanQuantity)/int(BatchSum)
                     pm.Unit = "KG"
                     pm.BrandCode = oclass.BrandCode
                     pm.BrandName = oclass.BrandName
                     pm.PlanStatus = system_backend.Global.PlanStatus.NEW.value
                     #计算计划开始时间结束时间
-                    b = int(BatchSum)*int(BatchDuration)
-                    e = int(BatchSum)*int(BatchDuration)-int(BatchDuration)
-                    PlanBeginTime = (datetime.datetime.strptime(oclass.PlanFinishTime, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(hours=-(int(BatchSum)*int(BatchDuration)))).strftime("%Y-%m-%d %H:%M:%S")
+                    beg = int(oclass.PlanTimeLen)-int(BatchDuration)*BatchNo
+                    end = beg - int(oclass.PlanTimeLen)/int(BatchSum)
+                    PlanBeginTime = (datetime.datetime.strptime(oclass.PlanFinishTime, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(hours=-beg)).strftime("%Y-%m-%d %H:%M:%S")
                     PlanEndTime = (datetime.datetime.strptime(oclass.PlanFinishTime,
                                                                 "%Y-%m-%d %H:%M:%S") + datetime.timedelta(
-                        hours=-(int(BatchSum)*int(BatchDuration)-int(BatchDuration)))).strftime("%Y-%m-%d %H:%M:%S")
+                        hours=-end)).strftime("%Y-%m-%d %H:%M:%S")
                     pm.PlanBeginTime = PlanBeginTime
                     pm.PlanEndTime = PlanEndTime
                     db_session.add(pm)
