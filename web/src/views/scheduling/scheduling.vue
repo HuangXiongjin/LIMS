@@ -60,7 +60,7 @@
                   <el-input v-model="planTableData.formField.PlanTimeLen"></el-input>
                 </el-form-item>
                 <el-form-item label="计划交付时间">
-                  <el-date-picker v-model="planTableData.formField.FinishTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
+                  <el-date-picker v-model="planTableData.formField.FinishTime" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期">
                   </el-date-picker>
                 </el-form-item>
                 <el-form-item label="备注">
@@ -87,13 +87,13 @@
           <div class="platformContainer">
             <el-form :inline="true" :model="formAllotBatch">
               <el-form-item label="批数">
-                <el-input v-model="formAllotBatch.BatchNum" size="small"></el-input>
+                <el-input v-model="formAllotBatch.BatchSum" siBatchNumze="small"></el-input>
               </el-form-item>
               <el-form-item label="每批间隔时间">
-                <el-input v-model="formAllotBatch.intervalTime" size="small"></el-input>
+                <el-input v-model="formAllotBatch.BatchDuration" size="small"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" size="small">自动分批</el-button>
+                <el-button type="primary" size="small" @click="planschedul">自动分批</el-button>
               </el-form-item>
             </el-form>
             <p class="text-size-14 color-grayblack">可估算参数，自动分配批次计划</p>
@@ -262,8 +262,8 @@
           },
         },
         formAllotBatch:{
-          BatchNum:"",
-          intervalTime:""
+          BatchSum:"",
+          BatchDuration:""
         },
         processList:[],
       }
@@ -577,6 +577,39 @@
             console.log("请求错误")
           })
         }
+      },
+      planschedul(){
+        var that = this
+        var params = {
+          PlanNum:this.planTableData.multipleSelection[0].PlanNum,
+          BatchSum: this.formAllotBatch.BatchSum,
+          BatchDuration: this.formAllotBatch.BatchDuration,
+        }
+        this.$confirm('确定自动排产所选计划？', '提示', {
+          distinguishCancelAndClose:true,
+          type: 'warning'
+        }).then(()  => {
+          this.axios.post("/api/planschedul",this.qs.stringify(params)).then(res => {
+            console.log(res.data)
+            if(res.data.code === "200"){
+              that.$message({
+                type: 'success',
+                message: res.data.message
+              });
+              this.getPlanManagerTableData()
+            }else{
+              that.$message({
+                type: 'info',
+                message: res.data.message
+              });
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消排产'
+          });
+        });
       },
       //获取工艺段
       getBrandProcess(){
