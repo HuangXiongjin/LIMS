@@ -180,7 +180,7 @@ def makePlan():
             logger.error(e)
             insertSyslog("error", "计划向导生成计划报错Error：" + str(e), current_user.Name)
             return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
-    if request.method == 'PUT':
+    if request.method == 'GET':
         '''修改批次信息'''
         data = request.values
         try:
@@ -217,33 +217,19 @@ def checkPlanManager():
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
         try:
-            jsonstr = json.dumps(data.to_dict())
-            CheckStatus = data.get("CheckStatus")
+            PlanStatus = data.get("PlanStatus")
             Describtion = data.get("Describtion")
-            if len(jsonstr) > 10:
-                jsonnumber = re.findall(r"\d+\.?\d*", jsonstr)
-                for key in jsonnumber:
-                    id = int(key)
-                    try:
-                        oclassplan = db_session.query(PlanManager).filter_by(ID=id).first()
-                        if CheckStatus == "通过":
-                            oclassplan.PlanStatus = system_backend.Global.PlanStatus.Checked.value
-                        elif CheckStatus == "不通过":
-                            oclassplan.PlanStatus = system_backend.Global.PlanStatus.UnChecked.value
-                            oclassplan = Describtion
-                        db_session.commit()
-                    except Exception as ee:
-                        db_session.rollback()
-                        print(ee)
-                        logger.error(ee)
-                        insertSyslog("error", "生产管理部审核计划报错Error：" + str(ee), current_user.Name)
-                        return json.dumps([{"status": "Error:" + str(ee)}], cls=AlchemyEncoder, ensure_ascii=False)
-                return json.dumps({"code": "200", "message": "OK"})
+            ID = data.get("ID")
+            oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
+            oclassplan.PlanStatus = PlanStatus
+            oclassplan = Describtion
+            db_session.commit()
+            return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
             db_session.rollback()
             print(e)
             logger.error(e)
-            insertSyslog("error", "生产管理部审核计划报错Error：" + str(e), current_user.Name)
+            insertSyslog("error", "审核计划报错Error：" + str(e), current_user.Name)
             return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
 
 @batch_plan.route('/createZYPlanZYtask', methods=['POST', 'GET'])
