@@ -263,7 +263,7 @@
   .list-complete-item {
     cursor: pointer;
     position: relative;
-    width: 120px;
+    width: 150px;
     display: inline-block;
     margin-right: 15px;
   }

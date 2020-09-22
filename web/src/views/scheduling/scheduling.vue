@@ -33,7 +33,7 @@
               <el-table-column prop="BrandType" label="药品类型"></el-table-column>
               <el-table-column prop="PlanQuantity" label="计划产值"></el-table-column>
               <el-table-column prop="PlanTimeLen" label="计划时长"></el-table-column>
-              <el-table-column prop="FinishTime" label="计划交付时间"></el-table-column>
+              <el-table-column prop="PlanFinishTime" label="计划交付时间"></el-table-column>
               <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
               <el-table-column prop="Description" label="备注"></el-table-column>
               <el-table-column prop="CreateTimeTime" label="创建时间"></el-table-column>
@@ -60,7 +60,7 @@
                   <el-input v-model="planTableData.formField.PlanTimeLen"></el-input>
                 </el-form-item>
                 <el-form-item label="计划交付时间">
-                  <el-date-picker v-model="planTableData.formField.FinishTime" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期">
+                  <el-date-picker v-model="planTableData.formField.PlanFinishTime" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期">
                   </el-date-picker>
                 </el-form-item>
                 <el-form-item label="备注">
@@ -108,11 +108,10 @@
               <el-table-column type="selection"></el-table-column>
               <el-table-column prop="PlanNum" label="计划编号"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
-              <el-table-column prop="PlanQuantity" label="计划成品重量"></el-table-column>
+              <el-table-column prop="PlanQuantity" label="批次计划重量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="BrandType" label="产品类型"></el-table-column>
-              <el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>
               <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
               <el-table-column prop="PlanBeginTime" label="计划开始时间"></el-table-column>
               <el-table-column prop="PlanEndTime" label="计划完成时间"></el-table-column>
@@ -133,7 +132,7 @@
                 <el-form-item label="批次号">
                   <el-input v-model="PlanManagerTableData.formField.BatchID"></el-input>
                 </el-form-item>
-                <el-form-item label="计划产量">
+                <el-form-item label="批次计划重量">
                   <el-input v-model="PlanManagerTableData.formField.PlanQuantity"></el-input>
                 </el-form-item>
                 <el-form-item label="单位">
@@ -142,8 +141,12 @@
                     </el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item label="计划生产日期">
-                  <el-date-picker v-model="PlanManagerTableData.formField.PlanDate" value-format="yyyy-MM-dd" type="date" placeholder="选择日期">
+                <el-form-item label="计划开始时间">
+                  <el-date-picker v-model="PlanManagerTableData.formField.PlanBeginTime" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期">
+                  </el-date-picker>
+                </el-form-item>
+                <el-form-item label="计划完成时间">
+                  <el-date-picker v-model="PlanManagerTableData.formField.PlanEndTime" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期">
                   </el-date-picker>
                 </el-form-item>
               </el-form>
@@ -168,16 +171,13 @@
           </div>
           <div class="platformContainer">
             <el-row :gutter="15">
-              <el-col :span="4">
-                <div class="marginBottom text-size-20">备料</div>
-              </el-col>
-              <el-col :span="4" v-for="(item,index) in processList" :key="index">
+              <el-col :span="5" v-for="(item,index) in processList" :key="index">
                 <div class="marginBottom text-size-20">{{ item.PUName }}</div>
                 <el-popover
                   placement="right"
                   width="360"
                   trigger="click">
-                  <el-checkbox v-for="eq in item.eqList" v-model="eq.isSelected" :key="eq.EQPCode" class="marginBottom-10">
+                  <el-checkbox border v-for="eq in item.eqList" v-model="eq.isSelected" :key="eq.EQPCode" class="marginBottom-10">
                     {{ eq.EQPName }}-<span class="color-success" v-if="eq.EQPStatus">可用</span><span class="color-orange" v-if="!eq.EQPStatus">等待</span>
                   </el-checkbox>
                   <el-button slot="reference" size="small">选择设备</el-button>
@@ -185,10 +185,10 @@
                 <el-button type="primary" size="small">自动分配</el-button>
                 <p class="marginTop marginBottom-10 text-size-16">已分配设备</p>
                 <div class="marginBottom-10" v-for="eq in item.eqList" :key="eq.EQPCode" v-if="eq.isSelected">
-                  <p>{{ eq.EQPName }}</p>
-                  <el-form label-width="60px">
-                    <el-form-item label="等待期">
-                      <el-input type="text" v-model="eq.waitTime"></el-input>
+                  <p class="text-size-14 color-darkblue">{{ eq.EQPName }}</p>
+                  <el-form label-width="72px">
+                    <el-form-item label="等待时长">
+                      <el-input type="text" v-model="eq.waitTime" size="mini" style="width: 60px"></el-input>
                     </el-form-item>
                   </el-form>
                 </div>
@@ -200,7 +200,7 @@
       <el-col :span="24" style="text-align: right;">
         <el-button type="info" v-show="steps != 0" @click="resetStep">重置</el-button>
         <el-button type="primary" v-show="steps != 0" @click="lastStep">上一步</el-button>
-        <el-button type="primary" v-show="steps == 2">保存</el-button>
+        <el-button type="primary" v-show="steps == 2" @click="savePlanEq">保存</el-button>
         <el-button type="primary" v-show="steps != 4" @click="nextStep">下一步</el-button>
       </el-col>
     </el-col>
@@ -237,7 +237,7 @@
             PlanNum:"",
             PlanQuantity:"",
             PlanTimeLen:"",
-            FinishTime:"",
+            PlanFinishTime:"",
             Description:""
           },
         },
@@ -250,6 +250,7 @@
           multipleSelection: [],
           handleType:[
             {type:"primary",label:"添加"},
+            {type:"warning",label:"修改"},
             {type:"danger",label:"删除"},
           ],
           dialogVisible:false,
@@ -258,7 +259,8 @@
             BatchID:"",
             PlanQuantity:"",
             Unit:"",
-            PlanDate:""
+            PlanBeginTime:"",
+            PlanEndTime:"",
           },
         },
         formAllotBatch:{
@@ -270,6 +272,7 @@
     },
     mounted(){
       this.getScheduleTableData()
+      this.getUnit()
     },
     methods:{
       nextStep(){
@@ -302,6 +305,24 @@
       },
       resetStep(){
         this.steps = 0
+      },
+      getUnit(){
+        var that = this
+        var params = {
+          tableName: "Unit",
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.unitOptions = res.data.data.rows
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
       },
       getScheduleTableData(){ //获取品名
         var that = this
@@ -433,8 +454,9 @@
             PlanNum:this.planTableData.formField.PlanNum,
             PlanQuantity:this.planTableData.formField.PlanQuantity,
             PlanTimeLen:this.planTableData.formField.PlanTimeLen,
-            FinishTime:this.planTableData.formField.FinishTime,
+            PlanFinishTime:this.planTableData.formField.PlanFinishTime,
             Description:this.planTableData.formField.Description,
+            CreateTimeTime:moment().format("YYYY-MM-DD HH:mm:ss"),
             BrandName:this.BrandActive,
             BrandCode:this.BrandCode,
             BrandType:this.BrandType,
@@ -462,15 +484,14 @@
       getPlanManagerTableData(){
         var that = this
         var params = {
-          tableName: "PlanManager",
-          field:"PlanNum",
-          fieldvalue:this.planTableData.multipleSelection[0].PlanNum,
+          PlanNum:this.planTableData.multipleSelection[0].PlanNum,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }
-        this.axios.get("/api/CUID",{
+        this.axios.get("/api/selectPlanmanager",{
           params: params
         }).then(res => {
+          console.log(res.data)
           if(res.data.code === "200"){
             that.PlanManagerTableData.data = res.data.data.rows
             that.PlanManagerTableData.total = res.data.data.total
@@ -506,6 +527,23 @@
             this.$message({
               type: 'info',
               message: '请选择品名'
+            });
+          }
+        }else if(label === "修改"){
+          if(this.PlanManagerTableData.multipleSelection.length == 1){
+            this.PlanManagerTableData.dialogVisible = true
+            this.PlanManagerTableData.dialogTitle = label
+            this.PlanManagerTableData.formField = {
+              BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
+              PlanQuantity:this.PlanManagerTableData.multipleSelection[0].PlanQuantity,
+              Unit:this.PlanManagerTableData.multipleSelection[0].Unit,
+              PlanBeginTime:this.PlanManagerTableData.multipleSelection[0].PlanBeginTime,
+              PlanEndTime:this.PlanManagerTableData.multipleSelection[0].PlanEndTime,
+            }
+          }else{
+            this.$message({
+              type: 'info',
+              message: '请选择批次'
             });
           }
         }else if(label === "删除"){
@@ -557,9 +595,40 @@
             BatchID:this.PlanManagerTableData.formField.BatchID,
             PlanQuantity:this.PlanManagerTableData.formField.PlanQuantity,
             Unit:this.PlanManagerTableData.formField.Unit,
-            PlanDate:this.PlanManagerTableData.formField.PlanDate
+            PlanBeginTime:this.PlanManagerTableData.formField.PlanBeginTime,
+            PlanEndTime:this.PlanManagerTableData.formField.PlanEndTime,
           }
           this.axios.post("/api/makePlan",this.qs.stringify(params)).then(res =>{
+            if(res.data.code === "200"){
+              this.$message({
+                type: 'success',
+                message: res.data.message
+              });
+              this.PlanManagerTableData.dialogVisible = false
+              this.getPlanManagerTableData()
+            }else{
+              this.$message({
+                type: 'info',
+                message: res.data.message
+              });
+            }
+          },res =>{
+            console.log("请求错误")
+          })
+        }else if(this.PlanManagerTableData.dialogTitle === "修改"){
+          var params = {
+            ID:this.PlanManagerTableData.multipleSelection[0].ID,
+            BrandName:this.BrandActive,
+            BrandCode:this.BrandCode,
+            BrandType:this.BrandType,
+            PlanNum:this.planTableData.multipleSelection[0].PlanNum,
+            BatchID:this.PlanManagerTableData.formField.BatchID,
+            PlanQuantity:this.PlanManagerTableData.formField.PlanQuantity,
+            Unit:this.PlanManagerTableData.formField.Unit,
+            PlanBeginTime:this.PlanManagerTableData.formField.PlanBeginTime,
+            PlanEndTime:this.PlanManagerTableData.formField.PlanEndTime,
+          }
+          this.axios.get("/api/makePlan",this.qs.stringify(params)).then(res =>{
             if(res.data.code === "200"){
               this.$message({
                 type: 'success',
@@ -590,7 +659,6 @@
           type: 'warning'
         }).then(()  => {
           this.axios.post("/api/planschedul",this.qs.stringify(params)).then(res => {
-            console.log(res.data)
             if(res.data.code === "200"){
               that.$message({
                 type: 'success',
@@ -629,7 +697,6 @@
               }
             }
             that.processList = res.data.data.processList.sort(compare('Seq'))
-            console.log(that.processList)
           }else{
             that.$message({
               type: 'info',
@@ -638,8 +705,25 @@
           }
         })
       },
-      changeEqCheckbox(val){
-        console.log(val)
+      savePlanEq(){
+        var that = this
+        var params = {
+          BatchID: this.PlanManagerTableData.multipleSelection[0].BatchID,
+          processList:JSON.stringify(this.processList)
+        }
+        this.axios.post("/api/addEquipmentBatchRunTime",this.qs.stringify(params)).then(res => {
+          if(res.data.code === "200"){
+            that.$message({
+              type: 'success',
+              message: res.data.message
+            });
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
       }
     }
   }
