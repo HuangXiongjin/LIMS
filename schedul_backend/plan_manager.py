@@ -157,6 +157,7 @@ def makePlan():
                 pm.SchedulePlanCode = PlanEndTime[0:10]
                 pm.BatchID = BatchID
                 pm.PlanQuantity = PlanQuantity
+                pm.PlanNum = PlanNum
                 pm.Unit = Unit
                 pm.BrandCode = BrandCode
                 pm.BrandName = BrandName
