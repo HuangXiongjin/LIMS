@@ -5,9 +5,9 @@
         <div class="platformContainer" style="height:124px;">
             <div>计划状态选择</div>
             <div style="margin-top: 20px">
-              <el-checkbox-group v-model="checkboxGroup" size="small">
-                <el-checkbox-button v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox-button>
-              </el-checkbox-group>
+              <el-radio-group v-model="checkboxGroup" size="small" @change="Selectstatus">
+                <el-radio-button v-for="(itam,index) in status" :label="itam.name" :key="index"></el-radio-button>
+              </el-radio-group>
             </div>
         </div>
         <div class="platformContainer" style="height:900px;overflow:auto;">
@@ -16,12 +16,11 @@
                   :data="planTableData.data"
                   highlight-current-row
                   size='small'
+                  ref="multipleTable"
+                  @selection-change="handleSelectionChange" 
                   @row-click="TabCurrentChange"
                   style="width: 100%">
-                   <el-table-column
-                    type="index"
-                    width="40">
-                  </el-table-column>
+                  <el-table-column type="selection"></el-table-column>
                   <el-table-column v-for="item in tableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
               </el-table>
               <div class="paginationClass">
@@ -49,20 +48,28 @@ import BatchInformation from '@/components/BatchInformatin.vue'
     components:{BatchInformation},
     data(){
       return {
-          planTableData:{
+        planTableData:{
             tableName:"PlanManager",
             data:[],
             limit: 10,//当前显示多少条
             offset: 1,//当前处于多少页
             total: 0,//总的多少页
         },
-          cities:['上海', '北京', '广州', '深圳'],
-          checkboxGroup: ['上海'],
-          BrandActive:'',
-          mydata:[],
-          currentFBatch:{},
-          currentBrandName:'',
-          tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
+        status:[
+          {name:"全部"},
+          {name:"新增"},
+          {name:"待审核"},
+          {name:"待下发"},
+          {name:"待完成"}, 
+          {name:"已完成"}, 
+        ],
+        checkboxGroup: '全部',
+        BrandActive:'',
+        mydata:[],
+        currentFBatch:{},
+        currentBrandName:'',
+        multipleSelection:[],
+        tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
       }
     },
     created(){
@@ -71,10 +78,24 @@ import BatchInformation from '@/components/BatchInformatin.vue'
     mounted(){
     },
     methods:{
+      Selectstatus(e){
+        this.getBatchTable()
+      },
+      handleSelectionChange(row){
+        this.multipleSelection = row
+      },
       getBatchTable(){ //初始化获取表的内容
         var that = this
+        var radiovalue = ""
+        if(this.checkboxGroup==='全部'){
+          radiovalue=''
+        }else{
+          radiovalue = this.checkboxGroup
+        }
         var params = {
           tableName: this.planTableData.tableName,
+          field:'PlanStatus',
+          fieldvalue:radiovalue,
           limit:this.planTableData.limit,
           offset:this.planTableData.offset - 1
         }
@@ -95,6 +116,8 @@ import BatchInformation from '@/components/BatchInformatin.vue'
         this.currentFBatch=e
         this.currentBrandName=e.BrandName
         this.$refs.BatchInfo.getMaterialBom(this.currentBrandName)
+        this.$refs.multipleTable.clearSelection();
+        this.$refs.multipleTable.toggleRowSelection(e)
       },
       handleSizeChange(limit){ //每页条数切换
         this.planTableData.limit = limit

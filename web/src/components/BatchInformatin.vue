@@ -12,8 +12,11 @@
                  <div style="paddingBottom:14px;">状态</div>
                 <div>{{currentSBatch.PlanStatus}}</div>
               </el-col>
-              <el-col :span='4'><el-button type="warning" plain >驳回计划</el-button></el-col>
-              <el-col :span='4'><el-button type="success" plain>执行计划</el-button></el-col>
+              <el-col :span='4' v-if="currentSBatch.PlanStatus==='待审核'"><el-button type="success" plain>审核计划</el-button></el-col>
+              <el-col :span='4' v-if="currentSBatch.PlanStatus==='待审核'"><el-button type="warning" plain  @click='CheckNopass'>审核未通过</el-button></el-col>
+              <el-col :span='4' v-if="currentSBatch.PlanStatus==='待下发'"><el-button type="warning" plain>撤回</el-button></el-col>
+              <el-col :span='4' v-if="currentSBatch.PlanStatus==='待下发'"><el-button type="success" plain>下发计划</el-button></el-col>
+              <el-col :span='4' v-if="currentSBatch.PlanStatus==='待完成'"><el-button type="success" plain>计划完成</el-button></el-col>
             </el-row>
           </el-col>
           <el-col :span='24' class="marginBottom"><div style="fontSize:16px;fontWeight:700;">基础信息</div></el-col>
@@ -29,7 +32,7 @@
           <el-col :span='24' class="marginBottom">
             <div class="marginBottom">
                <el-table
-                  :data="zhuMaterial"
+                  :data="materialbom.data"
                   size='small'
                   highlight-current-row
                   @row-click="ClickCurrentTab"
@@ -48,7 +51,7 @@
             <div style="fontSize:16px;fontWeight:700;" class="marginBottom">物料明细</div>
             <div class="marginBottom">
                <el-table
-                  :data="fuMaterial"
+                  :data="materialinfobom.data"
                   size='small'
                   style="width: 100%">
                   <el-table-column v-for="item in materialinfotable" :key='item.prop' :prop='item.prop' :label='item.label'></el-table-column>
@@ -65,11 +68,8 @@
           </el-col>
           <el-col :span='24' class="marginBottom"><div style="fontSize:16px;fontWeight:700;">计划进度</div></el-col>
           <el-col :span='24' class="marginBottom">
-            <el-steps :active="1" align-center >
-                <el-step  v-for="(item,index) in steps" :title="item.title" :key='index' :description="item.description">
-                    <template slot="description" >
-                        <span>{{item.startTime}}<br/>{{item.endTime}}</span>
-                    </template>
+            <el-steps :active="currentstep" align-center >
+                <el-step  v-for="(item,index) in steps" :title="item.title" :key='index'>
                 </el-step>
              </el-steps>
           </el-col>
@@ -77,31 +77,13 @@
       </div>
 </template>
 <script>
+import qs from 'qs'
 export default {
     props:['currentSBatch'],
     data(){
         return {
             currentMaterial:'',
-            zhuMaterial: [{
-            MATCode: 'AF-JS',
-            MATName: '黄芪',
-            BatchPercentage:20,
-            BatchSingleMATWeight:10,
-            BatchTotalWeight:90
-          }],
-          fuMaterial: [{
-            MATCode: '黄芪',
-            MATName: 'HQrtyy1',
-            Desc:'生长于高原',
-            MATTypeID:19,
-            MATBatchNo:'LF-JS'
-          },{
-            MATCode: '黄芪',
-            MATName: 'HQrtyy1',
-            Desc:'生长于洼地',
-            MATTypeID:20,
-            MATBatchNo:'LF-JS'
-          }],
+            currentstep:0,
             materialbom:{ //物料BOM
                 tableName:"MaterialBOM",
                 data:[],
@@ -116,14 +98,49 @@ export default {
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
-            steps:[{title:'计划申请',startTime:'2020-09-09',endTime:"2020-09-10"},{title:'计划审批',startTime:'2020-09-11',endTime:"2020-09-12"},{title:'计划下发',startTime:'2020-09-13',endTime:"2020-09-14"}],
+            steps:[{title:'新增'},{title:'待审核'},{title:'待下发'},{title:'待完成'},{title:'已完成'}],
             tableconfig:[{prop:'BatchID',label:"批次号",width:'170'},{prop:'BrandName',label:'品名',width:'90'},{prop:'PlanStatus',label:'计划状态',width:'110'},{prop:'PlanBeginTime',label:'计划开始时间'},{prop:'PlanEndTime',label:'计划完成时间'}],
             materialbomtable:[{prop:'MATCode',label:"物料编码"},{prop:'MATName',label:'物料名称'},{prop:'BatchPercentage',label:'百分比'},{prop:'BatchSingleMATWeight',label:'投料单一重量'},{prop:'BatchTotalWeight',label:'投料批总重量'}],
             materialinfotable:[{prop:'MATCode',label:"物料编码"},{prop:'MATName',label:'物料名称'},{prop:'Desc',label:'物料描述'},{prop:'MATTypeID',label:'物料类型ID'},{prop:'MATBatchNo',label:'物料标识'}],
 
         }
     },
+    watch: {
+      "currentSBatch.PlanStatus":function (newValue, oldValue) {
+       if(newValue==='新增'){
+         this.currentstep=0
+       }else if(newValue==='待审核'){
+         this.currentstep=1
+       }else if(newValue==='待下发'){
+         this.currentstep=2
+       }else if(newValue==='待完成'){
+         this.currentstep=3
+      }else if(newValue==='已完成'){
+         this.currentstep=4
+      }
+      }
+    },
     methods:{
+      CheckNopass(){ //审核未通过
+        this.$prompt('请输入未通过的原因', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputType:'text',
+        }).then(({ value }) => {
+          var params={
+            PlanStatus:currentSBatch.PlanStatus,
+            Describtion:value
+          }
+          this.axios.post('/api/checkPlanManager',this.qs.stringify(params)).then((res) => {
+            console.log(res)
+          })
+        }).catch(() => {
+          this.$message({
+            type:'info',
+            message: '取消输入'
+          });       
+        });
+      },
        getMaterialBom(BrandName){ //查询当前品名物料BOM
         var that = this
         var params = {
@@ -164,8 +181,8 @@ export default {
           params: params
         }).then(res => {
           if(res.data.code === "200"){
-            that.materialbom.data = res.data.data.rows
-            that.materialbom.total = res.data.data.total
+            that.materialinfobom.data = res.data.data.rows
+            that.materialinfobom.total = res.data.data.total
           }else{
             that.$message({
               type: 'info',
