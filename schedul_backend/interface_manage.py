@@ -1,37 +1,15 @@
-from typing import Optional, Any
-from collections import Counter
-import time
-import xlrd
-import xlwt
-from flask import Blueprint, render_template, send_from_directory
-from openpyxl.compat import file
-from sqlalchemy.orm import Session, relationship, sessionmaker
-from sqlalchemy import create_engine, func
-from flask import render_template, request, make_response
-import json
-import socket
+from flask import Blueprint
+from sqlalchemy.orm import sessionmaker
+from flask import request
 import datetime
-from flask_login import login_required, logout_user, login_user,current_user,LoginManager
+from flask_login import LoginManager
 import re
-from sqlalchemy import create_engine, Column, ForeignKey, Table, Integer, String, and_, or_, desc,extract
-from io import StringIO
-import calendar
-from spyne import ServiceBase
-import schedul_backend
+from sqlalchemy import create_engine
 from common.BSFramwork import AlchemyEncoder
-from common.common_cuid import logger,insertSyslog,insert,delete,update,select
-import os
-import openpyxl
-import suds
 from suds.client import Client
-from datetime import timedelta
-import system_backend.Global
-from common.batch_plan_model import ProductUnit, ProductRule, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
-    ZYPlanWMS, ProcessUnit, StapleProducts, WMSTrayNumber, MaterialBOM, SchedulingStock, WMStatusLoad, SchedulePlan
-from common.schedul_model import Scheduling, plantCalendarScheduling, SchedulingStandard, \
-    scheduledate
+import common.Global
+from common.batch_plan_model import ZYPlan, ZYPlanWMS, StapleProducts, WMSTrayNumber, MaterialBOM, SchedulingStock, WMStatusLoad
 from database.connect_db import CONNECT_DATABASE
-from enum import Enum, IntEnum, unique
 
 login_manager = LoginManager()
 # 创建对象的基类
@@ -40,13 +18,9 @@ Session = sessionmaker(bind=engine)
 db_session = Session()
 
 interface_manage = Blueprint('interface_manage', __name__)
-from spyne import Application
 from spyne import rpc
 from spyne import ServiceBase
-from spyne import Iterable, Integer, Unicode, Array, util, AnyDict, ModelBase
-from spyne.protocol.soap import Soap11
-from spyne.protocol.soap import Soap11
-from spyne.server.wsgi import WsgiApplication
+from spyne import Iterable, Integer, Unicode
 import logging
 
 class WMS_Interface(ServiceBase):
@@ -141,10 +115,10 @@ class WMS_Interface(ServiceBase):
                                                          ZYPlan.BrandName == BrandName,ZYPlan.PUCode == PUCode).first()
                     if zy != None:
                         if status == "1":
-                            zy.ZYPlanStatus = system_backend.Global.ZYPlanStatus.READY.value
+                            zy.ZYPlanStatus = common.Global.ZYPlanStatus.READY.value
                             zy.ActBeginTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                         elif status == "3":
-                            zy.ZYPlanStatus = system_backend.Global.ZYPlanStatus.Clear.value
+                            zy.ZYPlanStatus = common.Global.ZYPlanStatus.Clear.value
                             zy.ActEndTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     db_session.commit()
                 else:
@@ -190,7 +164,6 @@ class WMS_Interface(ServiceBase):
             return json.dumps(e)
 
 
-import urllib3
 import json
 
 
@@ -232,7 +205,7 @@ def WMS_SendPlan():
                             num = str(float(ocl.BatchTotalWeight)*float(ocl.BatchPercentage))
                             dic.append({"BillNo":str(oclass.BatchID)+str(oclass.BrandID),"BatchNo":str(oclass.BatchID),"btype":"203","StoreDef_ID":"1","mid":ocl.MATID,"num":num})
                         jsondic = json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
-                        client = Client(system_backend.Global.WMSurl)
+                        client = Client(common.Global.WMSurl)
                         ret = client.service.Mes_Interface("billload", jsondic)
                         if ret[0] != "SUCCESS":
                             return json.dumps("调用WMS_SendPlan接口报错！"+ret[1])
@@ -258,7 +231,7 @@ def WMS_SendSAPMatil():
                 oclass = db_session.query(MaterialBOM).filter(MaterialBOM.ID == id).first()
                 dic.append(oclass)
             jsondic = json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
-            client = Client(system_backend.Global.WMSurl)
+            client = Client(common.Global.WMSurl)
             ret = client.service.Mes_Interface("MatDetLoad", jsondic)
             if ret["Mes_InterfaceResult"] == "SUCCESS":
                 return json.dumps({"code": "200", "message": "OK"})
@@ -278,7 +251,7 @@ def WMS_ReceiveDetail():
             zyw = db_session.query(ZYPlanWMS).filter(ZYPlanWMS.ID == ID).first()
             dic.append({"BillNo":zyw.BatchID+zyw.BrandID+zyw.IsSend})
             jsondic = json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
-            client = Client(system_backend.Global.WMSurl)
+            client = Client(common.Global.WMSurl)
             re = client.service.Mes_Interface("WorkFlowLoad", jsondic)
             if re[0] == 'SUCCESS':
                 jsondata = json.loads(re["json_data"])
@@ -302,7 +275,7 @@ def WMS_StockInfo():
             rowsnumber = int(data.get("limit"))  # 行数
             inipage = pages * rowsnumber + 0  # 起始页
             endpage = pages * rowsnumber + rowsnumber  # 截止页
-            client = Client(system_backend.Global.WMSurl)
+            client = Client(common.Global.WMSurl)
             re = client.service.Mes_Interface("StoreLoad")
             if re[0] == "SUCCESS":
                 jsondata = json.loads(re[2])
@@ -338,7 +311,7 @@ def MStatusLoad():
                     try:
                         dic = []
                         oclass = db_session.query(WMStatusLoad).filter(WMStatusLoad.ID == id).first()
-                        client = Client(system_backend.Global.WMSurl)
+                        client = Client(common.Global.WMSurl)
                         ret = client.service.Mes_Interface("MStatusLoad",json.dumps(dic))
                         if ret[0] == "SUCCESS":
                             return json.dumps({"code": "200", "message": "OK"})
