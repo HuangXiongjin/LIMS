@@ -137,36 +137,39 @@ def makePlan():
         try:
             json_str = json.dumps(data.to_dict())
             if len(json_str) > 10:
-                PlanQuantity = data.get('PlanQuantity')  # 计划重量
-                PlanDate = data.get('PlanDate')  # 计划生产日期
-                BatchID = data.get('BatchID')  # 批次号
-                BrandCode = data.get('BrandCode')
-                BrandName = data.get('BrandName')  # 产品名称
-                # PLineName = data.get('PLineName')  # 生产线名字
-                Unit = data.get('Unit') # d单位
-
+                BatchID = data.get("BatchID")
+                PlanQuantity = data.get("PlanQuantity")
+                PlanBeginTime = data.get("PlanBeginTime")
+                PlanEndTime = data.get("PlanEndTime")
+                Unit = data.get("Unit")
+                PlanNum = data.get("PlanNum")
+                BrandCode = data.get("BrandCode")
+                BrandName = data.get("BrandName")
+                BrandType = data.get("BrandType")
+                PlanBeginTime = data.get("PlanBeginTime")
+                PlanEndTime = data.get("PlanEndTime")
                 #批次号判重
                 pcBatchID = db_session.query(PlanManager.BatchID).filter(PlanManager.BatchID == BatchID,
                                                                        PlanManager.BrandCode == BrandCode).first()
                 if pcBatchID:
                     return json.dumps({"code": "201", "message": "批次号重复！"})
                 pm = PlanManager()
-                pm.SchedulePlanCode = PlanDate
+                pm.SchedulePlanCode = PlanEndTime[0:10]
                 pm.BatchID = BatchID
                 pm.PlanQuantity = PlanQuantity
                 pm.Unit = Unit
                 pm.BrandCode = BrandCode
                 pm.BrandName = BrandName
                 pm.PlanStatus = system_backend.Global.PlanStatus.NEW.value
-                pm.PlanBeginTime = PlanDate + " " + system_backend.Global.GLOBAL_PLANSTARTTIME
-                pm.PlanEndTime = ""
+                pm.PlanBeginTime = PlanBeginTime
+                pm.PlanEndTime = PlanEndTime
                 db_session.add(pm)
                 sp = SchedulePlan()
-                SchedulePlanCode = PlanDate
+                SchedulePlanCode = PlanEndTime[0:10]
                 Desc = system_backend.Global.SCHEDULETYPE.DAY.value
-                dEndTime = datetime.datetime.strptime(PlanDate, '%Y-%m-%d') + timedelta(days=1)
-                PlanBeginTime =str(PlanDate) + " " + system_backend.Global.GLOBAL_PLANSTARTTIME
-                PlanEndTime = dEndTime.strftime('%Y-%m-%d') + " " + system_backend.Global.GLOBAL_PLANENDTIME
+                dEndTime = datetime.datetime.strptime(PlanEndTime[0:10], '%Y-%m-%d') + timedelta(days=1)
+                PlanBeginTime = PlanBeginTime
+                PlanEndTime = PlanEndTime
                 Type = system_backend.Global.SCHEDULETYPE.DAY.value
                 db_session.add(sp)
                 db_session.commit()
@@ -177,7 +180,34 @@ def makePlan():
             logger.error(e)
             insertSyslog("error", "计划向导生成计划报错Error：" + str(e), current_user.Name)
             return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
-
+    if request.method == 'PUT':
+        '''修改批次信息'''
+        data = request.values
+        try:
+            ID = data.get("ID")
+            BatchID = data.get("BatchID")
+            PlanQuantity = data.get("PlanQuantity")
+            PlanBeginTime = data.get("PlanBeginTime")
+            PlanEndTime = data.get("PlanEndTime")
+            Unit = data.get("Unit")
+            ocalss = db_session.query(PlanManager).filter(PlanManager.ID == ID).first()
+            if ocalss:
+                pl = db_session.query(PlanManager).filter(PlanManager == BatchID).first()
+                if not pl:
+                    ocalss.BatchID = BatchID
+                    ocalss.PlanQuantity = PlanQuantity
+                    ocalss.PlanBeginTime = PlanBeginTime
+                    ocalss.PlanEndTime = PlanEndTime
+                    ocalss.Unit = Unit
+                    return json.dumps({"code": "200", "message": "修改成功！"})
+                else:
+                    return json.dumps({"code": "201", "message": "批次号重复！"})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "修改批次信息报错Error：" + str(e), current_user.Name)
+            return json.dumps("修改批次信息报错", cls=AlchemyEncoder, ensure_ascii=False)
 @batch_plan.route('/checkPlanManager', methods=['POST', 'GET'])
 def checkPlanManager():
     '''
