@@ -454,6 +454,7 @@ def selectPlanmanager():
             insertSyslog("error", "查询排好的批次报错Error：" + str(e), current_user.Name)
             return json.dumps("查询排好的批次报错", cls=AlchemyEncoder, ensure_ascii=False)
 
+import ast
 @erp_schedul.route('/addEquipmentBatchRunTime', methods=['GET', 'POST'])
 def addEquipmentBatchRunTime():
     '''
@@ -464,12 +465,29 @@ def addEquipmentBatchRunTime():
         data = request.values
         try:
             print(data)
-            BatchID = data['BatchID']
-            oclass = db_session.query(PlanManager).filter(PlanManager.ID == ID).first()
+            BatchID = data.get('BatchID')
+            processList = json.loads(data.get('processList'))
+            oclass = db_session.query(PlanManager).filter(PlanManager.BatchID == BatchID).first()
             dir = {}
             if oclass:
-                print()
-            return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
+                for pl in processList:
+                    PUName = pl.get("PUName")
+                    PUCode = pl.get("PUCode")
+                    eqList = json.loads(pl.get('eqList'))
+                    for el in eqList:
+                        ert = EquipmentBatchRunTime()
+                        ert.BatchID = BatchID
+                        ert.EQPCode = el.get("EQPCode")
+                        ert.EQPName = el.get("EQPName")
+                        ert.PUCode = PUName
+                        ert.PUName = PUCode
+                        # ert.StartTime = el.get("")
+                        # ert.EndTime = el.get("")
+                        ert.WorkTime = el.get("workTime")
+                        ert.WaitTime = el.get("waitTime")
+                        db_session.add(ert)
+                    db_session.commit()
+            return json.dumps({"code": "200", "message": "生产配置添加设备成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
             print(e)

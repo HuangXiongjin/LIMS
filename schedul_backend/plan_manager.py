@@ -241,50 +241,21 @@ def createZYPlanZYtask():
         try:
             jsonstr = json.dumps(data.to_dict())
             if len(jsonstr) > 10:
-                jsonnumber = re.findall(r"\d+\.?\d*", jsonstr)
-                for key in jsonnumber:
-                    id = int(key)
-                    try:
-                        returnmsg = makeZYPlanZYTask(id)
-                        if (returnmsg == False):
-                            return 'NO'
-                        return "成功"
-                        oclassplan = db_session.query(PlanManager).filter_by(ID=id).first()
-                        oclassplan.PlanStatus = system_backend.Global.PlanStatus.Realse.value
-                        oclassZYPlans = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclassplan.BatchID).all()
-                        for zyp in oclassZYPlans:
-                            zyp.ZYPlanStatus = system_backend.Global.ZYPlanStatus.Realse.value
-                        oclassZYTasks = db_session.query(ZYTask).filter(ZYTask.BatchID == oclassplan.BatchID).all()
-                        for task in oclassZYTasks:
-                            task.TaskStatus = system_backend.Global.TASKSTATUS.Realse.value
-                        userName = current_user.Name
-                        oclassNodeColl = db_session.query(schedul_backend.node.NodeCollection).filter_by(oddNum=id,
-                                                                                               name="计划下发").first()
-                        oclassNodeColl.status = system_backend.node.NodeStatus.PASSED.value
-                        oclassNodeColl.oddUser = userName
-                        oclassNodeColl.opertionTime = datetime.datetime.now()
-                        oclassNodeColl.seq = 2
-
-                        #新加WMS仓库工艺段
-                        wms = ZYPlanWMS()
-                        wms.BatchID = oclassplan.BatchID
-                        wms.BrandName = oclassplan.BrandName
-                        wms.BrandID = oclassplan.BrandID
-                        wms.PUIDName = 'WMS'
-                        wms.ExcuteStatus = '0'
-                        wms.IsSend = '0'
-                        wms.OperationDate = datetime.datetime.now()
-                        wms.OperationPeople = userName
-                        db_session.add(wms)
-
-                        db_session.commit()
-                    except Exception as ee:
-                        db_session.rollback()
-                        print(ee)
-                        logger.error(ee)
-                        insertSyslog("error", "下发计划生成ZY计划、任务报错Error" + str(ee), current_user.Name)
-                        return 'NO'
-                return 'OK'
+                PlanStatus = data.get("PlanStatus")
+                ID = data.get("ID")
+                if PlanStatus == "下发":
+                    returnmsg = makeZYPlanZYTask(ID)
+                    if (returnmsg == False):
+                        return json.dumps({"code": "500", "message": "下发失败！"})
+                    oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
+                    oclassplan.PlanStatus = system_backend.Global.PlanStatus.Realse.value
+                    db_session.commit()
+                    return json.dumps({"code": "200", "message": "下发成功！！"})
+                else:
+                    oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
+                    oclassplan.PlanStatus = system_backend.Global.PlanStatus.Realse.value
+                    db_session.commit()
+                    return json.dumps({"code": "200", "message": "撤回成功！！"})
         except Exception as e:
             print(e)
             logger.error(e)
