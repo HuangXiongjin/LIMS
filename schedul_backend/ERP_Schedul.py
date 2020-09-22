@@ -453,3 +453,26 @@ def selectPlanmanager():
             logger.error(e)
             insertSyslog("error", "查询排好的批次报错Error：" + str(e), current_user.Name)
             return json.dumps("查询排好的批次报错", cls=AlchemyEncoder, ensure_ascii=False)
+
+@erp_schedul.route('/addEquipmentBatchRunTime', methods=['GET', 'POST'])
+def addEquipmentBatchRunTime():
+    '''
+    生产配置添加设备
+    :return:
+    '''
+    if request.method == 'POST':
+        data = request.values
+        try:
+            print(data)
+            BatchID = data['BatchID']
+            oclass = db_session.query(PlanManager).filter(PlanManager.ID == ID).first()
+            dir = {}
+            if oclass:
+                print()
+            return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "生产配置添加设备报错Error：" + str(e), current_user.Name)
+            return json.dumps("生产配置添加设备报错", cls=AlchemyEncoder, ensure_ascii=False)
