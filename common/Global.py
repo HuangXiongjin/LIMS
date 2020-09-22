@@ -15,10 +15,10 @@ class OrderStatus(Enum):
 #计划planmanager
 class PlanStatus(Enum):
     NEW = "新增"
-    Confirm = "选择设备"
-    Check = "审核"
+    Confirm = "待审核"
+    Check = "待下发"
     UnCheck = "审核未通过"
-    Realse = "下发"
+    Realse = "已下发"
     Recall = "撤回"
     RUN = "执行"
     FINISH = "已完成"
