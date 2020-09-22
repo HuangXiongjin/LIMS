@@ -564,11 +564,17 @@ class PlanManager(Base):
     # 计划状态:
     PlanStatus = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 调度计划开始时间:
+    # 计划开始时间:
     PlanBeginTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
 
     # 计划完成时间:
     PlanEndTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+
+    # 实际开始时间:
+    ActBeginTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+
+    # 实际完成时间:
+    ActEndTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
 
     # 调度类型:
     Type = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
