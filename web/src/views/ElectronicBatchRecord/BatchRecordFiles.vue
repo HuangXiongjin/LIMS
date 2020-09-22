@@ -49,7 +49,8 @@
 </template>
 
 <script>
-  var mammoth = require("mammoth");
+  import "mammoth/mammoth.browser.js";
+  import Mammoth from "mammoth";
   export default {
     name: "BatchRecordFiles",
     data(){
@@ -182,8 +183,8 @@
       beforeRemove(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
-      submitSuccess(){
-          this.$message({
+      submitSuccess(response, file, fileList){
+        this.$message({
             message: "上传文件成功！",
             type: 'success'
         });
@@ -200,6 +201,13 @@
           this.$message({ type: 'warning', message: '请上传后缀名为[doc,docx]的附件！' });
           return false; 
           }else{
+            var reader = new FileReader();
+            reader.readAsArrayBuffer(file)
+            reader.onload=function(){
+              Mammoth.convertToHtml({ arrayBuffer: reader.result }).then((res) => {
+                console.log(res)
+              })
+            }
             this.FileName=file.name
             var params={
               BrandName:this.BrandActive,
@@ -213,6 +221,7 @@
                 this.showPGL(this.PUName,this.PUCode,this.ActiveIndex)
               }
             })
+            
           }
             
       },
