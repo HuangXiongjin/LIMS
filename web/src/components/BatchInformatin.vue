@@ -12,11 +12,10 @@
                  <div style="paddingBottom:14px;">状态</div>
                 <div>{{currentSBatch.PlanStatus}}</div>
               </el-col>
-              <el-col :span='4' v-if="currentSBatch.PlanStatus==='待审核'"><el-button type="success" plain>审核计划</el-button></el-col>
-              <el-col :span='4' v-if="currentSBatch.PlanStatus==='待审核'"><el-button type="warning" plain  @click='CheckNopass'>审核未通过</el-button></el-col>
-              <el-col :span='4' v-if="currentSBatch.PlanStatus==='待下发'"><el-button type="warning" plain>撤回</el-button></el-col>
-              <el-col :span='4' v-if="currentSBatch.PlanStatus==='待下发'"><el-button type="success" plain>下发计划</el-button></el-col>
-              <el-col :span='4' v-if="currentSBatch.PlanStatus==='待完成'"><el-button type="success" plain>计划完成</el-button></el-col>
+              <el-col :span='4' v-if="currentSBatch.PlanStatus==='待审核'"><el-button type="success" plain @click="CheckPass">审核计划</el-button></el-col>
+              <el-col :span='4' v-if="currentSBatch.PlanStatus==='待审核'"><el-button type="warning" plain @click='CheckNopass'>审核未通过</el-button></el-col>
+              <el-col :span='4' v-if="currentSBatch.PlanStatus==='待下发'"><el-button type="warning" plain @click='Backstep'>撤回</el-button></el-col>
+              <el-col :span='4' v-if="currentSBatch.PlanStatus==='待下发'"><el-button type="success" plain @click='Makingplan'>下发计划</el-button></el-col>
             </el-row>
           </el-col>
           <el-col :span='24' class="marginBottom"><div style="fontSize:16px;fontWeight:700;">基础信息</div></el-col>
@@ -121,6 +120,82 @@ export default {
       }
     },
     methods:{
+      Makingplan(){ //下发计划
+        this.$confirm('是否确定下发计划?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+           var params={
+            PlanStatus:'下发',
+            ID:this.currentSBatch.ID
+          }
+          this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
+            if(res.data.code==='200'){
+               this.$message({
+                type: 'success',
+                message: res.data.message
+              });
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });
+      },
+      Backstep(){ //下发撤回
+        this.$confirm('确定撤回下发?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+           var params={
+            PlanStatus:'撤回',
+            ID:this.currentSBatch.ID
+          }
+          this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
+            if(res.data.code==='200'){
+               this.$message({
+                type: 'success',
+                message: res.data.message
+              });
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });
+      },
+      CheckPass(){ //审核通过
+         this.$confirm('此操作将审核通过此批次, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+           var params={
+            PlanStatus:this.currentSBatch.PlanStatus,
+            Describtion:'',
+            ID:this.currentSBatch.ID
+          }
+          this.axios.post('/api/checkPlanManager',this.qs.stringify(params)).then((res) => {
+            if(res.data.code==='200'){
+               this.$message({
+                type: 'success',
+                message: '审核成功'
+              });
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });
+      },
       CheckNopass(){ //审核未通过
         this.$prompt('请输入未通过的原因', '提示', {
           confirmButtonText: '确定',
@@ -128,15 +203,26 @@ export default {
           inputType:'text',
         }).then(({ value }) => {
           var params={
-            PlanStatus:currentSBatch.PlanStatus,
-            Describtion:value
+            PlanStatus:this.currentSBatch.PlanStatus,
+            Describtion:value,
+            ID:this.currentSBatch.ID
           }
           this.axios.post('/api/checkPlanManager',this.qs.stringify(params)).then((res) => {
-            console.log(res)
+            if(res.data.code==='200'){
+               this.$message({
+                type: 'success',
+                message: '提交成功'
+              });
+            }else{
+                this.$message({
+                type: 'error',
+                message: '提交失败，请重试'
+              });
+            }
           })
         }).catch(() => {
           this.$message({
-            type:'info',
+            type: 'info',
             message: '取消输入'
           });       
         });
