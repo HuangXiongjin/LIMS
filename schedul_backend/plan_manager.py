@@ -1,38 +1,21 @@
-from typing import Optional, Any
-from collections import Counter
-import time
-import xlrd
-import xlwt
-from flask import Blueprint, render_template, send_from_directory
-from openpyxl.compat import file
-from sqlalchemy.orm import Session, relationship, sessionmaker
-from sqlalchemy import create_engine, func
-from flask import render_template, request, make_response
+from flask import Blueprint
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import func
+from flask import request
 import json
-import socket
 import datetime
-from flask_login import login_required, logout_user, login_user,current_user,LoginManager
+from flask_login import current_user,LoginManager
 import re
-from sqlalchemy import create_engine, Column, ForeignKey, Table, Integer, String, and_, or_, desc,extract
-from io import StringIO
-import calendar
-from spyne import ServiceBase
-import schedul_backend
+from sqlalchemy import create_engine
 from common.BSFramwork import AlchemyEncoder
-from common.common_cuid import logger,insertSyslog,insert,delete,update,select
+from common.common_cuid import logger,insertSyslog
 import os
-import openpyxl
-import suds
-from suds.client import Client
 from datetime import timedelta
-import system_backend.Global
-from common.batch_plan_model import ProductUnit, ProductRule, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
-    ZYPlanWMS, ProcessUnit, StapleProducts, WMSTrayNumber, MaterialBOM, SchedulingStock, WMStatusLoad, SchedulePlan, \
+from common import Global
+from common.batch_plan_model import ProductUnit, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
+    ProcessUnit, SchedulePlan, \
     BatchModel
-from common.schedul_model import Scheduling, plantCalendarScheduling, SchedulingStandard, \
-    scheduledate
 from database.connect_db import CONNECT_DATABASE
-from enum import Enum, IntEnum, unique
 
 login_manager = LoginManager()
 # 创建对象的基类
@@ -86,7 +69,7 @@ def makeZYPlanZYTask(id):
                 zyplan.BatchID = ocalss.BatchID
                 zyplan.PlanSeq = pu.Seq
                 zyplan.PUCode = i.PUCode
-                zyplan.PlanType = system_backend.Global.PLANTYPE.SCHEDULE.value
+                zyplan.PlanType = Global.PLANTYPE.SCHEDULE.value
                 zyplan.BrandCode = ocalss.BrandCode
                 zyplan.BrandName = ocalss.BrandName
                 zyplan.ERPOrderNo = ""
@@ -95,9 +78,9 @@ def makeZYPlanZYTask(id):
                 zyplan.EnterTime = ""
                 zyplan.PlanBeginTime = ""
                 zyplan.ZYPlanStatus = ""
-                zyplan.LockStatus = system_backend.Global.TASKLOCKSTATUS.UNLOCK.value
-                zyplan.INFStatus = system_backend.Global.TASKSTATUS.NEW.value
-                zyplan.WMSStatus = system_backend.Global.TASKSTATUS.NEW.value
+                zyplan.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
+                zyplan.INFStatus = Global.TASKSTATUS.NEW.value
+                zyplan.WMSStatus = Global.TASKSTATUS.NEW.value
                 db_session.add(zyplan)
                 iTaskSeq = 0
                 for j in range(0, pu.RelateTaskCount):
@@ -111,15 +94,15 @@ def makeZYPlanZYTask(id):
                     zytask.BatchID = ocalss.BatchID
                     zytask.PlanSeq = iTaskSeq
                     zytask.PUCode = i.PUCode
-                    zytask.PlanType = system_backend.Global.PLANTYPE.SCHEDULE.value
+                    zytask.PlanType = Global.PLANTYPE.SCHEDULE.value
                     zytask.BrandCode = ocalss.BrandCode
                     zytask.BrandName = ocalss.BrandName
                     zytask.PlanQuantity = ocalss.PlanQuantity
                     zytask.Unit = ocalss.Unit
                     zytask.EnterTime = ""
                     # zytask.SetRepeatCount = i.RelateTaskCount
-                    zytask.TaskStatus = system_backend.Global.TASKSTATUS.NEW.value
-                    zytask.LockStatus = system_backend.Global.TASKLOCKSTATUS.UNLOCK.value
+                    zytask.TaskStatus = Global.TASKSTATUS.NEW.value
+                    zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
                     db_session.add(zytask)
             db_session.commit()
     except Exception as ee:
@@ -161,17 +144,17 @@ def makePlan():
                 pm.Unit = Unit
                 pm.BrandCode = BrandCode
                 pm.BrandName = BrandName
-                pm.PlanStatus = system_backend.Global.PlanStatus.NEW.value
+                pm.PlanStatus = Global.PlanStatus.NEW.value
                 pm.PlanBeginTime = PlanBeginTime
                 pm.PlanEndTime = PlanEndTime
                 db_session.add(pm)
                 sp = SchedulePlan()
                 SchedulePlanCode = PlanEndTime[0:10]
-                Desc = system_backend.Global.SCHEDULETYPE.DAY.value
+                Desc = Global.SCHEDULETYPE.DAY.value
                 dEndTime = datetime.datetime.strptime(PlanEndTime[0:10], '%Y-%m-%d') + timedelta(days=1)
                 PlanBeginTime = PlanBeginTime
                 PlanEndTime = PlanEndTime
-                Type = system_backend.Global.SCHEDULETYPE.DAY.value
+                Type = Global.SCHEDULETYPE.DAY.value
                 db_session.add(sp)
                 db_session.commit()
                 return json.dumps({"code": "200", "message": "添加成功！"})
@@ -248,12 +231,12 @@ def createZYPlanZYtask():
                     if (returnmsg == False):
                         return json.dumps({"code": "500", "message": "下发失败！"})
                     oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
-                    oclassplan.PlanStatus = system_backend.Global.PlanStatus.Realse.value
+                    oclassplan.PlanStatus = Global.PlanStatus.Realse.value
                     db_session.commit()
                     return json.dumps({"code": "200", "message": "下发成功！！"})
                 else:
                     oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
-                    oclassplan.PlanStatus = system_backend.Global.PlanStatus.Realse.value
+                    oclassplan.PlanStatus = Global.PlanStatus.Realse.value
                     db_session.commit()
                     return json.dumps({"code": "200", "message": "撤回成功！！"})
         except Exception as e:

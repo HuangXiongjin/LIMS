@@ -18,7 +18,7 @@ from io import StringIO
 import calendar
 
 import schedul_backend
-import system_backend
+from common import Global
 from common.BSFramwork import AlchemyEncoder
 from common.common_cuid import logger,insertSyslog,insert,delete,update,select
 import os
@@ -405,7 +405,7 @@ def planschedul():
                     pm.Unit = "KG"
                     pm.BrandCode = oclass.BrandCode
                     pm.BrandName = oclass.BrandName
-                    pm.PlanStatus = system_backend.Global.PlanStatus.NEW.value
+                    pm.PlanStatus = Global.PlanStatus.NEW.value
                     #计算计划开始时间结束时间
                     beg = int(oclass.PlanTimeLen)-int(BatchDuration)*BatchNo
                     end = beg - int(oclass.PlanTimeLen)/int(BatchSum)
@@ -492,7 +492,8 @@ def addEquipmentBatchRunTime():
                                        EquipmentBatchRunTime.EQPCode == el.get("EQPCode"), EquipmentBatchRunTime.PUCode == pl.get("PUCode")).first()
                             if ebrt:
                                 db_session.delete(ebrt)
-                    db_session.commit()
+                oclass.PlanStatus = Global.PlanStatus.Check.value
+                db_session.commit()
             return json.dumps({"code": "200", "message": "保存成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()

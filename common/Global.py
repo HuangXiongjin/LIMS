@@ -16,7 +16,7 @@ class OrderStatus(Enum):
 class PlanStatus(Enum):
     NEW = "新增"
     Confirm = "选择设备"
-    Checked = "审核"
+    Check = "审核"
     UnCheck = "审核未通过"
     Realse = "下发"
     Recall = "撤回"
