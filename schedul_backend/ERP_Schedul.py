@@ -434,16 +434,19 @@ def selectPlanmanager():
     if request.method == 'GET':
         data = request.values
         try:
-            PlanNum = data['PlanNum']
+            PlanNum = data.get('PlanNum')
+            pages = data.get("offset")
+            rowsnumber = data.get("limit")
+            inipage = int(pages) * int(rowsnumber) + 0  # 起始页
+            endpage = int(pages) * int(rowsnumber) + int(rowsnumber)  # 截止页
+            count = db_session.query(PlanManager).filter().count()
             if PlanNum == None or PlanNum == "":
-                oclass = db_session.query(PlanManager).filter().order_by(("PlanBeginTime")).all()
+                oclass = db_session.query(PlanManager).filter().order_by(("PlanBeginTime")).all()[inipage:endpage]
             else:
                 oclass = db_session.query(PlanManager).filter(PlanManager.PlanNum == PlanNum).order_by(
-                    ("PlanBeginTime")).all()
-            if oclass:
-                return json.dumps({"code": "200", "message": "请求成功", "data": {"total": len(oclass), "rows": oclass}}, cls=AlchemyEncoder, ensure_ascii=False)
-            else:
-                return json.dumps({"code": "200", "message": "请求成功", "data": {"total": 0, "rows": []}})
+                    ("PlanBeginTime")).all()[inipage:endpage]
+            return json.dumps({"code": "200", "message": "请求成功", "data": {"total": count, "rows": oclass}},
+                              cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             db_session.rollback()
             print(e)
