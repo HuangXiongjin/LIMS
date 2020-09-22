@@ -24,10 +24,9 @@
             {prop:"MATCode",label:"物料编码",type:"input",value:""},
             {prop:"MATName",label:"物料名称",type:"input",value:""},
             {prop:"Desc",label:"物料描述",type:"input",value:""},
-            {prop:"MATTypeID",label:"物料类型ID",type:"input",value:""},
-            {prop:"Seq",label:"顺序号",type:"input",value:""},
-            {prop:"Grade",label:"等级",type:"input",value:""},
-            {prop:"MATBatchNo",label:"物料标识:1为排产所常用表标识",type:"input",value:""}
+            {prop:"MATType",label:"物料类型",type:"input",value:""},
+            {prop:"Seq",label:"顺序号",type:"input",value:"",showField:false,searchProp:false},
+            {prop:"Grade",label:"等级",type:"input",value:""}
           ],
           data:[],
           limit:5,

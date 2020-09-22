@@ -3,20 +3,17 @@
     <el-col :span='9'>
       <div>
         <div class="platformContainer" style="height:124px;">
-          <div style="height:30px;lineHeight:30px;fontSize:16px;fontWeight:700;">计划明细</div>
-            <div style="height:60px;lineHeight:70px;">
-              <div style="display:inline-block;width:45%;">
-                <div><span style="marginRight:15px;">当日计划数量</span><span>5批</span></div>
-              </div>
-              <div style="display:inline-block;width:45%;">
-                <div><span style="marginRight:15px;">待处理计划数量</span><span>4批</span></div>
-              </div>
+            <div>计划状态选择</div>
+            <div style="margin-top: 20px">
+              <el-checkbox-group v-model="checkboxGroup" size="small">
+                <el-checkbox-button v-for="city in cities" :label="city" :key="city">{{city}}</el-checkbox-button>
+              </el-checkbox-group>
             </div>
         </div>
         <div class="platformContainer" style="height:900px;overflow:auto;">
           <div style="height:40px;borderBottom:1px solid #ccc;fontSize:16px;fontWeight:700;">计划列表</div>
               <el-table
-                  :data="sidetableData"
+                  :data="planTableData.data"
                   highlight-current-row
                   size='small'
                   @row-click="TabCurrentChange"
@@ -59,45 +56,9 @@ import BatchInformation from '@/components/BatchInformatin.vue'
             offset: 1,//当前处于多少页
             total: 0,//总的多少页
         },
-         BrandActive:'',
-         sidetableData: [{
-            BatchID:'LPL20200825H',
-            BrandName:'血府逐淤片',
-            PlanStatus: '待执行',
-            PlanBeginTime: '2016-05-02 08:00:00',
-            PlanEndTime: '2016-05-02 08:00:00',
-            PlanNum:'HP002456'
-          },{
-            BatchID:'LPL20200825H',
-            BrandName:'黄芪',
-            PlanStatus: '待执行',
-            PlanBeginTime: '2016-06-02 18:00:00',
-            PlanEndTime: '2016-06-02 18:15:00',
-            PlanNum:'HQ003145'
-          },{
-            BatchID:'LPL20200825H',
-            BrandName:'白芍',
-            PlanStatus: '待执行',
-            PlanBeginTime: '2016-05-04 03:00:00',
-            PlanEndTime: '2016-05-04 14:00:00',
-            PlanNum:'BS007895'
-          },
-          {
-            BatchID:'LPL20200825H',
-            BrandName:'花椒',
-            PlanStatus: '待执行',
-            PlanBeginTime: '2016-05-10 08:00:00',
-            PlanEndTime: '2016-05-12 18:00:00',
-            PlanNum:'HJ00675'
-          },
-          {
-            BatchID:'LPL20200825H',
-            BrandName:'陈皮',
-            PlanStatus: '待执行',
-            PlanBeginTime: '2016-05-02 08:00:00',
-            PlanEndTime: '2016-05-02 08:00:00',
-            PlanNum:'CP440455'
-          }],
+          cities:['上海', '北京', '广州', '深圳'],
+          checkboxGroup: ['上海'],
+          BrandActive:'',
           mydata:[],
           currentFBatch:{},
           currentBrandName:'',
