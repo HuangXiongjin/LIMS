@@ -464,7 +464,6 @@ def addEquipmentBatchRunTime():
     if request.method == 'POST':
         data = request.values
         try:
-            print(data)
             BatchID = data.get('BatchID')
             processList = json.loads(data.get('processList'))
             oclass = db_session.query(PlanManager).filter(PlanManager.BatchID == BatchID).first()
@@ -473,7 +472,7 @@ def addEquipmentBatchRunTime():
                 for pl in processList:
                     PUName = pl.get("PUName")
                     PUCode = pl.get("PUCode")
-                    eqList = json.loads(pl.get('eqList'))
+                    eqList = pl.get('eqList')
                     for el in eqList:
                         ert = EquipmentBatchRunTime()
                         ert.BatchID = BatchID
@@ -487,7 +486,7 @@ def addEquipmentBatchRunTime():
                         ert.WaitTime = el.get("waitTime")
                         db_session.add(ert)
                     db_session.commit()
-            return json.dumps({"code": "200", "message": "生产配置添加设备成功！", "data": "OK"})
+            return json.dumps({"code": "200", "message": "保存成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
             print(e)
