@@ -424,3 +424,29 @@ def planschedul():
             logger.error(e)
             insertSyslog("error", "计划排产报错Error：" + str(e), current_user.Name)
             return json.dumps("计划排产报错", cls=AlchemyEncoder, ensure_ascii=False)
+
+@erp_schedul.route('/selectPlanmanager', methods=['GET', 'POST'])
+def selectPlanmanager():
+    '''
+    查询排好的批次
+    :return:
+    '''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            PlanNum = data['PlanNum']
+            if PlanNum == None or PlanNum == "":
+                oclass = db_session.query(PlanManager).filter().order_by(("PlanBeginTime")).all()
+            else:
+                oclass = db_session.query(PlanManager).filter(PlanManager.PlanNum == PlanNum).order_by(
+                    ("PlanBeginTime")).all()
+            if oclass:
+                return json.dumps({"code": "200", "message": "请求成功", "data": {"total": len(oclass), "rows": oclass}}, cls=AlchemyEncoder, ensure_ascii=False)
+            else:
+                return json.dumps({"code": "200", "message": "请求成功", "data": {"total": 0, "rows": []}})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "查询排好的批次报错Error：" + str(e), current_user.Name)
+            return json.dumps("查询排好的批次报错", cls=AlchemyEncoder, ensure_ascii=False)

@@ -707,17 +707,17 @@ class Material(Base):
     # 物料描述:
     Desc = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-    # 物料类型ID:
-    MATTypeID = Column(Integer, nullable=False, primary_key=False)
+    # 物料类型:
+    MATType = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 顺序号:
-    Seq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    Seq = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 等级:
-    Grade = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    Grade = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 物料标识:1为排产所常用表标识
-    MATBatchNo = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    # # 物料标识:1为排产所常用表标识
+    # MATBatchNo = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
 
 class BatchMaterialInfo(Base):
