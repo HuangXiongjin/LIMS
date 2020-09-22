@@ -236,7 +236,7 @@ def checkPlanManager():
 @batch_plan.route('/createZYPlanZYtask', methods=['POST', 'GET'])
 def createZYPlanZYtask():
     '''下发计划'''
-    if request.method == 'GET':
+    if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
         try:
             jsonstr = json.dumps(data.to_dict())
