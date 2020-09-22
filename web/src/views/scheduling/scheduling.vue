@@ -182,7 +182,7 @@
                   </el-checkbox>
                   <el-button slot="reference" size="small">选择设备</el-button>
                 </el-popover>
-                <el-button type="primary" size="small">自动分配</el-button>
+                <!--<el-button type="primary" size="small">自动分配</el-button>-->
                 <p class="marginTop marginBottom-10 text-size-16">已分配设备</p>
                 <div class="marginBottom-10" v-for="eq in item.eqList" :key="eq.EQPCode" v-if="eq.isSelected">
                   <p class="text-size-14 color-darkblue">{{ eq.EQPName }}</p>
@@ -200,7 +200,7 @@
       <el-col :span="24" style="text-align: right;">
         <el-button type="info" v-show="steps != 0" @click="resetStep">重置</el-button>
         <el-button type="primary" v-show="steps != 0" @click="lastStep">上一步</el-button>
-        <el-button type="primary" v-show="steps == 2" @click="savePlanEq">保存</el-button>
+        <el-button type="success" v-show="steps == 2" @click="savePlanEq">保存</el-button>
         <el-button type="primary" v-show="steps != 4" @click="nextStep">下一步</el-button>
       </el-col>
     </el-col>
@@ -289,6 +289,7 @@
         }else if(this.steps == 1){
           if(this.PlanManagerTableData.multipleSelection.length == 1){
             this.steps++
+            this.processList = []
             this.getBrandProcess()
           }else{
             this.$message({
