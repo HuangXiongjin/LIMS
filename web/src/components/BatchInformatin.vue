@@ -127,7 +127,7 @@ export default {
           type: 'warning'
         }).then(() => {
            var params={
-            PlanStatus:'下发',
+            PlanStatus:'已下发',
             ID:this.currentSBatch.ID
           }
           this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
@@ -136,6 +136,7 @@ export default {
                 type: 'success',
                 message: res.data.message
               });
+              this.$emit('refreshBatchTable')
             }
           })
         }).catch(() => {
@@ -161,6 +162,7 @@ export default {
                 type: 'success',
                 message: res.data.message
               });
+               this.$emit('refreshBatchTable')
             }
           })
         }).catch(() => {
@@ -177,7 +179,7 @@ export default {
           type: 'warning'
         }).then(() => {
            var params={
-            PlanStatus:this.currentSBatch.PlanStatus,
+            PlanStatus:'待下发',
             Describtion:'',
             ID:this.currentSBatch.ID
           }
@@ -187,6 +189,7 @@ export default {
                 type: 'success',
                 message: '审核成功'
               });
+               this.$emit('refreshBatchTable')
             }
           })
         }).catch(() => {
@@ -203,7 +206,7 @@ export default {
           inputType:'text',
         }).then(({ value }) => {
           var params={
-            PlanStatus:this.currentSBatch.PlanStatus,
+            PlanStatus:'审核未通过',
             Describtion:value,
             ID:this.currentSBatch.ID
           }
@@ -213,6 +216,7 @@ export default {
                 type: 'success',
                 message: '提交成功'
               });
+               this.$emit('refreshBatchTable')
             }else{
                 this.$message({
                 type: 'error',
