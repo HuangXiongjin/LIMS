@@ -183,6 +183,7 @@ def makePlan():
                     ocalss.PlanBeginTime = PlanBeginTime
                     ocalss.PlanEndTime = PlanEndTime
                     ocalss.Unit = Unit
+                    db_session.commit()
                     return json.dumps({"code": "200", "message": "修改成功！"})
                 else:
                     return json.dumps({"code": "201", "message": "批次号重复！"})
