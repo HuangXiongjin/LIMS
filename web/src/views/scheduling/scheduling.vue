@@ -302,7 +302,12 @@
         }
       },
       lastStep(){
-        this.steps--
+        if(this.steps == 2){
+          this.steps--
+          this.getPlanManagerTableData()
+        }else{
+          this.steps--
+        }
       },
       resetStep(){
         this.steps = 0
@@ -492,7 +497,6 @@
         this.axios.get("/api/selectPlanmanager",{
           params: params
         }).then(res => {
-          console.log(res.data)
           if(res.data.code === "200"){
             that.PlanManagerTableData.data = res.data.data.rows
             that.PlanManagerTableData.total = res.data.data.total
@@ -629,7 +633,9 @@
             PlanBeginTime:this.PlanManagerTableData.formField.PlanBeginTime,
             PlanEndTime:this.PlanManagerTableData.formField.PlanEndTime,
           }
-          this.axios.get("/api/makePlan",this.qs.stringify(params)).then(res =>{
+          this.axios.get("/api/makePlan",{
+            params:params
+          }).then(res =>{
             if(res.data.code === "200"){
               this.$message({
                 type: 'success',
