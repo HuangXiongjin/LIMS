@@ -298,7 +298,7 @@
             }).then(res => {
               var arr=res.data.data.rows
                 this.ydata=arr.map((res) => {
-                  return '批次'+res.BatchID
+                  return res.BatchID
                 })
                 this.PlanStartTime=arr.map((res) => {
                   return new Date(res.PlanBeginTime.replace('-', '/'))
@@ -309,7 +309,7 @@
                 this.drawPic(this.ydata,this.PlanStartTime,this.PlanEndTime)
         })
       },
-       drawPic(ydata,planstarttime,planendtime) { //渲染甘特图
+    drawPic(ydata,planstarttime,planendtime) {
             var myCharts = echarts.init(document.getElementById('main'));
             var option = {
                 title: {
@@ -321,20 +321,23 @@
                 },
                 legend: {
                     y: 'top',
-                    data: ['计划时间'], //修改的地方1,
+                    data: ['计划完成时间'], //修改的地方1,
                     textStyle: {
                       color: '#666' //设置图例文字颜色
                   }
                 },
                 grid: {
                     containLabel: true,
-                    left: 20
+                    left: 20,
+                    bottom:10
                 },
                 xAxis: {
+                    name:'时间',
                     type: 'time',
                     axisLine: { lineStyle: { color: '#666' } } //控制x轴坐标文字颜色
                 },
                 yAxis: {
+                    name:'批次',
                     data:[...ydata],
                     axisLine: { lineStyle: { color: '#666' } }  //控制y轴坐标文字颜色
                 },
@@ -344,8 +347,8 @@
                         var res = params[0].name + "</br>"
                         var date0 = params[0].data;
                         var date1 = params[1].data;
-                        date0 = date0.getFullYear() + "-" + (date0.getMonth() + 1) + "-" + (date0.getDate().toString().padStart(2,0))+ "  " + (date0.getHours().toString().padStart(2,0))+':'+date0.getMinutes()+':'+(date0.getSeconds().toString().padStart(2,0));
-                        date1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + (date1.getDate().toString().padStart(2,0))+ "  " + (date1.getHours().toString().padStart(2,0))+':'+date1.getMinutes()+':'+(date1.getSeconds().toString().padStart(2,0));
+                        date0 = date0.getFullYear() + "-" + (date0.getMonth() + 1) + "-" + (date0.getDate().toString().padStart(2,0))+ "  " + (date0.getHours().toString().padStart(2,0))+':'+(date0.getMinutes().toString().padStart(2,0))+':'+(date0.getSeconds().toString().padStart(2,0));
+                        date1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + (date1.getDate().toString().padStart(2,0))+ "  " + (date1.getHours().toString().padStart(2,0))+':'+(date1.getMinutes().toString().padStart(2,0))+':'+(date1.getSeconds().toString().padStart(2,0));
                         res += params[0].seriesName + "~" + params[1].seriesName + ":</br>" + date0 + "~" + date1 + "</br>"
                         return res;
                     }
@@ -365,7 +368,7 @@
                         barMaxWidth: 30,
                     },
                     {
-                        name: '计划时间',
+                        name: '计划完成时间',
                         type: 'bar',
                         stack: 'test1',
                         //修改地方2
