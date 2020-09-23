@@ -11,11 +11,12 @@
             </div>
         </div>
         <div class="platformContainer" style="height:900px;overflow:auto;">
-          <div style="height:40px;borderBottom:1px solid #ccc;fontSize:16px;fontWeight:700;">计划列表</div>
+          <div style="height:40px;fontSize:16px;fontWeight:700;">计划列表</div>
               <el-table
                   :data="planTableData.data"
                   highlight-current-row
                   size='small'
+                  border
                   ref="multipleTable"
                   @selection-change="handleSelectionChange" 
                   @row-click="TabCurrentChange"

@@ -67,7 +67,7 @@
           </el-col>
           <el-col :span='24' class="marginBottom"><div style="fontSize:16px;fontWeight:700;">计划进度</div></el-col>
           <el-col :span='24' class="marginBottom">
-            <el-steps :active="currentstep" align-center >
+            <el-steps :active="currentstep" align-center process-status='finish'>
                 <el-step  v-for="(item,index) in steps" :title="item.title" :key='index'>
                 </el-step>
              </el-steps>
@@ -105,7 +105,7 @@ export default {
         }
     },
     watch: {
-      "currentSBatch.PlanStatus":function (newValue, oldValue) {
+      "currentSBatch.PlanStatus":function (newValue, oldValue) { //监听传递的状态
        if(newValue==='新增'){
          this.currentstep=0
        }else if(newValue==='待审核'){
