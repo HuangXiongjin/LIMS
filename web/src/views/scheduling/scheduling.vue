@@ -197,6 +197,9 @@
           </div>
         </el-col>
       </el-row>
+      <el-row v-if="steps == 3">
+
+      </el-row>
       <el-col :span="24" style="text-align: right;">
         <el-button type="info" v-show="steps != 0" @click="resetStep">重置</el-button>
         <el-button type="primary" v-show="steps != 0" @click="lastStep">上一步</el-button>
