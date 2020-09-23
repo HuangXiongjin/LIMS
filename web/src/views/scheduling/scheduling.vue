@@ -106,7 +106,7 @@
             </el-form>
             <el-table :data="PlanManagerTableData.data" border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
               <el-table-column type="selection"></el-table-column>
-              <el-table-column prop="PlanNum" label="计划编号"></el-table-column>
+              <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
               <el-table-column prop="PlanQuantity" label="批次计划重量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
