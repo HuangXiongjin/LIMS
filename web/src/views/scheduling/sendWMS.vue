@@ -74,7 +74,7 @@
         if(this.radioGroup === "待发送"){
           fieldvalue = "已下发"
         }else if(this.radioGroup === "已发送"){
-          fieldvalue = "已发送WMS"
+          fieldvalue = "已发送投料计划"
         }
         var params = {
           tableName: "PlanManager",
@@ -126,9 +126,7 @@
             distinguishCancelAndClose:true,
             type: 'warning'
           }).then(()  => {
-            this.axios.delete("/api/WMS_SendPlan",{
-              params: params
-            }).then(res =>{
+            this.axios.post("/api/WMS_SendPlan",this.qs.stringify(params)).then(res =>{
               if(res.data.code === "200"){
                 this.$message({
                   type: 'success',

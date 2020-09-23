@@ -71,9 +71,9 @@
         var that = this
         var fieldvalue = ""
         if(this.radioGroup === "待发送"){
-          fieldvalue = "已下发"
+          fieldvalue = "已发送投料计划"
         }else if(this.radioGroup === "已发送"){
-          fieldvalue = "已发送WMS"
+          fieldvalue = "已发送物料明细"
         }
         var params = {
           tableName: "PlanManager",
@@ -121,13 +121,11 @@
             mulId.push({id:item.ID});
           })
           params.sendData = JSON.stringify(mulId)
-          this.$confirm('确定发送所选计划到WMS？', '提示', {
+          this.$confirm('确定发送所选计划的物料明细到WMS？', '提示', {
             distinguishCancelAndClose:true,
             type: 'warning'
           }).then(()  => {
-            this.axios.delete("/api/WMS_SendPlan",{
-              params: params
-            }).then(res =>{
+            this.axios.post("/api/WMS_SendMatils",this.qs.stringify(params)).then(res =>{
               if(res.data.code === "200"){
                 this.$message({
                   type: 'success',
