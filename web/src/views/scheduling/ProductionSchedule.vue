@@ -16,18 +16,9 @@
                                 <p>当前展示的品名：{{BrandActive}}</p>
                             </el-form-item>
                             <el-form-item label="计划编码"  style="paddingLeft:150px;">
-                                <el-select v-model="formInline.CurrentBrandNum" placeholder="计划编码">
+                                <el-select v-model="formInline.CurrentBrandNum" placeholder="计划编码" @change="onSubmit">
                                     <el-option v-for="(item,index) in selectBrandNum" :key='index'  :label='item.BrandCodelabel'  :value="item.BrandCodevalue" ></el-option>
                                 </el-select>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" @click="onSubmit">查询甘特图</el-button>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-radio-group v-model="datesection">
-                                    <el-radio-button label="月"></el-radio-button>
-                                    <el-radio-button label="季"></el-radio-button>
-                                </el-radio-group>
                             </el-form-item>
                         </el-form>
                     </div>
@@ -81,7 +72,6 @@ export default {
                 params: params
             }).then(res => {
                 var arr=res.data.data.rows
-                console.log(arr)
                 this.ydata=arr.map((res) => {
                     return '批次'+res.BatchID
                 })
