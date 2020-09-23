@@ -41,6 +41,8 @@
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 <div slot="tip" class="el-upload__tip">只能上传.docx 批记录表</div>
               </el-upload>
+              <el-button type="primary" @click="PreviewFile" size='small'>点击预览</el-button>
+              <div ref='box'></div>
             </div>
           </el-col>
         </el-row>
@@ -65,14 +67,18 @@
           fileList: [],
           ActiveIndex:10,
           FileName:'',
-          scheduleTableData:[]
+          scheduleTableData:[],
+          bytefile:'2344'
       }
     },
     created(){
       this.getScheduleTableData()
     },
     methods:{
-      handlePreview(file){
+      PreviewFile(){//预览文件
+       console.log(this.bytefile)
+      },
+      handlePreview(file){ //点击文件列表提示是否下载
         var FileName=file.name
         var params={
           FileName:FileName
@@ -142,7 +148,7 @@
           this.results = this.scheduleTableData
         }
       },
-      clickBrandTag(BrandName,BrandCode){
+      clickBrandTag(BrandName,BrandCode){ //点击左侧品名标签
         this.BrandActive = BrandName
         this.BrandCode = BrandCode
         this.getBrandProcessTableData(BrandName)
@@ -220,10 +226,8 @@
               if(res.data.code==='200'){
                 this.showPGL(this.PUName,this.PUCode,this.ActiveIndex)
               }
-            })
-            
-          }
-            
+            })         
+          }         
       },
       handleRemove(file,fileList){
         var fileID=file.ID

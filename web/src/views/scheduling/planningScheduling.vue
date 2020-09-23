@@ -37,7 +37,7 @@
       </div>
     </el-col>
     <el-col :span='15'>
-      <BatchInformation :currentSBatch='currentFBatch' ref='BatchInfo'></BatchInformation>
+      <BatchInformation :currentSBatch='currentFBatch' ref='BatchInfo' @refreshBatchTable='getBatchTable'></BatchInformation>
     </el-col>
   </el-row>
 </template>
@@ -70,7 +70,7 @@ import BatchInformation from '@/components/BatchInformatin.vue'
         currentFBatch:{},
         currentBrandName:'',
         multipleSelection:[],
-        tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
+        tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'PlanNum',label:'计划单号'},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
       }
     },
     created(){
