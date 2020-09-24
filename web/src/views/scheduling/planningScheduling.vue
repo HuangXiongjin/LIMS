@@ -3,7 +3,7 @@
     <el-col :span='9'>
       <div>
         <div class="platformContainer" style="height:124px;">
-            <div>计划状态选择</div>
+            <div style="height:20px;fontSize:16px;fontWeight:700;">计划状态选择</div>
             <div style="margin-top: 20px">
               <el-radio-group v-model="checkboxGroup" size="small" @change="Selectstatus">
                 <el-radio-button v-for="(itam,index) in status" :label="itam.name" :key="index"></el-radio-button>
