@@ -1,7 +1,7 @@
 from enum import Enum, IntEnum, unique
 
 #连接WMS接口URL
-WMSurl = "http://192.168.20.55:8090/"
+WMSurl = "http://192.168.20.68:8090/"#192.168.20.68 192.168.20.55
 
 GLOBAL_PLANSTARTTIME= "08:30:00"
 GLOBAL_PLANENDTIME= "08:29:59"
@@ -19,6 +19,8 @@ class PlanStatus(Enum):
     Check = "待下发"
     UnCheck = "审核未通过"
     Realse = "已下发"
+    FSWMS = "已发送投料计划"
+    FSMWMS = "已发送物料明细"
     Recall = "撤回"
     RUN = "执行"
     FINISH = "已完成"

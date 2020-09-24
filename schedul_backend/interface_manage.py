@@ -8,8 +8,10 @@ from sqlalchemy import create_engine
 from common.BSFramwork import AlchemyEncoder
 from suds.client import Client
 import common.Global
-from common.batch_plan_model import ZYPlan, ZYPlanWMS, StapleProducts, WMSTrayNumber, MaterialBOM, SchedulingStock, WMStatusLoad
+from common.batch_plan_model import ZYPlan, ZYPlanWMS, StapleProducts, WMSTrayNumber, MaterialBOM, SchedulingStock, \
+    WMStatusLoad, Material
 from database.connect_db import CONNECT_DATABASE
+from common import Global
 
 login_manager = LoginManager()
 # 创建对象的基类
@@ -165,19 +167,52 @@ class WMS_Interface(ServiceBase):
 
 
 import json
+import urllib.request
+import urllib.parse
 
 
-# def http_post(url, data_json):
-#     jdata = json.dumps(data_json)
-#     req = urllib3.Request(url, jdata)
-#     response = urllib3.urlopen(req)
-#     return response.read()
-#
-#
-# url = 'http://192.168.0.107:8000/medi_test'
-# data_json = {'name': 'cuiyongyuan', 'job': 'hero'}
-# resp = http_post(url, data_json)
-# print(resp)
+def http_post(url, data_json):
+    jdata = json.dumps(data_json)
+    req = urllib
+    response = urllib.urlopen(req)
+    return response.read()
+headers = {
+    'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.108 Safari/537.36',
+    'Referer': 'https://httpbin.org/post',
+    'Connection': 'keep-alive',
+    'content-type': 'application/json'
+    }
+
+@interface_manage.route('/WMS_SendMatilInfo', methods=['GET', 'POST'])
+def WMS_SendMatilInfo():
+    '''同步物料信息到WMS'''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            jsonstr = json.dumps(data.to_dict())
+            if len(jsonstr) > 10:
+                jsonnumber = re.findall(r"\d+\.?\d*", jsonstr)
+                dic = []
+                for key in jsonnumber:
+                    id = int(key)
+                    oclass = db_session.query(Material).filter(Material.ID == id).first()
+                    dic.append({"materialcode": oclass.MATCode, "materialName": oclass.MATName,
+                                "materialtype": oclass.MATType, "Unit": "", "specification": oclass.Grade})
+                url = Global.WMSurl + "api/WbeApi/RecvMaterialInfon"
+                dir = {}
+                dir["material_list"] = dic
+                postdata = urllib.parse.urlencode(json.dumps(dir)).encode('utf-8')
+                req = urllib.request.Request(url=url, headers=headers, data=postdata, method='POST')
+                resp = urllib.request.urlopen(req)
+                print(resp.get("code"))
+                if resp != "SUCCESS":
+                    return json.dumps("调用WMS_SendPlan接口报错！"+resp)
+                oclass.IsSend = "10"
+                db_session.commit()
+                return json.dumps({"code": "200", "message": "OK"})
+        except Exception as e:
+            print("调用WMS_SendPlan接口报错！")
+            return json.dumps("调用WMS_SendPlan接口报错！")
 
 
 @interface_manage.route('/WMS_SendPlan', methods=['GET', 'POST'])
@@ -217,10 +252,10 @@ def WMS_SendPlan():
         except Exception as e:
             print("调用WMS_SendPlan接口报错！")
             return json.dumps("调用WMS_SendPlan接口报错！")
-@interface_manage.route('/WMS_SendSAPMatil', methods=['GET', 'POST'])
-def WMS_SendSAPMatil():
+@interface_manage.route('/WMS_SendMatils', methods=['GET', 'POST'])
+def WMS_SendMatils():
     '''发送SAP物料信息到WMS'''
-    if request.method == 'GET':
+    if request.method == 'POST':
         data = request.values
         try:
             jsonstr = json.dumps(data.to_dict())
