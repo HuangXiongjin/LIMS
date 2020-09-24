@@ -3,7 +3,7 @@
     <el-col :span='9'>
       <div>
         <div class="platformContainer" style="height:124px;">
-            <div>计划状态选择</div>
+            <div style="height:20px;fontSize:16px;fontWeight:700;">计划状态选择</div>
             <div style="margin-top: 20px">
               <el-radio-group v-model="checkboxGroup" size="small" @change="Selectstatus">
                 <el-radio-button v-for="(itam,index) in status" :label="itam.name" :key="index"></el-radio-button>
@@ -37,7 +37,7 @@
       </div>
     </el-col>
     <el-col :span='15'>
-      <BatchInformation :currentSBatch='currentFBatch' ref='BatchInfo'></BatchInformation>
+      <BatchInformation :currentSBatch='currentFBatch' ref='BatchInfo' @refreshBatchTable='getBatchTable'></BatchInformation>
     </el-col>
   </el-row>
 </template>
@@ -70,7 +70,7 @@ import BatchInformation from '@/components/BatchInformatin.vue'
         currentFBatch:{},
         currentBrandName:'',
         multipleSelection:[],
-        tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
+        tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'PlanNum',label:'计划单号'},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
       }
     },
     created(){

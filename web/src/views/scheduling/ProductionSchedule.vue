@@ -10,23 +10,19 @@
         <el-col :span='20'>
             <el-row>
                 <el-col :span='24'>
-                    <div class="platformContainer">
-                        <el-form :inline="true" :model="formInline">
-                            <el-form-item style="width:230px;">
-                                <p>当前展示的品名：{{BrandActive}}</p>
-                            </el-form-item>
-                            <el-form-item label="计划编码"  style="paddingLeft:150px;">
-                                <el-select v-model="formInline.CurrentBrandNum" placeholder="计划编码" @change="onSubmit">
-                                    <el-option v-for="(item,index) in selectBrandNum" :key='index'  :label='item.BrandCodelabel'  :value="item.BrandCodevalue" ></el-option>
-                                </el-select>
-                            </el-form-item>
-                        </el-form>
-                    </div>
+                    <p class="platformContainer" v-if="BrandActive">当前展示的品名：{{BrandActive}}</p>
                 </el-col>
                 <el-col :span='24'>
                     <div class="platformContainer" style="backgroundColor:#fff;">
-                    <div id="main" style="width:100%; height:750px;" v-loading="loading">排产进度表</div>
-                </div>
+                        <el-form :inline="true" :model="formInline">
+                                <el-form-item label="计划单号">
+                                    <el-select v-model="formInline.CurrentBrandNum" placeholder="计划单号" @change="onSubmit">
+                                        <el-option v-for="(item,index) in selectBrandNum" :key='index'  :label='item.BrandCodelabel'  :value="item.BrandCodevalue" ></el-option>
+                                    </el-select>
+                                </el-form-item>
+                        </el-form>
+                        <div id="main" style="width:100%; height:750px;" v-loading="loading">排产进度表</div>
+                    </div>
                 </el-col>
             </el-row>
         </el-col>
@@ -73,7 +69,7 @@ export default {
             }).then(res => {
                 var arr=res.data.data.rows
                 this.ydata=arr.map((res) => {
-                    return '批次'+res.BatchID
+                    return res.BatchID
                 })
                 this.PlanStartTime=arr.map((res) => {
                     return new Date(res.PlanBeginTime.replace('-', '/'))
@@ -96,20 +92,23 @@ export default {
                 },
                 legend: {
                     y: 'top',
-                    data: ['计划时间'], //修改的地方1,
+                    data: ['计划完成时间'], //修改的地方1,
                     textStyle: {
                       color: '#666' //设置图例文字颜色
                   }
                 },
                 grid: {
                     containLabel: true,
-                    left: 20
+                    left: 20,
+                    bottom:10
                 },
                 xAxis: {
+                    name:'时间',
                     type: 'time',
                     axisLine: { lineStyle: { color: '#666' } } //控制x轴坐标文字颜色
                 },
                 yAxis: {
+                    name:'批次',
                     data:[...ydata],
                     axisLine: { lineStyle: { color: '#666' } }  //控制y轴坐标文字颜色
                 },
@@ -119,8 +118,8 @@ export default {
                         var res = params[0].name + "</br>"
                         var date0 = params[0].data;
                         var date1 = params[1].data;
-                        date0 = date0.getFullYear() + "-" + (date0.getMonth() + 1) + "-" + (date0.getDate().toString().padStart(2,0))+ "  " + (date0.getHours().toString().padStart(2,0))+':'+date0.getMinutes()+':'+(date0.getSeconds().toString().padStart(2,0));
-                        date1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + (date1.getDate().toString().padStart(2,0))+ "  " + (date1.getHours().toString().padStart(2,0))+':'+date1.getMinutes()+':'+(date1.getSeconds().toString().padStart(2,0));
+                        date0 = date0.getFullYear() + "-" + (date0.getMonth() + 1) + "-" + (date0.getDate().toString().padStart(2,0))+ "  " + (date0.getHours().toString().padStart(2,0))+':'+(date0.getMinutes().toString().padStart(2,0))+':'+(date0.getSeconds().toString().padStart(2,0));
+                        date1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + (date1.getDate().toString().padStart(2,0))+ "  " + (date1.getHours().toString().padStart(2,0))+':'+(date1.getMinutes().toString().padStart(2,0))+':'+(date1.getSeconds().toString().padStart(2,0));
                         res += params[0].seriesName + "~" + params[1].seriesName + ":</br>" + date0 + "~" + date1 + "</br>"
                         return res;
                     }
@@ -140,7 +139,7 @@ export default {
                         barMaxWidth: 30,
                     },
                     {
-                        name: '计划时间',
+                        name: '计划完成时间',
                         type: 'bar',
                         stack: 'test1',
                         //修改地方2
@@ -206,7 +205,7 @@ export default {
           if(res.data.code === "200"){
            var arr=res.data.data.rows
            this.selectBrandNum=arr.map((res, index) => {
-               return {BrandCodelabel:'计划编号'+res.PlanNum,BrandCodevalue:res.PlanNum}
+               return {BrandCodelabel:res.PlanNum,BrandCodevalue:res.PlanNum}
            })
           }else{
             that.$message({

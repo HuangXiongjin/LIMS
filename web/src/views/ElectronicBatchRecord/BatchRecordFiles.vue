@@ -41,6 +41,17 @@
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 <div slot="tip" class="el-upload__tip">只能上传.docx 批记录表</div>
               </el-upload>
+              <el-button type="primary" @click="FileHTMLPreview" size='small'>点击预览</el-button>
+                <el-dialog title="文件预览" :visible.sync="dialogTableVisible" style="height:800px;">
+                  <el-col :span="24">
+                    <div v-html="filebyte" style="clear:both;overflow:hidden;">
+
+                    </div>
+                  </el-col>
+                  <div slot="footer" class="dialog-footer"> 
+                    <el-button @click="dialogTableVisible = false">取 消</el-button> 
+                  </div>
+              </el-dialog>
             </div>
           </el-col>
         </el-row>
@@ -65,14 +76,19 @@
           fileList: [],
           ActiveIndex:10,
           FileName:'',
-          scheduleTableData:[]
+          scheduleTableData:[],
+          filebyte:'',
+          dialogTableVisible:false
       }
     },
     created(){
       this.getScheduleTableData()
     },
     methods:{
-      handlePreview(file){
+      FileHTMLPreview(){
+        this.dialogTableVisible = true
+      },
+      handlePreview(file){ //点击文件列表提示是否下载
         var FileName=file.name
         var params={
           FileName:FileName
@@ -142,7 +158,7 @@
           this.results = this.scheduleTableData
         }
       },
-      clickBrandTag(BrandName,BrandCode){
+      clickBrandTag(BrandName,BrandCode){ //点击左侧品名标签
         this.BrandActive = BrandName
         this.BrandCode = BrandCode
         this.getBrandProcessTableData(BrandName)
@@ -196,6 +212,7 @@
         })
       },
       handleBeforeUpload(file){
+        let that = this
         var FileExt = file.name.replace(/.+\./, "");
         if (['doc', 'docx'].indexOf(FileExt.toLowerCase()) === -1){ 
           this.$message({ type: 'warning', message: '请上传后缀名为[doc,docx]的附件！' });
@@ -205,7 +222,7 @@
             reader.readAsArrayBuffer(file)
             reader.onload=function(){
               Mammoth.convertToHtml({ arrayBuffer: reader.result }).then((res) => {
-                console.log(res)
+                that.filebyte=res.value
               })
             }
             this.FileName=file.name
@@ -220,10 +237,8 @@
               if(res.data.code==='200'){
                 this.showPGL(this.PUName,this.PUCode,this.ActiveIndex)
               }
-            })
-            
-          }
-            
+            })         
+          }         
       },
       handleRemove(file,fileList){
         var fileID=file.ID

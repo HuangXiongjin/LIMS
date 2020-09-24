@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">生产调度信息</span>
+        <span style="margin-left: 10px;" class="text-size-18">生产调度信息</span>
       </div>
       <el-row :gutter="15">
         <el-col :span="4">
