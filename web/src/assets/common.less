@@ -404,12 +404,25 @@
   border-spacing: 0;
   margin:0;
   padding:0;
+  display: grid;
 }
 .elementTable th,.elementTable td{
   border-left: 1px solid #1B1E27;
   border-top: 1px solid #1B1E27;
   font-weight: normal;
   padding: 10px;
+}
+.elementTable p{
+  display: table-caption;
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+.elementTable tr td p{
+  display: block;
+  text-align: left;
+  margin-bottom: 0;
+  font-size: 14px;
 }
 /* 字体大小 */
 .text-size-12{
