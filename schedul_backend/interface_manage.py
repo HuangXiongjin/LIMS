@@ -201,8 +201,9 @@ def WMS_SendMatilInfo():
                 url = Global.WMSurl + "api/WbeApi/RecvMaterialInfon"
                 dir = {}
                 dir["material_list"] = dic
-                postdata = urllib.parse.urlencode(json.dumps(dir)).encode('utf-8')
-                req = urllib.request.Request(url=url, headers=headers, data=postdata, method='POST')
+                postdata = urllib.parse.urlencode(dir).encode('utf-8')
+                dir = json.dumps(dir)
+                req = urllib.request.Request(url=url, headers=headers, data=dir, method='POST')
                 resp = urllib.request.urlopen(req)
                 print(resp.get("code"))
                 if resp != "SUCCESS":

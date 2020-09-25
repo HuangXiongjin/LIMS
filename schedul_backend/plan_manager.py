@@ -284,6 +284,7 @@ def batchmodelinsert():
             BrandCode = data.get("BrandCode")
             PUIDName = data.get("PUIDName")
             FileName = data.get("FileName")
+            Parameter = data.get("Parameter")
             #删除之前存的
             oclass = db_session.query(BatchModel).filter(BatchModel.BrandCode == BrandCode,
                                                          BatchModel.PUCode == PUCode).all()
@@ -300,6 +301,7 @@ def batchmodelinsert():
             bm.FileName = FileName
             bm.FilePath = os.path.join(os.path.realpath(r"system_backend\SystemManagement\files"), FileName)
             bm.UserName = current_user.Name
+            bm.Parameter = Parameter
             db_session.add(bm)
             db_session.commit()
             return json.dumps({"code": "200", "message": "上传成功！"})
@@ -324,6 +326,12 @@ def batchmodelselect():
                 dir["ID"] = oc.ID
                 dir["FilePath"] = oc.FilePath
                 dir["FileName"] = oc.FileName
+                dir["BrandCode"] = oc.FileName
+                dir["BrandName"] = oc.FileName
+                dir["PUIDName"] = oc.FileName
+                dir["PUCode"] = oc.PUCode
+                dir["UserName"] = oc.UserName
+                dir["Parameter"] = oc.Parameter
                 dir_list.append(dir)
             return json.dumps({"code": "200", "message": dir_list})
         except Exception as e:
