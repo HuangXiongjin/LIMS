@@ -174,7 +174,7 @@
               <span class="text-size-14">{{ item.PUName }}</span>
             </div>
           </div>
-          <div class="platformContainer" v-for="(item,index) in processList" :key="index" v-if="item.PUName === ActivePUName">
+          <div class="platformContainer" v-for="(item,index) in processList" :key="item.PUName" v-if="item.PUName === ActivePUName">
             <el-popover
               placement="right"
               width="360"
@@ -196,10 +196,10 @@
           </div>
         </el-col>
       </el-row>
-      <el-row v-if="steps == 3">
+      <el-row v-show="steps == 3">
           <el-col :span='24'>
                     <div class="platformContainer" style="backgroundColor:#fff;">
-                    <div id="main" style="width:100%; height:750px;clear:both;overflow:hidden; " v-loading="loading">排产进度表</div>
+                    <div id="main" style="width:100%; height:750px;clear:both;overflow:hidden;" v-loading="loading"></div>
                 </div>
           </el-col>
       </el-row>

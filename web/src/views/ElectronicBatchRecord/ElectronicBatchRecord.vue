@@ -88,7 +88,6 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          console.log(res.data.data.rows)
           var arr=res.data.data.rows
           this.currentBrandBatch=arr.forEach((item, index) => {
             if(item.BrandName===this.BrandActive){
@@ -96,6 +95,7 @@
               this.planTableData.data=this.currentBrandBatch
               this.planTableData.total = this.currentBrandBatch.length
             }else{
+              this.planTableData.data=[]
               this.planTableData.total = 0
             }
           })
