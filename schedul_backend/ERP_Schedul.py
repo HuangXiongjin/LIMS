@@ -469,8 +469,9 @@ def addEquipmentBatchRunTime():
         data = request.values
         try:
             BatchID = data.get('BatchID')
+            PlanNum = data.get('PlanNum')
             processList = json.loads(data.get('processList'))
-            oclass = db_session.query(PlanManager).filter(PlanManager.BatchID == BatchID).first()
+            oclass = db_session.query(PlanManager).filter(PlanManager.BatchID == BatchID, PlanManager.PlanNum == PlanNum).first()
             dir = {}
             if oclass:
                 for pl in processList:
@@ -496,7 +497,7 @@ def addEquipmentBatchRunTime():
                                        EquipmentBatchRunTime.EQPCode == el.get("EQPCode"), EquipmentBatchRunTime.PUCode == pl.get("PUCode")).first()
                             if ebrt:
                                 db_session.delete(ebrt)
-                oclass.PlanStatus = Global.PlanStatus.Check.value
+                oclass.PlanStatus = Global.PlanStatus.Confirm.value
                 db_session.commit()
             return json.dumps({"code": "200", "message": "保存成功！", "data": "OK"})
         except Exception as e:
