@@ -402,7 +402,7 @@ def planschedul():
                     pm.PlanNum = PlanNum
                     pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
                     pm.BatchID = BatchNo + 1
-                    pm.PlanQuantity = float(oclass.PlanQuantity)/int(BatchSum)
+                    pm.PlanQuantity = round(float(oclass.PlanQuantity)/int(BatchSum), 2)
                     pm.Unit = "KG"
                     pm.BrandCode = oclass.BrandCode
                     pm.BrandName = oclass.BrandName
