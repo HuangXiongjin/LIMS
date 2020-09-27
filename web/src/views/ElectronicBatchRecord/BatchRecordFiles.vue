@@ -89,6 +89,14 @@
       //获取存取的字符
       FileHTMLPreview(){
         this.dialogTableVisible = true
+        if(this.dialogTableVisible){
+          //$(".elementTable").find("p").prop("contenteditable",true)
+          $("body").on("click",$(".elementTable p"),function(){
+            console.log($(this).html())
+            $(this).attr("contenteditable","true")
+          })
+        }
+        
       },
       handlePreview(file){ //点击文件列表提示是否下载
         var FileName=file.name
