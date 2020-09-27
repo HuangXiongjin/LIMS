@@ -496,7 +496,7 @@ def addEquipmentBatchRunTime():
                                        EquipmentBatchRunTime.EQPCode == el.get("EQPCode"), EquipmentBatchRunTime.PUCode == pl.get("PUCode")).first()
                             if ebrt:
                                 db_session.delete(ebrt)
-                oclass.PlanStatus = Global.PlanStatus.Confirm.value
+                oclass.PlanStatus = Global.PlanStatus.Check.value
                 db_session.commit()
             return json.dumps({"code": "200", "message": "保存成功！", "data": "OK"})
         except Exception as e:
