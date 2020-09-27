@@ -67,7 +67,7 @@ def makeZYPlanZYTask(id):
                 zyplan.PlanDate = ocalss.PlanBeginTime
                 zyplan.PlanNo = ocalss.SchedulePlanCode
                 zyplan.BatchID = ocalss.BatchID
-                zyplan.PlanSeq = pu.Seq
+                zyplan.PlanSeq = i.Seq
                 zyplan.PUCode = i.PUCode
                 zyplan.PlanType = Global.PLANTYPE.SCHEDULE.value
                 zyplan.BrandCode = ocalss.BrandCode
@@ -221,7 +221,7 @@ def createZYPlanZYtask():
             if len(jsonstr) > 10:
                 PlanStatus = data.get("PlanStatus")
                 ID = data.get("ID")
-                if PlanStatus == "下发":
+                if PlanStatus == "已下发":
                     returnmsg = makeZYPlanZYTask(ID)
                     if (returnmsg == False):
                         return json.dumps({"code": "500", "message": "下发失败！"})
@@ -229,11 +229,13 @@ def createZYPlanZYtask():
                     oclassplan.PlanStatus = Global.PlanStatus.Realse.value
                     db_session.commit()
                     return json.dumps({"code": "200", "message": "下发成功！！"})
-                else:
+                elif PlanStatus == "撤回":
                     oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
-                    oclassplan.PlanStatus = Global.PlanStatus.Realse.value
+                    oclassplan.PlanStatus = Global.PlanStatus.Recall.value
                     db_session.commit()
                     return json.dumps({"code": "200", "message": "撤回成功！！"})
+                else:
+                    return json.dumps({"code": "200", "message": "批次计划状态不正确！"})
         except Exception as e:
             print(e)
             logger.error(e)
