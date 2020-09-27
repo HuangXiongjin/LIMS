@@ -401,6 +401,7 @@ def planschedul():
                     pm = PlanManager()
                     pm.PlanNum = PlanNum
                     pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
+                    nowtime = datetime.datetime.now().strptime("%Y-%m-%d %H:%M:%S").replace("","-")
                     pm.BatchID = BatchNo + 1
                     pm.PlanQuantity = round(float(oclass.PlanQuantity)/int(BatchSum), 2)
                     pm.Unit = "KG"
@@ -416,6 +417,7 @@ def planschedul():
                         hours=-end)).strftime("%Y-%m-%d %H:%M:%S")
                     pm.PlanBeginTime = PlanBeginTime
                     pm.PlanEndTime = PlanEndTime
+                    pm.BrandType = oclass.BrandType
                     db_session.add(pm)
                 db_session.commit()
             return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})

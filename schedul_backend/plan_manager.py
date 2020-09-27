@@ -121,16 +121,9 @@ def makePlan():
             json_str = json.dumps(data.to_dict())
             if len(json_str) > 10:
                 BatchID = data.get("BatchID")
-                PlanQuantity = data.get("PlanQuantity")
-                PlanBeginTime = data.get("PlanBeginTime")
                 PlanEndTime = data.get("PlanEndTime")
-                Unit = data.get("Unit")
-                PlanNum = data.get("PlanNum")
                 BrandCode = data.get("BrandCode")
-                BrandName = data.get("BrandName")
-                BrandType = data.get("BrandType")
                 PlanBeginTime = data.get("PlanBeginTime")
-                PlanEndTime = data.get("PlanEndTime")
                 #批次号判重
                 pcBatchID = db_session.query(PlanManager.BatchID).filter(PlanManager.BatchID == BatchID,
                                                                        PlanManager.BrandCode == BrandCode).first()
@@ -139,14 +132,15 @@ def makePlan():
                 pm = PlanManager()
                 pm.SchedulePlanCode = PlanEndTime[0:10]
                 pm.BatchID = BatchID
-                pm.PlanQuantity = PlanQuantity
-                pm.PlanNum = PlanNum
-                pm.Unit = Unit
+                pm.PlanQuantity = data.get("PlanQuantity")
+                pm.PlanNum = data.get("PlanNum")
+                pm.Unit = data.get("Unit")
                 pm.BrandCode = BrandCode
-                pm.BrandName = BrandName
+                pm.BrandName = data.get("BrandName")
                 pm.PlanStatus = Global.PlanStatus.NEW.value
-                pm.PlanBeginTime = PlanBeginTime
-                pm.PlanEndTime = PlanEndTime
+                pm.PlanBeginTime = data.get("PlanBeginTime")
+                pm.PlanEndTime = data.get("PlanEndTime")
+                pm.BrandType = data.get("BrandType")
                 db_session.add(pm)
                 sp = SchedulePlan()
                 SchedulePlanCode = PlanEndTime[0:10]
