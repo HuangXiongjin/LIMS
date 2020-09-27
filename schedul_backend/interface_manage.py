@@ -178,7 +178,7 @@ headers = {
 @interface_manage.route('/WMS_SendMatilInfo', methods=['GET', 'POST'])
 def WMS_SendMatilInfo():
     '''同步物料信息到WMS'''
-    if request.method == 'GET':
+    if request.method == 'POST':
         data = request.values
         try:
             jsonstr = json.dumps(data.to_dict())
