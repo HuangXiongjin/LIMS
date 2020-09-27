@@ -878,6 +878,7 @@
     height: 40px;
     line-height: 40px;
     color: #000;
+
   }
   .pactive{
     background-color:#228AD5;
