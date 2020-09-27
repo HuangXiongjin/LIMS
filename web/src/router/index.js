@@ -31,6 +31,7 @@ import scheduling from '@/views/scheduling/scheduling'
 import planningScheduling from '@/views/scheduling/planningScheduling'
 import sendWMS from '@/views/scheduling/sendWMS'
 import sendMaterialDetail from '@/views/scheduling/sendMaterialDetail'
+import sendMaterial from '@/views/scheduling/sendMaterial'
 import ProcessPlanTask from '@/views/scheduling/ProcessPlanTask'
 //生产数据
 import MaterialBalanceStatistics from '@/views/production/MaterialBalanceStatistics'
@@ -87,7 +88,8 @@ export default new Router({
         {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度',type:"排产调度系统"},component:planningScheduling},
         {path:'/sendWMS',name:'sendWMS',meta:{ title:'发送计划到WMS',type:"排产调度系统"},component:sendWMS},
         {path:'/sendMaterialDetail',name:'sendMaterialDetail',meta:{ title:'发送物料明细',type:"排产调度系统"},component:sendMaterialDetail},
-        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'调度明细',type:"排产调度系统"},component:ProcessPlanTask},
+        {path:'/sendMaterial',name:'sendMaterial',meta:{ title:'发送物料信息',type:"排产调度系统"},component:sendMaterial},
+        {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'调度计划明细',type:"排产调度系统"},component:ProcessPlanTask},
         {path:'/schedulingPlan',name:'schedulingPlan',meta:{ title:'排产计划',type:"排产调度系统"},component:schedulingPlan},
 
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据系统"},component:MaterialBalanceStatistics},

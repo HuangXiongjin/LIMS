@@ -11,7 +11,7 @@
         <div class="platformContainer">
               <p>当前选择的品名：{{BrandActive}}</p>
         </div>
-        <div class="platformContainer">
+        <div class="platformContainer" v-if="currentBatch">
               <el-table
                   :data="planTableData.data"
                   highlight-current-row
@@ -34,6 +34,14 @@
                   </el-pagination>
             </div>
         </div>
+        <div class="platformContainer" v-if="!currentBatch">
+           <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer">
+                    <div class="container-col">
+                      <span class="text-size-14">{{ item.PUName }}</span>
+                    </div>
+            </div>
+            <div><el-button type="primary" @click="backTab">返回上一级</el-button></div>
+        </div>
     </el-col>
   </el-row>
 </template>
@@ -54,9 +62,10 @@
           offset: 1,//当前处于多少页
           total: 0,//总的多少页
         },
-        currentBatch:{},
+        currentBatch:true,//控制显示表格 boolen
         multipleSelection:[],
-        currentBrandBatch:[]
+        currentBrandBatch:[],
+        inProcessList:[]
       }
     },
     created(){
@@ -126,9 +135,11 @@
         })
       },
       TabCurrentChange(e){ //点击显示当前的tab行显示详细信息
-        this.currentBatch=e
+        this.currentBatch=false
+        this.getBrandProcessTableData(e.BrandName)
         this.$refs.multipleTable.clearSelection();
         this.$refs.multipleTable.toggleRowSelection(e)
+
       },
        handleSizeChange(limit){ //每页条数切换
         this.planTableData.limit = limit
@@ -141,6 +152,36 @@
        handleSelectionChange(row){
         this.multipleSelection = row
       },
+       getBrandProcessTableData(BrandName){ //查询当前品名绑定的工序
+        var that = this
+        var params = {
+          tableName: "ProductUnit",
+          field:"BrandName",
+          fieldvalue:BrandName,
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            function compare(property){
+              return function(a,b){
+                var value1 = a[property];
+                var value2 = b[property];
+                return value1 - value2;
+              }
+            }
+            that.inProcessList = res.data.data.rows.sort(compare('Seq'))
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
+      backTab(){ //返回上一级下发表格
+        this.currentBatch=true
+      }
     }
   }
 </script>

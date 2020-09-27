@@ -2,12 +2,12 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-18">发送物料明细到WMS</span>
+        <span style="margin-left: 10px;" class="text-size-18">发送物料信息到WMS</span>
       </div>
       <div class="platformContainer">
         <el-form :inline="true">
           <el-form-item>
-            <el-button type="primary" size="small" @click="sendToWMS">发送物料明细</el-button>
+            <el-button type="primary" size="small" @click="sendToWMS">发送物料信息</el-button>
           </el-form-item>
           <el-form-item class="floatRight">
             <el-radio-group v-model="radioGroup" size="small" @change="Selectstatus">
@@ -17,13 +17,10 @@
         </el-form>
         <el-table :data="PlanManagerTableData.data" border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
           <el-table-column type="selection"></el-table-column>
-          <el-table-column prop="BatchID" label="批次号"></el-table-column>
-          <el-table-column prop="FeedingSeq" label="投料顺序"></el-table-column>
-          <el-table-column prop="BucketNum" label="桶号"></el-table-column>
-          <el-table-column prop="BucketWeight" label="重量"></el-table-column>
-          <el-table-column prop="Flag" label="标识（桶/托盘）"></el-table-column>
-          <el-table-column prop="Unit" label="单位"></el-table-column>
-          <el-table-column prop="Description" label="描述"></el-table-column>
+          <el-table-column prop="MATCode" label="物料编码"></el-table-column>
+          <el-table-column prop="MATName" label="物料名称"></el-table-column>
+          <el-table-column prop="MATType" label="物料类型"></el-table-column>
+          <el-table-column prop="Desc" label="物料描述"></el-table-column>
           <el-table-column prop="SendFlag" label="发送WMS标识"></el-table-column>
         </el-table>
         <div class="paginationClass">
@@ -43,7 +40,7 @@
 
 <script>
   export default {
-    name: "sendMaterialDetail",
+    name: "sendMaterialInfo",
     data(){
       return{
         PlanManagerTableData:{
@@ -68,7 +65,7 @@
       getPlanManagerTableData(){
         var that = this
         var params = {
-          tableName: "BatchMaterialInfo",
+          tableName: "Material",
           field:"SendFlag",
           fieldvalue:this.radioGroup,
           limit:this.PlanManagerTableData.limit,
@@ -113,11 +110,11 @@
             mulId.push({id:item.ID});
           })
           params.sendData = JSON.stringify(mulId)
-          this.$confirm('确定发送所选计划的物料明细到WMS？', '提示', {
+          this.$confirm('确定发送所选计划的物料信息到WMS？', '提示', {
             distinguishCancelAndClose:true,
             type: 'warning'
           }).then(()  => {
-            this.axios.post("/api/WMS_SendMatils",this.qs.stringify(params)).then(res =>{
+            this.axios.post("/api/WMS_SendMatilInfo",this.qs.stringify(params)).then(res =>{
               if(res.data.code === "200"){
                 this.$message({
                   type: 'success',
