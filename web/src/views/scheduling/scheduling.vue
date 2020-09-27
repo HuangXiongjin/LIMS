@@ -196,7 +196,7 @@
           </div>
         </el-col>
       </el-row>
-      <el-row v-if="steps == 3">
+      <el-row v-show="steps == 3">
           <el-col :span='24'>
                     <div class="platformContainer" style="backgroundColor:#fff;">
                     <div id="main" style="width:100%; height:750px;clear:both;overflow:hidden;" v-loading="loading"></div>
