@@ -547,13 +547,13 @@ class PlanManager(Base):
     BatchID = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 计划重量:
-    PlanQuantity = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    PlanQuantity = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 单位:
-    Unit = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 品名编码:
-    BrandCode = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 品名:
     BrandName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
@@ -565,16 +565,16 @@ class PlanManager(Base):
     PlanStatus = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 计划开始时间:
-    PlanBeginTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    PlanBeginTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 计划完成时间:
-    PlanEndTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    PlanEndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 实际开始时间:
-    ActBeginTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    ActBeginTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 实际完成时间:
-    ActEndTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    ActEndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 调度类型:
     Type = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
@@ -739,11 +739,16 @@ class BatchMaterialInfo(Base):
     # 重量:
     BucketWeight = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
+    # 标识（桶/托盘）:
+    Flag = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
     # 单位:
     Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 描述:
     Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+
 
 
 # 批记录模板

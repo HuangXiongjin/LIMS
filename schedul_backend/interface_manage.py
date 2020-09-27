@@ -9,9 +9,10 @@ from common.BSFramwork import AlchemyEncoder
 from suds.client import Client
 import common.Global
 from common.batch_plan_model import ZYPlan, ZYPlanWMS, StapleProducts, WMSTrayNumber, MaterialBOM, SchedulingStock, \
-    WMStatusLoad, Material
+    WMStatusLoad, Material, PlanManager, ProcessUnit, BatchMaterialInfo
 from database.connect_db import CONNECT_DATABASE
 from common import Global
+import json
 
 login_manager = LoginManager()
 # 创建对象的基类
@@ -166,16 +167,7 @@ class WMS_Interface(ServiceBase):
             return json.dumps(e)
 
 
-import json
-import urllib.request
-import urllib.parse
-
-
-def http_post(url, data_json):
-    jdata = json.dumps(data_json)
-    req = urllib
-    response = urllib.urlopen(req)
-    return response.read()
+import requests
 headers = {
     'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.108 Safari/537.36',
     'Referer': 'https://httpbin.org/post',
@@ -201,14 +193,12 @@ def WMS_SendMatilInfo():
                 url = Global.WMSurl + "api/WbeApi/RecvMaterialInfon"
                 dir = {}
                 dir["material_list"] = dic
-                postdata = urllib.parse.urlencode(dir).encode('utf-8')
                 dir = json.dumps(dir)
-                req = urllib.request.Request(url=url, headers=headers, data=dir, method='POST')
-                resp = urllib.request.urlopen(req)
-                print(resp.get("code"))
-                if resp != "SUCCESS":
-                    return json.dumps("调用WMS_SendPlan接口报错！"+resp)
-                oclass.IsSend = "10"
+                resp = requests.post(url, json=dir, headers=headers)
+                responjson = json.loads(resp.content)
+                responjson = eval(responjson)
+                if responjson.get("code") != "0":
+                    return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！"+responjson.get("msg")})
                 db_session.commit()
                 return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
@@ -216,63 +206,67 @@ def WMS_SendMatilInfo():
             return json.dumps("调用WMS_SendPlan接口报错！")
 
 
-@interface_manage.route('/WMS_SendPlan', methods=['GET', 'POST'])
-def WMS_SendPlan():
-    '''发送备料计划到WMS'''
+@interface_manage.route('/WMS_SendZYPlan', methods=['GET', 'POST'])
+def WMS_SendZYPlan():
+    '''发送投料计划到WMS'''
     if request.method == 'POST':
         data = request.values
         try:
             jsonstr = json.dumps(data.to_dict())
             if len(jsonstr) > 10:
                 jsonnumber = re.findall(r"\d+\.?\d*", jsonstr)
+                dic = []
                 for key in jsonnumber:
                     id = int(key)
-                    try:
-                        dic = []
-                        oclass = db_session.query(ZYPlanWMS).filter(ZYPlanWMS.ID == id).first()
-                        # IsSend = str(int(oclass.IsSend)+1)
-                        if oclass.IsSend == "10":
-                            return json.dumps("数据已发送过WMS！")
-                        oclss = db_session.query(MaterialBOM).filter(MaterialBOM.ProductRuleID == oclass.BrandID).all()
-                        for ocl in oclss:
-                            # StoreDef_ID = "1"
-                            # if ocl.MATID in ("100005", "100009", "2120"):
-                            #     StoreDef_ID = "2"
-                            num = str(float(ocl.BatchTotalWeight)*float(ocl.BatchPercentage))
-                            dic.append({"BillNo":str(oclass.BatchID)+str(oclass.BrandID),"BatchNo":str(oclass.BatchID),"btype":"203","StoreDef_ID":"1","mid":ocl.MATID,"num":num})
-                        jsondic = json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
-                        client = Client(common.Global.WMSurl)
-                        ret = client.service.Mes_Interface("billload", jsondic)
-                        if ret[0] != "SUCCESS":
-                            return json.dumps("调用WMS_SendPlan接口报错！"+ret[1])
-                        oclass.IsSend = "10"
-                        db_session.commit()
-                        return json.dumps({"code": "200", "message": "OK"})
-                    except Exception as ee:
-                        return json.dumps("调用WMS_SendPlan接口报错！")
+                    plan = db_session.query(PlanManager).filter(PlanManager.ID == id).first()
+                    process = db_session.query(ProcessUnit).filter(ProcessUnit.PUName == "投料").first()
+                    oclass = db_session.query(ZYPlan).filter(ZYPlan.BrandCode == plan.BrandCode, ZYPlan.PUCode == process.PUCode).first()
+                    dic.append({"PlanNo": oclass.PlanNo, "ZYPlanNo": oclass.ID, "BrandCode": oclass.BrandCode,
+                                "BrandName": oclass.BrandName, "BatchID": oclass.BatchID,
+                                "Weight": oclass.PlanQuantity, "Unit": oclass.Unit})
+                url = Global.WMSurl + "api/WbeApi/RecvTransInfon"
+                dir = {}
+                dir["zyplan_list"] = dic
+                dir = json.dumps(dir)
+                resp = requests.post(url, json=dir, headers=headers)
+                responjson = json.loads(resp.content)
+                responjson = eval(responjson)
+                if responjson.get("code") != "0":
+                    return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！" + responjson.get("msg")})
+                db_session.commit()
+                return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
             print("调用WMS_SendPlan接口报错！")
             return json.dumps("调用WMS_SendPlan接口报错！")
 @interface_manage.route('/WMS_SendMatils', methods=['GET', 'POST'])
 def WMS_SendMatils():
-    '''发送SAP物料信息到WMS'''
+    '''发送物料明细到WMS'''
     if request.method == 'POST':
         data = request.values
         try:
             jsonstr = json.dumps(data.to_dict())
-            jsonnumber = re.findall(r"\d+\.?\d*", jsonstr)
-            dic = []
-            for key in jsonnumber:
-                id = int(key)
-                oclass = db_session.query(MaterialBOM).filter(MaterialBOM.ID == id).first()
-                dic.append(oclass)
-            jsondic = json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
-            client = Client(common.Global.WMSurl)
-            ret = client.service.Mes_Interface("MatDetLoad", jsondic)
-            if ret["Mes_InterfaceResult"] == "SUCCESS":
+            if len(jsonstr) > 10:
+                jsonnumber = re.findall(r"\d+\.?\d*", jsonstr)
+                dic = []
+                for key in jsonnumber:
+                    id = int(key)
+                    oclass = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.ID == id).first()
+                    process = db_session.query(ProcessUnit).filter(ProcessUnit.PUName == "投料").first()
+                    zyplan = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID, ZYPlan.PUCode == process.PUCode).first()
+                    dic.append({"ZYPlanNo": zyplan.ID, "BrandCode": zyplan.BrandCode, "BrandName": zyplan.BrandName,
+                                "BatchID": oclass.BatchID, "FlagCode": oclass.BucketNum,
+                                "Weight": oclass.BucketWeight, "Unit": oclass.Unit, "Flag": oclass.Flag, "Seq": oclass.FeedingSeq})
+                url = Global.WMSurl + "api/WbeApi/RecvContanerInfon"
+                dir = {}
+                dir["batchmaterial_list"] = dic
+                dir = json.dumps(dir)
+                resp = requests.post(url, json=dir, headers=headers)
+                responjson = json.loads(resp.content)
+                responjson = eval(responjson)
+                if responjson.get("code") != "0":
+                    return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！" + responjson.get("msg")})
+                db_session.commit()
                 return json.dumps({"code": "200", "message": "OK"})
-            else:
-                return json.dumps(ret["ErrData"])
         except Exception as e:
             print("调用WMS_SendPlan接口报错！")
             return json.dumps("调用WMS_SendPlan接口报错！")

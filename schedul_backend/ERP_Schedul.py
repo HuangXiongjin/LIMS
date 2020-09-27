@@ -337,6 +337,7 @@ def batchequimentselect():
             oclass = db_session.query(PlanManager).filter(PlanManager.BatchID == BatchID).first()
             dir = {}
             if oclass:
+                pres = db_session.query(ProductUnit).filter(ProductUnit.ID == 17).all()
                 pres = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == oclass.BrandCode).all()
                 dir_list = []
                 for pre in pres:
