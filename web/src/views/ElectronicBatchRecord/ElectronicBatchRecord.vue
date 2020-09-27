@@ -1,11 +1,9 @@
 <template>
   <el-row>
     <el-col :span="24">
-      <el-steps :active="steps" finish-status="wait" align-center class="marginBottom">
-        <el-step @click.native="clickStep(0)" class="cursor-pointer" title="备料"></el-step>
-        <el-step @click.native="clickStep(1)" class="cursor-pointer" title="煎煮"></el-step>
-        <el-step @click.native="clickStep(2)" class="cursor-pointer" title="浓缩"></el-step>
-      </el-steps>
+      <div class="page-title">
+        <span class="text-size-18">选择一条批次查看批记录</span>
+      </div>
     </el-col>
   </el-row>
 </template>
@@ -22,9 +20,7 @@
 
     },
     methods:{
-      clickStep(index){
-        this.steps = index
-      }
+
     }
   }
 </script>

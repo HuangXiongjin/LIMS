@@ -46,7 +46,7 @@ export default {
             ActiveIndex:10,
             FileName:'',
             scheduleTableData:[],
-            formInline: {CurrentBrandNum: '23'},
+            formInline: {CurrentBrandNum: '45'},
             selectBrandNum:[],
             ydata:[],
             PlanStartTime:[],

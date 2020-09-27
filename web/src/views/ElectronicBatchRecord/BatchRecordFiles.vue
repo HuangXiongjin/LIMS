@@ -41,12 +41,10 @@
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 <div slot="tip" class="el-upload__tip">只能上传.docx 批记录表</div>
               </el-upload>
-              <el-button type="primary" @click="FileHTMLPreview" size='small'>点击预览</el-button>
-                <el-dialog title="文件预览" :visible.sync="dialogTableVisible" style="height:800px;">
+              <el-button type="primary" @click="FileHTMLPreview" size='small' v-if='ButtonVisible'>点击预览</el-button>
+                <el-dialog title="文件预览" :visible.sync="dialogTableVisible" width="60%" style="height:800px;">
                   <el-col :span="24">
-                    <div v-html="filebyte" style="clear:both;overflow:hidden;">
-
-                    </div>
+                    <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
                   </el-col>
                   <div slot="footer" class="dialog-footer"> 
                     <el-button @click="dialogTableVisible = false">取 消</el-button> 
@@ -78,15 +76,25 @@
           FileName:'',
           scheduleTableData:[],
           filebyte:'',
-          dialogTableVisible:false
+          dialogTableVisible:false,
+          ButtonVisible:false
       }
     },
     created(){
       this.getScheduleTableData()
     },
-    methods:{
+    methods:{ 
+      //获取存取的字符
       FileHTMLPreview(){
         this.dialogTableVisible = true
+        if(this.dialogTableVisible){
+          //$(".elementTable").find("p").prop("contenteditable",true)
+          $("body").on("click",$(".elementTable p"),function(){
+            console.log($(this).html())
+            $(this).attr("contenteditable","true")
+          })
+        }
+        
       },
       handlePreview(file){ //点击文件列表提示是否下载
         var FileName=file.name
@@ -103,7 +111,7 @@
           this.$message({
             type: 'info',
             message: '已取消下载'
-          });          
+          });
         });        
       },
       showPGL(PUName,PUCode,e){ //点击工艺按钮 
@@ -117,6 +125,12 @@
         }
         this.axios.get('/api/batchmodelselect',{params:params}).then((res) => {
           if(res.data.code==='200'){
+            if(res.data.message.length!==0){
+              this.ButtonVisible=true
+              this.filebyte=res.data.message[0].Parameter
+            }else{
+              this.ButtonVisible=false
+            }
             this.fileList=res.data.message.map(item=>{
               return {name:item.FileName,url:item.FilePath,ID:item.ID}
             })
@@ -222,23 +236,24 @@
             reader.readAsArrayBuffer(file)
             reader.onload=function(){
               Mammoth.convertToHtml({ arrayBuffer: reader.result }).then((res) => {
-                that.filebyte=res.value
-              })
-            }
-            this.FileName=file.name
-            var params={
-              BrandName:this.BrandActive,
-              BrandCode:this.BrandCode,
-              PUCode:this.PUCode,
-              PUIDName:this.PUName,
-              FileName:this.FileName,
-            }
-            this.axios.post('/api/batchmodelinsert',this.qs.stringify(params)).then((res) => {
-              if(res.data.code==='200'){
-                this.showPGL(this.PUName,this.PUCode,this.ActiveIndex)
+               that.filebyte=res.value
+               that.FileName=file.name
+               var params={
+                BrandName:that.BrandActive,
+                BrandCode:that.BrandCode,
+                PUCode:that.PUCode,
+                PUIDName:that.PUName,
+                FileName:that.FileName,
+                Parameter:that.filebyte
               }
-            })         
-          }         
+              that.axios.post('/api/batchmodelinsert',that.qs.stringify(params)).then((res) => {
+                if(res.data.code==='200'){
+                  that.showPGL(that.PUName,that.PUCode,that.ActiveIndex)
+                }
+            })
+              })
+            }    
+          }        
       },
       handleRemove(file,fileList){
         var fileID=file.ID
@@ -259,14 +274,16 @@
   .container-col{
     clear: both;
     overflow: hidden;
-    border:1px solid rgba(185,185,185,1);
+    border:1px solid #228AD5;
     background:#fff;
     border-radius: 4px;
-    padding: 15px;
+    padding: 0 15px;
     margin-bottom: 15px;
-    height: 50px;
+    height: 40px;
+    line-height: 40px;
   }
   .pactive{
-    background-color:rgba(211,237,239,1);
+    background-color:#228AD5;
   }
+  
 </style>

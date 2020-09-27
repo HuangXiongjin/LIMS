@@ -169,31 +169,30 @@
             <el-divider direction="vertical"></el-divider>
             <span>产品类型：{{ PlanManagerTableData.multipleSelection[0].BrandType }}</span>
           </div>
-          <div class="platformContainer">
-            <el-row :gutter="15">
-              <el-col :span="5" v-for="(item,index) in processList" :key="index">
-                <div class="marginBottom text-size-20">{{ item.PUName }}</div>
-                <el-popover
-                  placement="right"
-                  width="360"
-                  trigger="click">
-                  <el-checkbox border v-for="eq in item.eqList" v-model="eq.isSelected" :key="eq.EQPCode" class="marginBottom-10">
-                    {{ eq.EQPName }}-<span class="color-success" v-if="eq.EQPStatus">可用</span><span class="color-orange" v-if="!eq.EQPStatus">等待</span>
-                  </el-checkbox>
-                  <el-button slot="reference" size="small">选择设备</el-button>
-                </el-popover>
-                <!--<el-button type="primary" size="small">自动分配</el-button>-->
-                <p class="marginTop marginBottom-10 text-size-16">已分配设备</p>
-                <div class="marginBottom-10" v-for="eq in item.eqList" :key="eq.EQPCode" v-if="eq.isSelected">
-                  <p class="text-size-14 color-darkblue">{{ eq.EQPName }}</p>
-                  <el-form label-width="72px">
-                    <el-form-item label="等待时长">
-                      <el-input type="text" v-model="eq.waitTime" size="mini" style="width: 60px"></el-input>
-                    </el-form-item>
-                  </el-form>
-                </div>
-              </el-col>
-            </el-row>
+          <div v-for="(item, index) in processList" :key="index" class="list-complete-item" style="display:inline-block;marginRight:18px;cursor:pointer" @click='showPGL(item.PUName,item.PUCode,index)'>
+            <div class="container-col" :class='{"pactive":item.PUName===ActivePUName}'>
+              <span class="text-size-14">{{ item.PUName }}</span>
+            </div>
+          </div>
+          <div class="platformContainer" v-for="(item,index) in processList" :key="index" v-if="item.PUName === ActivePUName">
+            <el-popover
+              placement="right"
+              width="360"
+              trigger="click">
+              <el-checkbox border v-for="eq in item.eqList" v-model="eq.isSelected" :key="eq.EQPCode" class="marginBottom-10">
+                {{ eq.EQPName }}-<span class="color-success" v-if="eq.EQPStatus">可用</span><span class="color-orange" v-if="!eq.EQPStatus">等待</span>
+              </el-checkbox>
+              <el-button slot="reference" size="small">选择设备</el-button>
+            </el-popover>
+            <p class="marginTop marginBottom-10 text-size-16">已分配设备</p>
+            <div class="marginBottom-10" v-for="eq in item.eqList" :key="eq.EQPCode" v-if="eq.isSelected">
+              <p class="text-size-14 color-darkblue">{{ eq.EQPName }}</p>
+              <el-form label-width="72px">
+                <el-form-item label="等待时长">
+                  <el-input type="text" v-model="eq.waitTime" size="mini" style="width: 60px"></el-input>
+                </el-form-item>
+              </el-form>
+            </div>
           </div>
         </el-col>
       </el-row>
@@ -277,6 +276,7 @@
           BatchDuration:""
         },
         processList:[],
+        ActivePUName:"",
         ydata:[],
         PlanStartTime:[],
         PlanEndTime:[]
@@ -827,6 +827,9 @@
           }
         })
       },
+      showPGL(name,code){
+        this.ActivePUName = name
+      },
       savePlanEq(){
         var that = this
         var params = {
@@ -846,11 +849,24 @@
             });
           }
         })
-      }
+      },
     }
   }
 </script>
 
 <style scoped>
-
+   .container-col{
+    clear: both;
+    overflow: hidden;
+    border:1px solid #228AD5;
+    background:#fff;
+    border-radius: 4px;
+    padding: 0 15px;
+    margin-bottom: 15px;
+    height: 40px;
+    line-height: 40px;
+  }
+  .pactive{
+    background-color:#228AD5;
+  }
 </style>
