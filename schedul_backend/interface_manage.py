@@ -190,6 +190,7 @@ def WMS_SendMatilInfo():
                     oclass = db_session.query(Material).filter(Material.ID == id).first()
                     dic.append({"materialcode": oclass.MATCode, "materialName": oclass.MATName,
                                 "materialtype": oclass.MATType, "Unit": "", "specification": oclass.Grade})
+                    oclass.IsSend = "已发送"
                 url = Global.WMSurl + "api/WbeApi/RecvMaterialInfon"
                 dir = {}
                 dir["material_list"] = dic
@@ -224,6 +225,7 @@ def WMS_SendZYPlan():
                     dic.append({"PlanNo": oclass.PlanNo, "ZYPlanNo": oclass.ID, "BrandCode": oclass.BrandCode,
                                 "BrandName": oclass.BrandName, "BatchID": oclass.BatchID,
                                 "Weight": oclass.PlanQuantity, "Unit": oclass.Unit})
+                    plan.PlanStatus = Global.PlanStatus.FSWMS.value
                 url = Global.WMSurl + "api/WbeApi/RecvTransInfon"
                 dir = {}
                 dir["zyplan_list"] = dic
@@ -256,6 +258,7 @@ def WMS_SendMatils():
                     dic.append({"ZYPlanNo": zyplan.ID, "BrandCode": zyplan.BrandCode, "BrandName": zyplan.BrandName,
                                 "BatchID": oclass.BatchID, "FlagCode": oclass.BucketNum,
                                 "Weight": oclass.BucketWeight, "Unit": oclass.Unit, "Flag": oclass.Flag, "Seq": oclass.FeedingSeq})
+                    oclass.SendFlag = "已发送"
                 url = Global.WMSurl + "api/WbeApi/RecvContanerInfon"
                 dir = {}
                 dir["batchmaterial_list"] = dic
