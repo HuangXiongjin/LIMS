@@ -135,9 +135,7 @@
             {title:"生产数据趋势分析",icon:"el-icon-box",url:"/TrendQuery"}
           ]},
           {label: '电子批记录',icon:"el-icon-edit-outline",mainMenu:[
-            {title:"批生产记录",icon:"el-icon-edit-outline",children:[
-              {title:"金蝉止痒颗粒",url:"/ElectronicBatchRecord?DrugName=金蝉止痒颗粒"}
-            ]},
+            {title:"批生产记录",icon:"el-icon-edit-outline",url:"/ElectronicBatchRecord"},
             {title:"批记录管理",icon:"el-icon-folder-opened",url:"/BatchRecordFiles"},
           ]},
           {label: '工厂监控',icon:"el-icon-view",mainMenu:[
