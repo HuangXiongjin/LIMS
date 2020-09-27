@@ -6,7 +6,7 @@
         <el-step title="选择批次计划"></el-step>
         <el-step title="生产配置"></el-step>
         <el-step title="甘特图"></el-step>
-        <el-step title="计划清单"></el-step>
+        <el-step title="排产清单"></el-step>
       </el-steps>
       <el-row :gutter="15" v-show="steps == 0">
         <el-col :span="4">
@@ -173,9 +173,8 @@
             <div class="container-col" :class='{"pactive":item.PUName===ActivePUName}'>
               <span class="text-size-14">{{ item.PUName }}</span>
             </div>
-            <i style="margin-top: 15px;vertical-align: top;" class="fa fa-arrow-right color-darkblue" v-show="index != processList.length -1"></i>
           </div>
-          <div class="platformContainer" v-for="item in processList" :key="item.PUName" v-if="item.PUName === ActivePUName">
+          <div class="platformContainer" v-for="(item,index) in processList" :key="index" v-if="item.PUName === ActivePUName">
             <el-popover
               placement="right"
               width="360"
@@ -186,14 +185,9 @@
               <el-button slot="reference" size="small">选择设备</el-button>
             </el-popover>
             <p class="marginTop marginBottom-10 text-size-16">已分配设备</p>
-            <div v-for="eq in item.eqList" :key="eq.EQPCode" v-if="eq.isSelected">
-              <el-form :inline="true" label-width="72px">
-                <el-form-item>
-                  <p class="text-size-14 color-grayblack">{{ eq.EQPCode }}</p>
-                </el-form-item>
-                <el-form-item>
-                  <p class="text-size-16 color-darkblue">{{ eq.EQPName }}</p>
-                </el-form-item>
+            <div class="marginBottom-10" v-for="eq in item.eqList" :key="eq.EQPCode" v-if="eq.isSelected">
+              <p class="text-size-14 color-darkblue">{{ eq.EQPName }}</p>
+              <el-form label-width="72px">
                 <el-form-item label="等待时长">
                   <el-input type="text" v-model="eq.waitTime" size="mini" style="width: 60px"></el-input>
                 </el-form-item>
@@ -203,11 +197,11 @@
         </el-col>
       </el-row>
       <el-row v-if="steps == 3">
-        <el-col :span='24'>
-          <div class="platformContainer" style="backgroundColor:#fff;">
-            <div id="main" style="width:100%; height:750px;" v-loading="loading">排产进度表</div>
-          </div>
-        </el-col>
+          <el-col :span='24'>
+                    <div class="platformContainer" style="backgroundColor:#fff;">
+                    <div id="main" style="width:100%; height:750px;" v-loading="loading">排产进度表</div>
+                </div>
+          </el-col>
       </el-row>
       <el-col :span="24" style="text-align: right;">
         <el-button type="info" v-show="steps != 0" @click="resetStep">重置</el-button>
@@ -335,7 +329,6 @@
                 grid: {
                     containLabel: true,
                     left: 20,
-                    right:40,
                     bottom:10
                 },
                 xAxis: {
@@ -482,10 +475,9 @@
           this.scheduleList = this.scheduleTableData
         }
       },
-      clickBrandTag(BrandName,BrandCode,BrandType){
+      clickBrandTag(BrandName,BrandCode){
         this.BrandActive = BrandName
         this.BrandCode = BrandCode
-        this.BrandType = BrandType
         this.getPlanTableData(this.BrandActive)
       },
       getPlanTableData(BrandName){
@@ -827,7 +819,6 @@
               }
             }
             that.processList = res.data.data.processList.sort(compare('Seq'))
-            that.ActivePUName = that.processList[0].PUName
           }else{
             that.$message({
               type: 'info',
@@ -836,13 +827,12 @@
           }
         })
       },
-      showPGL(PUName,PUCode){
-        this.ActivePUName = PUName
+      showPGL(name,code){
+        this.ActivePUName = name
       },
       savePlanEq(){
         var that = this
         var params = {
-          PlanNum:this.planTableData.multipleSelection[0].PlanNum,
           BatchID: this.PlanManagerTableData.multipleSelection[0].BatchID,
           processList:JSON.stringify(this.processList)
         }
@@ -865,8 +855,7 @@
 </script>
 
 <style scoped>
- .container-col{
-    display: inline-block;
+   .container-col{
     clear: both;
     overflow: hidden;
     border:1px solid #228AD5;
@@ -874,13 +863,10 @@
     border-radius: 4px;
     padding: 0 15px;
     margin-bottom: 15px;
-    margin-right: 10px;
     height: 40px;
     line-height: 40px;
-    color: #000;
   }
   .pactive{
     background-color:#228AD5;
-    color: #fff;
   }
 </style>
