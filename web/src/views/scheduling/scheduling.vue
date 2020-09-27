@@ -199,7 +199,7 @@
       <el-row v-if="steps == 3">
           <el-col :span='24'>
                     <div class="platformContainer" style="backgroundColor:#fff;">
-                    <div id="main" style="width:100%; height:750px;" v-loading="loading">排产进度表</div>
+                    <div id="main" style="width:100%; height:750px;clear:both;overflow:hidden; " v-loading="loading">排产进度表</div>
                 </div>
           </el-col>
       </el-row>
@@ -819,6 +819,7 @@
               }
             }
             that.processList = res.data.data.processList.sort(compare('Seq'))
+            that.ActivePUName = that.processList[0].PUName
           }else{
             that.$message({
               type: 'info',
@@ -856,6 +857,7 @@
 
 <style scoped>
    .container-col{
+    display: inline-block;
     clear: both;
     overflow: hidden;
     border:1px solid #228AD5;
@@ -863,15 +865,13 @@
     border-radius: 4px;
     padding: 0 15px;
     margin-bottom: 15px;
+    margin-right: 10px;
     height: 40px;
     line-height: 40px;
-<<<<<<< HEAD
-=======
     color: #000;
-
->>>>>>> b3bbbd38371b7f03a6b015f1651904e42ca6fd7d
   }
   .pactive{
     background-color:#228AD5;
+    color:#fff;
   }
 </style>

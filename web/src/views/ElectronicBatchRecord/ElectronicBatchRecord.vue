@@ -77,6 +77,7 @@
        clickBrandTag(BrandName,BrandCode){ //点击左侧品名标签
         this.BrandActive = BrandName
         this.BrandCode = BrandCode
+        this.currentBrandBatch=[]
         var params = {
           tableName:this.planTableData.tableName,
           field:'PlanStatus',
@@ -92,12 +93,13 @@
           this.currentBrandBatch=arr.forEach((item, index) => {
             if(item.BrandName===this.BrandActive){
               this.currentBrandBatch.push(item)
+              this.planTableData.data=this.currentBrandBatch
+              this.planTableData.total = this.currentBrandBatch.length
             }else{
-              
+              this.planTableData.total = 0
             }
           })
-          this.planTableData.data=this.currentBrandBatch
-          this.planTableData.total = this.currentBrandBatch.length
+        
         })
       },
        getScheduleTableData(){ //获取品名
