@@ -401,8 +401,8 @@ def planschedul():
                     pm = PlanManager()
                     pm.PlanNum = PlanNum
                     pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
-                    nowtime = datetime.datetime.now().strptime("%Y-%m-%d %H:%M:%S").replace("","-")
-                    pm.BatchID = BatchNo + 1
+                    nowtime = datetime.datetime.now().strftime("%Y-%m %S").replace("-","").replace(" ","")
+                    pm.BatchID = nowtime + str(BatchNo + 1)
                     pm.PlanQuantity = round(float(oclass.PlanQuantity)/int(BatchSum), 2)
                     pm.Unit = "KG"
                     pm.BrandCode = oclass.BrandCode
