@@ -44,7 +44,9 @@
               <el-button type="primary" @click="FileHTMLPreview" size='small' v-if='ButtonVisible'>点击预览</el-button>
                 <el-dialog title="文件预览" :visible.sync="dialogTableVisible" width="60%" style="height:800px;">
                   <el-col :span="24">
-                    <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
+                    <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte">
+
+                    </table>
                   </el-col>
                   <div slot="footer" class="dialog-footer"> 
                     <el-button @click="dialogTableVisible = false">取 消</el-button> 
@@ -274,16 +276,15 @@
   .container-col{
     clear: both;
     overflow: hidden;
-    border:1px solid #228AD5;
+    border:1px solid rgba(185,185,185,1);
     background:#fff;
     border-radius: 4px;
-    padding: 0 15px;
+    padding: 15px;
     margin-bottom: 15px;
-    height: 40px;
-    line-height: 40px;
+    height: 50px;
   }
   .pactive{
-    background-color:#228AD5;
+    background-color:rgba(211,237,239,1);
   }
   
 </style>

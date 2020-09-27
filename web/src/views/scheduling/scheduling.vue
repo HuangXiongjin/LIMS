@@ -865,6 +865,11 @@
     margin-bottom: 15px;
     height: 40px;
     line-height: 40px;
+<<<<<<< HEAD
+=======
+    color: #000;
+
+>>>>>>> b3bbbd38371b7f03a6b015f1651904e42ca6fd7d
   }
   .pactive{
     background-color:#228AD5;

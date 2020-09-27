@@ -30,7 +30,7 @@
           <li>
             <el-dropdown class="head-menu-item" trigger="click" @command="handleCommand">
               <span class="el-dropdown-link text-size-16">
-                <i class="dotState bg-lightgreen"></i>{{ this.$store.state.UserName }}<i class="el-icon-arrow-down el-icon--right text-size-12"></i>
+                <i class="dotState bg-darkblue"></i>{{ this.$store.state.UserName }}<i class="el-icon-arrow-down el-icon--right text-size-12"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item command="a">个人信息</el-dropdown-item>
