@@ -732,6 +732,12 @@ class BatchMaterialInfo(Base):
     # 批次号:
     BatchID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
+    # 品名编码:
+    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 品名:
+    BrandName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
     # 投料顺序:
     FeedingSeq = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
