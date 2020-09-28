@@ -52,9 +52,7 @@
     </el-col>
     <el-col :span='24' v-if="!currentBatch">
         <div class="platformContainer marginTop">
-          <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte">
-
-          </table>
+          <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
         </div>
     </el-col>
   </el-row>

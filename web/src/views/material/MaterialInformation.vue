@@ -244,7 +244,7 @@
             MATName:this.PlanManagerTableData.formField.MATName,
             MATType:this.PlanManagerTableData.formField.MATType,
             Desc:this.PlanManagerTableData.formField.Desc,
-            SendFlag:"未发送",
+            SendFlag:"待发送",
           }
           this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
             if(res.data.code === "200"){
@@ -271,7 +271,7 @@
             MATName:this.PlanManagerTableData.formField.MATName,
             MATType:this.PlanManagerTableData.formField.MATType,
             Desc:this.PlanManagerTableData.formField.Desc,
-            SendFlag:"未发送",
+            SendFlag:"待发送",
           }
           this.axios.get("/api/CUID",{
             params:params
