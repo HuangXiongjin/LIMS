@@ -274,17 +274,21 @@
 
 <style scoped>
   .container-col{
+    display: inline-block;
     clear: both;
     overflow: hidden;
-    border:1px solid rgba(185,185,185,1);
+    border:1px solid #228AD5;
     background:#fff;
     border-radius: 4px;
-    padding: 15px;
+    padding: 0 15px;
     margin-bottom: 15px;
-    height: 50px;
+    margin-right: 10px;
+    height: 40px;
+    line-height: 40px;
+    color: #000;
   }
   .pactive{
-    background-color:rgba(211,237,239,1);
+    background-color:#228AD5;
+    color:#fff;
   }
-  
 </style>

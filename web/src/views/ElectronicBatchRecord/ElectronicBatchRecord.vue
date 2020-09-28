@@ -37,18 +37,21 @@
     </el-col>
     <el-col :span='24' v-if="!currentBatch">
         <div class="platformContainer">
-           <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer" @click='ClickPU(item.BrandCode,item.PUCode)'>
-                    <div class="container-col">
+           <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer" @click='ClickPU(item.PUCode,index)'>
+                    <div class="container-col" :class="{'pactive':PUActive===index}">
                       <span class="text-size-14">{{ item.PUName }}</span>
                     </div>
+                    <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;" v-if="index != inProcessList.length -1"></i>
             </div>
         </div>
     </el-col>
     <el-col :span='24' v-if="!currentBatch">
-        <div><el-button type="primary" @click="backTab">返回上一级</el-button></div>
+        <div>
+          <el-button type="primary" @click="backTab" icon="el-icon-d-arrow-left" size='small'>返回上一级</el-button><el-button type="primary" icon="el-icon-folder-opened" size='small'>编辑保存</el-button>
+        </div>
     </el-col>
     <el-col :span='24' v-if="!currentBatch">
-        <div class="platformContainer">
+        <div class="platformContainer marginTop">
           <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte">
 
           </table>
@@ -78,17 +81,19 @@
         currentBrandBatch:[],
         inProcessList:[],
         filebyte:'',
-        PUCode:'',
+        BrandCode:"",
+        PUActive:0,
       }
     },
     created(){
       this.getScheduleTableData()
     },
     methods:{
-      ClickPU(BrandCode,PUCode){
+      ClickPU(PUCode,index){ //点击工艺展示电子批记录
+        this.PUActive=index
         var params={
           PUCode:PUCode,
-          BrandCode:BrandCode
+          BrandCode:this.BrandCode
         }
         this.axios.get('/api/batchmodelselect',{params:params}).then((res) => {
           if(res.data.code==='200'){
@@ -105,7 +110,7 @@
           }
         })
       },
-        handleChangeProductName(queryString){
+        handleChangeProductName(queryString){ //左侧查询品名
         if(queryString != ""){
           this.results = this.scheduleTableData.filter((string) =>{
             return Object.keys(string).some(function(key) {
@@ -167,11 +172,12 @@
           }
         })
       },
-      TabCurrentChange(e){ //点击显示当前的tab行显示详细信息
+      TabCurrentChange(row){ //点击显示当前的tab行显示详细信息
         this.currentBatch=false
-        this.getBrandProcessTableData(e.BrandName)
+        this.BrandCode = row.BrandCode
+        this.getBrandProcessTableData(row.BrandName)
         this.$refs.multipleTable.clearSelection();
-        this.$refs.multipleTable.toggleRowSelection(e)
+        this.$refs.multipleTable.toggleRowSelection(row)
 
       },
        handleSizeChange(limit){ //每页条数切换
@@ -180,7 +186,7 @@
       },
        handleCurrentChange(offset) { // 页码切换
         this.planTableData.offset = offset
-        this.clickBrandTag(this.BrandActive,this.BrandCode)
+        this.clickBrandTag(this.BrandActive,this.BrandCode)//批记录模板初始化
       },
        handleSelectionChange(row){
         this.multipleSelection = row
@@ -204,6 +210,7 @@
               }
             }
             that.inProcessList = res.data.data.rows.sort(compare('Seq'))
+            this.ClickPU(that.inProcessList[0].PUCode,0)
           }else{
             that.$message({
               type: 'info',
@@ -220,17 +227,22 @@
 </script>
 
 <style scoped>
- .container-col{
+   .container-col{
+    display: inline-block;
     clear: both;
     overflow: hidden;
-    border:1px solid rgba(185,185,185,1);
+    border:1px solid #228AD5;
     background:#fff;
     border-radius: 4px;
-    padding: 15px;
+    padding: 0 15px;
     margin-bottom: 15px;
-    height: 50px;
+    margin-right: 10px;
+    height: 40px;
+    line-height: 40px;
+    color: #000;
   }
   .pactive{
-    background-color:rgba(211,237,239,1);
+    background-color:#228AD5;
+    color:#fff;
   }
 </style>
