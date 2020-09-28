@@ -90,9 +90,7 @@
       FileHTMLPreview(){
         this.dialogTableVisible = true
         if(this.dialogTableVisible){
-          //$(".elementTable").find("p").prop("contenteditable",true)
           $("body").on("click",$(".elementTable p"),function(){
-            console.log($(this).html())
             $(this).attr("contenteditable","true")
           })
         }
