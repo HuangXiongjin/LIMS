@@ -14,7 +14,7 @@ from datetime import timedelta
 from common import Global
 from common.batch_plan_model import ProductUnit, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
     ProcessUnit, SchedulePlan, \
-    BatchModel, BatchUseModel
+    BatchModel, BatchUseModel, BatchMaterialInfo
 from database.connect_db import CONNECT_DATABASE
 
 login_manager = LoginManager()
@@ -416,4 +416,53 @@ def batchusemodelselect():
             print(e)
             logger.error(e)
             insertSyslog("error", "查询批记录使用模版报错Error：" + str(e), current_user.Name)
+            return json.dumps({"code": "500", "message": "后端报错"})
+
+@batch_plan.route('/BatchMaterialInfoselect', methods=['GET', 'POST'])
+def BatchMaterialInfoselect():
+    '''物料明细查询'''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            BrandCode = data.get("BrandCode")
+            BatchID = data.get("BatchID")
+            SendFlag = data.get("SendFlag")
+            pages = data.get("offset")
+            rowsnumber = data.get("limit")
+            inipage = int(pages) * int(rowsnumber) + 0  # 起始页
+            endpage = int(pages) * int(rowsnumber) + int(rowsnumber)  # 截止页
+            if SendFlag == "" or SendFlag == None:
+                count = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.BrandCode ==
+                                                            BrandCode, BatchMaterialInfo.BatchID == BatchID).count()
+                oclass = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.BrandCode ==
+                                                            BrandCode, BatchMaterialInfo.BatchID == BatchID).all()[inipage:endpage]
+            else:
+                count = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.BrandCode ==
+                                                                    BrandCode, BatchMaterialInfo.SendFlag == SendFlag,
+                                                                    BatchMaterialInfo.BatchID == BatchID).count()
+                oclass = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.BrandCode ==
+                                                                    BrandCode, BatchMaterialInfo.SendFlag == SendFlag,
+                                                                    BatchMaterialInfo.BatchID == BatchID).all()[inipage:endpage]
+            dir_list = []
+            for oc in oclass:
+                dir = {}
+                dir["ID"] = oc.ID
+                dir["BatchID"] = oc.BatchID
+                dir["BrandCode"] = oc.BrandCode
+                dir["BrandName"] = oc.BrandName
+                dir["FeedingSeq"] = oc.FeedingSeq
+                dir["BucketNum"] = oc.BucketNum
+                dir["BucketWeight"] = oc.BucketWeight
+                dir["Flag"] = oc.Flag
+                dir["Unit"] = oc.Unit
+                dir["Description"] = oc.Description
+                dir["SendFlag"] = oc.SendFlag
+                dir_list.append(dir)
+            return json.dumps({"code": "200", "message": "请求成功", "data": {"total": count, "rows": dir_list}},
+                              cls=AlchemyEncoder, ensure_ascii=False)
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "物料明细查询报错Error：" + str(e), current_user.Name)
             return json.dumps({"code": "500", "message": "后端报错"})
