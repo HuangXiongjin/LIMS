@@ -787,6 +787,28 @@ class BatchModel(Base):
     # 模板的字符串:
     Parameter = Column(Unicode(MAX), primary_key=False, autoincrement=False, nullable=True)
 
+# 批次使用模板
+class BatchUseModel(Base):
+    __tablename__ = "BatchUseModel"
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+
+    # 批次号:
+    BatchID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 品名编码:
+    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 品名名称:
+    BrandName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段
+    PUIDName = Column(Unicode(25), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段编码:
+    PUCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
     # 使用的字符串:
     UseParameter = Column(Unicode(MAX), primary_key=False, autoincrement=False, nullable=True)
 
