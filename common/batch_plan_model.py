@@ -784,8 +784,11 @@ class BatchModel(Base):
     # 上传人:
     UserName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-    # 定义参数的字符串:
+    # 模板的字符串:
     Parameter = Column(Unicode(MAX), primary_key=False, autoincrement=False, nullable=True)
+
+    # 使用的字符串:
+    UseParameter = Column(Unicode(MAX), primary_key=False, autoincrement=False, nullable=True)
 
 # 原料单检验
 class StapleProducts(Base):
