@@ -173,6 +173,7 @@
             <div class="container-col" :class='{"pactive":item.PUName===ActivePUName}'>
               <span class="text-size-14">{{ item.PUName }}</span>
             </div>
+            <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;" v-if="index != processList.length -1"></i>
           </div>
           <div class="platformContainer" v-for="(item,index) in processList" :key="item.PUName" v-if="item.PUName === ActivePUName">
             <el-popover
