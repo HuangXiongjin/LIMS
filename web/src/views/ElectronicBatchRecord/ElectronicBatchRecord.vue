@@ -1,14 +1,14 @@
 <template>
   <el-row :gutter="15">
-    <el-col :span="4">
+    <el-col :span="4" v-if="currentBatch">  
          <div class="platformContainer">
             <p class="marginBottom">选择要查询的品名</p>
             <el-input class="marginBottom" v-model="productName" placeholder="关键字搜索" @change="handleChangeProductName"></el-input>
             <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in results" :key="index" v-bind:effect="item.BrandName===BrandActive?'dark':'plain'" @click="clickBrandTag(item.BrandName,item.BrandCode)">{{item.BrandName}}</el-tag>
           </div>
     </el-col>
-    <el-col :span='20'>
-        <div class="platformContainer">
+    <el-col :span='20' v-if="currentBatch">
+        <div class="platformContainer" v-if="currentBatch">
               <p>当前选择的品名：{{BrandActive}}</p>
         </div>
         <div class="platformContainer" v-if="currentBatch">
@@ -34,13 +34,24 @@
                   </el-pagination>
             </div>
         </div>
-        <div class="platformContainer" v-if="!currentBatch">
-           <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer">
+    </el-col>
+    <el-col :span='24' v-if="!currentBatch">
+        <div class="platformContainer">
+           <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer" @click='ClickPU(item.BrandCode,item.PUCode)'>
                     <div class="container-col">
                       <span class="text-size-14">{{ item.PUName }}</span>
                     </div>
             </div>
-            <div><el-button type="primary" @click="backTab">返回上一级</el-button></div>
+        </div>
+    </el-col>
+    <el-col :span='24' v-if="!currentBatch">
+        <div><el-button type="primary" @click="backTab">返回上一级</el-button></div>
+    </el-col>
+    <el-col :span='24' v-if="!currentBatch">
+        <div class="platformContainer">
+          <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte">
+
+          </table>
         </div>
     </el-col>
   </el-row>
@@ -65,13 +76,35 @@
         currentBatch:true,//控制显示表格 boolen
         multipleSelection:[],
         currentBrandBatch:[],
-        inProcessList:[]
+        inProcessList:[],
+        filebyte:'',
+        PUCode:'',
       }
     },
     created(){
       this.getScheduleTableData()
     },
     methods:{
+      ClickPU(BrandCode,PUCode){
+        var params={
+          PUCode:PUCode,
+          BrandCode:BrandCode
+        }
+        this.axios.get('/api/batchmodelselect',{params:params}).then((res) => {
+          if(res.data.code==='200'){
+            if(res.data.message.length!==0){
+              this.filebyte=res.data.message[0].Parameter
+            }else{
+              this.filebyte=''
+            }
+          }else{
+             this.$message({
+              type: 'error',
+              message: '获取批记录文档失败'
+            });
+          }
+        })
+      },
         handleChangeProductName(queryString){
         if(queryString != ""){
           this.results = this.scheduleTableData.filter((string) =>{
