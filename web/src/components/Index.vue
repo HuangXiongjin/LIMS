@@ -111,7 +111,6 @@
             {title:'生产进度',icon:"el-icon-date",url:"/ProductionSchedule"},
             {title:"生产计划调度",icon:"el-icon-s-claim",url:"/planningScheduling"},
             {title:"发送计划到WMS",icon:"el-icon-s-promotion",url:"/sendWMS"},
-            {title:"发送物料信息",icon:"fa fa-share",url:"/sendMaterial"},
             {title:"发送物料明细",icon:"fa fa-paper-plane-o",url:"/sendMaterialDetail"},
             {title:"调度计划明细",icon:"el-icon-tickets",url:"/ProcessPlanTask"},
           ]},
