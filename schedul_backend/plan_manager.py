@@ -14,7 +14,7 @@ from datetime import timedelta
 from common import Global
 from common.batch_plan_model import ProductUnit, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
     ProcessUnit, SchedulePlan, \
-    BatchModel
+    BatchModel, BatchUseModel
 from database.connect_db import CONNECT_DATABASE
 
 login_manager = LoginManager()
@@ -309,7 +309,7 @@ def batchmodelinsert():
             return json.dumps({"code": "500", "message": "后端报错"})
 @batch_plan.route('/batchmodelselect', methods=['GET', 'POST'])
 def batchmodelselect():
-    '''查询批记录模'''
+    '''查询批记录模版'''
     if request.method == 'GET':
         data = request.values
         try:
@@ -367,3 +367,53 @@ def ManualDelete():
             logger.error(e)
             insertSyslog("error", "路由：/ManualDelete，说明书删除Error：" + str(e), current_user.Name)
             return json.dumps({"code": "500", "message": "批记录模板删除报错"})
+@batch_plan.route('/batchusemodelselect', methods=['GET', 'POST'])
+def batchusemodelselect():
+    '''查询批记录使用模版'''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            PUCode = data.get("PUCode")
+            BrandCode = data.get("BrandCode")
+            PUIDName = data.get("PUIDName")
+            BrandName = data.get("BrandName")
+            BatchID = data.get("BatchID")
+            oclass = db_session.query(BatchUseModel).filter(BatchUseModel.BrandCode ==
+                                                            BrandCode, BatchUseModel.PUCode == PUCode,
+                                                            BatchUseModel.BatchID == BatchID).first()
+            dir = {}
+            if not oclass:#初始化批记录模板
+                bum = BatchUseModel()
+                bum.BatchID = BatchID
+                bum.BrandCode = BrandCode
+                bum.BrandName = BrandName
+                bum.PUCode = PUCode
+                bum.PUIDName = PUIDName
+                oclass = db_session.query(BatchModel).filter(BatchModel.BrandCode ==
+                                                                BrandCode, BatchModel.PUCode == PUCode).first()
+                bum.UseParameter = oclass.Parameter
+                db_session.add(bum)
+                db_session.commit()
+                oc = db_session.query(BatchUseModel).filter(BatchUseModel.BrandCode ==
+                                                                BrandCode, BatchUseModel.PUCode == PUCode,
+                                                                BatchUseModel.BatchID == BatchID).first()
+                dir["ID"] = oc.ID
+                dir["BrandCode"] = oc.FileName
+                dir["BrandName"] = oc.FileName
+                dir["PUIDName"] = oc.FileName
+                dir["PUCode"] = oc.PUCode
+                dir["UseParameter"] = oc.Parameter
+            else:
+                dir["ID"] = oclass.ID
+                dir["BrandCode"] = oclass.FileName
+                dir["BrandName"] = oclass.FileName
+                dir["PUIDName"] = oclass.FileName
+                dir["PUCode"] = oclass.PUCode
+                dir["UseParameter"] = oclass.UseParameter
+            return json.dumps({"code": "200", "message": dir})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "查询批记录使用模版报错Error：" + str(e), current_user.Name)
+            return json.dumps({"code": "500", "message": "后端报错"})
