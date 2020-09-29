@@ -97,9 +97,15 @@
           if(res.data.code==='200'){
             if(res.data.message.length!==0){
               this.filebyte=res.data.message[0].Parameter
-               $("body").on("click",$(".elementTable p"),function(){
-                  $(this).attr("contenteditable","true")
+              this.$nextTick(function () {
+                $(".elementTable").find("td").each(function(){
+                  if($(this).html() === ""){
+                    $(this).html("<p>-</p>")
+                  }
                 })
+                $(".elementTable").find("p").attr("contenteditable","true")
+                $(".elementTable").find("tbody").css("display","inline-table")
+              })
             }else{
               this.filebyte=''
             }

@@ -22,7 +22,7 @@
             </div>
           </el-col>
           <el-col :span='24'>
-            <div class='platformContainer' style='height:500px;'>
+            <div class='platformContainer'>
               <el-upload
                 class="marginBottom"
                 drag
@@ -41,12 +41,10 @@
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 <div slot="tip" class="el-upload__tip">只能上传.docx 批记录表</div>
               </el-upload>
-              <el-button type="primary" @click="FileHTMLPreview" size='small' v-if='ButtonVisible'>点击预览</el-button>
-                <el-dialog title="文件预览" :visible.sync="dialogTableVisible" width="60%" style="height:800px;">
+              <el-button type="primary" @click="FileHTMLPreview" size='small' v-if='ButtonVisible'>转换预览</el-button>
+                <el-dialog title="文件预览" :visible.sync="dialogTableVisible" width="60%">
                   <el-col :span="24">
-                    <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte">
-
-                    </table>
+                    <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
                   </el-col>
                   <div slot="footer" class="dialog-footer"> 
                     <el-button @click="dialogTableVisible = false">取 消</el-button> 
@@ -90,11 +88,14 @@
       FileHTMLPreview(){
         this.dialogTableVisible = true
         if(this.dialogTableVisible){
-          $("body").on("click",$(".elementTable p"),function(){
-            $(this).attr("contenteditable","true")
+          this.$nextTick(function () {
+           $(".elementTable").find("td").each(function(){
+              if($(this).html() === ""){
+                $(this).html("<p>-</p>")
+              }
+           })
           })
         }
-        
       },
       handlePreview(file){ //点击文件列表提示是否下载
         var FileName=file.name
