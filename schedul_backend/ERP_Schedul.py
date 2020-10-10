@@ -391,9 +391,9 @@ def planschedul():
     if request.method == 'POST':
         data = request.values
         try:
-            PlanNum = data['PlanNum']
-            BatchSum = data['BatchSum']
-            BatchDuration = data['BatchDuration']
+            PlanNum = data.get('PlanNum')
+            BatchSum = data.get('BatchSum')
+            BatchDuration = data.get('BatchDuration')
             oclass = db_session.query(product_plan).filter(product_plan.PlanNum == PlanNum).first()
             dir = {}
             if oclass:
@@ -415,6 +415,47 @@ def planschedul():
                     PlanEndTime = (datetime.datetime.strptime(oclass.PlanFinishTime,
                                                                 "%Y-%m-%d %H:%M:%S") + datetime.timedelta(
                         hours=-end)).strftime("%Y-%m-%d %H:%M:%S")
+                    pm.PlanBeginTime = PlanBeginTime
+                    pm.PlanEndTime = PlanEndTime
+                    pm.BrandType = oclass.BrandType
+                    db_session.add(pm)
+                db_session.commit()
+            return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "计划排产报错Error：" + str(e), current_user.Name)
+            return json.dumps("计划排产报错", cls=AlchemyEncoder, ensure_ascii=False)
+
+@erp_schedul.route('/newplanschedul', methods=['GET', 'POST'])
+def newplanschedul():
+    '''
+    新计划排产
+    :return:
+    '''
+    if request.method == 'POST':
+        data = request.values
+        try:
+            PlanNum = data.get('PlanNum')
+            BatchSum = data.get('BatchSum')
+            BatchDuration = data.get('BatchDuration')
+            BatchIDtimes = eval(data.get('BatchIDtimes'))
+            oclass = db_session.query(product_plan).filter(product_plan.PlanNum == PlanNum).first()
+            dir = {}
+            if oclass:
+                for Batchinfo in BatchIDtimes:
+                    pm = PlanManager()
+                    pm.PlanNum = PlanNum
+                    pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
+                    pm.BatchID = Batchinfo.get("BatchID")
+                    pm.PlanQuantity = round(float(oclass.PlanQuantity) / int(BatchSum), 2)
+                    pm.Unit = "KG"
+                    pm.BrandCode = oclass.BrandCode
+                    pm.BrandName = oclass.BrandName
+                    pm.PlanStatus = Global.PlanStatus.NEW.value
+                    PlanBeginTime = Batchinfo.get("EndTime")
+                    PlanEndTime = ""
                     pm.PlanBeginTime = PlanBeginTime
                     pm.PlanEndTime = PlanEndTime
                     pm.BrandType = oclass.BrandType
