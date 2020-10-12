@@ -4,7 +4,6 @@
       <el-steps :active="steps" finish-status="wait" align-center class="marginBottom">
         <el-step title="选择订单计划"></el-step>
         <el-step title="选择批次计划"></el-step>
-        <el-step title="生产配置"></el-step>
         <el-step title="甘特图"></el-step>
         <el-step title="排产清单"></el-step>
       </el-steps>
@@ -31,7 +30,7 @@
               <el-table-column prop="PlanNum" label="编号"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="BrandType" label="药品类型"></el-table-column>
-              <el-table-column prop="PlanQuantity" label="计划产值"></el-table-column>
+              <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
               <el-table-column prop="PlanTimeLen" label="计划时长"></el-table-column>
               <el-table-column prop="PlanFinishTime" label="计划交付时间"></el-table-column>
               <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
@@ -53,7 +52,7 @@
                 <el-form-item label="编号">
                   <el-input v-model="planTableData.formField.PlanNum"></el-input>
                 </el-form-item>
-                <el-form-item label="计划产值">
+                <el-form-item label="计划产量">
                   <el-input v-model="planTableData.formField.PlanQuantity"></el-input>
                 </el-form-item>
                 <el-form-item label="计划时长">
@@ -80,7 +79,7 @@
           <div class="platformContainer">
             <span>计划单号：{{ planTableData.multipleSelection[0].PlanNum }}</span>
             <el-divider direction="vertical"></el-divider>
-            <span>计划产值：{{ planTableData.multipleSelection[0].PlanQuantity }}</span>
+            <span>计划产量：{{ planTableData.multipleSelection[0].PlanQuantity }}</span>
             <el-divider direction="vertical"></el-divider>
             <span>品名：{{ BrandActive }}</span>
           </div>
@@ -108,7 +107,7 @@
               <el-table-column type="selection"></el-table-column>
               <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
-              <el-table-column prop="PlanQuantity" label="批次计划重量"></el-table-column>
+              <el-table-column prop="PlanQuantity" label="每批计划产量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="BrandType" label="产品类型"></el-table-column>
@@ -132,7 +131,7 @@
                 <el-form-item label="批次号">
                   <el-input v-model="PlanManagerTableData.formField.BatchID"></el-input>
                 </el-form-item>
-                <el-form-item label="批次计划重量">
+                <el-form-item label="每批计划产量">
                   <el-input v-model="PlanManagerTableData.formField.PlanQuantity"></el-input>
                 </el-form-item>
                 <el-form-item label="单位">
@@ -158,57 +157,17 @@
           </div>
         </el-col>
       </el-row>
-      <el-row :gutter="15" v-if="steps == 2">
-        <el-col :span="24">
-          <div class="platformContainer">
-            <span>计划单号：{{ planTableData.multipleSelection[0].PlanNum }}</span>
-            <el-divider direction="vertical"></el-divider>
-            <span>品名：{{ BrandActive }}</span>
-            <el-divider direction="vertical"></el-divider>
-            <span>批次号：{{ PlanManagerTableData.multipleSelection[0].BatchID }}</span>
-            <el-divider direction="vertical"></el-divider>
-            <span>产品类型：{{ PlanManagerTableData.multipleSelection[0].BrandType }}</span>
-          </div>
-          <div v-for="(item, index) in processList" :key="index" class="list-complete-item" style="display:inline-block;marginRight:18px;cursor:pointer" @click='showPGL(item.PUName,item.PUCode,index)'>
-            <div class="container-col" :class='{"pactive":item.PUName===ActivePUName}'>
-              <span class="text-size-14">{{ item.PUName }}</span>
-            </div>
-            <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;" v-if="index != processList.length -1"></i>
-          </div>
-          <div class="platformContainer" v-for="(item,index) in processList" :key="item.PUName" v-if="item.PUName === ActivePUName">
-            <el-popover
-              placement="right"
-              width="360"
-              trigger="click">
-              <el-checkbox border v-for="eq in item.eqList" v-model="eq.isSelected" :key="eq.EQPCode" class="marginBottom-10">
-                {{ eq.EQPName }}-<span class="color-success" v-if="eq.EQPStatus">可用</span><span class="color-orange" v-if="!eq.EQPStatus">等待</span>
-              </el-checkbox>
-              <el-button slot="reference" size="small">选择设备</el-button>
-            </el-popover>
-            <p class="marginTop marginBottom-10 text-size-16">已分配设备</p>
-            <div class="marginBottom-10" v-for="eq in item.eqList" :key="eq.EQPCode" v-if="eq.isSelected">
-              <p class="text-size-14 color-darkblue">{{ eq.EQPName }}</p>
-              <el-form label-width="72px">
-                <el-form-item label="等待时长">
-                  <el-input type="text" v-model="eq.waitTime" size="mini" style="width: 60px"></el-input>
-                </el-form-item>
-              </el-form>
-            </div>
+      <el-row v-show="steps == 2">
+        <el-col :span='24'>
+          <div class="platformContainer" style="backgroundColor:#fff;">
+            <div id="main" style="width:100%; height:750px;clear:both;overflow:hidden;" v-loading="loading"></div>
           </div>
         </el-col>
-      </el-row>
-      <el-row v-show="steps == 3">
-          <el-col :span='24'>
-                    <div class="platformContainer" style="backgroundColor:#fff;">
-                    <div id="main" style="width:100%; height:750px;clear:both;overflow:hidden;" v-loading="loading"></div>
-                </div>
-          </el-col>
       </el-row>
       <el-col :span="24" style="text-align: right;">
         <el-button type="info" v-show="steps != 0" @click="resetStep">重置</el-button>
         <el-button type="primary" v-show="steps != 0" @click="lastStep">上一步</el-button>
-        <el-button type="success" v-show="steps == 2" @click="savePlanEq">保存</el-button>
-        <el-button type="primary" v-show="steps != 4" @click="nextStep">下一步</el-button>
+        <el-button type="primary" v-show="steps != 3" @click="nextStep">下一步</el-button>
       </el-col>
     </el-col>
   </el-row>
@@ -396,17 +355,6 @@
               message: "请选择一条ERP计划"
             });
           }
-        }else if(this.steps == 1){
-          if(this.PlanManagerTableData.multipleSelection.length == 1){
-            this.steps++
-            this.processList = []
-            this.getBrandProcess()
-          }else{
-            this.$message({
-              type: 'info',
-              message: "请选择一条批次计划"
-            });
-          }
         }else if(this.steps == 2){
           this.steps++
           this.SearchPicdata()
@@ -418,7 +366,7 @@
         if(this.steps == 2){
           this.steps--
           this.getPlanManagerTableData()
-        }else if(this.steps == 4){
+        }else if(this.steps == 3){
           this.steps--
           this.SearchPicdata()
         }else{
@@ -476,9 +424,10 @@
           this.scheduleList = this.scheduleTableData
         }
       },
-      clickBrandTag(BrandName,BrandCode){
+      clickBrandTag(BrandName,BrandCode,BrandType){
         this.BrandActive = BrandName
         this.BrandCode = BrandCode
+        this.BrandType = BrandType
         this.getPlanTableData(this.BrandActive)
       },
       getPlanTableData(BrandName){
@@ -583,6 +532,7 @@
             BrandCode:this.BrandCode,
             BrandType:this.BrandType,
           }
+          console.log(params)
           this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
             if(res.data.code === "200"){
               this.$message({
@@ -801,56 +751,6 @@
             message: '已取消排产'
           });
         });
-      },
-      //获取工艺段
-      getBrandProcess(){
-        var that = this
-        var params = {
-          BatchID: this.PlanManagerTableData.multipleSelection[0].BatchID,
-        }
-        this.axios.get("/api/batchequimentselect",{
-          params: params
-        }).then(res => {
-          if(res.data.code === "200"){
-            function compare(property){
-              return function(a,b){
-                var value1 = a[property];
-                var value2 = b[property];
-                return value1 - value2;
-              }
-            }
-            that.processList = res.data.data.processList.sort(compare('Seq'))
-            that.ActivePUName = that.processList[0].PUName
-          }else{
-            that.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        })
-      },
-      showPGL(name,code){
-        this.ActivePUName = name
-      },
-      savePlanEq(){
-        var that = this
-        var params = {
-          BatchID: this.PlanManagerTableData.multipleSelection[0].BatchID,
-          processList:JSON.stringify(this.processList)
-        }
-        this.axios.post("/api/addEquipmentBatchRunTime",this.qs.stringify(params)).then(res => {
-          if(res.data.code === "200"){
-            that.$message({
-              type: 'success',
-              message: res.data.message
-            });
-          }else{
-            that.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        })
       },
     }
   }
