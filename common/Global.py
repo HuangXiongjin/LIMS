@@ -27,15 +27,17 @@ class PlanStatus(Enum):
 
 #计划ZYPlan
 class ZYPlanStatus(Enum):
-    READY = "10"  # 准备
-    Produncting = "20"  # 计划进行
-    Clear = "30"  # 清场
+    Confirm = "已选设备" #已选设备
+    READY = "生产前准备"  # 准备
+    Produncting = "计划进行"  # 计划进行
+    Clear = "清场"  # 清场
 #任务ZYTask
 class TASKSTATUS(Enum):
-    NEW = "0"#新增
-    START = "10"#开始
-    RUN = "20"#进行
-    END = "30"#结束
+    Confirm = "已选设备"#任务选择设备
+    NEW = "新增"#新增
+    START = "开始"#开始
+    RUN = "进行"#进行
+    END = "结束"#结束
 
 #计划状态
 class AuditStatus(Enum):

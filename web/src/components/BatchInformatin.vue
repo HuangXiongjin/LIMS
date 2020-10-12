@@ -1,7 +1,14 @@
 <template>
     <div class="platformContainer" style="height:1040px;">
         <el-row>
-          <el-col :span='24' class="marginBottom"><div style="fontSize:16px;fontWeight:700;">计划详情</div></el-col>
+          <el-col :span='24' class="marginBottom"><div style="fontSize:16px;fontWeight:700;">计划进度</div></el-col>
+          <el-col :span='24' class="marginBottom">
+            <el-steps :active="currentstep" align-center process-status='finish'>
+                <el-step  v-for="(item,index) in steps" :title="item.title" :key='index'>
+                </el-step>
+             </el-steps>
+          </el-col>
+          <el-col :span='24' class="marginBottom"><div style="fontSize:16px;fontWeight:700;marginTop:25px;">计划详情</div></el-col>
           <el-col :span='24' style="marginBottom:30px;">
             <el-row>
               <el-col :span='3'>
@@ -64,13 +71,6 @@
                   </el-pagination>
             </div>
             </div>
-          </el-col>
-          <el-col :span='24' class="marginBottom"><div style="fontSize:16px;fontWeight:700;">计划进度</div></el-col>
-          <el-col :span='24' class="marginBottom">
-            <el-steps :active="currentstep" align-center process-status='finish'>
-                <el-step  v-for="(item,index) in steps" :title="item.title" :key='index'>
-                </el-step>
-             </el-steps>
           </el-col>
         </el-row>
       </div>

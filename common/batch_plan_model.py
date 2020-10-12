@@ -367,8 +367,11 @@ class ProcessUnit(Base):
     # 时间单位:
     TimeUnit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 批次运行时间:
-    BatchRunTime = Column(Unicode(30), primary_key=False, autoincrement=False, nullable=True)
+    # 工艺运行时长:
+    PURunTime = Column(Unicode(30), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺等待时长:
+    PUWaitTime = Column(Unicode(30), primary_key=False, autoincrement=False, nullable=True)
 
 
 # ProductRule:
@@ -388,8 +391,8 @@ class ProductRule(Base):
     # 药品类型
     BrandType = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 版本:
-    Version = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    # 批次重量:
+    BatchWeight = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 描述:
     Desc = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)

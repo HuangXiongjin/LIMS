@@ -466,3 +466,54 @@ def BatchMaterialInfoselect():
             logger.error(e)
             insertSyslog("error", "物料明细查询报错Error：" + str(e), current_user.Name)
             return json.dumps({"code": "500", "message": "后端报错"})
+
+
+@batch_plan.route('/saveEQPCode', methods=['POST', 'GET'])
+def saveEQPCode():
+    '''生产调度添加设备'''
+    if request.method == 'POST':
+        data = request.values  # 返回请求中的参数和form
+        try:
+            jsonstr = json.dumps(data.to_dict())
+            if len(jsonstr) > 10:
+                confirm = data['confirm']
+                if confirm == "1":
+                    ID = data['ID']
+                    EQPCode = data['EQPCode']
+                    oclass = db_session.query(ZYTask).filter(ZYTask.ID == ID).first()
+                    BatchID = oclass.BatchID
+                    BrandID = oclass.BrandID
+                    PUID = oclass.PUID
+                    oclass.EquipmentID = EQPCode
+                    oclass.TaskStatus = Global.TASKSTATUS.COMFIRM.value
+                else:
+                    BrandID = data['BrandID']
+                    PName = data['PName']
+                    BatchID = data['BatchID']
+                    UNEQPCode = data['UNEQPCode']
+                    eq = UNEQPCode.split(",")
+                    IDm = db_session.query(PlanManager.ID).filter(PlanManager.BatchID == BatchID,
+                                                                  PlanManager.BrandID == BrandID).first()[0]
+                    oclasstasks = db_session.query(ZYTask).join(ProcessUnit,
+                                                                ZYTask.PUCode == ProcessUnit.PUCode).filter(
+                        ProcessUnit.PUName == PName, ZYTask.BatchID == BatchID,
+                        ZYTask.BrandID == BrandID).all()
+                    for i in range(len(oclasstasks)):
+                        oclasstasks[i].EquipmentID = eq[i % len(eq)]
+                        oclasstasks[i].TaskStatus = Global.TASKSTATUS.COMFIRM.value
+                db_session.commit()
+                oclasstasks = db_session.query(ZYTask).filter(ZYTask.BatchID == BatchID,ZYTask.PUID == PUID,ZYTask.BrandID == BrandID).all()
+                flag = "TRUE"
+                for task in oclasstasks:
+                    if (task.TaskStatus != Global.TASKSTATUS.COMFIRM.value):
+                        flag = "FALSE"
+                if (flag == "TRUE"):
+                    zyplanc = db_session.query(ZYPlan).filter(ZYPlan.BatchID == BatchID, ZYPlan.PUCode == PUCode, ZYPlan.BrandCode == BrandCode).first()
+                    zyplanc.ZYPlanStatus == Global.ZYPlanStatus.Confirm.value
+                return json.dumps({"code": "200", "message": "添加设备成功！"})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "生产调度添加设备报错Error：" + str(e), current_user.Name)
+            return json.dumps({"code": "500", "message": "生产调度添加设备报错"})
