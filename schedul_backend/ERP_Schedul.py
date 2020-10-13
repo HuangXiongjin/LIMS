@@ -28,7 +28,7 @@ from suds.client import Client
 from datetime import timedelta
 
 from common.batch_plan_model import ProductUnit, ProductRule, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
-    ZYPlanWMS, Material, MaterialBOM, ProductEquipment
+    ZYPlanWMS, Material, MaterialBOM, ProductEquipment, ProcessUnit
 from common.schedul_model import Scheduling, plantCalendarScheduling, SchedulingStandard, \
     scheduledate, product_plan, SchedulingStock, EquipmentBatchRunTime
 from database.connect_db import CONNECT_DATABASE
@@ -410,8 +410,10 @@ def planschedul():
                     pm.BrandName = oclass.BrandName
                     pm.PlanStatus = Global.PlanStatus.NEW.value
                     #计算计划开始时间结束时间
-                    beg = int(proclass.BatchTimeLength)*int(BatchSum) - int(proclass.BatchTimeLength)*BatchNo
-                    end = beg - int(proclass.BatchTimeLength)
+                    pu = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == oclass.BrandCode, ProductUnit.PUName.like("%提%")).first()
+                    proc = db_session.query(ProcessUnit).filter(ProcessUnit.PUCode == pu.PUCode).first()
+                    beg = int(proc.PURunTime)*int(BatchSum) - int(proc.PURunTime)*BatchNo
+                    end = beg - int(proc.PURunTime)
                     PlanBeginTime = (datetime.datetime.strptime(oclass.PlanFinishTime, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(hours=-beg)).strftime("%Y-%m-%d %H:%M:%S")
                     PlanEndTime = (datetime.datetime.strptime(oclass.PlanFinishTime,
                                                                 "%Y-%m-%d %H:%M:%S") + datetime.timedelta(
