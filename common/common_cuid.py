@@ -187,9 +187,9 @@ def select(data):#table, page, rows, fieid, param
         columns = ""
         for column in newTable.columns:
             if columns == "":
-                columns = str(column).split(".")[1]
+                columns = "[" + str(column).split(".")[1] + "]"
             else:
-                columns = columns + "," + str(column).split(".")[1]
+                columns = columns + ",[" + str(column).split(".")[1] + "]"
         params = ""
         for key in data.keys():
             if key != "offset" and key != "limit" and key != "tableName":
@@ -199,23 +199,23 @@ def select(data):#table, page, rows, fieid, param
                     params = params + " AND " + key + " like '%" + data[key] + "%'"
         if pages == "":
             if params == "":
-                sql = "select " + columns + " from [LIMS].[dbo]." + tableName + " ORDER BY ID DESC"
-                sqlcount = "select count(ID) from [LIMS].[dbo]." + tableName
+                sql = "select " + columns + " from [LIMS].[dbo].[" + tableName + "] ORDER BY ID DESC"
+                sqlcount = "select count(ID) from [LIMS].[dbo].[" + tableName + "]"
             else:
-                sql = "select " + columns + " from [LIMS].[dbo]." + tableName + " where " + params + " ORDER BY ID DESC"
-                sqlcount = "select count(ID) from [LIMS].[dbo]." + tableName + " where " + params
+                sql = "select " + columns + " from [LIMS].[dbo].[" + tableName + "] where " + params + " ORDER BY ID DESC"
+                sqlcount = "select count(ID) from [LIMS].[dbo].[" + tableName + "] where " + params
         else:
             if params == "":
                 sql = "select top " + str(
-                    rowsnumber) + " " + columns + " from [LIMS].[dbo]." + tableName + " where ID not in (select top " + str(
-                    (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo]." + tableName + ") ORDER BY ID DESC"
-                sqlcount = "select count(ID) from [LIMS].[dbo]." + tableName
+                    rowsnumber) + " " + columns + " from [LIMS].[dbo].[" + tableName + "] where ID not in (select top " + str(
+                    (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo].[" + tableName + "]) ORDER BY ID DESC"
+                sqlcount = "select count(ID) from [LIMS].[dbo].[" + tableName + "]"
             else:
                 sql = "select top " + str(
-                    rowsnumber) + " " + columns + " from [LIMS].[dbo]." + tableName + " where " + params + \
+                    rowsnumber) + " " + columns + " from [LIMS].[dbo].[" + tableName + "] where " + params + \
                       "AND ID not in (select top " + str(
-                    (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo]." + tableName + ") ORDER BY ID DESC"
-                sqlcount = "select count(ID) from [LIMS].[dbo]." + tableName + " where " + params
+                    (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo].[" + tableName + "]) ORDER BY ID DESC"
+                sqlcount = "select count(ID) from [LIMS].[dbo].[" + tableName + "] where " + params
         re = db_session.execute(sql).fetchall()
         recount = db_session.execute(sqlcount).fetchall()
         dict_list = []
@@ -223,7 +223,7 @@ def select(data):#table, page, rows, fieid, param
             dir = {}
             column_list = columns.split(",")
             for column in column_list:
-                dir[column] = i[column]
+                dir[column[1:-1]] = i[column[1:-1]]
             dict_list.append(dir)
         return {"code": "200", "message": "请求成功", "data": {"total": recount[0][0], "rows": dict_list}}
     except Exception as e:

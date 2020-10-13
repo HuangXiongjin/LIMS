@@ -483,7 +483,7 @@ def saveEQPCode():
                     oclass = db_session.query(ZYTask).filter(ZYTask.ID == ID).first()
                     BatchID = oclass.BatchID
                     BrandID = oclass.BrandID
-                    PUID = oclass.PUID
+                    PUID = oclass.PUCode
                     oclass.EquipmentID = EQPCode
                     oclass.TaskStatus = Global.TASKSTATUS.COMFIRM.value
                 else:
