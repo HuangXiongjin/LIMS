@@ -320,7 +320,7 @@ class ProductLine(Base):
     AreaName = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
 
     # 描述:
-    Desc = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
     # 产线能力:
     PLineCapacity = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
@@ -350,7 +350,7 @@ class ProcessUnit(Base):
     RelateTaskCount = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 
     # 描述:
-    Desc = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
     # 工艺段额定生产能力:
     PURateCapacity = Column(Unicode(30), primary_key=False, autoincrement=False, nullable=True)
@@ -398,7 +398,7 @@ class ProductRule(Base):
     BatchTimeLength = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 描述:
-    Desc = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
 
     # 发布日期:
     Publish_date = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
@@ -449,7 +449,7 @@ class ProductControlTask(Base):
     PDCtrlTaskName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 描述:
-    Desc = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 低限:
     LowLimit = Column(Float(53), primary_key=False, autoincrement=False, nullable=True)
@@ -494,7 +494,7 @@ class ProductParameter(Base):
     PUName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
     # 描述:
-    Desc = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 值:
     Value = Column(Float(53), primary_key=False, autoincrement=False, nullable=True)
@@ -519,7 +519,7 @@ class ProductUnitRoute(Base):
     PDUnitRouteName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 描述:
-    Desc = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 持续时间:
     Duration = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
@@ -586,7 +586,7 @@ class PlanManager(Base):
     Type = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     #描述
-    Describtion = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
 
 # # 序号:
@@ -610,7 +610,7 @@ class TypeDetail(Base):
     # 所属工艺段
     PUID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 注释
-    Desc = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
 
 
 class MaterialBOM(Base):
@@ -661,7 +661,7 @@ class TaskNoGenerator(Base):
     TaskNoVar = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 描述:
-    Desc = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
 class ZYPlanWMS(Base):
     '''与WMS计划管理'''
@@ -711,7 +711,7 @@ class Material(Base):
     MATName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 物料描述:
-    Desc = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 物料类型:
     MATType = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
@@ -976,7 +976,7 @@ class SchedulePlan(Base):
     SchedulePlanCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 描述:
-    Desc = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 调度计划开始时间:
     PlanBeginTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)

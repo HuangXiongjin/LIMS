@@ -523,7 +523,7 @@ class WorkShop(Base):
     FactoryName = Column(Unicode(52), primary_key=False, autoincrement=False, nullable=True)
 
     # 描述:
-    Desc = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
 
 
 class Unit(Base):
@@ -628,7 +628,7 @@ class Enterprise(Base):
     Type = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 描述:
-    Desc = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(65), primary_key=False, autoincrement=False, nullable=True)
 
     # 父节点名称:
     ParentNodeName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)

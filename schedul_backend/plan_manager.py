@@ -47,7 +47,7 @@ def getTaskNo():
             TaskNoGenerator(
                 TaskNoInt=intTaskNo + 1,
                 TaskNoVar=varTaskNo,
-                Desc=""))
+                Description=""))
         db_session.commit()
         return bReturn,varTaskNo
     except Exception as e:
@@ -144,7 +144,7 @@ def makePlan():
                 db_session.add(pm)
                 sp = SchedulePlan()
                 SchedulePlanCode = PlanEndTime[0:10]
-                Desc = Global.SCHEDULETYPE.DAY.value
+                Description = Global.SCHEDULETYPE.DAY.value
                 dEndTime = datetime.datetime.strptime(PlanEndTime[0:10], '%Y-%m-%d') + timedelta(days=1)
                 PlanBeginTime = PlanBeginTime
                 PlanEndTime = PlanEndTime
@@ -197,11 +197,11 @@ def checkPlanManager():
         data = request.values  # 返回请求中的参数和form
         try:
             PlanStatus = data.get("PlanStatus")
-            Describtion = data.get("Describtion")
+            Description = data.get("Describtion")
             ID = data.get("ID")
             oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
             oclassplan.PlanStatus = PlanStatus
-            oclassplan = Describtion
+            oclassplan = Description
             db_session.commit()
             return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:

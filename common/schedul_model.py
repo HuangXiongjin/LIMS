@@ -70,7 +70,7 @@ class scheduleDateType(Base):
     # 类型名称
     DateTypeName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 注释
-    Desc = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
+    Description = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
     # 颜色
     color = Column(Unicode(30), primary_key=False, autoincrement=False, nullable=True)
 
