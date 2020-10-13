@@ -333,8 +333,8 @@ def batchequimentselect():
     if request.method == 'GET':
         data = request.values
         try:
-            BatchID = data['BatchID']
-            oclass = db_session.query(PlanManager).filter(PlanManager.BatchID == BatchID).first()
+            ID = data['ID']
+            oclass = db_session.query(PlanManager).filter(PlanManager.ID == ID).first()
             dir = {}
             if oclass:
                 pres = db_session.query(ProductUnit).filter(ProductUnit.ID == 17).all()
@@ -410,8 +410,8 @@ def planschedul():
                     pm.BrandName = oclass.BrandName
                     pm.PlanStatus = Global.PlanStatus.NEW.value
                     #计算计划开始时间结束时间
-                    beg = int(oclass.PlanTimeLen)-int(proclass.BatchTimeLength)*BatchNo
-                    end = beg - int(oclass.PlanTimeLen)/int(BatchSum)
+                    beg = int(proclass.BatchTimeLength)*int(BatchSum) - int(proclass.BatchTimeLength)*BatchNo
+                    end = beg - int(proclass.BatchTimeLength)
                     PlanBeginTime = (datetime.datetime.strptime(oclass.PlanFinishTime, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(hours=-beg)).strftime("%Y-%m-%d %H:%M:%S")
                     PlanEndTime = (datetime.datetime.strptime(oclass.PlanFinishTime,
                                                                 "%Y-%m-%d %H:%M:%S") + datetime.timedelta(
