@@ -132,6 +132,13 @@
     float: right;
     line-height: 48px;
   }
+  /** 手风琴 **/
+  .el-collapse .el-collapse-item__header{
+    padding-left: 10px;
+  }
+  .el-collapse .el-collapse-item__wrap{
+    padding: 10px;
+  }
 }
 
 
@@ -230,6 +237,9 @@
     color: #fff;
   }
   .el-table__body tr:hover>td{
+    background-color:#3D4048
+  }
+  .el-table__body tr.hover-row>td{
     background-color:#3D4048
   }
   .el-table, .el-table__expanded-cell{
@@ -355,6 +365,25 @@
   .page-title .page-title-radio{
     float: right;
     line-height: 48px;
+  }
+  /** 手风琴 **/
+  .el-collapse{
+    border-top: 1px solid #3D4048;
+    border-bottom: 1px solid #3D4048;
+  }
+  .el-collapse .el-collapse-item__header{
+    background: #3D4048;
+    color: #fff;
+    padding-left: 10px;
+    border-bottom: 1px solid #3D4048
+  }
+  .el-collapse .el-collapse-item__wrap{
+    background: #303339;
+    border-bottom: 1px solid #3D4048;
+    padding: 10px;
+  }
+  .el-collapse .el-collapse-item__wrap .el-collapse-item__content{
+    color: #fff;
   }
 }
 /* 主题切换 */

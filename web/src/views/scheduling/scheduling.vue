@@ -5,7 +5,7 @@
         <el-step title="选择订单计划"></el-step>
         <el-step title="批计划管理"></el-step>
         <el-step title="甘特图"></el-step>
-        <el-step title="排产清单"></el-step>
+        <el-step title="计划清单"></el-step>
       </el-steps>
       <el-row :gutter="15" v-show="steps == 0">
         <el-col :span="4">
@@ -93,8 +93,7 @@
                 <el-button :type="item.type" size="small" @click="handleFormPlanManager(item.label)">{{ item.label }}</el-button>
               </el-form-item>
             </el-form>
-            <el-table :data="PlanManagerTableData.data" border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
-              <el-table-column type="selection"></el-table-column>
+            <el-table :data="PlanManagerTableData.data" border size="small">
               <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
               <el-table-column prop="PlanQuantity" label="每批计划产量"></el-table-column>
@@ -105,17 +104,13 @@
               <el-table-column prop="PlanBeginTime" label="计划开始时间"></el-table-column>
               <el-table-column prop="PlanEndTime" label="计划完成时间"></el-table-column>
               <el-table-column prop="Describtion" label="描述"></el-table-column>
+              <el-table-column label="操作" fixed="right" width="150">
+                <template slot-scope="scope">
+                  <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                  <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                </template>
+              </el-table-column>
             </el-table>
-            <div class="paginationClass">
-              <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
-               :total="PlanManagerTableData.total"
-               :current-page="PlanManagerTableData.offset"
-               :page-sizes="[5,10,20]"
-               :page-size="PlanManagerTableData.limit"
-               @size-change="handleSizeChangePlanManager"
-               @current-change="handleCurrentChangePlanManager">
-              </el-pagination>
-            </div>
             <el-dialog :title="PlanManagerTableData.dialogTitle" :visible.sync="PlanManagerTableData.dialogVisible" width="40%" :append-to-body="true">
               <el-form :model="PlanManagerTableData.formField" label-width="110px">
                 <el-form-item label="批次号">
@@ -149,8 +144,66 @@
       </el-row>
       <el-row v-show="steps == 2">
         <el-col :span='24'>
-          <div class="platformContainer" style="backgroundColor:#fff;">
+          <div class="platformContainer">
             <div id="main" style="width:100%; height:750px;clear:both;overflow:hidden;" v-loading="loading"></div>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row v-show="steps == 3">
+        <el-col :span='24'>
+          <el-collapse class="marginBottom">
+            <el-collapse-item title="多条件查询计划">
+              <el-form :model="PlanTableList.searchField" :inline="true" label-width="110px">
+                <el-form-item label="计划单号">
+                  <el-input v-model="PlanTableList.searchField.PlanNum"></el-input>
+                </el-form-item>
+                <el-form-item label="批次号">
+                  <el-input v-model="PlanTableList.searchField.BatchID"></el-input>
+                </el-form-item>
+                <el-form-item label="品名">
+                  <el-input v-model="PlanTableList.searchField.BrandName"></el-input>
+                </el-form-item>
+                <el-form-item label="产品类型">
+                  <el-input v-model="PlanTableList.searchField.BrandType"></el-input>
+                </el-form-item>
+                <el-form-item label="计划状态">
+                  <el-input v-model="PlanTableList.searchField.PlanStatus"></el-input>
+                </el-form-item>
+                <el-form-item label="计划开始时间">
+                   <el-date-picker v-model="PlanTableList.searchField.PlanBeginTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="计划完成时间">
+                   <el-date-picker v-model="PlanTableList.searchField.PlanEndTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
+                </el-form-item>
+                <el-form-item>
+                  <el-button type="primary" size="small" @click="searchPlan">查询</el-button>
+                </el-form-item>
+              </el-form>
+            </el-collapse-item>
+          </el-collapse>
+          <div class="platformContainer">
+            <el-table :data="PlanTableList.data" border size="small">
+              <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
+              <el-table-column prop="BatchID" label="批次号"></el-table-column>
+              <el-table-column prop="PlanQuantity" label="每批计划产量"></el-table-column>
+              <el-table-column prop="Unit" label="单位"></el-table-column>
+              <el-table-column prop="BrandName" label="品名"></el-table-column>
+              <el-table-column prop="BrandType" label="产品类型"></el-table-column>
+              <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
+              <el-table-column prop="PlanBeginTime" label="计划开始时间"></el-table-column>
+              <el-table-column prop="PlanEndTime" label="计划完成时间"></el-table-column>
+              <el-table-column prop="Describtion" label="描述"></el-table-column>
+            </el-table>
+            <div class="paginationClass">
+              <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
+               :total="PlanTableList.total"
+               :current-page="PlanTableList.offset"
+               :page-sizes="[5,10,20]"
+               :page-size="PlanTableList.limit"
+               @size-change="handlePlanTableListSizeChange"
+               @current-change="handlePlanTableListCurrentChange">
+              </el-pagination>
+            </div>
           </div>
         </el-col>
       </el-row>
@@ -201,14 +254,8 @@
         unitOptions:[],
         PlanManagerTableData:{
           data:[],
-          limit: 5,
-          offset: 1,
-          total: 0,
-          multipleSelection: [],
           handleType:[
             {type:"primary",label:"添加"},
-            {type:"warning",label:"修改"},
-            {type:"danger",label:"删除"},
           ],
           dialogVisible:false,
           dialogTitle:"",
@@ -227,7 +274,22 @@
         ActivePUName:"",
         ydata:[],
         PlanStartTime:[],
-        PlanEndTime:[]
+        PlanEndTime:[],
+        PlanTableList:{
+          data:[],
+          limit: 5,
+          offset: 1,
+          total: 0,
+          searchField:{
+            PlanNum:"",
+            BatchID:"",
+            BrandName:"",
+            BrandType:"",
+            PlanStatus:"",
+            PlanBeginTime:"",
+            PlanEndTime:"",
+          },
+        }
       }
     },
     mounted(){
@@ -237,100 +299,100 @@
     methods:{
       SearchPicdata(){
         var params = {
-            tableName: "PlanManager",
-            PlanNum:this.planTableData.multipleSelection[0].PlanNum
-          }
+          tableName: "PlanManager",
+          PlanNum:this.planTableData.multipleSelection[0].PlanNum
+        }
         this.axios.get("/api/CUID",{
-              params: params
-            }).then(res => {
-              var arr=res.data.data.rows
-                this.ydata=arr.map((res) => {
-                  return res.BatchID
-                })
-                this.PlanStartTime=arr.map((res) => {
-                  return new Date(res.PlanBeginTime.replace('-', '/'))
-                })
-                this.PlanEndTime=arr.map((res) => {
-                  return new Date(res.PlanEndTime.replace('-', '/'))
-                })
-                this.drawPic(this.ydata,this.PlanStartTime,this.PlanEndTime)
+          params: params
+        }).then(res => {
+          var arr=res.data.data.rows
+          this.ydata=arr.map((res) => {
+            return res.BatchID
+          })
+          this.PlanStartTime=arr.map((res) => {
+            return new Date(res.PlanBeginTime.replace('-', '/'))
+          })
+          this.PlanEndTime=arr.map((res) => {
+            return new Date(res.PlanEndTime.replace('-', '/'))
+          })
+          this.drawPic(this.ydata,this.PlanStartTime,this.PlanEndTime)
         })
       },
-    drawPic(ydata,planstarttime,planendtime) {
-            var myCharts = echarts.init(document.getElementById('main'));
-            var option = {
-                title: {
-                    text: '排产进度表',
-                    left: 10,
-                    textStyle: {
-                      color: '#666'  //设置title文字颜色
+      drawPic(ydata,planstarttime,planendtime) {
+        var myCharts = echarts.init(document.getElementById('main'));
+        var option = {
+          title: {
+            text: '排产进度表',
+            left: 10,
+            textStyle: {
+              color: '#666'  //设置title文字颜色
+            }
+          },
+          legend: {
+            y: 'top',
+            data: ['计划完成时间'], //修改的地方1,
+            textStyle: {
+              color: '#666' //设置图例文字颜色
+            }
+          },
+          grid: {
+            containLabel: true,
+            left: 20,
+            right:40,
+            bottom:10
+          },
+          xAxis: {
+            name:'时间',
+            type: 'time',
+            axisLine: { lineStyle: { color: '#666' } } //控制x轴坐标文字颜色
+          },
+          yAxis: {
+            name:'批次',
+            data:[...ydata],
+            axisLine: { lineStyle: { color: '#666' } }  //控制y轴坐标文字颜色
+          },
+          tooltip: {
+            trigger: 'axis',
+            formatter: function(params) {
+              var res = params[0].name + "</br>"
+              var date0 = params[0].data;
+              var date1 = params[1].data;
+              date0 = date0.getFullYear() + "-" + (date0.getMonth() + 1) + "-" + (date0.getDate().toString().padStart(2,0))+ "  " + (date0.getHours().toString().padStart(2,0))+':'+(date0.getMinutes().toString().padStart(2,0))+':'+(date0.getSeconds().toString().padStart(2,0));
+              date1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + (date1.getDate().toString().padStart(2,0))+ "  " + (date1.getHours().toString().padStart(2,0))+':'+(date1.getMinutes().toString().padStart(2,0))+':'+(date1.getSeconds().toString().padStart(2,0));
+              res += params[0].seriesName + "~" + params[1].seriesName + ":</br>" + date0 + "~" + date1 + "</br>"
+              return res;
+            }
+          },
+          series: [
+            {
+              name: '计划开始时间',
+              type: 'bar',
+              stack: 'test1',
+              itemStyle: {
+                  normal: {
+                      color: 'rgba(0,0,0,0)'
                   }
-                },
-                legend: {
-                    y: 'top',
-                    data: ['计划完成时间'], //修改的地方1,
-                    textStyle: {
-                      color: '#666' //设置图例文字颜色
+              },
+              data:planstarttime,
+              barMaxWidth: 30,
+            },
+            {
+              name: '计划完成时间',
+              type: 'bar',
+              stack: 'test1',
+              //修改地方2
+              itemStyle: {
+                  normal: {
+                      color: '#06ACB5'
                   }
-                },
-                grid: {
-                    containLabel: true,
-                    left: 20,
-                    bottom:10
-                },
-                xAxis: {
-                    name:'时间',
-                    type: 'time',
-                    axisLine: { lineStyle: { color: '#666' } } //控制x轴坐标文字颜色
-                },
-                yAxis: {
-                    name:'批次',
-                    data:[...ydata],
-                    axisLine: { lineStyle: { color: '#666' } }  //控制y轴坐标文字颜色
-                },
-                tooltip: {
-                    trigger: 'axis',
-                    formatter: function(params) {
-                        var res = params[0].name + "</br>"
-                        var date0 = params[0].data;
-                        var date1 = params[1].data;
-                        date0 = date0.getFullYear() + "-" + (date0.getMonth() + 1) + "-" + (date0.getDate().toString().padStart(2,0))+ "  " + (date0.getHours().toString().padStart(2,0))+':'+(date0.getMinutes().toString().padStart(2,0))+':'+(date0.getSeconds().toString().padStart(2,0));
-                        date1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + (date1.getDate().toString().padStart(2,0))+ "  " + (date1.getHours().toString().padStart(2,0))+':'+(date1.getMinutes().toString().padStart(2,0))+':'+(date1.getSeconds().toString().padStart(2,0));
-                        res += params[0].seriesName + "~" + params[1].seriesName + ":</br>" + date0 + "~" + date1 + "</br>"
-                        return res;
-                    }
-
-                },
-                series: [
-                    {
-                        name: '计划开始时间',
-                        type: 'bar',
-                        stack: 'test1',
-                        itemStyle: {
-                            normal: {
-                                color: 'rgba(0,0,0,0)'
-                            }
-                        },
-                        data:planstarttime,
-                        barMaxWidth: 30,
-                    },
-                    {
-                        name: '计划完成时间',
-                        type: 'bar',
-                        stack: 'test1',
-                        //修改地方2
-                        itemStyle: {
-                            normal: {
-                                color: '#06ACB5'
-                            }
-                        },
-                        data:planendtime,
-                        barMaxWidth:20,
-                    }
-                ]
-            };
-            myCharts.setOption(option);
-        },
+              },
+              data:planendtime,
+              barMaxWidth:20,
+            }
+          ]
+        };
+        myCharts.setOption(option);
+      },
       nextStep(){
         if(this.steps == 0){
           if(this.planTableData.multipleSelection.length == 1){
@@ -342,11 +404,12 @@
               message: "请选择一条ERP计划"
             });
           }
-        }else if(this.steps == 2){
+        }else if(this.steps == 1){
           this.steps++
           this.SearchPicdata()
-        }else{
+        }else if(this.steps == 2){
           this.steps++
+          this.searchPlan()
         }
       },
       lastStep(){
@@ -541,15 +604,12 @@
         var that = this
         var params = {
           PlanNum:this.planTableData.multipleSelection[0].PlanNum,
-          limit:this.PlanManagerTableData.limit,
-          offset:this.PlanManagerTableData.offset - 1
         }
         this.axios.get("/api/selectPlanmanager",{
           params: params
         }).then(res => {
           if(res.data.code === "200"){
             that.PlanManagerTableData.data = res.data.data.rows
-            that.PlanManagerTableData.total = res.data.data.total
           }else{
             that.$message({
               type: 'info',
@@ -557,21 +617,6 @@
             });
           }
         })
-      },
-      handleSizeChangePlanManager(limit){ //每页条数切换
-        this.PlanManagerTableData.limit = limit
-        this.getPlanManagerTableData()
-      },
-      handleCurrentChangePlanManager(offset) { // 页码切换
-        this.PlanManagerTableData.offset = offset
-        this.getPlanManagerTableData()
-      },
-      handleSelectionChangePlanManager(row){
-        this.PlanManagerTableData.multipleSelection = row
-      },
-      handleRowClickPlanManager(row){
-        this.$refs.multipleTablePlanManager.clearSelection();
-        this.$refs.multipleTablePlanManager.toggleRowSelection(row)
       },
       handleFormPlanManager(label){
         if(label === "添加"){
@@ -584,61 +629,46 @@
               message: '请选择品名'
             });
           }
-        }else if(label === "修改"){
-          if(this.PlanManagerTableData.multipleSelection.length == 1){
-            this.PlanManagerTableData.dialogVisible = true
-            this.PlanManagerTableData.dialogTitle = label
-            this.PlanManagerTableData.formField = {
-              BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
-              PlanQuantity:this.PlanManagerTableData.multipleSelection[0].PlanQuantity,
-              Unit:this.PlanManagerTableData.multipleSelection[0].Unit,
-              PlanBeginTime:this.PlanManagerTableData.multipleSelection[0].PlanBeginTime,
-              PlanEndTime:this.PlanManagerTableData.multipleSelection[0].PlanEndTime,
-            }
-          }else{
-            this.$message({
-              type: 'info',
-              message: '请选择批次'
-            });
-          }
-        }else if(label === "删除"){
-          var params = {tableName:"PlanManager"}
-          var mulId = []
-          if(this.PlanManagerTableData.multipleSelection.length >= 1){
-            this.PlanManagerTableData.multipleSelection.forEach(item =>{
-              mulId.push({id:item.ID});
-            })
-            params.delete_data = JSON.stringify(mulId)
-            this.$confirm('确定删除所选记录？', '提示', {
-              distinguishCancelAndClose:true,
-              type: 'warning'
-            }).then(()  => {
-              this.axios.delete("/api/CUID",{
-                params: params
-              }).then(res =>{
-                if(res.data.code === "200"){
-                  this.$message({
-                    type: 'success',
-                    message: res.data.message
-                  });
-                }
-                this.getPlanManagerTableData()
-              },res =>{
-                console.log("请求错误")
-              })
-            }).catch(() => {
-              this.$message({
-                type: 'info',
-                message: '已取消删除'
-              });
-            });
-          }else{
-            this.$message({
-              message: '至少选择一条数据进行删除',
-              type: 'warning'
-            });
-          }
         }
+      },
+      handleEdit(index, row){
+        this.PlanManagerTableData.dialogVisible = true
+        this.PlanManagerTableData.dialogTitle = "编辑"
+        this.PlanManagerTableData.formField = {
+          BatchID:row.BatchID,
+          PlanQuantity:row.PlanQuantity,
+          Unit:row.Unit,
+          PlanBeginTime:row.PlanBeginTime,
+          PlanEndTime:row.PlanEndTime,
+        }
+      },
+      handleDelete(index, row) {
+        var params = {tableName:"PlanManager"}
+        var mulId = [{id:row.ID}]
+        params.delete_data = JSON.stringify(mulId)
+        this.$confirm('确定删除所选记录？', '提示', {
+          distinguishCancelAndClose:true,
+          type: 'warning'
+        }).then(()  => {
+          this.axios.delete("/api/CUID",{
+            params: params
+          }).then(res =>{
+            if(res.data.code === "200"){
+              this.$message({
+                type: 'success',
+                message: res.data.message
+              });
+            }
+            this.getPlanManagerTableData()
+          },res =>{
+            console.log("请求错误")
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       savePlanManager(){
         if(this.PlanManagerTableData.dialogTitle === "添加"){
@@ -734,6 +764,56 @@
             message: '已取消排产'
           });
         });
+      },
+      searchPlan(){
+        var that = this
+        var params = {
+          tableName:"PlanManager",
+          limit:this.PlanTableList.limit,
+          offset:this.PlanTableList.offset - 1,
+        }
+        if(this.PlanTableList.searchField.PlanNum){
+          params.PlanNum = this.PlanTableList.searchField.PlanNum
+        }
+        if(this.PlanTableList.searchField.BatchID){
+          params.BatchID = this.PlanTableList.searchField.BatchID
+        }
+        if(this.PlanTableList.searchField.BrandName){
+          params.BrandName = this.PlanTableList.searchField.BrandName
+        }
+        if(this.PlanTableList.searchField.BrandType){
+          params.BrandType = this.PlanTableList.searchField.BrandType
+        }
+        if(this.PlanTableList.searchField.PlanStatus){
+          params.PlanStatus = this.PlanTableList.searchField.PlanStatus
+        }
+        if(this.PlanTableList.searchField.PlanBeginTime){
+          params.PlanBeginTime = this.PlanTableList.searchField.PlanBeginTime
+        }
+        if(this.PlanTableList.searchField.PlanEndTime){
+          params.PlanEndTime = this.PlanTableList.searchField.PlanEndTime
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.PlanTableList.data = res.data.data.rows
+            that.PlanTableList.total = res.data.data.total
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
+      handlePlanTableListSizeChange(limit){ //每页条数切换
+        this.PlanTableList.limit = limit
+        this.searchPlan()
+      },
+      handlePlanTableListCurrentChange(offset) { // 页码切换
+        this.PlanTableList.offset = offset
+        this.searchPlan()
       },
     }
   }
