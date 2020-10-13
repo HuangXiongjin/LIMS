@@ -396,7 +396,7 @@ def planschedul():
             oclass = db_session.query(product_plan).filter(product_plan.PlanNum == PlanNum).first()
             dir = {}
             if oclass:
-                BatchDuration = db_session.query(ProductRule.BatchTimeLength).filter(
+                proclass = db_session.query(ProductRule).filter(
                     ProductRule.BrandCode == oclass.BrandCode).first()
                 for BatchNo in range(0,int(BatchSum)):
                     pm = PlanManager()
@@ -410,7 +410,7 @@ def planschedul():
                     pm.BrandName = oclass.BrandName
                     pm.PlanStatus = Global.PlanStatus.NEW.value
                     #计算计划开始时间结束时间
-                    beg = int(oclass.PlanTimeLen)-int(BatchDuration)*BatchNo
+                    beg = int(oclass.PlanTimeLen)-int(proclass.BatchDuration)*BatchNo
                     end = beg - int(oclass.PlanTimeLen)/int(BatchSum)
                     PlanBeginTime = (datetime.datetime.strptime(oclass.PlanFinishTime, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(hours=-beg)).strftime("%Y-%m-%d %H:%M:%S")
                     PlanEndTime = (datetime.datetime.strptime(oclass.PlanFinishTime,
