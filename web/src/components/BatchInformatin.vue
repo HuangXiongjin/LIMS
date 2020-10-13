@@ -1,5 +1,5 @@
 <template>
-    <div class="platformContainer" style="height:1040px;">
+    <div class="platformContainer">
         <el-row>
           <el-col :span='24' class="marginBottom"><div style="fontSize:16px;fontWeight:700;">计划进度</div></el-col>
           <el-col :span='24' class="marginBottom">

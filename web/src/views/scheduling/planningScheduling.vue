@@ -16,7 +16,7 @@
                 type="date"
                 size='small'
                 placeholder="选择日期"
-                @change="SearchBatchByTime">
+                @change="getBatchTable">
               </el-date-picker>
             </div>
         </div>
@@ -81,7 +81,7 @@ import BatchInformation from '@/components/BatchInformatin.vue'
         currentFBatch:{},
         currentBrandName:'',
         multipleSelection:[],
-        searchDate:'',//绑定的查询日期
+        searchDate:'2020-09-29',//绑定的查询日期
         tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'PlanNum',label:'计划单号'},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
       }
     },
@@ -91,54 +91,33 @@ import BatchInformation from '@/components/BatchInformatin.vue'
     mounted(){
     },
     methods:{
-      SearchBatchByTime(){
-        console.log(moment(this.searchDate).format('YYYY-MM-DD'))
-        var params = {
-          tableName: this.planTableData.tableName,
-          field:'PlanBeginTime',
-          fieldvalue:'2020-09-29 10:00:00',
-          limit:this.planTableData.limit,
-          offset:this.planTableData.offset - 1
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res =>{
-          console.log(res)
-        })
-      },
-      Selectstatus(e){
-        this.getBatchTable()
-      },
-      handleSelectionChange(row){
-        this.multipleSelection = row
-      },
-      getBatchTable(){ //初始化获取表的内容
-        var that = this
+      getBatchTable(){
+        var that=this
+        var PlanBeginTime=moment(this.searchDate).format('YYYY-MM-DD')
         var radiovalue = ""
         if(this.checkboxGroup==='全部'){
           radiovalue=''
         }else{
           radiovalue = this.checkboxGroup
         }
-        var params = {
-          tableName: this.planTableData.tableName,
-          field:'PlanStatus',
-          fieldvalue:radiovalue,
-          limit:this.planTableData.limit,
-          offset:this.planTableData.offset - 1
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res =>{
+        var offset=this.planTableData.offset - 1
+        var limit=this.planTableData.limit
+        var api="/api/CUID?tableName=PlanManager&PlanStatus="+radiovalue+"&PlanBeginTime="+PlanBeginTime+"&limit="+limit+"&offset="+offset
+        this.axios.get(api).then(res => {
           if(res.data.code === "200"){
             var data = res.data.data
             that.planTableData.data = data.rows
             that.planTableData.total = data.total
           }
-        },res =>{
-          console.log("请求错误")
-        }
-        )
+        },err=>{
+           console.log("请求错误")
+        })
+      },  
+      Selectstatus(){
+        this.getBatchTable()
+      },
+      handleSelectionChange(row){
+        this.multipleSelection = row
       },
       TabCurrentChange(e){ //点击显示当前的tab行显示详细信息
         this.currentFBatch=e
