@@ -2,15 +2,25 @@
   <el-row :gutter='20'>
     <el-col :span='9'>
       <div>
-        <div class="platformContainer" style="height:124px;">
+        <div class="platformContainer">
             <div style="height:20px;fontSize:16px;fontWeight:700;">计划状态选择</div>
             <div style="margin-top: 20px">
               <el-radio-group v-model="checkboxGroup" size="small" @change="Selectstatus">
                 <el-radio-button v-for="(itam,index) in status" :label="itam.name" :key="index"></el-radio-button>
               </el-radio-group>
             </div>
+            <div style="margin-top: 20px">
+              <span style="height:20px;fontSize:14px;fontWeight:700;">计划开始时间查询</span>
+              <el-date-picker
+                v-model="searchDate"
+                type="date"
+                size='small'
+                placeholder="选择日期"
+                @change="SearchBatchByTime">
+              </el-date-picker>
+            </div>
         </div>
-        <div class="platformContainer" style="height:900px;overflow:auto;">
+        <div class="platformContainer" style="overflow:auto;">
           <div style="height:40px;fontSize:16px;fontWeight:700;">计划列表</div>
               <el-table
                   :data="planTableData.data"
@@ -43,6 +53,7 @@
 </template>
 
 <script>
+var moment=require('moment')
 import BatchInformation from '@/components/BatchInformatin.vue'
   export default {
     name: "planningScheduling",
@@ -70,6 +81,7 @@ import BatchInformation from '@/components/BatchInformatin.vue'
         currentFBatch:{},
         currentBrandName:'',
         multipleSelection:[],
+        searchDate:'',//绑定的查询日期
         tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'PlanNum',label:'计划单号'},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
       }
     },
@@ -79,6 +91,21 @@ import BatchInformation from '@/components/BatchInformatin.vue'
     mounted(){
     },
     methods:{
+      SearchBatchByTime(){
+        console.log(moment(this.searchDate).format('YYYY-MM-DD'))
+        var params = {
+          tableName: this.planTableData.tableName,
+          field:'PlanBeginTime',
+          fieldvalue:'2020-09-29 10:00:00',
+          limit:this.planTableData.limit,
+          offset:this.planTableData.offset - 1
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res =>{
+          console.log(res)
+        })
+      },
       Selectstatus(e){
         this.getBatchTable()
       },

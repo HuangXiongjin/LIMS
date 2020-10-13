@@ -98,7 +98,7 @@ export default {
                 total: 0,//总的多少页
             },
             steps:[{title:'新增'},{title:'待审核'},{title:'待下发'},{title:'待完成'},{title:'已完成'}],
-            tableconfig:[{prop:'BatchID',label:"批次号",width:'170'},{prop:'BrandName',label:'品名',width:'90'},{prop:'PlanStatus',label:'计划状态',width:'110'},{prop:'PlanBeginTime',label:'计划开始时间'},{prop:'PlanEndTime',label:'计划完成时间'}],
+            tableconfig:[{prop:'BatchID',label:"批次号",width:'100'},{prop:'BrandName',label:'品名',width:'90'},{prop:'PlanStatus',label:'计划状态',width:'110'},{prop:'PlanBeginTime',label:'计划开始时间'},{prop:'PlanEndTime',label:'计划完成时间'}],
             materialbomtable:[{prop:'MATCode',label:"物料编码"},{prop:'MATName',label:'物料名称'},{prop:'BatchPercentage',label:'百分比'},{prop:'BatchSingleMATWeight',label:'投料单一重量'},{prop:'BatchTotalWeight',label:'投料批总重量'}],
             materialinfotable:[{prop:'MATCode',label:"物料编码"},{prop:'MATName',label:'物料名称'},{prop:'Desc',label:'物料描述'},{prop:'MATTypeID',label:'物料类型ID'},{prop:'MATBatchNo',label:'物料标识'}],
 
