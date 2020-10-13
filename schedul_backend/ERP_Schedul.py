@@ -393,10 +393,11 @@ def planschedul():
         try:
             PlanNum = data.get('PlanNum')
             BatchSum = data.get('BatchSum')
-            BatchDuration = data.get('BatchDuration')
             oclass = db_session.query(product_plan).filter(product_plan.PlanNum == PlanNum).first()
             dir = {}
             if oclass:
+                BatchDuration = db_session.query(ProductRule.BatchTimeLength).filter(
+                    ProductRule.BrandCode == oclass.BrandCode).first()
                 for BatchNo in range(0,int(BatchSum)):
                     pm = PlanManager()
                     pm.PlanNum = PlanNum

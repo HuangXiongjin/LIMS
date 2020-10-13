@@ -14,7 +14,7 @@ from datetime import timedelta
 from common import Global
 from common.batch_plan_model import ProductUnit, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
     ProcessUnit, SchedulePlan, \
-    BatchModel, BatchUseModel, BatchMaterialInfo
+    BatchModel, BatchUseModel, BatchMaterialInfo, EletronicBatchDataStore
 from database.connect_db import CONNECT_DATABASE
 
 login_manager = LoginManager()
@@ -517,3 +517,72 @@ def saveEQPCode():
             logger.error(e)
             insertSyslog("error", "生产调度添加设备报错Error：" + str(e), current_user.Name)
             return json.dumps({"code": "500", "message": "生产调度添加设备报错"})
+
+# 所有工艺段保存查询操作
+@batch_plan.route('/allUnitDataMutual', methods=['POST', 'GET'])
+def allUnitDataMutual():
+    if request.method == 'POST':
+        data = request.values
+        data = data.to_dict()
+        try:
+            for key in data.keys():
+                if key == "BrandID":
+                    continue
+                if key == "PUCode":
+                    continue
+                if key == "BatchID":
+                    continue
+                val = data.get(key)
+                addUpdateEletronicBatchDataStore(data.get("BrandID"), data.get("PUCode"), data.get("BatchID"), key, val)
+            return 'OK'
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "所有工艺段保存查询操作报错Error：" + str(e), current_user.Name)
+            return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder,
+                              ensure_ascii=False)
+    if request.method == 'GET':
+        data = request.values
+        try:
+            json_str = json.dumps(data.to_dict())
+            if len(json_str) > 2:
+                PUCode = data['PUCode']
+                BatchID = data['BatchID']
+                BrandID = data.get("BrandID")
+                oclasss = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.BrandID == BrandID, EletronicBatchDataStore.PUCode == PUCode,
+                                                                           EletronicBatchDataStore.BatchID == BatchID).all()
+                dic = {}
+                for oclass in oclasss:
+                    dic[oclass.Content] = oclass.OperationpValue
+            return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "所有工艺段保存查询操作报错Error：" + str(e), current_user.Name)
+            return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder,
+                              ensure_ascii=False)
+
+
+def addUpdateEletronicBatchDataStore(BrandID, PUCode, BatchID, ke, val):
+    try:
+        oc = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.BrandID == BrandID,
+                                                              EletronicBatchDataStore.PUCode == PUCode,
+                                                              EletronicBatchDataStore.BatchID == BatchID,
+                                                              EletronicBatchDataStore.Content == ke).first()
+        if oc == None:
+            db_session.add(EletronicBatchDataStore(BrandID=BrandID, BatchID=BatchID, PUCode=PUCode, Content=ke, OperationpValue=val,
+                                                   Operator=current_user.Name))
+        else:
+            oc.Content = ke
+            oc.OperationpValue = val
+            oc.Operator = current_user.Name
+        db_session.commit()
+    except Exception as e:
+        db_session.rollback()
+        print(e)
+        logger.error(e)
+        insertSyslog("error", "保存更新EletronicBatchDataStore报错：" + str(e), current_user.Name)
+        return json.dumps("保存更新EletronicBatchDataStore报错", cls=AlchemyEncoder,
+                          ensure_ascii=False)

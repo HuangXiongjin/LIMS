@@ -1012,6 +1012,33 @@ class ProductEquipment(Base):
     # 描述:
     Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
+# 批记录操作步骤（SOP）
+class EletronicBatchDataStore(Base):
+    __tablename__ = 'EletronicBatchDataStore'
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 批次号:
+    BatchID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段编码:
+    PUCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 操作步骤内容:
+    Content = Column(Unicode(60), primary_key=False, autoincrement=False, nullable=True)
+
+    # 操作值:
+    OperationpValue = Column(Unicode(20), primary_key=False, autoincrement=False, nullable=True)
+
+    #操作人:
+    Operator = Column(Unicode(32), primary_key = False, autoincrement = False, nullable = True)
+
+    # 描述:
+    Description = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
+
+    # 品名ID
+    BrandID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
 
 # 生成表单的执行语句
 Base.metadata.create_all(engine)

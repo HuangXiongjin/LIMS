@@ -202,11 +202,11 @@ def select(data):#table, page, rows, fieid, param
                         params = params + " AND " + key + " like '%" + data[key] + "%'"
             if params == "":
                 sql = "select top " + str(
-                    rowsnumber) + columns + " from [LIMS].[dbo]." + tableName + " where ID not in (select top " + str(
+                    rowsnumber) + " " + columns + " from [LIMS].[dbo]." + tableName + " where ID not in (select top " + str(
                     (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo]." + tableName + ") ORDER BY ID ASC"
                 sqlcount = "select count(ID) from [LIMS].[dbo]." + tableName
             else:
-                sql = "select top " + str(rowsnumber) + columns + " from [LIMS].[dbo]." + tableName + " where " + params + \
+                sql = "select top " + str(rowsnumber) + " " + columns + " from [LIMS].[dbo]." + tableName + " where " + params + \
                       "AND ID not in (select top " + str(
                     (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo]." + tableName + ") ORDER BY ID ASC"
                 sqlcount = "select count(ID) from [LIMS].[dbo]." + tableName + " where " + params
