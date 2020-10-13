@@ -511,7 +511,6 @@
             tableName:"product_plan",
             PlanNum:this.planTableData.formField.PlanNum,
             PlanQuantity:this.planTableData.formField.PlanQuantity,
-            PlanTimeLen:this.planTableData.formField.PlanTimeLen,
             PlanFinishTime:this.planTableData.formField.PlanFinishTime,
             Description:this.planTableData.formField.Description,
             CreateTimeTime:moment().format("YYYY-MM-DD HH:mm:ss"),
