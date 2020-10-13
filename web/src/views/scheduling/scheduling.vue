@@ -83,21 +83,15 @@
             <el-divider direction="vertical"></el-divider>
             <span>品名：{{ BrandActive }}</span>
           </div>
-          <div class="platformContainer">
+          <div class="platformContainer" style="min-height: 550px;">
             <el-form :inline="true" :model="formAllotBatch">
               <el-form-item label="批数">
                 <el-input v-model="formAllotBatch.BatchSum" siBatchNumze="small"></el-input>
-              </el-form-item>
-              <el-form-item label="每批间隔时间">
-                <el-input v-model="formAllotBatch.BatchDuration" size="small"></el-input>
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" size="small" @click="planschedul">自动分批</el-button>
               </el-form-item>
             </el-form>
-            <p class="text-size-14 color-grayblack">可估算参数，自动分配批次计划</p>
-          </div>
-          <div class="platformContainer" style="min-height: 550px;">
             <el-form :inline="true">
               <el-form-item v-for="(item,index) in PlanManagerTableData.handleType" :key="index">
                 <el-button :type="item.type" size="small" @click="handleFormPlanManager(item.label)">{{ item.label }}</el-button>
@@ -233,7 +227,6 @@
         },
         formAllotBatch:{
           BatchSum:"",
-          BatchDuration:""
         },
         processList:[],
         ActivePUName:"",
@@ -250,8 +243,7 @@
       SearchPicdata(){
         var params = {
             tableName: "PlanManager",
-            field:"PlanNum",
-            fieldvalue:this.planTableData.multipleSelection[0].PlanNum
+            PlanNum:this.planTableData.multipleSelection[0].PlanNum
           }
         this.axios.get("/api/CUID",{
               params: params
@@ -434,8 +426,7 @@
         var that = this
         var params = {
           tableName: "product_plan",
-          field:"BrandName",
-          fieldvalue:BrandName,
+          BrandName:BrandName,
           limit:this.planTableData.limit,
           offset:this.planTableData.offset - 1
         }
@@ -532,7 +523,6 @@
             BrandCode:this.BrandCode,
             BrandType:this.BrandType,
           }
-          console.log(params)
           this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
             if(res.data.code === "200"){
               this.$message({
@@ -725,7 +715,6 @@
         var params = {
           PlanNum:this.planTableData.multipleSelection[0].PlanNum,
           BatchSum: this.formAllotBatch.BatchSum,
-          BatchDuration: this.formAllotBatch.BatchDuration,
         }
         this.$confirm('确定自动排产所选计划？', '提示', {
           distinguishCancelAndClose:true,

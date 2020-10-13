@@ -78,8 +78,7 @@
         }
         var params = {
           tableName: "PlanManager",
-          field:"PlanStatus",
-          fieldvalue:fieldvalue,
+          PlanStatus:fieldvalue,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }

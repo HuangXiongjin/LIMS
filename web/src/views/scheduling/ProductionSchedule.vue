@@ -61,8 +61,7 @@ export default {
         onSubmit(){
            var params = {
                 tableName: "PlanManager",
-                field:"PlanNum",
-                fieldvalue:this.formInline.CurrentBrandNum
+                PlanNum:this.formInline.CurrentBrandNum
                 }
             this.axios.get("/api/CUID",{
                 params: params
@@ -196,8 +195,7 @@ export default {
         var that = this
         var params = {
           tableName: "product_plan",
-          field:"BrandName",
-          fieldvalue:BrandName,
+          BrandName:BrandName,
         }
         this.axios.get("/api/CUID",{
           params: params

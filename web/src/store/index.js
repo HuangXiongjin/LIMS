@@ -17,8 +17,7 @@ export default new Vuex.Store({
       axios.get("/api/CUID",{ //储存用户名
         params: {
           tableName: "User",
-          field:"WorkNumber",
-          fieldvalue:user,
+          WorkNumber:user,
         }
       }).then(res =>{
         var data = res.data

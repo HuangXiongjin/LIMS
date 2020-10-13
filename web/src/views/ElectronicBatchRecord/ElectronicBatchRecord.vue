@@ -134,8 +134,7 @@
         this.currentBrandBatch=[]
         var params = {
           tableName:this.planTableData.tableName,
-          field:'PlanStatus',
-          fieldvalue:'已下发',
+          PlanStatus:'已下发',
           limit:this.planTableData.limit,
           offset:this.planTableData.offset - 1
         }
@@ -202,8 +201,7 @@
         var that = this
         var params = {
           tableName: "ProductUnit",
-          field:"BrandName",
-          fieldvalue:BrandName,
+          BrandName:BrandName,
         }
         this.axios.get("/api/CUID",{
           params: params
