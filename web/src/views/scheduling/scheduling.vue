@@ -31,7 +31,6 @@
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="BrandType" label="药品类型"></el-table-column>
               <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
-              <el-table-column prop="PlanTimeLen" label="计划时长"></el-table-column>
               <el-table-column prop="PlanFinishTime" label="计划交付时间"></el-table-column>
               <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
               <el-table-column prop="Description" label="备注"></el-table-column>
@@ -55,10 +54,7 @@
                 <el-form-item label="计划产量">
                   <el-input v-model="planTableData.formField.PlanQuantity"></el-input>
                 </el-form-item>
-                <el-form-item label="计划时长">
-                  <el-input v-model="planTableData.formField.PlanTimeLen"></el-input>
-                </el-form-item>
-                <el-form-item label="计划交付时间">
+                <el-form-item label="计划完成时间">
                   <el-date-picker v-model="planTableData.formField.PlanFinishTime" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期">
                   </el-date-picker>
                 </el-form-item>
@@ -198,7 +194,6 @@
           formField:{
             PlanNum:"",
             PlanQuantity:"",
-            PlanTimeLen:"",
             PlanFinishTime:"",
             Description:""
           },
@@ -515,7 +510,6 @@
             tableName:"product_plan",
             PlanNum:this.planTableData.formField.PlanNum,
             PlanQuantity:this.planTableData.formField.PlanQuantity,
-            PlanTimeLen:this.planTableData.formField.PlanTimeLen,
             PlanFinishTime:this.planTableData.formField.PlanFinishTime,
             Description:this.planTableData.formField.Description,
             CreateTimeTime:moment().format("YYYY-MM-DD HH:mm:ss"),

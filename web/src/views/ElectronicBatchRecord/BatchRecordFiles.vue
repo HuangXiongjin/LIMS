@@ -90,7 +90,8 @@
         this.dialogTableVisible = true
         if(this.dialogTableVisible){
           this.$nextTick(function () {
-           $(".elementTable").find("td").each(function(){
+            $(".elementTable").find("tbody").css("display","inline-table")
+            $(".elementTable").find("td").each(function(){
               if($(this).html() === ""){
                 $(this).html("<p>-</p>")
               }
