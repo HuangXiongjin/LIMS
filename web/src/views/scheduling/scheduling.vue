@@ -3,7 +3,7 @@
     <el-col :span="24">
       <el-steps :active="steps" finish-status="wait" align-center class="marginBottom">
         <el-step title="选择订单计划"></el-step>
-        <el-step title="选择批次计划"></el-step>
+        <el-step title="批计划管理"></el-step>
         <el-step title="甘特图"></el-step>
         <el-step title="排产清单"></el-step>
       </el-steps>
