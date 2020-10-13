@@ -522,23 +522,23 @@ def addEquipmentBatchRunTime():
                     eqList = pl.get('eqList')
                     for el in eqList:
                         isSelected = el.get("isSelected")
-                        if isSelected == True:
+                        if isSelected == True:#没有添加过的设备
                             ert = EquipmentBatchRunTime()
                             ert.BatchID = BatchID
                             ert.EQPCode = el.get("EQPCode")
                             ert.EQPName = el.get("EQPName")
                             ert.PUCode = PUName
                             ert.PUName = PUCode
-                            # ert.StartTime = el.get("")
-                            # ert.EndTime = el.get("")
                             ert.WorkTime = el.get("workTime")
                             ert.WaitTime = el.get("waitTime")
                             db_session.add(ert)
-                        else:
+
+                        else:#已添加过的设备，没有选择的
                             ebrt = db_session.query(EquipmentBatchRunTime).filter(EquipmentBatchRunTime.BatchID == BatchID,
                                        EquipmentBatchRunTime.EQPCode == el.get("EQPCode"), EquipmentBatchRunTime.PUCode == pl.get("PUCode")).first()
                             if ebrt:
                                 db_session.delete(ebrt)
+                    db_session.query()
                 oclass.PlanStatus = Global.PlanStatus.Confirm.value
                 db_session.commit()
             return json.dumps({"code": "200", "message": "保存成功！", "data": "OK"})
