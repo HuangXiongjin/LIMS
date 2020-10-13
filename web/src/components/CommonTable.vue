@@ -121,8 +121,7 @@
         this.axios.get("/api/CUID",{
           params: {
             tableName: this.tableData.tableName,
-            field:this.tableData.searchProp,
-            fieldvalue:this.tableData.searchVal,
+            [this.tableData.searchProp]:this.tableData.searchVal,
             limit:this.tableData.limit,
             offset:this.tableData.offset - 1
           }

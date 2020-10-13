@@ -152,8 +152,7 @@
         var that = this
         var params = {
           tableName: "PlanManager",
-          field:'PlanStatus',
-          fieldvalue:"待发送物料明细",
+          PlanStatus:"待发送物料明细",
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }

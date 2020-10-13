@@ -140,8 +140,7 @@
         var that = this
         var params = {
           tableName: "product_plan",
-          field:"BrandName",
-          fieldvalue:this.BrandName,
+          BrandName:this.BrandName,
         }
         this.axios.get("/api/CUID",{
           params: params
@@ -158,8 +157,7 @@
         var that = this
         var params = {
           tableName: "PlanManager",
-          field:"PlanNum",
-          fieldvalue:this.PlanNum,
+          PlanNum:this.PlanNum,
         }
         this.axios.get("/api/CUID",{
           params: params
@@ -176,8 +174,7 @@
         var that = this
         var params = {
           tableName: "ZYPlan",
-          field:"BatchID",
-          fieldvalue:this.BatchID,
+          BatchID:this.BatchID,
         }
         this.axios.get("/api/CUID",{
           params: params
