@@ -410,7 +410,7 @@ def planschedul():
                     pm.BrandName = oclass.BrandName
                     pm.PlanStatus = Global.PlanStatus.NEW.value
                     #计算计划开始时间结束时间
-                    beg = int(oclass.PlanTimeLen)-int(proclass.BatchDuration)*BatchNo
+                    beg = int(oclass.PlanTimeLen)-int(proclass.BatchTimeLength)*BatchNo
                     end = beg - int(oclass.PlanTimeLen)/int(BatchSum)
                     PlanBeginTime = (datetime.datetime.strptime(oclass.PlanFinishTime, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(hours=-beg)).strftime("%Y-%m-%d %H:%M:%S")
                     PlanEndTime = (datetime.datetime.strptime(oclass.PlanFinishTime,

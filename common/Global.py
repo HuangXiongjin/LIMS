@@ -19,6 +19,7 @@ class PlanStatus(Enum):
     Check = "待下发"
     UnCheck = "审核未通过"
     Realse = "已下发"
+    ConfirmEquipment = "已选设备"
     FSWMS = "已发送投料计划"
     FSMWMS = "已发送物料明细"
     Recall = "撤回"
