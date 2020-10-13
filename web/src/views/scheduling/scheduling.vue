@@ -31,7 +31,6 @@
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="BrandType" label="药品类型"></el-table-column>
               <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
-              <el-table-column prop="PlanTimeLen" label="计划时长"></el-table-column>
               <el-table-column prop="PlanFinishTime" label="计划交付时间"></el-table-column>
               <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
               <el-table-column prop="Description" label="备注"></el-table-column>
