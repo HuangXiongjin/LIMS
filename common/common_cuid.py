@@ -200,10 +200,16 @@ def select(data):#table, page, rows, fieid, param
                         params = key + " like '%" + data[key] + "%'"
                     else:
                         params = params + " AND " + key + " like '%" + data[key] + "%'"
-            sql = "select top " + str(rowsnumber) + columns + " from [LIMS].[dbo]." + tableName + " where " + params + \
-                  "AND ID not in (select top " + str(
-                (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo]." + tableName + ") ORDER BY ID ASC"
-            sqlcount = "select count(ID) from [LIMS].[dbo]." + tableName + " where " + params
+            if params == "":
+                sql = "select top " + str(
+                    rowsnumber) + columns + " from [LIMS].[dbo]." + tableName + " where ID not in (select top " + str(
+                    (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo]." + tableName + ") ORDER BY ID ASC"
+                sqlcount = "select count(ID) from [LIMS].[dbo]." + tableName
+            else:
+                sql = "select top " + str(rowsnumber) + columns + " from [LIMS].[dbo]." + tableName + " where " + params + \
+                      "AND ID not in (select top " + str(
+                    (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo]." + tableName + ") ORDER BY ID ASC"
+                sqlcount = "select count(ID) from [LIMS].[dbo]." + tableName + " where " + params
             re = db_session.execute(sql).fetchall()
             recount = db_session.execute(sqlcount).fetchall()
             dict_list = []
