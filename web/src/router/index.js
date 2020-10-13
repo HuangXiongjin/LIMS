@@ -29,6 +29,7 @@ import ProductionSchedule from '@/views/scheduling/ProductionSchedule'
 import schedulingPlan from '@/views/scheduling/schedulingPlan'
 import scheduling from '@/views/scheduling/scheduling'
 import planningScheduling from '@/views/scheduling/planningScheduling'
+import EquipmentChoose from '@/views/scheduling/EquipmentChoose'
 import sendWMS from '@/views/scheduling/sendWMS'
 import sendMaterialDetail from '@/views/scheduling/sendMaterialDetail'
 import ProcessPlanTask from '@/views/scheduling/ProcessPlanTask'
@@ -85,6 +86,7 @@ export default new Router({
         {path:'/ProductionSchedule',name:'ProductionSchedule',meta:{ title:'生产进度',type:"排产调度系统"},component:ProductionSchedule},
         {path:'/scheduling',name:'scheduling',meta:{ title:'计划排产',type:"排产调度系统"},component:scheduling},
         {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度',type:"排产调度系统"},component:planningScheduling},
+        {path:'/EquipmentChoose',name:'EquipmentChoose',meta:{ title:'调度设备选择',type:"排产调度系统"},component:EquipmentChoose},
         {path:'/sendWMS',name:'sendWMS',meta:{ title:'发送计划到WMS',type:"排产调度系统"},component:sendWMS},
         {path:'/sendMaterialDetail',name:'sendMaterialDetail',meta:{ title:'发送物料明细',type:"排产调度系统"},component:sendMaterialDetail},
         {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'调度计划明细',type:"排产调度系统"},component:ProcessPlanTask},
