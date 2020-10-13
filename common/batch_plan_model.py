@@ -394,6 +394,9 @@ class ProductRule(Base):
     # 批次重量:
     BatchWeight = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
+    # 批次时长
+    BatchTimeLength = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
     # 描述:
     Desc = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
 
