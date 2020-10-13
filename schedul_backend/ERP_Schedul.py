@@ -480,17 +480,17 @@ def selectPlanmanager():
         data = request.values
         try:
             PlanNum = data.get('PlanNum')
-            pages = data.get("offset")
-            rowsnumber = data.get("limit")
-            inipage = int(pages) * int(rowsnumber) + 0  # 起始页
-            endpage = int(pages) * int(rowsnumber) + int(rowsnumber)  # 截止页
+            # pages = data.get("offset")
+            # rowsnumber = data.get("limit")
+            # inipage = int(pages) * int(rowsnumber) + 0  # 起始页
+            # endpage = int(pages) * int(rowsnumber) + int(rowsnumber)  # 截止页
             if PlanNum == None or PlanNum == "":
                 count = db_session.query(PlanManager).filter().count()
-                oclass = db_session.query(PlanManager).filter().order_by(("PlanBeginTime")).all()[inipage:endpage]
+                oclass = db_session.query(PlanManager).filter().order_by(("PlanBeginTime")).all()
             else:
                 count = db_session.query(PlanManager).filter(PlanManager.PlanNum == PlanNum).count()
                 oclass = db_session.query(PlanManager).filter(PlanManager.PlanNum == PlanNum).order_by(
-                    ("PlanBeginTime")).all()[inipage:endpage]
+                    ("PlanBeginTime")).all()
             return json.dumps({"code": "200", "message": "请求成功", "data": {"total": count, "rows": oclass}},
                               cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
