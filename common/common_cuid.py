@@ -176,89 +176,69 @@ def select(data):#table, page, rows, fieid, param
     :return:
     '''
     try:
-        param = data.get("field")
         tableName = data.get("tableName")
-        if param == None or param == "":
+        pages = data.get("offset")
+        if pages == None or pages == "":
+            pages = ""
+        else:
             pages = int(data.get("offset")) + 1
             rowsnumber = int(data.get("limit"))
-            if not pages:
-                inipage = ""
+        newTable = Table(tableName, metadata, autoload=True, autoload_with=engine)
+        columns = ""
+        for column in newTable.columns:
+            if columns == "":
+                columns = str(column).split(".")[1]
             else:
-                inipage = int(pages) * int(rowsnumber) + 0  # 起始页
-                endpage = int(pages) * int(rowsnumber) + int(rowsnumber)  # 截止页
-            newTable = Table(tableName, metadata, autoload=True, autoload_with=engine)
-            columns = ""
-            for column in newTable.columns:
-                if columns == "":
-                    columns = str(column).split(".")[1]
+                columns = columns + "," + str(column).split(".")[1]
+        params = ""
+        for key in data.keys():
+            if key != "offset" and key != "limit" and key != "tableName":
+                if params == "":
+                    params = key + " like '%" + data[key] + "%'"
                 else:
-                    columns = columns + "," + str(column).split(".")[1]
-            params = ""
-            for key in data.keys():
-                if key != "offset" and key != "limit" and key != "tableName":
-                    if params == "":
-                        params = key + " like '%" + data[key] + "%'"
-                    else:
-                        params = params + " AND " + key + " like '%" + data[key] + "%'"
+                    params = params + " AND " + key + " like '%" + data[key] + "%'"
+        if pages == "":
+            if params == "":
+                sql = "select " + columns + " from [LIMS].[dbo]." + tableName + " ORDER BY ID DESC"
+                sqlcount = "select count(ID) from [LIMS].[dbo]." + tableName
+            else:
+                sql = "select " + columns + " from [LIMS].[dbo]." + tableName + " where " + params + " ORDER BY ID DESC"
+                sqlcount = "select count(ID) from [LIMS].[dbo]." + tableName + " where " + params
+        else:
             if params == "":
                 sql = "select top " + str(
                     rowsnumber) + " " + columns + " from [LIMS].[dbo]." + tableName + " where ID not in (select top " + str(
-                    (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo]." + tableName + ") ORDER BY ID ASC"
+                    (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo]." + tableName + ") ORDER BY ID DESC"
                 sqlcount = "select count(ID) from [LIMS].[dbo]." + tableName
             else:
-                sql = "select top " + str(rowsnumber) + " " + columns + " from [LIMS].[dbo]." + tableName + " where " + params + \
+                sql = "select top " + str(
+                    rowsnumber) + " " + columns + " from [LIMS].[dbo]." + tableName + " where " + params + \
                       "AND ID not in (select top " + str(
-                    (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo]." + tableName + ") ORDER BY ID ASC"
+                    (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo]." + tableName + ") ORDER BY ID DESC"
                 sqlcount = "select count(ID) from [LIMS].[dbo]." + tableName + " where " + params
-            re = db_session.execute(sql).fetchall()
-            recount = db_session.execute(sqlcount).fetchall()
-            dict_list = []
-            for i in re:
-                dir = {}
-                column_list = columns.split(",")
-                for column in column_list:
-                    dir[column] = i[column]
-                dict_list.append(dir)
-            return {"code": "200", "message": "请求成功", "data": {"total": recount[0][0], "rows": dict_list}}
-        else:
-            pages = data.get("offset")
-            rowsnumber = data.get("limit")
-            paramvalue = data.get("fieldvalue")
-            if not pages:
-                inipage = ""
-            else:
-                inipage = int(pages) * int(rowsnumber) + 0  # 起始页
-                endpage = int(pages) * int(rowsnumber) + int(rowsnumber)  # 截止页
-            newTable = Table(tableName, metadata, autoload=True, autoload_with=engine)
-            if (param == "" or param == None):
-                total = db_session.query(newTable).count()
-                if inipage == "":
-                    oclass = db_session.query(newTable).order_by(desc("ID")).all()
-                else:
-                    oclass = db_session.query(newTable).order_by(desc("ID")).all()[inipage:endpage]
-            else:
-                total = db_session.query(newTable).filter(newTable.columns._data[param].like("%"+paramvalue+"%")).count()
-                if inipage == "":
-                    oclass = db_session.query(newTable).filter(
-                        newTable.columns._data[param].like("%" + paramvalue + "%")).order_by(desc("ID")).all()
-                else:
-                    oclass = db_session.query(newTable).filter(newTable.columns._data[param].like("%"+paramvalue+"%")
-                                                               ).order_by(desc("ID")).all()[inipage:endpage]
-            dir = []
-            for i in oclass:
-                a = 0
-                divi = {}
-                for j in newTable.columns._data:
-                    divi[str(j)] = str(i[a])
-                    a = a + 1
-                dir.append(divi)
-            return {"code": "200", "message": "请求成功", "data": {"total": total, "rows": dir}}
+        re = db_session.execute(sql).fetchall()
+        recount = db_session.execute(sqlcount).fetchall()
+        dict_list = []
+        for i in re:
+            dir = {}
+            column_list = columns.split(",")
+            for column in column_list:
+                dir[column] = i[column]
+            dict_list.append(dir)
+        return {"code": "200", "message": "请求成功", "data": {"total": recount[0][0], "rows": dict_list}}
     except Exception as e:
         print(e)
         logger.error(e)
         insertSyslog("error", "查询报错Error：" + str(e), current_user.Name)
         return {"code": "500", "message": "请求错误", "data": "查询报错Error：" + str(e)}
-
+# dir = []
+# for i in oclass:
+#     a = 0
+#     divi = {}
+#     for j in newTable.columns._data:
+#         divi[str(j)] = str(i[a])
+#         a = a + 1
+#     dir.append(divi)
 
 
 
