@@ -41,14 +41,14 @@
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 <div slot="tip" class="el-upload__tip">只能上传.docx 批记录表</div>
               </el-upload>
-              <el-button type="primary" @click="FileHTMLPreview" size='small' v-if='ButtonVisible'>转换预览</el-button>
-                <el-dialog title="文件预览" :visible.sync="dialogTableVisible" width="60%">
-                  <el-col :span="24">
-                    <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
-                  </el-col>
-                  <div slot="footer" class="dialog-footer"> 
-                    <el-button @click="dialogTableVisible = false">取 消</el-button> 
-                  </div>
+              <el-button type="primary" @click="FileHTMLPreview" size='small' v-if='ButtonVisible'>转换并配置接口参数</el-button>
+              <el-dialog title="转换后的批记录模板" :visible.sync="dialogTableVisible" width="80%">
+                <el-col :span="24">
+                  <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
+                </el-col>
+                <div slot="footer" class="dialog-footer">
+                  <el-button @click="dialogTableVisible = false">取 消</el-button>
+                </div>
               </el-dialog>
             </div>
           </el-col>
@@ -86,6 +86,7 @@
     methods:{ 
       //获取存取的字符
       FileHTMLPreview(){
+        let that = this
         this.dialogTableVisible = true
         if(this.dialogTableVisible){
           this.$nextTick(function () {
@@ -93,6 +94,31 @@
               if($(this).html() === ""){
                 $(this).html("<p>-</p>")
               }
+              $(this).find("p").click(function(){
+                if($(this).hasClass("isInput")){
+                  $(this).attr('class','')
+                }else{
+                  that.$prompt('请输入标签所需数据采集的字段', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                  }).then(({ value }) => {
+                    if(value != ""){
+                      $(this).addClass("isInput")
+                      $(this).addClass(value)
+                    }else{
+                      that.$message({
+                        type: 'info',
+                        message: '不能为空'
+                      });
+                    }
+                  }).catch(() => {
+                    that.$message({
+                      type: 'info',
+                      message: '取消输入'
+                    });
+                  });
+                }
+              })
            })
           })
         }
