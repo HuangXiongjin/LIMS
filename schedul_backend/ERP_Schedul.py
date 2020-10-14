@@ -333,8 +333,9 @@ def batchequimentselect():
     if request.method == 'GET':
         data = request.values
         try:
-            ID = data['ID']
-            oclass = db_session.query(PlanManager).filter(PlanManager.ID == ID).first()
+            BatchID = data.get('BatchID')
+            BrandCode = data.get('BrandCode')
+            oclass = db_session.query(PlanManager).filter(PlanManager.BatchID == BatchID, PlanManager.BrandCode == BrandCode).first()
             dir = {}
             if oclass:
                 pres = db_session.query(ProductUnit).filter(ProductUnit.ID == 17).all()
