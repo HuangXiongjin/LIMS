@@ -11,6 +11,7 @@
   /* 主页头部 */
   /* 侧边导航栏 */
   /* 公用组件样式 */
+  /** 手风琴 **/
 }
 .white-theme .body-container {
   background: #F6F9F9;
@@ -56,14 +57,14 @@
   border-right: none;
 }
 .white-theme .menu-ul .el-menu-item:hover {
-  background: #06ACB5;
+  background: #168DD7;
   color: #ffffff;
 }
 .white-theme .menu-ul .el-menu-item:hover i {
   color: #ffffff;
 }
 .white-theme .menu-ul .el-menu-item.is-active {
-  background-color: #06ACB5;
+  background-color: #168DD7;
   color: #ffffff;
 }
 .white-theme .el-menu-item,
@@ -85,7 +86,7 @@
   padding-top: 20px;
 }
 .white-theme .aside-foot .el-button {
-  background-color: #06ACB5;
+  background-color: #168DD7;
   color: #fff;
 }
 .white-theme .platformContainer {
@@ -137,6 +138,12 @@
   float: right;
   line-height: 48px;
 }
+.white-theme .el-collapse .el-collapse-item__header {
+  padding-left: 10px;
+}
+.white-theme .el-collapse .el-collapse-item__wrap {
+  padding: 10px;
+}
 /*  */
 .black-theme {
   /* 主页头部 */
@@ -151,6 +158,7 @@
   /* 分割线 */
   /* 时间线 */
   /* 公用组件样式 */
+  /** 手风琴 **/
 }
 .black-theme .body-container {
   background: #1E222B;
@@ -209,7 +217,7 @@
   color: #1E222B;
 }
 .black-theme .menu-ul .el-menu-item.is-active {
-  background-color: #06ACB5;
+  background-color: #168DD7;
   color: #ffffff;
 }
 .black-theme .el-menu-item,
@@ -243,6 +251,9 @@
   color: #fff;
 }
 .black-theme .el-table__body tr:hover > td {
+  background-color: #3D4048;
+}
+.black-theme .el-table__body tr.hover-row > td {
   background-color: #3D4048;
 }
 .black-theme .el-table,
@@ -325,7 +336,7 @@
   color: #ffffff;
 }
 .black-theme .el-timeline-item__timestamp {
-  color: #00FAE7;
+  color: #168DD7;
 }
 .black-theme .platformContainer {
   width: 100%;
@@ -372,6 +383,24 @@
   float: right;
   line-height: 48px;
 }
+.black-theme .el-collapse {
+  border-top: 1px solid #3D4048;
+  border-bottom: 1px solid #3D4048;
+}
+.black-theme .el-collapse .el-collapse-item__header {
+  background: #3D4048;
+  color: #fff;
+  padding-left: 10px;
+  border-bottom: 1px solid #3D4048;
+}
+.black-theme .el-collapse .el-collapse-item__wrap {
+  background: #303339;
+  border-bottom: 1px solid #3D4048;
+  padding: 10px;
+}
+.black-theme .el-collapse .el-collapse-item__wrap .el-collapse-item__content {
+  color: #fff;
+}
 /* 主题切换 */
 .themeItem {
   display: inline-block;
@@ -381,7 +410,7 @@
   margin-right: 5px;
 }
 .themeItem.active {
-  border: 2px solid #06ACB5;
+  border: 2px solid #168DD7;
 }
 /* 分页位置 */
 .paginationClass {
@@ -425,7 +454,7 @@
   border-left: 1px solid #1B1E27;
   border-top: 1px solid #1B1E27;
   font-weight: normal;
-  padding: 10px;
+  padding: 6px 10px;
 }
 .elementTable p {
   display: table-caption;
@@ -438,6 +467,9 @@
   text-align: left;
   margin-bottom: 0;
   font-size: 14px;
+}
+.elementTable tr td p.isInput {
+  color: #00FAE7;
 }
 /* 字体大小 */
 .text-size-12 {
@@ -478,7 +510,7 @@
   color: #9B9B9B;
 }
 .color-darkblue {
-  color: #228AD5;
+  color: #168DD7;
 }
 .color-lightgreen {
   color: #00FAE7;
@@ -509,7 +541,7 @@
   background-color: #00FAE7;
 }
 .bg-darkblue {
-  background-color: #228AD5;
+  background-color: #168DD7;
 }
 /* 间距 */
 .marginTop {
@@ -550,4 +582,7 @@
 .scrollable::-webkit-scrollbar {
   display: none;
   /* Chrome Safari */
+}
+.transfer .el-transfer-panel {
+  width: 265px;
 }

@@ -233,16 +233,10 @@ export default {
       },
        getMaterialBom(BrandName){ //查询当前品名物料BOM
         var that = this
-        var params = {
-          tableName: this.materialbom.tableName,
-          field:"BrandName",
-          fieldvalue:BrandName,
-          limit:this.materialbom.limit,
-          offset:this.materialbom.offset - 1
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res => {
+        var offset=this.materialbom.offset - 1
+        var limit=this.materialbom.limit
+        var api="/api/CUID?tableName=MaterialBOM&BrandName="+BrandName+"&limit="+limit+"&offset="+offset
+        this.axios.get(api).then(res => {
           if(res.data.code === "200"){
             that.materialbom.data = res.data.data.rows
             that.materialbom.total = res.data.data.total
@@ -260,16 +254,10 @@ export default {
       },
        getMaterialInfo(materialname){ //查询当前品名物料详情信息
         var that = this
-        var params = {
-          tableName: this.materialinfobom.tableName,
-          field:"MATName",
-          fieldvalue:materialname,//当前点击的物料名称
-          limit:this.materialinfobom.limit,
-          offset:this.materialinfobom.offset - 1
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res => {
+        var offset=this.materialinfobom.offset - 1
+        var limit=this.materialinfobom.limit
+        var api="/api/CUID?tableName=Material&MATName="+materialname+"&limit="+limit+"&offset="+offset
+        this.axios.get(api).then(res => {
           if(res.data.code === "200"){
             that.materialinfobom.data = res.data.data.rows
             that.materialinfobom.total = res.data.data.total

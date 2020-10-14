@@ -39,14 +39,33 @@
                     </div>
                 </div>
                 <div class="platformContainer">
-                    <el-transfer v-model="selectedEquipment" :data="selectEquipment"  :titles="['可选设备', '已选设备']"  :button-texts="['剔除设备', '添加设备']">
-                        <el-button class="transfer-footer" slot="right-footer" size="small">保存</el-button>
-                    </el-transfer>
+                    <el-row :gutter='10'>
+                        <el-col :span='4'>
+                            <div style="height:40px;lineHeight:40px;">设备使用时间</div>
+                        </el-col>
+                        <el-col :span='18'>
+                            <el-date-picker
+                            v-model="equsetime"
+                            type="datetimerange"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"
+                            @change='selectDate'>
+                            </el-date-picker>
+                        </el-col>
+                        <el-col :span='24' class="marginTop transfer">
+                            <el-transfer v-model="selectedEquipment" :data="selectEquipment"  :titles="['可选设备', '已选设备']"  :button-texts="['剔除设备', '添加设备']">
+                                <el-button class="transfer-footer" slot="right-footer" size="small">保存</el-button>
+                            </el-transfer>
+                        </el-col>
+                    </el-row>
+                    
                 </div>
         </el-col>
     </el-row>
 </template>>
 <script>
+var moment=require('moment')
 export default {
     data(){
         return {
@@ -63,6 +82,8 @@ export default {
             loading:false,
             selectedEquipment:[],
             selectEquipment:[],
+            EQPCode:'',
+            equsetime:[new Date(2019, 9, 29, 10, 10), new Date(2000, 10, 1, 10, 10)],
             tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'PlanNum',label:'计划单号'},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
 
         }
@@ -71,11 +92,30 @@ export default {
         this.getBatchTable()
     },
     methods:{
+        selectDate(){//选择时间改变
+        var StartTime=moment(this.equsetime[0]).format('YYYY-MM-DD HH:mm:ss')
+        var EndTime=moment(this.equsetime[1]).format('YYYY-MM-DD HH:mm:ss')
+        var params={
+            StartTime:StartTime,
+            EndTime:EndTime,
+            EQPCode:'AIV7360'
+        }
+        this.axios.get('/api/batchconflictequimentselect',{params:params}).then((res) => {
+            console.log(res)
+        })
+        },
         getEquipmentList(index,eqList){ //点击工艺段
             this.ActiveIndex=index
-            this.selectEquipment=eqList.map((item) => {
+            var newarr=[]
+            eqList.forEach((item) => {
+                if(item.isSelected){
+                    newarr.push({key:item.EQPCode,label:item.EQPName+"(已选择)",disabled:false})
+                }else{
+                    newarr.push({key:item.EQPCode,label:item.EQPName,disabled:false})    
+                }
                 return {key:item.EQPCode,label:item.EQPName}
             })
+            this.selectEquipment=newarr
         },
         handleSelectionChange(row){
             this.multipleSelection = row
@@ -84,7 +124,7 @@ export default {
             this.currentBrandName=e.BrandName
             this.$refs.multipleTable.clearSelection();
             this.$refs.multipleTable.toggleRowSelection(e)
-            this.getBrandProcess(e.BatchID)
+            this.getBrandProcess(e.BatchID,e.BrandCode)
         },
         handleSizeChange(limit){ //每页条数切换
             this.planTableData.limit = limit
@@ -110,11 +150,12 @@ export default {
             console.log("请求错误")
             })
         }, 
-        getBrandProcess(BatchID){ //获取对应工艺段
+        getBrandProcess(BatchID,BrandCode){ //获取对应工艺段
             var that = this
             that.loading=true
             var params = {
                 BatchID: BatchID,
+                BrandCode:BrandCode
             }
             this.axios.get("/api/batchequimentselect",{
                 params: params
