@@ -354,8 +354,8 @@ def batchequimentselect():
                         eqp_dir["EQPStatus"] = True
                         runeqp = db_session.query(EquipmentBatchRunTime).filter(
                             EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
-                            EquipmentBatchRunTime.BatchID == BatchID).first()
-                        if runeqp:
+                            EquipmentBatchRunTime.BatchID == oclass.BatchID).first()
+                        if runeqp:#如果被选中过True，没被选中就是False
                             eqp_dir["isSelected"] = True
                             eqp_dir["workTime"] = runeqp.WorkTime
                             eqp_dir["waitTime"] = runeqp.WaitTime
@@ -540,7 +540,6 @@ def addEquipmentBatchRunTime():
                                        EquipmentBatchRunTime.EQPCode == el.get("EQPCode"), EquipmentBatchRunTime.PUCode == pl.get("PUCode")).first()
                             if ebrt:
                                 db_session.delete(ebrt)
-                    db_session.query()
                 oclass.PlanStatus = Global.PlanStatus.Confirm.value
                 db_session.commit()
             return json.dumps({"code": "200", "message": "保存成功！", "data": "OK"})
