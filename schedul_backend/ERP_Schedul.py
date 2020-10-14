@@ -338,7 +338,6 @@ def batchequimentselect():
             oclass = db_session.query(PlanManager).filter(PlanManager.BatchID == BatchID, PlanManager.BrandCode == BrandCode).first()
             dir = {}
             if oclass:
-                pres = db_session.query(ProductUnit).filter(ProductUnit.ID == 17).all()
                 pres = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == oclass.BrandCode).all()
                 dir_list = []
                 for pre in pres:
@@ -364,14 +363,14 @@ def batchequimentselect():
                             eqp_dir["isSelected"] = False
                             eqp_dir["workTime"] = ""
                             eqp_dir["waitTime"] = ""
-                        begin = db_session.query(EquipmentBatchRunTime).filter(
-                            EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
-                            EquipmentBatchRunTime.StartTime.between(oclass.PlanBeginTime,oclass.PlanEndTime)).first()
-                        end = db_session.query(EquipmentBatchRunTime).filter(
-                            EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
-                            EquipmentBatchRunTime.EndTime.between(oclass.PlanBeginTime, oclass.PlanEndTime)).first()
-                        if begin != None or end != None:
-                            eqp_dir["EQPStatus"] = False
+                        # begin = db_session.query(EquipmentBatchRunTime).filter(
+                        #     EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
+                        #     EquipmentBatchRunTime.StartTime.between(oclass.PlanBeginTime,oclass.PlanEndTime)).first()
+                        # end = db_session.query(EquipmentBatchRunTime).filter(
+                        #     EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
+                        #     EquipmentBatchRunTime.EndTime.between(oclass.PlanBeginTime, oclass.PlanEndTime)).first()
+                        # if begin != None or end != None:
+                        #     eqp_dir["EQPStatus"] = False
                         eqList.append(eqp_dir)
                     dir_list_i["eqList"] = eqList
                     dir_list.append(dir_list_i)
