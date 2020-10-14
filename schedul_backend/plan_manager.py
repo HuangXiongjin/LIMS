@@ -495,8 +495,12 @@ def saveEQPCode():
                                 ert.BatchID = BatchID
                                 ert.EQPCode = el.get("EQPCode")
                                 ert.EQPName = el.get("EQPName")
+                                ert.BrandCode = oclass.BrandCode
+                                ert.BrandName = oclass.BrandName
                                 ert.PUCode = PUName
                                 ert.PUName = PUCode
+                                ert.StartTime = el.get("StartTime")
+                                ert.EndTime = el.get("EndTime")
                                 ert.WorkTime = el.get("workTime")
                                 ert.WaitTime = el.get("waitTime")
                                 db_session.add(ert)

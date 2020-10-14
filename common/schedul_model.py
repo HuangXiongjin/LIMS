@@ -158,6 +158,10 @@ class EquipmentBatchRunTime(Base):
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     # 批次号
     BatchID = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+    # 品名编码:
+    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 品名名称:
+    BrandName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 设备编码:
     EQPCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
     # 设备名称:
