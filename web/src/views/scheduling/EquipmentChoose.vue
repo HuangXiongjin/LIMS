@@ -49,7 +49,8 @@
                             type="datetimerange"
                             range-separator="至"
                             start-placeholder="开始日期"
-                            end-placeholder="结束日期">
+                            end-placeholder="结束日期"
+                            @change='selectDate'>
                             </el-date-picker>
                         </el-col>
                         <el-col :span='24' class="marginTop transfer">
@@ -64,6 +65,7 @@
     </el-row>
 </template>>
 <script>
+var moment=require('moment')
 export default {
     data(){
         return {
@@ -80,6 +82,7 @@ export default {
             loading:false,
             selectedEquipment:[],
             selectEquipment:[],
+            EQPCode:'',
             equsetime:[new Date(2019, 9, 29, 10, 10), new Date(2000, 10, 1, 10, 10)],
             tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'PlanNum',label:'计划单号'},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
 
@@ -89,6 +92,18 @@ export default {
         this.getBatchTable()
     },
     methods:{
+        selectDate(){//选择时间改变
+        var StartTime=moment(this.equsetime[0]).format('YYYY-MM-DD HH:mm:ss')
+        var EndTime=moment(this.equsetime[1]).format('YYYY-MM-DD HH:mm:ss')
+        var params={
+            StartTime:StartTime,
+            EndTime:EndTime,
+            EQPCode:'AIV7360'
+        }
+        this.axios.get('/api/batchconflictequimentselect',{params:params}).then((res) => {
+            console.log(res)
+        })
+        },
         getEquipmentList(index,eqList){ //点击工艺段
             this.ActiveIndex=index
             var newarr=[]
