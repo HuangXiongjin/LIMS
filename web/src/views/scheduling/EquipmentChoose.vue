@@ -31,7 +31,7 @@
                     <div class="marginBottom"><span style="fontSize:16px;fontWeight:700;marginRight:30px;">当前选择的品名</span>{{currentBrandName}}</div>
                     <p class="marginBottom" style="fontSize:14px;fontWeight:700;">对应工艺段</p>
                     <div v-loading="loading" element-loading-text="数据加载中..." element-loading-spinner="el-icon-loading" style="height:60px;">
-                        <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer" @click='getEquipmentList(index,item.eqList)'>
+                        <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer" @click='getEquipmentList(index,item.eqList,item.PUCode)'>
                                 <div class="container-col" :class='{"pactive":index===ActiveIndex}'>
                                     <span class="text-size-14">{{ item.PUName }}</span>
                                 </div>
@@ -39,27 +39,11 @@
                     </div>
                 </div>
                 <div class="platformContainer">
-                    <el-row :gutter='10'>
-                        <el-col :span='4'>
-                            <div style="height:40px;lineHeight:40px;">设备使用时间</div>
-                        </el-col>
-                        <el-col :span='18'>
-                            <el-date-picker
-                            v-model="equsetime"
-                            type="datetimerange"
-                            range-separator="至"
-                            start-placeholder="开始日期"
-                            end-placeholder="结束日期"
-                            @change='selectDate'>
-                            </el-date-picker>
-                        </el-col>
                         <el-col :span='24' class="marginTop transfer">
                             <el-transfer v-model="selectedEquipment" :data="selectEquipment"  :titles="['可选设备', '已选设备']"  :button-texts="['剔除设备', '添加设备']">
-                                <el-button class="transfer-footer" slot="right-footer" size="small">保存</el-button>
+                                <el-button class="transfer-footer" slot="right-footer" size="small" @click='SaveEq'>保存</el-button>
                             </el-transfer>
                         </el-col>
-                    </el-row>
-                    
                 </div>
         </el-col>
     </el-row>
@@ -83,7 +67,9 @@ export default {
             selectedEquipment:[],
             selectEquipment:[],
             EQPCode:'',
-            equsetime:[new Date(2019, 9, 29, 10, 10), new Date(2000, 10, 1, 10, 10)],
+            Id:'',//当前批次的ID
+            PUCode:'',//当前的工艺段编码
+            PlanNum:'',//当前批次编码
             tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'PlanNum',label:'计划单号'},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
 
         }
@@ -92,20 +78,20 @@ export default {
         this.getBatchTable()
     },
     methods:{
-        selectDate(){//选择时间改变
-        var StartTime=moment(this.equsetime[0]).format('YYYY-MM-DD HH:mm:ss')
-        var EndTime=moment(this.equsetime[1]).format('YYYY-MM-DD HH:mm:ss')
-        var params={
-            StartTime:StartTime,
-            EndTime:EndTime,
-            EQPCode:'AIV7360'
-        }
-        this.axios.get('/api/batchconflictequimentselect',{params:params}).then((res) => {
-            console.log(res)
-        })
+        SaveEq(){
+            var params={
+                ID:this.Id,
+                PUCode:this.Pucode,
+                PlanNum:this.PlanNum,
+                eqList:this.selectedEquipment
+            }
+            this.axios.post('/api/saveEQPCode',this.qs.stringify(params)).then((res) => {
+                console.log(res)
+            })
         },
-        getEquipmentList(index,eqList){ //点击工艺段
+        getEquipmentList(index,eqList,PUCode){ //点击工艺段
             this.ActiveIndex=index
+            this.PUCode=PUCode
             var newarr=[]
             eqList.forEach((item) => {
                 if(item.isSelected){
@@ -122,6 +108,8 @@ export default {
         },
          TabCurrentChange(e){ //点击显示当前的tab行显示详细信息
             this.currentBrandName=e.BrandName
+            this.Id=e.ID
+            this.PlanNum=e.PlanNum
             this.$refs.multipleTable.clearSelection();
             this.$refs.multipleTable.toggleRowSelection(e)
             this.getBrandProcess(e.BatchID,e.BrandCode)
@@ -142,6 +130,7 @@ export default {
             var api="/api/CUID?tableName=PlanManager&PlanStatus="+radiovalue+"&limit="+limit+"&offset="+offset
             this.axios.get(api).then(res => {
             if(res.data.code === "200"){
+                console.log(res)
                 var data = res.data.data
                 that.planTableData.data = data.rows
                 that.planTableData.total = data.total
