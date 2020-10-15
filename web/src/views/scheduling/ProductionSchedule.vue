@@ -59,13 +59,9 @@ export default {
     },
     methods: {
         onSubmit(){
-           var params = {
-                tableName: "PlanManager",
-                PlanNum:this.formInline.CurrentBrandNum
-                }
-            this.axios.get("/api/CUID",{
-                params: params
-            }).then(res => {
+            var PlanNum=this.formInline.CurrentBrandNum
+            var api="/api/CUID?tableName=PlanManager&PlanNum="+PlanNum
+            this.axios.get(api).then(res => {
                 var arr=res.data.data.rows
                 this.ydata=arr.map((res) => {
                     return res.BatchID
@@ -193,13 +189,8 @@ export default {
       },
        getBrandCode(BrandName){ //查询当前品名绑定的工序
         var that = this
-        var params = {
-          tableName: "product_plan",
-          BrandName:BrandName,
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res => {
+        var api="/api/CUID?tableName=product_plan&BrandName="+BrandName
+        this.axios.get(api).then(res => {
           if(res.data.code === "200"){
            var arr=res.data.data.rows
            this.selectBrandNum=arr.map((res, index) => {
