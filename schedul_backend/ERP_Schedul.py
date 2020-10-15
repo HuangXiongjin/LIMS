@@ -451,7 +451,7 @@ def planschedul():
                     pu = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == oclass.BrandCode, ProductUnit.PUName.like("%提%")).first()
                     proc = db_session.query(ProcessUnit).filter(ProcessUnit.PUCode == pu.PUCode).first()
                     beg = int(proc.PURunTime)*int(BatchSum) - int(proc.PURunTime)*BatchNo
-                    end = beg - int(proc.PURunTime)
+                    end = beg - int(proclass.BatchTimeLength)
                     PlanBeginTime = (datetime.datetime.strptime(oclass.PlanFinishTime, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(hours=-beg)).strftime("%Y-%m-%d %H:%M:%S")
                     PlanEndTime = (datetime.datetime.strptime(oclass.PlanFinishTime,
                                                                 "%Y-%m-%d %H:%M:%S") + datetime.timedelta(
