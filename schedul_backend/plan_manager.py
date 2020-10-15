@@ -70,6 +70,7 @@ def makeZYPlanZYTask(id):
                 zyplan.BatchID = ocalss.BatchID
                 zyplan.PlanSeq = i.Seq
                 zyplan.PUCode = i.PUCode
+                zyplan.PUName = i.PUName
                 zyplan.PlanType = Global.PLANTYPE.SCHEDULE.value
                 zyplan.BrandCode = ocalss.BrandCode
                 zyplan.BrandName = ocalss.BrandName
@@ -95,6 +96,7 @@ def makeZYPlanZYTask(id):
                     zytask.BatchID = ocalss.BatchID
                     zytask.PlanSeq = iTaskSeq
                     zytask.PUCode = i.PUCode
+                    zytask.PUName = i.PUName
                     zytask.PlanType = Global.PLANTYPE.SCHEDULE.value
                     zytask.BrandCode = ocalss.BrandCode
                     zytask.BrandName = ocalss.BrandName
