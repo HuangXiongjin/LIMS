@@ -481,7 +481,7 @@ def saveEQPCode():
                 oclass = db_session.query(PlanManager).filter(PlanManager.ID == ID).first()
                 PUName = data.get("PUName")
                 PUCode = data.get("PUCode")
-                eqList = data.get('eqList')
+                eqList = json.loads(data.get('eqList'))
                 # for el in eqList:  # 为查询设备是否是已经使用过的做添加数据
                 #     ert = EquipmentBatchRunTime()
                 #     ert.BatchID = oclass.BatchID
@@ -501,7 +501,7 @@ def saveEQPCode():
                                                               ZYTask.BatchID == oclass.BatchID).all()
                 for i in range(len(oclasstasks)):
                     oclasstasks[i].EQPCode = eqList[i % len(eqList)]
-                    oclasstasks[i].TaskStatus = Global.TASKSTATUS.COMFIRM.value
+                    oclasstasks[i].TaskStatus = Global.TASKSTATUS.Confirm.value
                 db_session.commit()
                 oclasstasks = db_session.query(ZYTask).filter(ZYTask.BatchID == oclass.BatchID,
                                                               ZYTask.PUCode == PUCode,
@@ -514,7 +514,7 @@ def saveEQPCode():
                     zyplanc = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID,
                                                               ZYPlan.PUCode == PUCode,
                                                               ZYPlan.BrandCode == oclass.BrandCode).first()
-                    zyplanc.ZYPlanStatus == Global.ZYPlanStatus.Confirm.value
+                    zyplanc.ZYPlanStatus = Global.ZYPlanStatus.Confirm.value
                     db_session.commit()
 
                 return json.dumps({"code": "200", "message": "添加设备成功！"})
