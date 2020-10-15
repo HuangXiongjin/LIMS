@@ -253,8 +253,8 @@
 </script>
 <style>
   .SysMonbg{
-      background:#34383E url('../../assets/img/Containerbgc.png') no-repeat scroll center center;
-      cursor: move;
+    /*background:#34383E url('../../assets/img/Containerbgc.png') no-repeat scroll center center;*/
+    cursor: move;
   }
   .MainContain{
     position: relative;

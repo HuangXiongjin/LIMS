@@ -129,18 +129,28 @@
             {title:"物料基础信息",icon:"el-icon-box",url:"/MaterialInformation"},
             {title:"物料BOM表",icon:"el-icon-box",url:"/MaterialBOM"},
             {title:"物料明细表",icon:"el-icon-box",url:"/MaterialDetail"},
-          ]},
-          {label: '生产数据系统',icon:"el-icon-s-data",mainMenu:[
-            {title:"批物料平衡统计",icon:"el-icon-box",url:"/MaterialBalanceStatistics"},
+            {title:"库存管理",icon:"el-icon-box",url:""},
+            {title:"出入库管理",icon:"el-icon-box",url:""},
             {title:"物料追溯",icon:"el-icon-box",url:"/MaterialTraceability"},
-            {title:"生产数据趋势分析",icon:"el-icon-box",url:"/TrendQuery"}
           ]},
-          {label: '电子批记录',icon:"el-icon-edit-outline",mainMenu:[
+          {label: '生产数据管理',icon:"el-icon-tickets",mainMenu:[
+            {title:"生产监控",icon:"el-icon-box",url:"/ProductionMonitoring"},
             {title:"批生产记录",icon:"el-icon-edit-outline",url:"/ElectronicBatchRecord"},
+            {title:"批物料平衡统计",icon:"el-icon-box",url:"/MaterialBalanceStatistics"},
+            {title:"生产数据趋势分析",icon:"el-icon-box",url:"/TrendQuery"},
             {title:"批记录管理",icon:"el-icon-folder-opened",url:"/BatchRecordFiles"},
           ]},
-          {label: '工厂监控',icon:"el-icon-view",mainMenu:[
-            {title:"生产监控",icon:"el-icon-box",url:"/ProductionMonitoring"},
+          {label: '质量管理',icon:"el-icon-data-analysis",mainMenu:[
+            {title:"IPQC",icon:"el-icon-box",url:""},
+            {title:"OQC",icon:"el-icon-box",url:""},
+            {title:"动静态",icon:"el-icon-box",url:""},
+          ]},
+          {label: '报表平台',icon:"fa fa-table",mainMenu:[
+            {title:"产量报表",icon:"el-icon-box",url:""},
+            {title:"品质报表",icon:"el-icon-box",url:""},
+            {title:"效率报表",icon:"el-icon-box",url:""},
+            {title:"OEE报表",icon:"el-icon-box",url:""},
+            {title:"出货报表",icon:"el-icon-box",url:""},
           ]},
           {label: '系统管理',icon:"el-icon-s-tools",mainMenu:[
             {title:"组织架构",icon:"el-icon-office-building",url:"/Organization"},

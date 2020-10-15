@@ -34,18 +34,16 @@ import sendWMS from '@/views/scheduling/sendWMS'
 import sendMaterialDetail from '@/views/scheduling/sendMaterialDetail'
 import ProcessPlanTask from '@/views/scheduling/ProcessPlanTask'
 //生产数据
+import ElectronicBatchRecord from '@/views/production/ElectronicBatchRecord'
+import BatchRecordFiles from '@/views/production/BatchRecordFiles'
 import MaterialBalanceStatistics from '@/views/production/MaterialBalanceStatistics'
-import MaterialTraceability from '@/views/production/MaterialTraceability'
 import TrendQuery from '@/views/production/TrendQuery'
+import ProductionMonitoring from '@/views/production/ProductionMonitoring'
 //物料管理
 import MaterialInformation from '@/views/material/MaterialInformation'
 import MaterialBOM from '@/views/material/MaterialBOM'
 import MaterialDetail from '@/views/material/MaterialDetail'
-//批记录
-import ElectronicBatchRecord from '@/views/ElectronicBatchRecord/ElectronicBatchRecord'
-import BatchRecordFiles from '@/views/ElectronicBatchRecord/BatchRecordFiles'
-//工厂监控
-import ProductionMonitoring from '@/views/monitor/ProductionMonitoring'
+import MaterialTraceability from '@/views/material/MaterialTraceability'
 
 Vue.use(Router)
 const originalPush = Router.prototype.push
