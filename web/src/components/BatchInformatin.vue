@@ -137,6 +137,7 @@ export default {
                 message: res.data.message
               });
               this.$emit('refreshBatchTable')
+              this.$router.push('/EquipmentChoose')
             }
           })
         }).catch(() => {

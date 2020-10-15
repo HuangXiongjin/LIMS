@@ -31,7 +31,7 @@
                     <div class="marginBottom"><span style="fontSize:16px;fontWeight:700;marginRight:30px;">当前选择的品名</span>{{currentBrandName}}</div>
                     <p class="marginBottom" style="fontSize:14px;fontWeight:700;">对应工艺段</p>
                     <div v-loading="loading" element-loading-text="数据加载中..." element-loading-spinner="el-icon-loading" style="height:60px;">
-                        <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer" @click='getEquipmentList(index,item.eqList,item.PUCode)'>
+                        <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer" @click='getEquipmentList(index,item.eqList,item.PUCode,item.PUName)'>
                                 <div class="container-col" :class='{"pactive":index===ActiveIndex}'>
                                     <span class="text-size-14">{{ item.PUName }}</span>
                                 </div>
@@ -68,8 +68,8 @@ export default {
             selectEquipment:[],
             EQPCode:'',
             Id:'',//当前批次的ID
-            PUCode:'',//当前的工艺段编码
-            PlanNum:'',//当前批次编码
+            PUCode:'',//当前的工艺段编码,
+            PUName:'',//当前的工艺段名称
             tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'PlanNum',label:'计划单号'},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
 
         }
@@ -81,17 +81,21 @@ export default {
         SaveEq(){
             var params={
                 ID:this.Id,
-                PUCode:this.Pucode,
-                PlanNum:this.PlanNum,
-                eqList:this.selectedEquipment
+                PUName:this.PUName,
+                PUCode:this.PUCode,
+                eqList:JSON.stringify(this.selectedEquipment)
             }
+            console.log(this.selectedEquipment)
+            console.log(JSON.stringify(this.selectedEquipment))
+            console.log(typeof(JSON.stringify(this.selectedEquipment)))
             this.axios.post('/api/saveEQPCode',this.qs.stringify(params)).then((res) => {
                 console.log(res)
             })
         },
-        getEquipmentList(index,eqList,PUCode){ //点击工艺段
+        getEquipmentList(index,eqList,PUCode,PUName){ //点击工艺段
             this.ActiveIndex=index
             this.PUCode=PUCode
+            this.PUName=PUName
             var newarr=[]
             eqList.forEach((item) => {
                 if(item.isSelected){
@@ -109,7 +113,6 @@ export default {
          TabCurrentChange(e){ //点击显示当前的tab行显示详细信息
             this.currentBrandName=e.BrandName
             this.Id=e.ID
-            this.PlanNum=e.PlanNum
             this.$refs.multipleTable.clearSelection();
             this.$refs.multipleTable.toggleRowSelection(e)
             this.getBrandProcess(e.BatchID,e.BrandCode)

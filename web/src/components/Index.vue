@@ -106,7 +106,7 @@
         systemActive:"",
         systemOptions:[
           {label: '排产调度系统',icon:"el-icon-date",mainMenu:[
-            {title:'排产看板',icon:"el-icon-s-home",url:"/schedulingBoard"},
+            {title:'排产调度看板',icon:"el-icon-s-home",url:"/schedulingBoard"},
             {title:'计划排产',icon:"fa fa-calendar-plus-o",url:"/scheduling"},
             {title:'生产进度',icon:"el-icon-date",url:"/ProductionSchedule"},
             {title:"生产计划调度",icon:"el-icon-s-claim",url:"/planningScheduling"},

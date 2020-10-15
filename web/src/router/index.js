@@ -82,7 +82,7 @@ export default new Router({
         {path:'/ProductLineDefinition',name:'ProductLineDefinition',meta:{ title:'生产线定义',type:"生产建模"},component:ProductLineDefinition},
         {path:'/Unit',name:'Unit',meta:{ title:'生产线定义',type:"生产建模"},component:Unit},
 
-        {path:'/schedulingBoard',name:'schedulingBoard',meta:{ title:'排产看板',type:"排产调度系统"},component:schedulingBoard},
+        {path:'/schedulingBoard',name:'schedulingBoard',meta:{ title:'排产调度看板',type:"排产调度系统"},component:schedulingBoard},
         {path:'/ProductionSchedule',name:'ProductionSchedule',meta:{ title:'生产进度',type:"排产调度系统"},component:ProductionSchedule},
         {path:'/scheduling',name:'scheduling',meta:{ title:'计划排产',type:"排产调度系统"},component:scheduling},
         {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度',type:"排产调度系统"},component:planningScheduling},
