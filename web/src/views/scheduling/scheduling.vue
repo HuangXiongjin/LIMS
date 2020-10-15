@@ -259,6 +259,7 @@
           ],
           dialogVisible:false,
           dialogTitle:"",
+          handleRow:"",
           formField:{
             BatchID:"",
             PlanQuantity:"",
@@ -630,6 +631,7 @@
       handleEdit(index, row){
         this.PlanManagerTableData.dialogVisible = true
         this.PlanManagerTableData.dialogTitle = "编辑"
+        this.PlanManagerTableData.handleRow = row
         this.PlanManagerTableData.formField = {
           BatchID:row.BatchID,
           PlanQuantity:row.PlanQuantity,
@@ -696,9 +698,9 @@
           },res =>{
             console.log("请求错误")
           })
-        }else if(this.PlanManagerTableData.dialogTitle === "修改"){
+        }else if(this.PlanManagerTableData.dialogTitle === "编辑"){
           var params = {
-            ID:this.PlanManagerTableData.multipleSelection[0].ID,
+            ID:this.PlanManagerTableData.handleRow.ID,
             BrandName:this.BrandActive,
             BrandCode:this.BrandCode,
             BrandType:this.BrandType,
