@@ -345,24 +345,26 @@ def batchequimentselect():
                     dir_list_i["PUName"] = pre.PUName
                     dir_list_i["PUCode"] = pre.PUCode
                     dir_list_i["Seq"] = pre.Seq
+                    puoclass = db_session.query(ProcessUnit).filter(ProcessUnit.PUCode == pre.PUCode).first()
+                    dir_list_i["RelateTaskCount"] = puoclass.RelateTaskCount
                     eqList = []
                     eqps = db_session.query(ProductEquipment).filter(ProductEquipment.PUCode == pre.PUCode).all()
                     for eqp in eqps:
                         eqp_dir = {}
                         eqp_dir["EQPCode"] = eqp.EQPCode
                         eqp_dir["EQPName"] = eqp.EQPName
-                        eqp_dir["EQPStatus"] = True #在此批运行时间内没有被选中的设备，设备状态是TRUE
-                        runeqp = db_session.query(EquipmentBatchRunTime).filter(
-                            EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
-                            EquipmentBatchRunTime.BatchID == oclass.BatchID).first()
-                        if runeqp:#如果被选中过True，没被选中就是False
-                            eqp_dir["isSelected"] = True
-                            eqp_dir["workTime"] = runeqp.WorkTime
-                            eqp_dir["waitTime"] = runeqp.WaitTime
-                        else:
-                            eqp_dir["isSelected"] = False
-                            eqp_dir["workTime"] = ""
-                            eqp_dir["waitTime"] = ""
+                        eqp_dir["EQPStatus"] = eqp.EQPStatus
+                        # runeqp = db_session.query(EquipmentBatchRunTime).filter(
+                        #     EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
+                        #     EquipmentBatchRunTime.BatchID == oclass.BatchID).first()
+                        # if runeqp:#如果被选中过True，没被选中就是False
+                        #     eqp_dir["isSelected"] = True
+                        #     eqp_dir["workTime"] = runeqp.WorkTime
+                        #     eqp_dir["waitTime"] = runeqp.WaitTime
+                        # else:
+                        #     eqp_dir["isSelected"] = False
+                        #     eqp_dir["workTime"] = ""
+                        #     eqp_dir["waitTime"] = ""
                         # begin = db_session.query(EquipmentBatchRunTime).filter(
                         #     EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
                         #     EquipmentBatchRunTime.StartTime.between(oclass.PlanBeginTime,oclass.PlanEndTime)).first()
@@ -381,42 +383,42 @@ def batchequimentselect():
             logger.error(e)
             insertSyslog("error", "查询批次下对应的设备报错Error：" + str(e), current_user.Name)
             return json.dumps("查询批次下对应的设备报错", cls=AlchemyEncoder, ensure_ascii=False)
-@erp_schedul.route('/batchconflictequimentselect', methods=['GET', 'POST'])
-def batchconflictequimentselect():
-    '''
-    查询选择时间段下对应的冲突设备的批次品名
-    :return:
-    '''
-    if request.method == 'GET':
-        data = request.values
-        try:
-            EQPCode = data.get('EQPCode')
-            StartTime = data.get('StartTime')
-            EndTime = data.get('EndTime')
-            startoclass = db_session.query(EquipmentBatchRunTime).filter(
-                EquipmentBatchRunTime.EQPCode == EQPCode,
-                EquipmentBatchRunTime.StartTime.between(StartTime, EndTime)).all()
-            endoclass = db_session.query(EquipmentBatchRunTime).filter(
-                EquipmentBatchRunTime.EQPCode == EQPCode,
-                EquipmentBatchRunTime.EndTime.between(StartTime, EndTime)).all()
-            ebr_list = []
-            eqp = {}
-            eqp["EQPStatus"] = False#设备没有被选中过是false
-            if startoclass:
-                eqp["EQPStatus"] = True
-                for oc in startoclass:
-                    ebr_list.append(oc)
-            if endoclass:
-                eqp["EQPStatus"] = True
-                for oc in endoclass:
-                    ebr_list.append(oc)
-            ebr_list.append(eqp)
-            return json.dumps({"code": "200", "message": "查询成功！", "data": ebr_list})
-        except Exception as e:
-            db_session.rollback()
-            logger.error(e)
-            insertSyslog("error", "查询选择时间段下对应的冲突设备的批次品名报错Error：" + str(e), current_user.Name)
-            return json.dumps("查询选择时间段下对应的冲突设备的批次品名报错", cls=AlchemyEncoder, ensure_ascii=False)
+# @erp_schedul.route('/batchconflictequimentselect', methods=['GET', 'POST'])
+# def batchconflictequimentselect():
+#     '''
+#     查询选择时间段下对应的冲突设备的批次品名
+#     :return:
+#     '''
+#     if request.method == 'GET':
+#         data = request.values
+#         try:
+#             EQPCode = data.get('EQPCode')
+#             StartTime = data.get('StartTime')
+#             EndTime = data.get('EndTime')
+#             startoclass = db_session.query(EquipmentBatchRunTime).filter(
+#                 EquipmentBatchRunTime.EQPCode == EQPCode,
+#                 EquipmentBatchRunTime.StartTime.between(StartTime, EndTime)).all()
+#             endoclass = db_session.query(EquipmentBatchRunTime).filter(
+#                 EquipmentBatchRunTime.EQPCode == EQPCode,
+#                 EquipmentBatchRunTime.EndTime.between(StartTime, EndTime)).all()
+#             ebr_list = []
+#             eqp = {}
+#             eqp["EQPStatus"] = False#设备没有被选中过是false
+#             if startoclass:
+#                 eqp["EQPStatus"] = True
+#                 for oc in startoclass:
+#                     ebr_list.append(oc)
+#             if endoclass:
+#                 eqp["EQPStatus"] = True
+#                 for oc in endoclass:
+#                     ebr_list.append(oc)
+#             ebr_list.append(eqp)
+#             return json.dumps({"code": "200", "message": "查询成功！", "data": ebr_list})
+#         except Exception as e:
+#             db_session.rollback()
+#             logger.error(e)
+#             insertSyslog("error", "查询选择时间段下对应的冲突设备的批次品名报错Error：" + str(e), current_user.Name)
+#             return json.dumps("查询选择时间段下对应的冲突设备的批次品名报错", cls=AlchemyEncoder, ensure_ascii=False)
 
 @erp_schedul.route('/planschedul', methods=['GET', 'POST'])
 def planschedul():

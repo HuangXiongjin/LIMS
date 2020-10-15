@@ -477,61 +477,46 @@ def saveEQPCode():
         try:
             jsonstr = json.dumps(data.to_dict())
             if len(jsonstr) > 10:
-                BatchID = data.get('BatchID')
-                PlanNum = data.get('PlanNum')
-                processList = json.loads(data.get('processList'))
-                oclass = db_session.query(PlanManager).filter(PlanManager.BatchID == BatchID,
-                                                              PlanManager.PlanNum == PlanNum).first()
-                dir = {}
-                if oclass:
-                    for pl in processList:
-                        PUName = pl.get("PUName")
-                        PUCode = pl.get("PUCode")
-                        eqList = pl.get('eqList')
-                        for el in eqList:  # 为查询设备是否是已经使用过的做添加数据
-                            isSelected = el.get("isSelected")
-                            if isSelected == True:  # 没有添加过的设备
-                                ert = EquipmentBatchRunTime()
-                                ert.BatchID = BatchID
-                                ert.EQPCode = el.get("EQPCode")
-                                ert.EQPName = el.get("EQPName")
-                                ert.BrandCode = oclass.BrandCode
-                                ert.BrandName = oclass.BrandName
-                                ert.PUCode = PUName
-                                ert.PUName = PUCode
-                                ert.StartTime = el.get("StartTime")
-                                ert.EndTime = el.get("EndTime")
-                                ert.WorkTime = el.get("workTime")
-                                ert.WaitTime = el.get("waitTime")
-                                db_session.add(ert)
+                ID = data.get('ID')
+                oclass = db_session.query(PlanManager).filter(PlanManager.ID == ID).first()
+                PUName = data.get("PUName")
+                PUCode = data.get("PUCode")
+                eqList = data.get('eqList')
+                # for el in eqList:  # 为查询设备是否是已经使用过的做添加数据
+                #     ert = EquipmentBatchRunTime()
+                #     ert.BatchID = oclass.BatchID
+                #     ert.EQPCode = el.get("EQPCode")
+                #     ert.EQPName = el.get("EQPName")
+                #     ert.BrandCode = oclass.BrandCode
+                #     ert.BrandName = oclass.BrandName
+                #     ert.PUCode = PUName
+                #     ert.PUName = PUCode
+                #     ert.StartTime = el.get("StartTime")
+                #     ert.EndTime = el.get("EndTime")
+                #     ert.WorkTime = el.get("workTime")
+                #     ert.WaitTime = el.get("waitTime")
+                #     db_session.add(ert)
+                oclasstasks = db_session.query(ZYTask).filter(ZYTask.PUCode == PUCode,
+                                                              ZYTask.BrandCode == oclass.BrandCode,
+                                                              ZYTask.BatchID == oclass.BatchID).all()
+                for i in range(len(oclasstasks)):
+                    oclasstasks[i].EQPCode = eqList[i % len(eqList)]
+                    oclasstasks[i].TaskStatus = Global.TASKSTATUS.COMFIRM.value
+                db_session.commit()
+                oclasstasks = db_session.query(ZYTask).filter(ZYTask.BatchID == oclass.BatchID,
+                                                              ZYTask.PUCode == PUCode,
+                                                              ZYTask.BrandCode == oclass.BrandCode).all()
+                flag = "TRUE"
+                for task in oclasstasks:
+                    if (task.TaskStatus != Global.TASKSTATUS.Confirm.value):
+                        flag = "FALSE"
+                if (flag == "TRUE"):
+                    zyplanc = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID,
+                                                              ZYPlan.PUCode == PUCode,
+                                                              ZYPlan.BrandCode == oclass.BrandCode).first()
+                    zyplanc.ZYPlanStatus == Global.ZYPlanStatus.Confirm.value
+                    db_session.commit()
 
-                            else:  # 已添加过的设备，没有选择的
-                                ebrt = db_session.query(EquipmentBatchRunTime).filter(
-                                    EquipmentBatchRunTime.BatchID == BatchID,
-                                    EquipmentBatchRunTime.EQPCode == el.get("EQPCode"),
-                                    EquipmentBatchRunTime.PUCode == pl.get("PUCode")).first()
-                                if ebrt:
-                                    db_session.delete(ebrt)
-                        oclasstasks = db_session.query(ZYTask).filter(ZYTask.PUCode == PUCode,
-                                                                      ZYTask.BrandCode == oclass.BrandCode,
-                                                                      ZYTask.BatchID == BatchID).all()
-                        for i in range(len(oclasstasks)):
-                            oclasstasks[i].EQPCode = eqList[i % len(eqList)]
-                            oclasstasks[i].TaskStatus = Global.TASKSTATUS.COMFIRM.value
-                        db_session.commit()
-                        oclasstasks = db_session.query(ZYTask).filter(ZYTask.BatchID == BatchID,
-                                                                      ZYTask.PUCode == PUCode,
-                                                                      ZYTask.BrandCode == oclass.BrandCode).all()
-                        flag = "TRUE"
-                        for task in oclasstasks:
-                            if (task.TaskStatus != Global.TASKSTATUS.Confirm.value):
-                                flag = "FALSE"
-                        if (flag == "TRUE"):
-                            zyplanc = db_session.query(ZYPlan).filter(ZYPlan.BatchID == BatchID,
-                                                                      ZYPlan.PUCode == PUCode,
-                                                                      ZYPlan.BrandCode == oclass.BrandCode).first()
-                            zyplanc.ZYPlanStatus == Global.ZYPlanStatus.Confirm.value
-                            db_session.commit()
                 return json.dumps({"code": "200", "message": "添加设备成功！"})
         except Exception as e:
             db_session.rollback()
