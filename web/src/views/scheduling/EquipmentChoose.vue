@@ -185,7 +185,6 @@ export default {
             var api="/api/CUID?tableName=PlanManager&PlanStatus="+radiovalue+"&limit="+limit+"&offset="+offset
             this.axios.get(api).then(res => {
             if(res.data.code === "200"){
-                console.log(res)
                 var data = res.data.data
                 that.planTableData.data = data.rows
                 that.planTableData.total = data.total
@@ -204,7 +203,6 @@ export default {
             this.axios.get("/api/batchequimentselect",{
                 params: params
             }).then(res => {
-                console.log(res.data.data)
                 if(res.data.code === "200"){
                 function compare(property){
                     return function(a,b){
