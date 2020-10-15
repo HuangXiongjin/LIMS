@@ -298,13 +298,9 @@
     },
     methods:{
       SearchPicdata(){
-        var params = {
-          tableName: "PlanManager",
-          PlanNum:this.planTableData.multipleSelection[0].PlanNum
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res => {
+        var PlanNum=this.planTableData.multipleSelection[0].PlanNum
+        var api="/api/CUID?tableName=PlanManager&PlanNum="+PlanNum
+        this.axios.get(api).then(res => {
           var arr=res.data.data.rows
           this.ydata=arr.map((res) => {
             return res.BatchID
