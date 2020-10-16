@@ -209,8 +209,8 @@ class Scheduling(Base):
     # 药品类型
     BrandType = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 计划状态:
-    PlanStatus = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # # 计划状态:
+    # PlanStatus = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 计划开始时间:
     PlanBeginTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
@@ -218,11 +218,11 @@ class Scheduling(Base):
     # 计划完成时间:
     PlanEndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 实际开始时间:
-    ActBeginTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
-    # 实际完成时间:
-    ActEndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # # 实际开始时间:
+    # ActBeginTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    #
+    # # 实际完成时间:
+    # ActEndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 调度类型:
     Type = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
