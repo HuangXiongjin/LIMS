@@ -431,44 +431,45 @@ def planschedul():
     if request.method == 'POST':
         data = request.values
         try:
-            ID = data.get('ID')
+            IDs = json.loads(data.get('IDs'))
             StartTime = data.get('StartTime')
-            oclass = db_session.query(product_plan).filter(product_plan.ID == ID).first()
-            dir = {}
-            if oclass:
-                proclass = db_session.query(ProductRule).filter(
-                    ProductRule.BrandCode == oclass.BrandCode).first()
-                AvalProductLines = ast.literal_eval(proclass.AvalProductLine)
-                sum = math.ceil((float(oclass.PlanQuantity)/float(proclass.BatchWeight))/len(AvalProductLines))
-                for BatchNo in range(0,sum):
-                    for line in AvalProductLines:
-                        if line != "":
-                            ploclass = db_session.query(ProductLine).filter(ProductLine.PLineName == line).first()
-                            pm = Scheduling()
-                            pm.PLineName = ploclass.PLineName
-                            pm.PLineCode = ploclass.PLineCode
-                            pm.PlanNum = oclass.PlanNum
-                            pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
-                            nowtime = datetime.datetime.now().strftime("%Y-%m %S").replace("-","").replace(" ","")
-                            pm.BatchID = nowtime + str(BatchNo + 1)
-                            pm.PlanQuantity = proclass.BatchWeight
-                            pm.Unit = "KG"
-                            pm.BrandCode = oclass.BrandCode
-                            pm.BrandName = oclass.BrandName
-                            #计算计划开始时间结束时间
-                            pu = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == oclass.BrandCode, ProductUnit.PUName.like("%提%")).first()
-                            proc = db_session.query(ProcessUnit).filter(ProcessUnit.PUCode == pu.PUCode).first()
-                            beg = int(proclass.BatchTimeLength)*BatchNo
-                            end = beg + int(proclass.BatchTimeLength)
-                            PlanBeginTime = (datetime.datetime.strptime(StartTime, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(hours=beg)).strftime("%Y-%m-%d %H:%M:%S")
-                            PlanEndTime = (datetime.datetime.strptime(StartTime,
-                                                                        "%Y-%m-%d %H:%M:%S") + datetime.timedelta(
-                                hours=end)).strftime("%Y-%m-%d %H:%M:%S")
-                            pm.PlanBeginTime = PlanBeginTime
-                            pm.PlanEndTime = PlanEndTime
-                            pm.BrandType = oclass.BrandType
-                            db_session.add(pm)
-                            db_session.commit()
+            for ID in IDs:
+                oclass = db_session.query(product_plan).filter(product_plan.ID == ID).first()
+                dir = {}
+                if oclass:
+                    proclass = db_session.query(ProductRule).filter(
+                        ProductRule.BrandCode == oclass.BrandCode).first()
+                    AvalProductLines = ast.literal_eval(proclass.AvalProductLine)
+                    sum = math.ceil((float(oclass.PlanQuantity)/float(proclass.BatchWeight))/len(AvalProductLines))
+                    for BatchNo in range(0,sum):
+                        for line in AvalProductLines:
+                            if line != "":
+                                ploclass = db_session.query(ProductLine).filter(ProductLine.PLineName == line).first()
+                                pm = Scheduling()
+                                pm.PLineName = ploclass.PLineName
+                                pm.PLineCode = ploclass.PLineCode
+                                pm.PlanNum = oclass.PlanNum
+                                pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
+                                nowtime = datetime.datetime.now().strftime("%Y-%m %S").replace("-","").replace(" ","")
+                                pm.BatchID = nowtime + str(BatchNo + 1)
+                                pm.PlanQuantity = proclass.BatchWeight
+                                pm.Unit = "KG"
+                                pm.BrandCode = oclass.BrandCode
+                                pm.BrandName = oclass.BrandName
+                                #计算计划开始时间结束时间
+                                pu = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == oclass.BrandCode, ProductUnit.PUName.like("%提%")).first()
+                                proc = db_session.query(ProcessUnit).filter(ProcessUnit.PUCode == pu.PUCode).first()
+                                beg = int(proclass.BatchTimeLength)*BatchNo
+                                end = beg + int(proclass.BatchTimeLength)
+                                PlanBeginTime = (datetime.datetime.strptime(StartTime, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(hours=beg)).strftime("%Y-%m-%d %H:%M:%S")
+                                PlanEndTime = (datetime.datetime.strptime(StartTime,
+                                                                            "%Y-%m-%d %H:%M:%S") + datetime.timedelta(
+                                    hours=end)).strftime("%Y-%m-%d %H:%M:%S")
+                                pm.PlanBeginTime = PlanBeginTime
+                                pm.PlanEndTime = PlanEndTime
+                                pm.BrandType = oclass.BrandType
+                                db_session.add(pm)
+                                db_session.commit()
             return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
