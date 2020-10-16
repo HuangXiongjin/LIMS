@@ -409,6 +409,9 @@ class ProductRule(Base):
     # 是否使用:
     IsUsed = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
+    # 可用生产线:
+    AvalProductLine = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
+
 
 # ProductUnit:
 class ProductUnit(Base):
@@ -587,6 +590,12 @@ class PlanManager(Base):
 
     #描述
     Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 生产线编码:
+    PLineCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 生产线名称:
+    PLineName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
 
 # # 序号:
