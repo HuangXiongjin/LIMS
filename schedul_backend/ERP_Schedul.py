@@ -432,6 +432,7 @@ def planschedul():
         data = request.values
         try:
             ID = data.get('ID')
+            StartTime = data.get('StartTime')
             oclass = db_session.query(product_plan).filter(product_plan.ID == ID).first()
             dir = {}
             if oclass:
@@ -457,12 +458,12 @@ def planschedul():
                             #计算计划开始时间结束时间
                             pu = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == oclass.BrandCode, ProductUnit.PUName.like("%提%")).first()
                             proc = db_session.query(ProcessUnit).filter(ProcessUnit.PUCode == pu.PUCode).first()
-                            beg = int(proclass.BatchTimeLength)*int(sum) - int(proclass.BatchTimeLength)*BatchNo
-                            end = beg - int(proclass.BatchTimeLength)
-                            PlanBeginTime = (datetime.datetime.strptime(oclass.PlanFinishTime, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(hours=-beg)).strftime("%Y-%m-%d %H:%M:%S")
-                            PlanEndTime = (datetime.datetime.strptime(oclass.PlanFinishTime,
+                            beg = int(proclass.BatchTimeLength)*BatchNo
+                            end = beg + int(proclass.BatchTimeLength)
+                            PlanBeginTime = (datetime.datetime.strptime(StartTime, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(hours=beg)).strftime("%Y-%m-%d %H:%M:%S")
+                            PlanEndTime = (datetime.datetime.strptime(StartTime,
                                                                         "%Y-%m-%d %H:%M:%S") + datetime.timedelta(
-                                hours=-end)).strftime("%Y-%m-%d %H:%M:%S")
+                                hours=end)).strftime("%Y-%m-%d %H:%M:%S")
                             pm.PlanBeginTime = PlanBeginTime
                             pm.PlanEndTime = PlanEndTime
                             pm.BrandType = oclass.BrandType
@@ -594,3 +595,27 @@ def addEquipmentBatchRunTime():
             logger.error(e)
             insertSyslog("error", "生产配置添加设备报错Error：" + str(e), current_user.Name)
             return json.dumps("生产配置添加设备报错", cls=AlchemyEncoder, ensure_ascii=False)
+
+@erp_schedul.route('/selectpaichanrule', methods=['GET', 'POST'])
+def selectpaichanrule():
+    '''
+    查询排产规则
+    :return:
+    '''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            ID = data.get('ID')
+            dir = {}
+            oclass = db_session.query(product_plan).filter(product_plan.ID == ID).first()
+            proclass = db_session.query(ProductRule).filter(ProductRule.BrandCode == oclass.BrandCode).first()
+            dir["batchSum"] = float(oclass.PlanQuantity)/float(proclass.BatchWeight)
+            dir["AvalProductLine"] = ast.literal_eval(proclass.AvalProductLine)
+            dir["BatchWeight"] = proclass.BatchWeight
+            return json.dumps({"code": "200", "message": "查询成功！", "data": dir})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "查询排产规则报错Error：" + str(e), current_user.Name)
+            return json.dumps("查询排产规则报错", cls=AlchemyEncoder, ensure_ascii=False)
