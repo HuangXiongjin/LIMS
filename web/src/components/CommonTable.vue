@@ -45,7 +45,10 @@
       <el-form :model="tableData.submitForm" label-width="110px">
         <el-form-item v-for="(item,index) in tableData.column" :key="index" :label="item.label" :prop="item.prop" v-if="item.canSubmit != false">
           <el-input v-if="item.type === 'input'" v-model="item.value" :disabled="item.disabled"></el-input>
-          <el-select v-if="item.type === 'select'" v-model="item.value" placeholder="请选择" @change="changeHandleChildSelect(item.value,item.prop)">
+          <el-select v-if="item.type === 'select' && !item.multiple" v-model="item.value" placeholder="请选择" @change="changeHandleChildSelect(item.value,item.prop)">
+            <el-option v-for="(i,d) in item.DownData" :key="d" :label="i[item.showDownField]" :value="i[item.showDownField]"></el-option>
+          </el-select>
+          <el-select v-if="item.type === 'select' && item.multiple" multiple v-model="item.value" placeholder="请选择" @change="changeHandleChildSelect(item.value,item.prop)">
             <el-option v-for="(i,d) in item.DownData" :key="d" :label="i[item.showDownField]" :value="i[item.showDownField]"></el-option>
           </el-select>
         </el-form-item>
@@ -258,6 +261,11 @@
           this.tableData.column.forEach(item =>{
             if(item.canSubmit != false){
               params[item.prop] = item.value
+              if(Array.isArray(item.value)){
+                params[item.prop] = JSON.stringify(item.value)
+              }else {
+                params[item.prop] = item.value
+              }
             }
           })
           this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
