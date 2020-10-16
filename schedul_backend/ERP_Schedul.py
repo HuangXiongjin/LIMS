@@ -454,7 +454,7 @@ def planschedul():
                             pm.Unit = "KG"
                             pm.BrandCode = oclass.BrandCode
                             pm.BrandName = oclass.BrandName
-                            pm.PlanStatus = Global.PlanStatus.NEW.value
+                            pm.PlanStatus = ""
                             #计算计划开始时间结束时间
                             pu = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == oclass.BrandCode, ProductUnit.PUName.like("%提%")).first()
                             proc = db_session.query(ProcessUnit).filter(ProcessUnit.PUCode == pu.PUCode).first()

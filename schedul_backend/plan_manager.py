@@ -133,7 +133,7 @@ def makePlan():
                 if pcBatchID:
                     return json.dumps({"code": "201", "message": "批次号重复！"})
                 pm = PlanManager()
-                pm.SchedulePlanCode = PlanEndTime[0:10]
+                pm.SchedulePlanCode = data.get("SchedulePlanCode")
                 pm.BatchID = BatchID
                 pm.PlanQuantity = data.get("PlanQuantity")
                 pm.PlanNum = data.get("PlanNum")
