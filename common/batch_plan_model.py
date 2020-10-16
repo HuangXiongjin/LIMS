@@ -401,10 +401,10 @@ class ProductRule(Base):
     Description = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
 
     # 发布日期:
-    Publish_date = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    Publish_date = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 使用日期:
-    Appy_date = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    Appy_date = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 是否使用:
     IsUsed = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
