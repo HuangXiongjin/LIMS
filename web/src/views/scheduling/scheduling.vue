@@ -85,7 +85,7 @@
                 <el-input v-model="formAllotBatch.BatchSum" siBatchNumze="small"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" size="small" @click="planschedul">自动分批</el-button>
+                <el-button type="primary" size="small" @click="planschedul">排产</el-button>
               </el-form-item>
             </el-form>
             <el-form :inline="true">
