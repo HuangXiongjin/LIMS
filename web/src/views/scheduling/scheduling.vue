@@ -80,7 +80,7 @@
             </el-form>
           </div>
           <div class="platformContainer">
-            <el-form :inline="true" :model="formAllotBatch">
+            <el-form :inline="true" :model="formAllotBatch" label-width="120px">
               <el-form-item label="计划单号">
                 <el-input v-model="formAllotBatch.PlanNum" size="small" :disabled="true"></el-input>
               </el-form-item>
@@ -90,17 +90,20 @@
               <el-form-item label="药品类型">
                 <el-input v-model="formAllotBatch.BrandType" size="small" :disabled="true"></el-input>
               </el-form-item>
+              <el-form-item label="计划交付时间">
+                <el-input v-model="formAllotBatch.PlanFinishTime" size="small" :disabled="true"></el-input>
+              </el-form-item>
               <el-form-item label="计划产量">
                 <el-input v-model="formAllotBatch.PlanQuantity" size="small" :disabled="true"></el-input>
-              </el-form-item>
-              <el-form-item label="批数">
-                <el-input v-model="formAllotBatch.batchSum" size="small" :disabled="true"></el-input>
               </el-form-item>
               <el-form-item label="每批产量">
                 <el-input v-model="formAllotBatch.BatchWeight" size="small" :disabled="true"></el-input>
               </el-form-item>
+              <el-form-item label="批数">
+                <el-input v-model="formAllotBatch.batchSum" size="small" :disabled="true"></el-input>
+              </el-form-item>
               <el-form-item label="可用生产线">
-                <el-input v-model="formAllotBatch.AvalProductLine" size="small" :disabled="true"></el-input>
+                <el-input type="textarea" v-model="formAllotBatch.AvalProductLine" size="small" :disabled="true"></el-input>
               </el-form-item>
             </el-form>
             <el-form :inline="true" :model="formAllotBatch">
@@ -112,6 +115,7 @@
                 <el-button type="primary" size="small" @click="planschedul">确定生成计划</el-button>
               </el-form-item>
             </el-form>
+            <p class="color-grayblack text-size-12">选择所有选择订单的计划生产时间，生成时自动根据相应参数排产，再次生成时会自动清空上次生成的计划</p>
           </div>
           <div class="platformContainer" style="min-height: 550px;">
             <el-form :inline="true">
@@ -129,7 +133,6 @@
               <el-table-column prop="PlanBeginTime" label="计划开始时间"></el-table-column>
               <el-table-column prop="PlanEndTime" label="计划完成时间"></el-table-column>
               <el-table-column prop="PLineName" label="生产线名称"></el-table-column>
-              <el-table-column prop="Type" label="调度类型"></el-table-column>
               <el-table-column prop="Describtion" label="描述"></el-table-column>
               <el-table-column label="操作" fixed="right" width="150">
                 <template slot-scope="scope">
@@ -301,6 +304,7 @@
           PlanNum:"",
           PlanQuantity:"",
           batchSum:"",
+          PlanFinishTime:"",
           BrandName:"",
           BrandType:"",
           BatchWeight:"",
@@ -594,6 +598,7 @@
               PlanQuantity:res.data.data.PlanQuantity,
               BatchWeight:res.data.data.BatchWeight,
               batchSum:res.data.data.batchSum,
+              PlanFinishTime:res.data.data.PlanFinishTime,
               BrandName:res.data.data.BrandName,
               BrandType:res.data.data.BrandType,
             }

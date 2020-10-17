@@ -1,52 +1,25 @@
 <template>
   <el-row>
     <el-col :span="24">
-      <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-18">生产调度信息</span>
-      </div>
+      <el-collapse class="marginBottom">
+        <el-collapse-item title="多条件查询订单计划">
+          <el-form :model="searchField" :inline="true" label-width="110px">
+            <el-form-item label="计划开始时间">
+
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" size="small" @click="getZYPlanTable">查询</el-button>
+            </el-form-item>
+          </el-form>
+        </el-collapse-item>
+      </el-collapse>
       <el-row :gutter="15">
-        <el-col :span="4">
-          <div class="platformContainer">
-            <el-form>
-              <el-form-item label="选择品名">
-                <el-select v-model="BrandName" filterable placeholder="输入关键字" @change="getProductPlan">
-                  <el-option
-                    v-for="item in BrandOptions"
-                    :key="item.ID"
-                    :label="item.BrandName"
-                    :value="item.BrandName">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="选择订单计划">
-                <el-select v-model="PlanNum" filterable placeholder="选择计划编号" @change="getPlanManagerTable">
-                  <el-option
-                    v-for="item in ProductPlanTableData"
-                    :key="item.ID"
-                    :label="item.PlanNum"
-                    :value="item.PlanNum">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="选择批次号">
-                <el-select v-model="BatchID" filterable placeholder="选择批次号" @change="getZYPlanTable">
-                  <el-option
-                    v-for="item in PlanManagerTableData"
-                    :key="item.ID"
-                    :label="item.BatchID"
-                    :value="item.BatchID">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-form>
-          </div>
-        </el-col>
-        <el-col :span="20">
+        <el-col :span="24">
           <div class="platformContainer">
             工艺段计划
           </div>
           <div class="platformContainer">
-            <el-table :data="ZYPlanTableData.data" border size="small" @selection-change="handleSelectionZYPlanTable">
+            <el-table :data="ZYPlanTableData.data" border size="small">
               <el-table-column type="selection"></el-table-column>
               <el-table-column prop="PUName" label="工艺名称"></el-table-column>
               <el-table-column prop="PlanDate" label="计划日期"></el-table-column>
@@ -66,7 +39,7 @@
             设备任务
           </div>
           <div class="platformContainer">
-            <el-table :data="ZYTaskTableData.data" border size="small" @selection-change="handleSelectionZYTaskTable">
+            <el-table :data="ZYTaskTableData.data" border size="small">
               <el-table-column type="selection"></el-table-column>
               <el-table-column prop="PUName" label="工艺名称"></el-table-column>
               <el-table-column prop="EQPName" label="设备名称"></el-table-column>
@@ -92,12 +65,9 @@
     name:"ProcessPlanTask",
     data(){
       return {
-        BrandName:"",
-        BrandOptions:[],
-        PlanNum:"",
-        ProductPlanTableData:[],
-        BatchID:"",
-        PlanManagerTableData:[],
+        searchField:{
+
+        },
         ZYPlanTableData:{
           data:[],
           limit:5,
@@ -115,61 +85,9 @@
       }
     },
     created(){
-      this.getBrandTable()
+
     },
     methods:{
-      getBrandTable(){
-        var that = this
-        var params = {
-          tableName: "ProductRule",
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res => {
-          if(res.data.code === "200"){
-            that.BrandOptions = res.data.data.rows
-          }else{
-            that.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        })
-      },
-      getProductPlan(){
-        var that = this
-        var params = {
-          tableName: "product_plan",
-          BrandName:this.BrandName,
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res =>{
-          if(res.data.code === "200"){
-            var data = res.data.data
-            that.ProductPlanTableData = data.rows
-          }
-        },res =>{
-          console.log("请求错误")
-        })
-      },
-      getPlanManagerTable(){
-        var that = this
-        var params = {
-          tableName: "PlanManager",
-          PlanNum:this.PlanNum,
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res =>{
-          if(res.data.code === "200"){
-            var data = res.data.data
-            that.PlanManagerTableData = data.rows
-          }
-        },res =>{
-          console.log("请求错误")
-        })
-      },
       getZYPlanTable(){
         var that = this
         var params = {
@@ -187,12 +105,6 @@
           console.log("请求错误")
         })
       },
-      handleSelectionZYPlanTable(row){
-        this.ZYPlanTableData.multipleSelection = row
-      },
-      handleSelectionZYTaskTable(row){
-        this.ZYTaskTableData.multipleSelection = row
-      }
     }
   }
 </script>
