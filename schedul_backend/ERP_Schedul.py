@@ -433,7 +433,8 @@ def planschedul():
         try:
             IDs = json.loads(data.get('IDs'))
             StartTime = data.get('StartTime')
-            for ID in IDs:
+            for i in IDs:
+                ID = i.get("id")
                 oclass = db_session.query(product_plan).filter(product_plan.ID == ID).first()
                 dir = {}
                 if oclass:
@@ -617,6 +618,7 @@ def selectpaichanrule():
             dir["BrandType"] = oclass.BrandType
             dir["PlanQuantity"] = oclass.PlanQuantity
             dir["PlanNum"] = oclass.PlanNum
+            dir["PlanFinishTime"] = oclass.PlanFinishTime
             return json.dumps({"code": "200", "message": "查询成功！", "data": dir})
         except Exception as e:
             db_session.rollback()
