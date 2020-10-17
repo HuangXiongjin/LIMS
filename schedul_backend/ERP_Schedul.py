@@ -438,6 +438,11 @@ def planschedul():
                 oclass = db_session.query(product_plan).filter(product_plan.ID == ID).first()
                 dir = {}
                 if oclass:
+                    #清空之前排好的订单
+                    sql = "delete from [LIMS].[dbo].[Scheduling] where BrandCode = '"+oclass.BrandCode+"' and PlanNum = '"+oclass.PlanNum+"'"
+                    db_session.execute(sql)
+                    db_session.commit()
+
                     proclass = db_session.query(ProductRule).filter(
                         ProductRule.BrandCode == oclass.BrandCode).first()
                     AvalProductLines = ast.literal_eval(proclass.AvalProductLine)
