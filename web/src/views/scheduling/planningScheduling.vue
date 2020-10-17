@@ -1,27 +1,37 @@
 <template>
-  <el-row :gutter='20'>
-    <el-col :span='9'>
-      <div>
-        <div class="platformContainer">
-            <div style="height:20px;fontSize:16px;fontWeight:700;">计划状态选择</div>
-            <div style="margin-top: 20px">
-              <el-radio-group v-model="checkboxGroup" size="small" @change="Selectstatus">
-                <el-radio-button v-for="(itam,index) in status" :label="itam.name" :key="index"></el-radio-button>
-              </el-radio-group>
-            </div>
-            <div style="margin-top: 20px">
-              <span style="height:20px;fontSize:14px;fontWeight:700;">计划开始时间查询</span>
-              <el-date-picker
-                v-model="searchDate"
-                type="date"
-                size='small'
-                placeholder="选择日期"
-                @change="getBatchTable">
-              </el-date-picker>
-            </div>
-        </div>
-        <div class="platformContainer" style="overflow:auto;">
-          <div style="height:40px;fontSize:16px;fontWeight:700;">计划列表</div>
+  <el-row>
+    <el-col :span='24'>
+      <el-steps :active="steps" finish-status="wait" align-center class="marginBottom">
+        <el-step title="新增计划" @click.native="toStep(0)"></el-step>
+        <el-step title="审核计划" @click.native="toStep(1)"></el-step>
+        <el-step title="下发计划" @click.native="toStep(2)"></el-step>
+        <el-step title="设备选择" @click.native="toStep(3)"></el-step>
+      </el-steps>
+      <el-row v-if='steps==0'>
+        <el-col :span='24' class="platformContainer scheduleForm"> 
+          <el-form :inline="true" :model="scheduleform" class="demo-form-inline" label-width='120px'>
+            <el-form-item label="制定计划日期">
+              <el-date-picker type="date" placeholder="选择日期" v-model="scheduleform.PlanBeginTime" style="width: 200px;" @change='searchbytime'></el-date-picker>
+            </el-form-item>
+            <el-form-item label="批次号">
+               <el-input v-model="scheduleform.BatchID" placeholder="批次号"></el-input>
+            </el-form-item>
+            <el-form-item label="品名">
+              <el-input v-model="scheduleform.BrandName" placeholder="品名"></el-input>
+            </el-form-item>
+            <el-form-item label="计划重量">
+               <el-input v-model="scheduleform.PlanQuantity" placeholder="计划重量"></el-input>
+            </el-form-item>
+            <el-form-item label="生产线">
+              <el-input v-model="scheduleform.PLineName" placeholder="生产线"></el-input>
+            </el-form-item>
+            <el-form-item label="单位">
+              <el-input v-model="scheduleform.Unit" placeholder="单位"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span='24' class="platformContainer">
+           <div style="height:40px;fontSize:16px;fontWeight:700;">计划列表</div>
               <el-table
                   :data="planTableData.data"
                   highlight-current-row
@@ -43,46 +53,36 @@
                   @current-change="handleCurrentChange">
                   </el-pagination>
             </div>
-        </div>
-      </div>
-    </el-col>
-    <el-col :span='15'>
-      <BatchInformation :currentSBatch='currentFBatch' ref='BatchInfo' @refreshBatchTable='getBatchTable'></BatchInformation>
+        </el-col>
+      </el-row>
     </el-col>
   </el-row>
 </template>
 
 <script>
 var moment=require('moment')
-import BatchInformation from '@/components/BatchInformatin.vue'
   export default {
     name: "planningScheduling",
-    components:{BatchInformation},
     data(){
       return {
+        steps:0,
+        scheduleform:{
+          PlanBeginTime:'',
+          BatchID:'',
+          BrandName:'',
+          PlanQuantity:'',
+          PLineName:'',
+          Unit:''
+        },
         planTableData:{
-            tableName:"PlanManager",
+            tableName:"Scheduling",
             data:[],
             limit: 10,//当前显示多少条
             offset: 1,//当前处于多少页
             total: 0,//总的多少页
         },
-        status:[
-          {name:"全部"},
-          {name:"新增"},
-          {name:"待审核"},
-          {name:"待下发"},
-          {name:"待完成"}, 
-          {name:"已完成"}, 
-        ],
-        checkboxGroup: '全部',
-        BrandActive:'',
-        mydata:[],
-        currentFBatch:{},
-        currentBrandName:'',
-        multipleSelection:[],
-        searchDate:'2020-09-29',//绑定的查询日期
-        tableconfig:[{prop:'BatchID',label:"批次号"},{prop:'PlanNum',label:'计划单号'},{prop:'BrandName',label:'品名'},{prop:'PlanStatus',label:'计划状态'}],
+        tableconfig:[{prop:'PlanBeginTime',label:"计划开始时间"},{prop:'BatchID',label:'批次号'},
+        {prop:'BrandName',label:'品名'},{prop:'PlanQuantity',label:'计划重量'},{prop:'PLineName',label:'生产线名称'},{prop:'Unit',label:'单位'}],
       }
     },
     created(){
@@ -91,38 +91,64 @@ import BatchInformation from '@/components/BatchInformatin.vue'
     mounted(){
     },
     methods:{
-      getBatchTable(){
-        var that=this
-        var PlanBeginTime=moment(this.searchDate).format('YYYY-MM-DD')
-        var radiovalue = ""
-        if(this.checkboxGroup==='全部'){
-          radiovalue=''
-        }else{
-          radiovalue = this.checkboxGroup
+      toStep(index){
+        this.steps=index
+        if(this.steps===1){
+          this.saveScheduling()
         }
-        var offset=this.planTableData.offset - 1
-        var limit=this.planTableData.limit
-        var api="/api/CUID?tableName=PlanManager&PlanStatus="+radiovalue+"&PlanBeginTime="+PlanBeginTime+"&limit="+limit+"&offset="+offset
-        this.axios.get(api).then(res => {
+      },
+      getPlanManager(){
+        
+      },
+      searchbytime(){
+        alert('时间选择变化')
+        var PlanBeginTime=moment(this.scheduleform.scheduledate).format('YYYY-MM-DD')
+      },
+      saveScheduling(){ //跳转保存修改的scheduling表
+        var params={
+          tableName:"PlanManager",
+        }
+      for(var key in this.scheduleform){
+        params[key]=this.scheduleform[key]
+      }
+      this.axios.post("/api/CUID",this.qs.stringify(params)).then((res) => {
+        if(res.data.code==='200'){
+          this.$message({
+            type:'success',
+            message:res.data.message
+          })
+        }
+      })
+      },
+      getBatchTable(){ //初始化获取排产批次表
+        var params={
+          tableName:"Scheduling",
+          offset:this.planTableData.offset - 1,
+          limit:this.planTableData.limit
+        }
+        this.axios.get('/api/CUID',{params:params}).then(res => {
+          console.log(res)
           if(res.data.code === "200"){
             var data = res.data.data
-            that.planTableData.data = data.rows
-            that.planTableData.total = data.total
+            this.planTableData.data = data.rows
+            this.planTableData.total = data.total
           }
         },err=>{
            console.log("请求错误")
         })
-      },  
-      Selectstatus(){
-        this.getBatchTable()
       },
       handleSelectionChange(row){
         this.multipleSelection = row
       },
       TabCurrentChange(e){ //点击显示当前的tab行显示详细信息
-        this.currentFBatch=e
-        this.currentBrandName=e.BrandName
-        this.$refs.BatchInfo.getMaterialBom(this.currentBrandName)
+        this.scheduleform={
+              PlanBeginTime:e.PlanBeginTime,
+              BatchID:e.BatchID,
+              BrandName:e.BrandName,
+              PlanQuantity:e.PlanQuantity,
+              PLineName:e.PLineName,
+              Unit:e.Unit
+        }
         this.$refs.multipleTable.clearSelection();
         this.$refs.multipleTable.toggleRowSelection(e)
       },
