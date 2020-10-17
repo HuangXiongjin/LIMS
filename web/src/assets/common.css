@@ -100,6 +100,17 @@
   clear: both;
   overflow: hidden;
 }
+.white-theme .platformTitle {
+  display: inline-block;
+  padding: 10px 15px;
+  margin-top: -15px;
+  margin-left: -15px;
+  margin-bottom: 10px;
+  border-right: 3px solid #f2f2f2;
+  border-bottom: 3px solid #f2f2f2;
+  clear: both;
+  overflow: hidden;
+}
 .white-theme .cardContainer {
   width: 100%;
   background: #ffffff;
@@ -348,6 +359,17 @@
   clear: both;
   overflow: hidden;
 }
+.black-theme .platformTitle {
+  display: inline-block;
+  padding: 10px 15px;
+  margin-top: -15px;
+  margin-left: -15px;
+  margin-bottom: 10px;
+  border-right: 3px solid #1E222B;
+  border-bottom: 3px solid #1E222B;
+  clear: both;
+  overflow: hidden;
+}
 .black-theme .cardContainer {
   width: 100%;
   background: #3D4048;
@@ -585,4 +607,7 @@
 }
 .transfer .el-transfer-panel {
   width: 265px;
+}
+.scheduleForm .el-select > .el-input {
+  width: 200px;
 }
