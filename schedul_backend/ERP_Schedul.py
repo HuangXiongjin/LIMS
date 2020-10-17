@@ -443,7 +443,9 @@ def planschedul():
                     AvalProductLines = ast.literal_eval(proclass.AvalProductLine)
                     sum = math.ceil((float(oclass.PlanQuantity)/float(proclass.BatchWeight))/len(AvalProductLines))
                     for BatchNo in range(0,sum):
+                        i = 0
                         for line in AvalProductLines:
+                            i = BatchNo + 1
                             if line != "":
                                 ploclass = db_session.query(ProductLine).filter(ProductLine.PLineName == line).first()
                                 pm = Scheduling()
@@ -452,7 +454,7 @@ def planschedul():
                                 pm.PlanNum = oclass.PlanNum
                                 pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
                                 nowtime = datetime.datetime.now().strftime("%Y-%m %S").replace("-","").replace(" ","")
-                                pm.BatchID = nowtime + str(BatchNo + 1)
+                                pm.BatchID = nowtime + str(i)
                                 pm.PlanQuantity = proclass.BatchWeight
                                 pm.Unit = "KG"
                                 pm.BrandCode = oclass.BrandCode
