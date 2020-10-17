@@ -615,6 +615,8 @@ def selectpaichanrule():
             dir["BatchWeight"] = proclass.BatchWeight
             dir["BrandName"] = oclass.BrandName
             dir["BrandType"] = oclass.BrandType
+            dir["PlanQuantity"] = oclass.PlanQuantity
+            dir["PlanNum"] = oclass.PlanNum
             return json.dumps({"code": "200", "message": "查询成功！", "data": dir})
         except Exception as e:
             db_session.rollback()
