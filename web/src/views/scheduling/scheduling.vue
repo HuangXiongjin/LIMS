@@ -71,34 +71,27 @@
               <el-form-item label="共选择订单数">
                 <span>{{ planTableData.multipleSelection.length }}项</span>
               </el-form-item>
-              <el-form-item label="选择查看订单参数">
+              <el-form-item label="选择订单查看参数">
                 <el-select v-model="planTableData.selectMultiple" placeholder="请选择" @change="getselectpaichanrule">
                   <el-option v-for="(item,index) in planTableData.multipleSelection" :key="index" :label="item.PlanNum" :value="item.PlanNum">
                   </el-option>
                 </el-select>
-              </el-form-item>
-              <el-form-item label="计划开始时间">
-                <el-date-picker v-model="formAllotBatch.StartTime" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择时间">
-                </el-date-picker>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" size="small" @click="planschedul">确定生成计划</el-button>
               </el-form-item>
             </el-form>
           </div>
           <div class="platformContainer">
             <el-form :inline="true" :model="formAllotBatch">
               <el-form-item label="计划单号">
-                <el-input v-model="planTableData.multipleSelection[0].PlanNum" size="small" :disabled="true"></el-input>
+                <el-input v-model="formAllotBatch.PlanNum" size="small" :disabled="true"></el-input>
               </el-form-item>
               <el-form-item label="品名">
-                <el-input v-model="BrandActive" size="small" :disabled="true"></el-input>
+                <el-input v-model="formAllotBatch.BrandName" size="small" :disabled="true"></el-input>
               </el-form-item>
               <el-form-item label="药品类型">
-                <el-input v-model="BrandActive" size="small" :disabled="true"></el-input>
+                <el-input v-model="formAllotBatch.BrandType" size="small" :disabled="true"></el-input>
               </el-form-item>
               <el-form-item label="计划产量">
-                <el-input v-model="planTableData.multipleSelection[0].PlanQuantity" size="small" :disabled="true"></el-input>
+                <el-input v-model="formAllotBatch.PlanQuantity" size="small" :disabled="true"></el-input>
               </el-form-item>
               <el-form-item label="批数">
                 <el-input v-model="formAllotBatch.batchSum" size="small" :disabled="true"></el-input>
@@ -108,6 +101,15 @@
               </el-form-item>
               <el-form-item label="可用生产线">
                 <el-input v-model="formAllotBatch.AvalProductLine" size="small" :disabled="true"></el-input>
+              </el-form-item>
+            </el-form>
+            <el-form :inline="true" :model="formAllotBatch">
+              <el-form-item label="计划开始时间">
+                <el-date-picker v-model="formAllotBatch.StartTime" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择时间">
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" size="small" @click="planschedul">确定生成计划</el-button>
               </el-form-item>
             </el-form>
           </div>
@@ -296,7 +298,11 @@
           },
         },
         formAllotBatch:{ //排产前参数
+          PlanNum:"",
+          PlanQuantity:"",
           batchSum:"",
+          BrandName:"",
+          BrandType:"",
           BatchWeight:"",
           AvalProductLine:"",
           StartTime:""
@@ -584,8 +590,12 @@
         }).then(res => {
           if(res.data.code === "200"){
             that.formAllotBatch = {
+              PlanNum:res.data.data.PlanNum,
+              PlanQuantity:res.data.data.PlanQuantity,
               BatchWeight:res.data.data.BatchWeight,
               batchSum:res.data.data.batchSum,
+              BrandName:res.data.data.BrandName,
+              BrandType:res.data.data.BrandType,
             }
             that.formAllotBatch.AvalProductLine = res.data.data.AvalProductLine.join(',')
           }else{
