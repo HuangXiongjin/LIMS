@@ -610,9 +610,11 @@ def selectpaichanrule():
             dir = {}
             oclass = db_session.query(product_plan).filter(product_plan.ID == ID).first()
             proclass = db_session.query(ProductRule).filter(ProductRule.BrandCode == oclass.BrandCode).first()
-            dir["batchSum"] = float(oclass.PlanQuantity)/float(proclass.BatchWeight)
+            dir["batchSum"] = math.ceil(float(oclass.PlanQuantity)/float(proclass.BatchWeight))
             dir["AvalProductLine"] = ast.literal_eval(proclass.AvalProductLine)
             dir["BatchWeight"] = proclass.BatchWeight
+            dir["BrandName"] = oclass.BrandName
+            dir["BrandType"] = oclass.BrandType
             return json.dumps({"code": "200", "message": "查询成功！", "data": dir})
         except Exception as e:
             db_session.rollback()
