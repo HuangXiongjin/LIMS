@@ -394,6 +394,9 @@ class ProductRule(Base):
     # 批次重量:
     BatchWeight = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
+    # 单位:
+    Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
     # 批次时长
     BatchTimeLength = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
@@ -409,8 +412,8 @@ class ProductRule(Base):
     # 是否使用:
     IsUsed = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 可用生产线:
-    AvalProductLine = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
+    # # 可用生产线:
+    # AvalProductLine = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
 
 
 # ProductUnit:
@@ -591,11 +594,14 @@ class PlanManager(Base):
     #描述
     Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-    # 生产线编码:
-    PLineCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+    # 保存设备:
+    EqpCodes = Column(Unicode(300), primary_key=False, autoincrement=False, nullable=True)
 
-    # 生产线名称:
-    PLineName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+    # # 生产线编码:
+    # PLineCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+    #
+    # # 生产线名称:
+    # PLineName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
 
 # # 序号:

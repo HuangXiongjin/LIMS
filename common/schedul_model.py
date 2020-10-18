@@ -230,11 +230,8 @@ class Scheduling(Base):
     # 描述
     Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
-    # 生产线编码:
-    PLineCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
-
-    # 生产线名称:
-    PLineName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+    # 保存设备:
+    EqpCodes = Column(Unicode(300), primary_key=False, autoincrement=False, nullable=True)
 
 
 
