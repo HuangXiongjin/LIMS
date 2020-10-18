@@ -433,16 +433,24 @@ def planschedul():
         try:
             IDs = json.loads(data.get('IDs'))
             StartTime = data.get('StartTime')
-            for ID in IDs:
+            for i in IDs:
+                ID = i.get("id")
                 oclass = db_session.query(product_plan).filter(product_plan.ID == ID).first()
                 dir = {}
                 if oclass:
+                    #清空之前排好的订单
+                    sql = "delete from [LIMS].[dbo].[Scheduling] where BrandCode = '"+oclass.BrandCode+"' and PlanNum = '"+oclass.PlanNum+"'"
+                    db_session.execute(sql)
+                    db_session.commit()
+
                     proclass = db_session.query(ProductRule).filter(
                         ProductRule.BrandCode == oclass.BrandCode).first()
                     AvalProductLines = ast.literal_eval(proclass.AvalProductLine)
                     sum = math.ceil((float(oclass.PlanQuantity)/float(proclass.BatchWeight))/len(AvalProductLines))
                     for BatchNo in range(0,sum):
+                        i = 0
                         for line in AvalProductLines:
+                            i = BatchNo + 1
                             if line != "":
                                 ploclass = db_session.query(ProductLine).filter(ProductLine.PLineName == line).first()
                                 pm = Scheduling()
@@ -451,7 +459,7 @@ def planschedul():
                                 pm.PlanNum = oclass.PlanNum
                                 pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
                                 nowtime = datetime.datetime.now().strftime("%Y-%m %S").replace("-","").replace(" ","")
-                                pm.BatchID = nowtime + str(BatchNo + 1)
+                                pm.BatchID = nowtime + str(i)
                                 pm.PlanQuantity = proclass.BatchWeight
                                 pm.Unit = "KG"
                                 pm.BrandCode = oclass.BrandCode
@@ -610,9 +618,14 @@ def selectpaichanrule():
             dir = {}
             oclass = db_session.query(product_plan).filter(product_plan.ID == ID).first()
             proclass = db_session.query(ProductRule).filter(ProductRule.BrandCode == oclass.BrandCode).first()
-            dir["batchSum"] = float(oclass.PlanQuantity)/float(proclass.BatchWeight)
+            dir["batchSum"] = math.ceil(float(oclass.PlanQuantity)/float(proclass.BatchWeight))
             dir["AvalProductLine"] = ast.literal_eval(proclass.AvalProductLine)
             dir["BatchWeight"] = proclass.BatchWeight
+            dir["BrandName"] = oclass.BrandName
+            dir["BrandType"] = oclass.BrandType
+            dir["PlanQuantity"] = oclass.PlanQuantity
+            dir["PlanNum"] = oclass.PlanNum
+            dir["PlanFinishTime"] = oclass.PlanFinishTime
             return json.dumps({"code": "200", "message": "查询成功！", "data": dir})
         except Exception as e:
             db_session.rollback()
