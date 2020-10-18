@@ -60,7 +60,7 @@ export default {
     methods: {
         onSubmit(){
             var PlanNum=this.formInline.CurrentBrandNum
-            var api="/api/CUID?tableName=PlanManager&PlanNum="+PlanNum
+            var api="/api/CUID?tableName=Scheduling&PlanNum="+PlanNum
             this.axios.get(api).then(res => {
                 var arr=res.data.data.rows
                 this.ydata=arr.map((res) => {
