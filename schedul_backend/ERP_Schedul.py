@@ -619,20 +619,21 @@ def selectpaichanrule():
             for i in data_list:
                 dir = {}
                 flag = 0
-                proclass = db_session.query(ProductRule).filter(ProductRule.BrandCode == i.BrandCode).first()
+                print(i.get("BrandCode"))
+                proclass = db_session.query(ProductRule).filter(ProductRule.BrandCode == i.get("BrandCode")).first()
                 for j in redata_list:
                     if j.get("BrandCode") == i.get("BrandCode"):
                         flag = 1
-                        j["BatchNum"] = math.ceil((float(i.PlanQuantity) + float(j["PlanQuantityTotal"]))/float(proclass.BatchWeight))
-                        j["PlanQuantityTotal"] = float(i.PlanQuantity) + float(j["PlanQuantityTotal"])
+                        j["BatchNum"] = math.ceil((float(i.get("PlanQuantity")) + float(j["PlanQuantityTotal"]))/float(proclass.BatchWeight))
+                        j["PlanQuantityTotal"] = float(i.get("PlanQuantity")) + float(j["PlanQuantityTotal"])
                         j["orderNum"] = int(j.get("orderNum"))+1
                 if flag == 0:
-                    dir["BatchNum"] = math.ceil(float(i.PlanQuantity)/float(proclass.BatchWeight))
-                    dir["PlanQuantityTotal"] = proclass.BatchWeight
+                    dir["BatchNum"] = math.ceil(float(i.get("PlanQuantity"))/float(proclass.BatchWeight))
+                    dir["PlanQuantityTotal"] = i.get("PlanQuantity")
                     dir["BatchWeight"] = proclass.BatchWeight
-                    dir["BrandName"] = i.BrandName
-                    dir["BrandCode"] = i.BrandCode
-                    dir["PlanNum"] = i.PlanNum
+                    dir["BrandName"] = i.get("BrandName")
+                    dir["BrandCode"] = i.get("BrandCode")
+                    dir["PlanNum"] = i.get("PlanNum")
                     dir["unit"] = proclass.Unit
                     dir["orderNum"] = 1
                     redata_list.append(dir)
