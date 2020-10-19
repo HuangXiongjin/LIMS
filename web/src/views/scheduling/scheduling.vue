@@ -90,7 +90,7 @@
                   <p class="marginBottom">{{ item.unit }}</p>
                 </el-col>
                 <el-col :span="4">
-                  <p class="marginBottom">可分批数</p>
+                  <p class="marginBottom">分配批数</p>
                   <p class="marginBottom color-lightgreen">{{ item.BatchNum }}</p>
                 </el-col>
               </el-col>
@@ -103,7 +103,7 @@
           <div class="platformContainer">
             <el-row>
               <el-col :span="24">
-                <p class="marginBottom">共选择6类品种，需生成批数15批</p>
+                <p class="marginBottom">共选择<span>{{ selectPlanList.length }}</span>类品种，需生成批数<span>{{ selectPlanBatchTotal }}</span>批</p>
               </el-col>
             </el-row>
             <el-button type="primary" size="small" @click="planschedul">生成批计划</el-button>
@@ -181,10 +181,8 @@
             CreateTimeTime:""
           }
         },
-        selectPlanList:[
-          {BrandName:"八正片",orderNum:3,PlanQuantityTotal:"30000000",BatchWeight:"100000",unit:"片",BatchNum:"10"},
-          {BrandName:"金蝉止痒",orderNum:3,PlanQuantityTotal:"30000000",BatchWeight:"100000",unit:"粒",BatchNum:"8"}
-        ],
+        selectPlanList:[],
+        selectPlanBatchTotal:0,
         PlanManagerTableData:{
           data:[],
           handleType:[
@@ -370,7 +368,11 @@
           params: params
         }).then(res => {
           if(res.data.code === "200"){
-            console.log(res.data)
+            this.selectPlanList = res.data.data
+            this.selectPlanBatchTotal = 0
+            this.selectPlanList.forEach(item =>{
+              this.selectPlanBatchTotal += Number(item.BatchNum)
+            })
           }else{
             that.$message({
               type: 'info',
@@ -506,14 +508,10 @@
       },
       planschedul(){
         var that = this
-        var mulId = []
-        this.planTableData.multipleSelection.forEach(item =>{
-          mulId.push({id:item.ID});
-        })
         var params = {
-          IDs:JSON.stringify(mulId),
+          selectPlanList:JSON.stringify(this.selectPlanList),
         }
-        this.$confirm('确定自动排产所选计划？', '提示', {
+        this.$confirm('确定自动生成批计划？(将生成'+ this.selectPlanBatchTotal +'批)', '提示', {
           distinguishCancelAndClose:true,
           type: 'warning'
         }).then(()  => {
