@@ -25,6 +25,7 @@ import ProductLineDefinition from '@/views/ProductionModel/ProductLineDefinition
 import Unit from '@/views/ProductionModel/Unit'
 //排产调度
 import schedulingBoard from '@/views/scheduling/board'
+import ERPDataManage from '@/views/scheduling/ERPDataManage'
 import ProductionSchedule from '@/views/scheduling/ProductionSchedule'
 import schedulingPlan from '@/views/scheduling/schedulingPlan'
 import scheduling from '@/views/scheduling/scheduling'
@@ -81,12 +82,13 @@ export default new Router({
         {path:'/Unit',name:'Unit',meta:{ title:'生产线定义',type:"生产建模"},component:Unit},
 
         {path:'/schedulingBoard',name:'schedulingBoard',meta:{ title:'排产调度看板',type:"排产调度系统"},component:schedulingBoard},
-        {path:'/ProductionSchedule',name:'ProductionSchedule',meta:{ title:'生产进度',type:"排产调度系统"},component:ProductionSchedule},
-        {path:'/scheduling',name:'scheduling',meta:{ title:'计划排产',type:"排产调度系统"},component:scheduling},
+        {path:'/ERPDataManage',name:'ERPDataManage',meta:{ title:'ERP数据管理',type:"排产调度系统"},component:ERPDataManage},
+        {path:'/scheduling',name:'scheduling',meta:{ title:'订单计划分批',type:"排产调度系统"},component:scheduling},
         {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度',type:"排产调度系统"},component:planningScheduling},
         {path:'/EquipmentChoose',name:'EquipmentChoose',meta:{ title:'工艺设备调度',type:"排产调度系统"},component:EquipmentChoose},
         {path:'/sendWMS',name:'sendWMS',meta:{ title:'发送计划到WMS',type:"排产调度系统"},component:sendWMS},
         {path:'/sendMaterialDetail',name:'sendMaterialDetail',meta:{ title:'发送物料明细',type:"排产调度系统"},component:sendMaterialDetail},
+        {path:'/ProductionSchedule',name:'ProductionSchedule',meta:{ title:'生产进度',type:"排产调度系统"},component:ProductionSchedule},
         {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'调度计划明细',type:"排产调度系统"},component:ProcessPlanTask},
         {path:'/schedulingPlan',name:'schedulingPlan',meta:{ title:'排产计划',type:"排产调度系统"},component:schedulingPlan},
 

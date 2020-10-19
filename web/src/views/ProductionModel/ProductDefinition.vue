@@ -27,7 +27,6 @@
             {prop:"BrandType",label:" 产品类型",type:"input",value:""},
             {prop:"BatchWeight",label:" 批次重量",type:"input",value:""},
             {prop:"BatchTimeLength",label:" 批次时长",type:"input",value:""},
-            {prop:"AvalProductLine",label:"可用生产线",type:"select",multiple:true,value:[],Downtable:'ProductLine',showDownField:'PLineName'},
             {prop:"Version",label:"版本",type:"input",value:""},
             {prop:"Desc",label:"描述",type:"input",value:""},
             {prop:"Publish_date",label:"发布日期",type:"input",value:"",searchProp:false,canSubmit:false},
