@@ -27,7 +27,6 @@ import Unit from '@/views/ProductionModel/Unit'
 import schedulingBoard from '@/views/scheduling/board'
 import ERPDataManage from '@/views/scheduling/ERPDataManage'
 import ProductionSchedule from '@/views/scheduling/ProductionSchedule'
-import schedulingPlan from '@/views/scheduling/schedulingPlan'
 import scheduling from '@/views/scheduling/scheduling'
 import planningScheduling from '@/views/scheduling/planningScheduling'
 import EquipmentChoose from '@/views/scheduling/EquipmentChoose'
@@ -90,7 +89,6 @@ export default new Router({
         {path:'/sendMaterialDetail',name:'sendMaterialDetail',meta:{ title:'发送物料明细',type:"排产调度系统"},component:sendMaterialDetail},
         {path:'/ProductionSchedule',name:'ProductionSchedule',meta:{ title:'生产进度',type:"排产调度系统"},component:ProductionSchedule},
         {path:'/ProcessPlanTask',name:'ProcessPlanTask',meta:{ title:'调度计划明细',type:"排产调度系统"},component:ProcessPlanTask},
-        {path:'/schedulingPlan',name:'schedulingPlan',meta:{ title:'排产计划',type:"排产调度系统"},component:schedulingPlan},
 
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据系统"},component:MaterialBalanceStatistics},
         {path:'/MaterialTraceability',name:'MaterialTraceability',meta:{ title:'物料追溯',type:"生产数据系统"},component:MaterialTraceability},
