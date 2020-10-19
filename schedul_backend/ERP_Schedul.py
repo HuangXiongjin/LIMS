@@ -431,94 +431,36 @@ def planschedul():
     if request.method == 'POST':
         data = request.values
         try:
-            IDs = json.loads(data.get('IDs'))
-            StartTime = data.get('StartTime')
-            for i in IDs:
-                ID = i.get("id")
-                oclass = db_session.query(product_plan).filter(product_plan.ID == ID).first()
+            data_list = json.loads(data.get('selectPlanList'))
+            for i in data_list:
                 dir = {}
-                if oclass:
-                    # #清空之前排好的订单
-                    # sql = "delete from [LIMS].[dbo].[Scheduling] where BrandCode = '"+oclass.BrandCode+"' and PlanNum = '"+oclass.PlanNum+"'"
-                    # db_session.execute(sql)
-                    # db_session.commit()
-
-                    proclass = db_session.query(ProductRule).filter(
-                        ProductRule.BrandCode == oclass.BrandCode).first()
-                    AvalProductLines = ast.literal_eval(proclass.AvalProductLine)
-                    sum = math.ceil((float(oclass.PlanQuantity)/float(proclass.BatchWeight))/len(AvalProductLines))
-                    i = 0
-                    for BatchNo in range(0,sum):
-                        for line in AvalProductLines:
-                            i = i + 1
-                            if line != "":
-                                ploclass = db_session.query(ProductLine).filter(ProductLine.PLineName == line).first()
-                                pm = Scheduling()
-                                pm.PLineName = ploclass.PLineName
-                                pm.PLineCode = ploclass.PLineCode
-                                pm.PlanNum = oclass.PlanNum
-                                pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
-                                nowtime = datetime.datetime.now().strftime("%Y-%m %M:%S").replace(":","").replace("-","").replace(" ","")
-                                pm.BatchID = nowtime + str(i)
-                                pm.PlanQuantity = proclass.BatchWeight
-                                pm.Unit = "KG"
-                                pm.BrandCode = oclass.BrandCode
-                                pm.BrandName = oclass.BrandName
-                                #计算计划开始时间结束时间
-                                pu = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == oclass.BrandCode, ProductUnit.PUName.like("%提%")).first()
-                                proc = db_session.query(ProcessUnit).filter(ProcessUnit.PUCode == pu.PUCode).first()
-                                beg = int(proclass.BatchTimeLength)*BatchNo
-                                end = beg + int(proclass.BatchTimeLength)
-                                PlanBeginTime = (datetime.datetime.strptime(StartTime, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(hours=beg)).strftime("%Y-%m-%d %H:%M:%S")
-                                PlanEndTime = (datetime.datetime.strptime(StartTime,
-                                                                            "%Y-%m-%d %H:%M:%S") + datetime.timedelta(
-                                    hours=end)).strftime("%Y-%m-%d %H:%M:%S")
-                                pm.PlanBeginTime = PlanBeginTime
-                                pm.PlanEndTime = PlanEndTime
-                                pm.BrandType = oclass.BrandType
-                                db_session.add(pm)
-                                db_session.commit()
-            return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
-        except Exception as e:
-            db_session.rollback()
-            print(e)
-            logger.error(e)
-            insertSyslog("error", "计划排产报错Error：" + str(e), current_user.Name)
-            return json.dumps("计划排产报错", cls=AlchemyEncoder, ensure_ascii=False)
-
-@erp_schedul.route('/newplanschedul', methods=['GET', 'POST'])
-def newplanschedul():
-    '''
-    新计划排产
-    :return:
-    '''
-    if request.method == 'POST':
-        data = request.values
-        try:
-            PlanNum = data.get('PlanNum')
-            BatchSum = data.get('BatchSum')
-            BatchDuration = data.get('BatchDuration')
-            BatchIDtimes = eval(data.get('BatchIDtimes'))
-            oclass = db_session.query(product_plan).filter(product_plan.PlanNum == PlanNum).first()
-            dir = {}
-            if oclass:
-                for Batchinfo in BatchIDtimes:
-                    pm = PlanManager()
-                    pm.PlanNum = PlanNum
-                    pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
-                    pm.BatchID = Batchinfo.get("BatchID")
-                    pm.PlanQuantity = round(float(oclass.PlanQuantity) / int(BatchSum), 2)
-                    pm.Unit = "KG"
-                    pm.BrandCode = oclass.BrandCode
-                    pm.BrandName = oclass.BrandName
-                    pm.PlanStatus = Global.PlanStatus.NEW.value
-                    PlanBeginTime = Batchinfo.get("EndTime")
-                    PlanEndTime = ""
-                    pm.PlanBeginTime = PlanBeginTime
-                    pm.PlanEndTime = PlanEndTime
-                    pm.BrandType = oclass.BrandType
+                proclass = db_session.query(ProductRule).filter(
+                    ProductRule.BrandCode == i.BrandCode).first()
+                i = 0
+                for BatchNo in range(0,int(i.get("BatchNum"))):
+                    pm = Scheduling()
+                    pm.PlanNum = i.get("PlanNum")
+                    pm.SchedulePlanCode = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))[0:10]
+                    nowtime = datetime.datetime.now().strftime("%Y-%m %M:%S").replace(":","").replace("-","").replace(" ","")
+                    pm.BatchID = nowtime + str(i)
+                    pm.PlanQuantity = proclass.BatchWeight
+                    pm.Unit = i.get("Unit")
+                    pm.BrandCode = i.BrandCode
+                    pm.BrandName = i.BrandName
+                    # #计算计划开始时间结束时间
+                    # pu = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == oclass.BrandCode, ProductUnit.PUName.like("%提%")).first()
+                    # proc = db_session.query(ProcessUnit).filter(ProcessUnit.PUCode == pu.PUCode).first()
+                    # beg = int(proclass.BatchTimeLength)*BatchNo
+                    # end = beg + int(proclass.BatchTimeLength)
+                    # PlanBeginTime = (datetime.datetime.strptime(StartTime, "%Y-%m-%d %H:%M:%S") + datetime.timedelta(hours=beg)).strftime("%Y-%m-%d %H:%M:%S")
+                    # PlanEndTime = (datetime.datetime.strptime(StartTime,
+                    #                                             "%Y-%m-%d %H:%M:%S") + datetime.timedelta(
+                    #     hours=end)).strftime("%Y-%m-%d %H:%M:%S")
+                    # pm.PlanBeginTime = PlanBeginTime
+                    # pm.PlanEndTime = PlanEndTime
+                    pm.BrandType = i.BrandType
                     db_session.add(pm)
-                db_session.commit()
+                    db_session.commit()
             return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
@@ -526,36 +468,6 @@ def newplanschedul():
             logger.error(e)
             insertSyslog("error", "计划排产报错Error：" + str(e), current_user.Name)
             return json.dumps("计划排产报错", cls=AlchemyEncoder, ensure_ascii=False)
-
-@erp_schedul.route('/selectPlanmanager', methods=['GET', 'POST'])
-def selectPlanmanager():
-    '''
-    查询排好的批次
-    :return:
-    '''
-    if request.method == 'GET':
-        data = request.values
-        try:
-            PlanNum = data.get('PlanNum')
-            # pages = data.get("offset")
-            # rowsnumber = data.get("limit")
-            # inipage = int(pages) * int(rowsnumber) + 0  # 起始页
-            # endpage = int(pages) * int(rowsnumber) + int(rowsnumber)  # 截止页
-            if PlanNum == None or PlanNum == "":
-                count = db_session.query(PlanManager).filter().count()
-                oclass = db_session.query(PlanManager).filter().order_by(("PlanBeginTime")).all()
-            else:
-                count = db_session.query(PlanManager).filter(PlanManager.PlanNum == PlanNum).count()
-                oclass = db_session.query(PlanManager).filter(PlanManager.PlanNum == PlanNum).order_by(
-                    ("PlanBeginTime")).all()
-            return json.dumps({"code": "200", "message": "请求成功", "data": {"total": count, "rows": oclass}},
-                              cls=AlchemyEncoder, ensure_ascii=False)
-        except Exception as e:
-            db_session.rollback()
-            print(e)
-            logger.error(e)
-            insertSyslog("error", "查询排好的批次报错Error：" + str(e), current_user.Name)
-            return json.dumps("查询排好的批次报错", cls=AlchemyEncoder, ensure_ascii=False)
 
 import ast
 @erp_schedul.route('/addEquipmentBatchRunTime', methods=['GET', 'POST'])
@@ -624,9 +536,10 @@ def selectpaichanrule():
                 for j in redata_list:
                     if j.get("BrandCode") == i.get("BrandCode"):
                         flag = 1
-                        j["BatchNum"] = math.ceil((float(i.get("PlanQuantity")) + float(j["PlanQuantityTotal"]))/float(proclass.BatchWeight))
-                        j["PlanQuantityTotal"] = float(i.get("PlanQuantity")) + float(j["PlanQuantityTotal"])
+                        j["BatchNum"] = math.ceil((float(i.get("PlanQuantity")) + float(j.get("PlanQuantityTotal")))/float(proclass.BatchWeight))
+                        j["PlanQuantityTotal"] = float(i.get("PlanQuantity")) + float(j.get("PlanQuantityTotal"))
                         j["orderNum"] = int(j.get("orderNum"))+1
+                        j["PlanNum"] = i.get("PlanNum")+","+j.get("PlanNum")
                 if flag == 0:
                     dir["BatchNum"] = math.ceil(float(i.get("PlanQuantity"))/float(proclass.BatchWeight))
                     dir["PlanQuantityTotal"] = i.get("PlanQuantity")
