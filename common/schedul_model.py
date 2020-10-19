@@ -25,25 +25,25 @@ class plantCalendarScheduling(Base):
     color = Column(Unicode(30), primary_key=False, autoincrement=False, nullable=True)
 
 
-# # 排产表
-# class Scheduling(Base):
-#     __tablename__ = "Scheduling"
-#     ## ID:
-#     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
-#     # 产品名称
-#     PRName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-#     #排产时间(工厂日历)
-#     SchedulingTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-#     # 排产序列号
-#     SchedulingNum = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-#     # 批数
-#     BatchNumS = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-#     # 排产状态
-#     SchedulingStatus = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-#     # 创建时间
-#     create_time = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
-#     # 修改时间
-#     update_time = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+# 排产表
+class Scheduling(Base):
+    __tablename__ = "Scheduling"
+    ## ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    # 产品名称
+    PRName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    #排产时间(工厂日历)
+    SchedulingTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 排产序列号
+    SchedulingNum = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 批数
+    BatchNumS = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 排产状态
+    SchedulingStatus = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 创建时间
+    create_time = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    # 修改时间
+    update_time = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
 
 
 # 排产日历
@@ -178,60 +178,6 @@ class EquipmentBatchRunTime(Base):
     WorkTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 设备等待时长
     WaitTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
-# 排产表
-class Scheduling(Base):
-    __tablename__ = "Scheduling"
-    # ID:
-    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
-
-    # 调度编号:
-    SchedulePlanCode = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
-
-    # 计划编号
-    PlanNum = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
-    # 批次号:
-    BatchID = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
-
-    # 计划重量:
-    PlanQuantity = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
-    # 单位:
-    Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
-    # 品名编码:
-    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
-    # 品名:
-    BrandName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
-
-    # 药品类型
-    BrandType = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
-    # # 计划状态:
-    # PlanStatus = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
-    # 计划开始时间:
-    PlanBeginTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
-    # 计划完成时间:
-    PlanEndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
-    # # 实际开始时间:
-    # ActBeginTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    #
-    # # 实际完成时间:
-    # ActEndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
-    # 调度类型:
-    Type = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
-
-    # 描述
-    Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
-
-    # 保存设备:
-    EqpCodes = Column(Unicode(300), primary_key=False, autoincrement=False, nullable=True)
 
 
 
