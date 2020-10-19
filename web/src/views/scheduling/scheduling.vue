@@ -3,7 +3,7 @@
     <el-col :span="24">
       <el-steps :active="steps" finish-status="wait" align-center class="marginBottom">
         <el-step title="选择订单计划"></el-step>
-        <el-step title="订单统计"></el-step>
+        <el-step title="数据统计"></el-step>
         <el-step title="订单分批"></el-step>
       </el-steps>
       <el-row :gutter="15" v-show="steps == 0">
@@ -67,11 +67,11 @@
       <el-row v-show="steps == 1">
         <el-col :span='24'>
           <div class="platformContainer">
-            <p class="marginBottom text-size-20">统计数据</p>
+            <p class="marginBottom text-size-20">选中订单数据统计</p>
             <el-row v-for="(item,index) in selectPlanList" :key="index">
               <el-col :span="24">
                 <el-col :span="4">
-                  <p class="color-darkblue text-center text-size-18 marginTop">{{ item.BrandName }}</p>
+                  <p class="color-darkblue text-center text-size-18">{{ item.BrandName }}</p>
                 </el-col>
                 <el-col :span="4">
                   <p class="marginBottom">订单数</p>
@@ -363,18 +363,14 @@
       //获取排产参数
       getselectpaichanrule(){
         var that = this
-        var mulId = []
-        this.planTableData.multipleSelection.forEach(item =>{
-          mulId.push({id:item.ID});
-        })
         var params = {
-          IDs:JSON.stringify(mulId),
+          selectPlanList:JSON.stringify(this.planTableData.multipleSelection),
         }
         this.axios.get("/api/selectpaichanrule",{
           params: params
         }).then(res => {
           if(res.data.code === "200"){
-
+            console.log(res.data)
           }else{
             that.$message({
               type: 'info',
@@ -422,10 +418,6 @@
         this.PlanManagerTableData.handleRow = row
         this.PlanManagerTableData.formField = {
           BatchID:row.BatchID,
-          PlanQuantity:row.PlanQuantity,
-          Unit:row.Unit,
-          PlanBeginTime:row.PlanBeginTime,
-          PlanEndTime:row.PlanEndTime,
         }
       },
       handleDelete(index, row) {
