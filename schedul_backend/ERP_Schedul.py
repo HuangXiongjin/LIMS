@@ -556,3 +556,59 @@ def selectpaichanrule():
             logger.error(e)
             insertSyslog("error", "查询排产规则报错Error：" + str(e), current_user.Name)
             return json.dumps("查询排产规则报错", cls=AlchemyEncoder, ensure_ascii=False)
+
+from sqlalchemy import MetaData
+from sqlalchemy.ext.automap import automap_base
+metadata = MetaData()
+from sqlalchemy import Table
+Base = automap_base()
+Base.prepare(engine, reflect=True)
+@erp_schedul.route('/selectplanmanager', methods=['GET', 'POST'])
+def selectplanmanager():
+    '''
+    查询排产好的计划
+    :return:
+    '''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            PlanNums = json.loads(data.get('PlanNums'))
+            tableName = "PlanManager"
+            pages = data.get("offset")
+            pages = int(data.get("offset")) + 1
+            rowsnumber = int(data.get("limit"))
+            newTable = Table(tableName, metadata, autoload=True, autoload_with=engine)
+            columns = ""
+            for column in newTable.columns:
+                if columns == "":
+                    columns = "[" + str(column).split(".")[1] + "]"
+                else:
+                    columns = columns + ",[" + str(column).split(".")[1] + "]"
+            params = ""
+            for key in PlanNums:
+                if params == "":
+                    params = "PlanNum like '%" +key + "%'"
+                else:
+                    params = params + " OR PlanNum like '%" + key + "%'"
+            sql = "select top " + str(
+                rowsnumber) + " " + columns + " from [LIMS].[dbo].[" + tableName + "] where " + params + \
+                  "AND ID not in (select top " + str(
+                (
+                            pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo].[" + tableName + "] ORDER BY ID ASC) ORDER BY ID ASC"
+            sqlcount = "select count(ID) from [LIMS].[dbo].[" + tableName + "] where " + params
+            re = db_session.execute(sql).fetchall()
+            recount = db_session.execute(sqlcount).fetchall()
+            dict_list = []
+            for i in re:
+                dir = {}
+                column_list = columns.split(",")
+                for column in column_list:
+                    dir[column[1:-1]] = i[column[1:-1]]
+                dict_list.append(dir)
+            return json.dumps({"code": "200", "message": "查询成功！", "data": dict_list})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "查询排产好的计划报错Error：" + str(e), current_user.Name)
+            return json.dumps("查询排产好的计划报错", cls=AlchemyEncoder, ensure_ascii=False)
