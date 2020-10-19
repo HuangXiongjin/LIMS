@@ -438,7 +438,7 @@ def planschedul():
                     ProductRule.BrandCode == i.BrandCode).first()
                 i = 0
                 for BatchNo in range(0,int(i.get("BatchNum"))):
-                    pm = Scheduling()
+                    pm = PlanManager()
                     pm.PlanNum = i.get("PlanNum")
                     pm.SchedulePlanCode = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))[0:10]
                     nowtime = datetime.datetime.now().strftime("%Y-%m %M:%S").replace(":","").replace("-","").replace(" ","")
@@ -531,7 +531,6 @@ def selectpaichanrule():
             for i in data_list:
                 dir = {}
                 flag = 0
-                print(i.get("BrandCode"))
                 proclass = db_session.query(ProductRule).filter(ProductRule.BrandCode == i.get("BrandCode")).first()
                 for j in redata_list:
                     if j.get("BrandCode") == i.get("BrandCode"):
