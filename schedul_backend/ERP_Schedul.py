@@ -614,19 +614,29 @@ def selectpaichanrule():
     if request.method == 'GET':
         data = request.values
         try:
-            ID = data.get('ID')
-            dir = {}
-            oclass = db_session.query(product_plan).filter(product_plan.ID == ID).first()
-            proclass = db_session.query(ProductRule).filter(ProductRule.BrandCode == oclass.BrandCode).first()
-            dir["batchSum"] = math.ceil(float(oclass.PlanQuantity)/float(proclass.BatchWeight))
-            dir["AvalProductLine"] = ast.literal_eval(proclass.AvalProductLine)
-            dir["BatchWeight"] = proclass.BatchWeight
-            dir["BrandName"] = oclass.BrandName
-            dir["BrandType"] = oclass.BrandType
-            dir["PlanQuantity"] = oclass.PlanQuantity
-            dir["PlanNum"] = oclass.PlanNum
-            dir["PlanFinishTime"] = oclass.PlanFinishTime
-            return json.dumps({"code": "200", "message": "查询成功！", "data": dir})
+            data_list = json.loads(data.get('selectPlanList'))
+            redata_list = []
+            for i in data_list:
+                dir = {}
+                flag = 0
+                proclass = db_session.query(ProductRule).filter(ProductRule.BrandCode == i.BrandCode).first()
+                for j in redata_list:
+                    if j.get("BrandCode") == i.get("BrandCode"):
+                        flag = 1
+                        j["BatchNum"] = math.ceil((float(i.PlanQuantity) + float(j["PlanQuantityTotal"]))/float(proclass.BatchWeight))
+                        j["PlanQuantityTotal"] = float(i.PlanQuantity) + float(j["PlanQuantityTotal"])
+                        j["orderNum"] = int(j.get("orderNum"))+1
+                if flag == 0:
+                    dir["BatchNum"] = math.ceil(float(i.PlanQuantity)/float(proclass.BatchWeight))
+                    dir["PlanQuantityTotal"] = proclass.BatchWeight
+                    dir["BatchWeight"] = proclass.BatchWeight
+                    dir["BrandName"] = i.BrandName
+                    dir["BrandCode"] = i.BrandCode
+                    dir["PlanNum"] = i.PlanNum
+                    dir["unit"] = proclass.Unit
+                    dir["orderNum"] = 1
+                    redata_list.append(dir)
+            return json.dumps({"code": "200", "message": "查询成功！", "data": redata_list})
         except Exception as e:
             db_session.rollback()
             print(e)
