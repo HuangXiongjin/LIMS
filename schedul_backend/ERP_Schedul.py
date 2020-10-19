@@ -438,19 +438,19 @@ def planschedul():
                 oclass = db_session.query(product_plan).filter(product_plan.ID == ID).first()
                 dir = {}
                 if oclass:
-                    #清空之前排好的订单
-                    sql = "delete from [LIMS].[dbo].[Scheduling] where BrandCode = '"+oclass.BrandCode+"' and PlanNum = '"+oclass.PlanNum+"'"
-                    db_session.execute(sql)
-                    db_session.commit()
+                    # #清空之前排好的订单
+                    # sql = "delete from [LIMS].[dbo].[Scheduling] where BrandCode = '"+oclass.BrandCode+"' and PlanNum = '"+oclass.PlanNum+"'"
+                    # db_session.execute(sql)
+                    # db_session.commit()
 
                     proclass = db_session.query(ProductRule).filter(
                         ProductRule.BrandCode == oclass.BrandCode).first()
                     AvalProductLines = ast.literal_eval(proclass.AvalProductLine)
                     sum = math.ceil((float(oclass.PlanQuantity)/float(proclass.BatchWeight))/len(AvalProductLines))
+                    i = 0
                     for BatchNo in range(0,sum):
-                        i = 0
                         for line in AvalProductLines:
-                            i = BatchNo + 1
+                            i = i + 1
                             if line != "":
                                 ploclass = db_session.query(ProductLine).filter(ProductLine.PLineName == line).first()
                                 pm = Scheduling()
@@ -458,7 +458,7 @@ def planschedul():
                                 pm.PLineCode = ploclass.PLineCode
                                 pm.PlanNum = oclass.PlanNum
                                 pm.SchedulePlanCode = str(oclass.PlanFinishTime)[0:7]
-                                nowtime = datetime.datetime.now().strftime("%Y-%m %S").replace("-","").replace(" ","")
+                                nowtime = datetime.datetime.now().strftime("%Y-%m %M:%S").replace(":","").replace("-","").replace(" ","")
                                 pm.BatchID = nowtime + str(i)
                                 pm.PlanQuantity = proclass.BatchWeight
                                 pm.Unit = "KG"

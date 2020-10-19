@@ -144,6 +144,7 @@ def makePlan():
                 pm.PlanBeginTime = data.get("PlanBeginTime")
                 pm.PlanEndTime = data.get("PlanEndTime")
                 pm.BrandType = data.get("BrandType")
+                pm.EqpCodes = data.get("EqpCodes")
                 db_session.add(pm)
                 sp = SchedulePlan()
                 SchedulePlanCode = PlanEndTime[0:10]
