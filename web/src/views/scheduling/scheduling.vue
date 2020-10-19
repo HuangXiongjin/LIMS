@@ -11,9 +11,6 @@
           <el-collapse class="marginBottom">
             <el-collapse-item title="多条件查询订单计划">
               <el-form :model="planTableData.searchField" :inline="true" label-width="110px">
-                <el-form-item label="状态">
-
-                </el-form-item>
                 <el-form-item label="创建/同步时间">
                    <el-date-picker v-model="planTableData.searchField.CreateTimeTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
@@ -121,7 +118,6 @@
               <el-table-column prop="BrandType" label="产品类型"></el-table-column>
               <el-table-column prop="PlanQuantity" label="每批产量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
-              <el-table-column prop="Describtion" label="描述"></el-table-column>
               <el-table-column label="操作" fixed="right" width="150">
                 <template slot-scope="scope">
                   <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -129,6 +125,16 @@
                 </template>
               </el-table-column>
             </el-table>
+            <div class="paginationClass">
+              <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
+               :total="PlanManagerTableData.total"
+               :current-page="PlanManagerTableData.offset"
+               :page-sizes="[5,10,20]"
+               :page-size="PlanManagerTableData.limit"
+               @size-change="handlePlanManagerSizeChange"
+               @current-change="handlePlanManagerCurrentChange">
+              </el-pagination>
+            </div>
             <el-dialog :title="PlanManagerTableData.dialogTitle" :visible.sync="PlanManagerTableData.dialogVisible" width="40%" :append-to-body="true">
               <el-form :model="PlanManagerTableData.formField" label-width="110px">
                 <el-form-item label="批次号">
@@ -185,6 +191,9 @@
         selectPlanBatchTotal:0,
         PlanManagerTableData:{
           data:[],
+          limit:5,
+          offset:1,
+          total:0,
           handleType:[
             {type:"primary",label:"添加"},
           ],
@@ -335,7 +344,6 @@
             PlanQuantity:this.planTableData.formField.PlanQuantity,
             BrandName:this.planTableData.formField.BrandName,
             BrandCode:this.planTableData.formField.BrandCode,
-            Description:this.planTableData.formField.Description,
             PlanStatus:"待分批",
             CreateTimeTime:moment().format("YYYY-MM-DD HH:mm:ss"),
           }
@@ -384,15 +392,21 @@
       //批次计划
       getPlanManagerTableData(){
         var that = this
+        var PlanNums = []
+        this.selectPlanList.forEach(item =>{
+          PlanNums.push(item.PlanNum)
+        })
         var params = {
-          tableName:"Scheduling",
-          PlanNum:this.planTableData.multipleSelection[0].PlanNum,
+          PlanNums:JSON.stringify(PlanNums),
+          limit:this.PlanManagerTableData.limit,
+          offset:this.PlanManagerTableData.offset -1,
         }
-        this.axios.get("/api/CUID",{
+        this.axios.get("/api/selectplanmanager",{
           params: params
         }).then(res => {
           if(res.data.code === "200"){
             that.PlanManagerTableData.data = res.data.data.rows
+            that.PlanManagerTableData.total = res.data.data.total
           }else{
             that.$message({
               type: 'info',
@@ -400,6 +414,14 @@
             });
           }
         })
+      },
+      handlePlanManagerSizeChange(limit){
+        this.PlanManagerTableData.limit = limit
+        this.getPlanManagerTableData()
+      },
+      handlePlanManagerCurrentChange(offset){
+        this.PlanManagerTableData.offset = offset
+        this.getPlanManagerTableData()
       },
       handleFormPlanManager(label){
         if(label === "添加"){
