@@ -86,6 +86,7 @@
                       <span class="mgr">备料</span>
                       <el-date-picker
                         v-model="value1"
+                        value-format='yyyy-MM-dd'
                         type="date"
                         size='small'
                         placeholder="选择日期">
@@ -132,6 +133,7 @@
                             <span style="margin:0 30px;">{{item.EQPName}}</span>
                             <el-date-picker
                               v-model="item.StartTime"
+                              value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
                               placeholder="选择日期">
