@@ -16,9 +16,7 @@
                   border
                   ref="batchmultipleTable"
                   @selection-change="batchHandleSelectionChange" 
-                  @row-click="batchTabCurrentChange"
                   style="width: 100%">
-                  <el-table-column type="selection"></el-table-column>
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                   <el-table-column label="操作" fixed="right" width='160'>
                     <template slot-scope="scope">
@@ -56,7 +54,6 @@
                   @selection-change="xfHandleSelectionChange" 
                   @row-click="xfTabCurrentChange"
                   style="width: 100%">
-                  <el-table-column type="selection"></el-table-column>
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
@@ -361,13 +358,6 @@ var moment=require('moment')
             console.log("请求错误")
           })
       },
-      batchHandleSelectionChange(row){//批次多选改变触发
-        this.batchmultipleSelection = row
-      },
-       batchTabCurrentChange(e){ //批次计划 点击显示当前的tab行显示详细信息
-        this.$refs.batchmultipleTable.clearSelection();
-        this.$refs.batchmultipleTable.toggleRowSelection(e)
-      },
       batchHandleSizeChange(limit){ //批次计划 每页条数切换
         this.batchTableData.limit = limit
         this.getPlanManager()
@@ -375,9 +365,6 @@ var moment=require('moment')
        batchHandleCurrentChange(offset) { //批次计划 页码切换
         this.batchTableData.offset = offset
         this.getPlanManager()
-      },
-      xfHandleSelectionChange(row){//下发批次多选改变触发
-        this.xfmultipleSelection = row
       },
        xfTabCurrentChange(e){ //下发批次计划 点击显示当前的tab行显示详细信息
         this.getEq(e.BatchID,e.BrandCode)
