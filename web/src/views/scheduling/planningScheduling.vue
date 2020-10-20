@@ -217,7 +217,7 @@ var moment=require('moment')
           processList:JSON.stringify(this.inProcessList),
           ID:this.ID
         }
-        this.axios.post('/addEquipmentBatchRunTime',this.qs.stringify(params)).then((res) => {
+        this.axios.post('/api/addEquipmentBatchRunTime',this.qs.stringify(params)).then((res) => {
           console.log(res)
         })
 
