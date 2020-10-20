@@ -15,7 +15,6 @@
                   size='small'
                   border
                   ref="batchmultipleTable"
-                  @selection-change="batchHandleSelectionChange" 
                   style="width: 100%">
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                   <el-table-column label="操作" fixed="right" width='160'>
@@ -51,7 +50,6 @@
                   size='small'
                   border
                   ref="xfmultipleTable"
-                  @selection-change="xfHandleSelectionChange" 
                   @row-click="xfTabCurrentChange"
                   style="width: 100%">
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
@@ -241,7 +239,6 @@ var moment=require('moment')
                     }
                 }
                 this.inProcessList = res.data.data.processList.sort(compare('Seq'))
-                
                 }})
       },
       Activeconfig(index){ //配置进度条设置
