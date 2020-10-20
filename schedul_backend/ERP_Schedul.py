@@ -436,13 +436,12 @@ def planschedul():
                 dir = {}
                 proclass = db_session.query(ProductRule).filter(
                     ProductRule.BrandCode == i.get("BrandCode")).first()
-                s = 1
                 for BatchNo in range(0,int(i.get("BatchNum"))):
                     pm = PlanManager()
                     pm.PlanNum = i.get("PlanNum")
                     pm.SchedulePlanCode = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))[0:10]
                     nowtime = datetime.datetime.now().strftime("%Y-%m %M:%S").replace(":","").replace("-","").replace(" ","")
-                    pm.BatchID = nowtime + str(s)
+                    pm.BatchID = nowtime + str(BatchNo+1)
                     pm.PlanQuantity = proclass.BatchWeight
                     pm.Unit = i.get("Unit")
                     pm.BrandCode = i.get("BrandCode")
@@ -461,7 +460,6 @@ def planschedul():
                     pm.BrandType = i.get("BrandType")
                     db_session.add(pm)
                     db_session.commit()
-                    s = s + 1
             return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
