@@ -31,6 +31,7 @@ from common.batch_plan_model import ProductUnit, ProductRule, PlanManager, ZYPla
     ZYPlanWMS, Material, MaterialBOM, ProductEquipment, ProcessUnit, ProductLine
 from common.schedul_model import Scheduling, plantCalendarScheduling, SchedulingStandard, \
     scheduledate, product_plan, SchedulingStock, EquipmentBatchRunTime
+from common.system import Shifts
 from database.connect_db import CONNECT_DATABASE
 from enum import Enum, IntEnum, unique
 
@@ -358,18 +359,13 @@ def batchequimentselect():
                         eqp_dir["EndTime"] = ""
                         eqp_dir["StartBC"] = ""
                         eqp_dir["EndBC"] = ""
+                        runeqp = db_session.query(EquipmentBatchRunTime).filter(
+                            EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
+                            EquipmentBatchRunTime.BrandCode == oclass.BrandCode,
+                            EquipmentBatchRunTime.BatchID == oclass.BatchID).first()
                         eqp_dir["isSelected"] = False
-                        # runeqp = db_session.query(EquipmentBatchRunTime).filter(
-                        #     EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
-                        #     EquipmentBatchRunTime.BatchID == oclass.BatchID).first()
-                        # if runeqp:#如果被选中过True，没被选中就是False
-                        #     eqp_dir["isSelected"] = True
-                        #     eqp_dir["workTime"] = runeqp.WorkTime
-                        #     eqp_dir["waitTime"] = runeqp.WaitTime
-                        # else:
-                        #     eqp_dir["isSelected"] = False
-                        #     eqp_dir["workTime"] = ""
-                        #     eqp_dir["waitTime"] = ""
+                        if runeqp:#如果被选中过True，没被选中就是False
+                            eqp_dir["isSelected"] = True
                         # begin = db_session.query(EquipmentBatchRunTime).filter(
                         #     EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
                         #     EquipmentBatchRunTime.StartTime.between(oclass.PlanBeginTime,oclass.PlanEndTime)).first()
@@ -483,10 +479,15 @@ def addEquipmentBatchRunTime():
     if request.method == 'POST':
         data = request.values
         try:
-            BatchID = data.get('BatchID')
-            PlanNum = data.get('PlanNum')
+            ID = data.get('ID')
             processList = json.loads(data.get('processList'))
-            oclass = db_session.query(PlanManager).filter(PlanManager.BatchID == BatchID, PlanManager.PlanNum == PlanNum).first()
+            oclass = db_session.query(PlanManager).filter(PlanManager.ID == ID).first()
+            #清空之前保存的数据
+            delete_list = db_session.query(EquipmentBatchRunTime).filter(EquipmentBatchRunTime.BrandCode ==
+                                                           oclass.BrandCode, EquipmentBatchRunTime.BatchID == oclass.BatchID).all()
+            for i in delete_list:
+                db_session.delete(i)
+                db_session.commit()
             dir = {}
             if oclass:
                 for pl in processList:
@@ -495,23 +496,23 @@ def addEquipmentBatchRunTime():
                     eqList = pl.get('eqList')
                     for el in eqList:
                         isSelected = el.get("isSelected")
-                        if isSelected == True:#没有添加过的设备
+                        if isSelected == True:#选中过的设备
                             ert = EquipmentBatchRunTime()
-                            ert.BatchID = BatchID
+                            ert.BatchID = oclass.BatchID
+                            ert.BrandCode = oclass.BrandCode
+                            ert.BrandName = oclass.BrandName
                             ert.EQPCode = el.get("EQPCode")
                             ert.EQPName = el.get("EQPName")
                             ert.PUCode = PUName
                             ert.PUName = PUCode
-                            ert.WorkTime = el.get("workTime")
-                            ert.WaitTime = el.get("waitTime")
+                            ert.StartBC = el.get("StartBC")
+                            ert.EndBC = el.get("EndBC")
+                            sft = db_session.query(Shifts).filter(Shifts.ShiftsName == ert.StartBC).first()
+                            ert.StartTime = sft.BeginTime
+                            eft = db_session.query(Shifts).filter(Shifts.ShiftsName == ert.EndBC).first()
+                            ert.EndTime = eft.EndTime
                             db_session.add(ert)
-
-                        else:#已添加过的设备，没有选择的
-                            ebrt = db_session.query(EquipmentBatchRunTime).filter(EquipmentBatchRunTime.BatchID == BatchID,
-                                       EquipmentBatchRunTime.EQPCode == el.get("EQPCode"), EquipmentBatchRunTime.PUCode == pl.get("PUCode")).first()
-                            if ebrt:
-                                db_session.delete(ebrt)
-                oclass.PlanStatus = Global.PlanStatus.Confirm.value
+                oclass.PlanStatus = Global.PlanStatus.ConfirmEquipment.value
                 db_session.commit()
             return json.dumps({"code": "200", "message": "保存成功！", "data": "OK"})
         except Exception as e:

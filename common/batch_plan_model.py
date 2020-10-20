@@ -759,6 +759,15 @@ class BatchMaterialInfo(Base):
     # 品名:
     BrandName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
+    # 设备编码:
+    EQPCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 设备名称:
+    EQPName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 物料名称:
+    MATName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
     # 投料顺序:
     FeedingSeq = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
