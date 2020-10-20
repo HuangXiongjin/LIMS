@@ -595,8 +595,8 @@ def selectplanmanager():
                 else:
                     params = params + " OR PlanNum like '%" + key + "%'"
             sql = "select top " + str(
-                rowsnumber) + " " + columns + " from [LIMS].[dbo].[" + tableName + "] where " + params + \
-                  "AND ID not in (select top " + str(
+                rowsnumber) + " " + columns + " from [LIMS].[dbo].[" + tableName + "] where (" + params + \
+                  ") AND ID not in (select top " + str(
                 (
                             pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo].[" + tableName + "] where " + params +" ORDER BY ID DESC) ORDER BY ID DESC"
             sqlcount = "select count(ID) from [LIMS].[dbo].[" + tableName + "] where " + params

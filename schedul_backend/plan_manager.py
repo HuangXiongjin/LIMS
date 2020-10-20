@@ -124,9 +124,9 @@ def makePlan():
             json_str = json.dumps(data.to_dict())
             if len(json_str) > 10:
                 BatchID = data.get("BatchID")
-                PlanEndTime = data.get("PlanEndTime")
+                # PlanEndTime = data.get("PlanEndTime")
                 BrandCode = data.get("BrandCode")
-                PlanBeginTime = data.get("PlanBeginTime")
+                # PlanBeginTime = data.get("PlanBeginTime")
                 #批次号判重
                 pcBatchID = db_session.query(PlanManager.BatchID).filter(PlanManager.BatchID == BatchID,
                                                                        PlanManager.BrandCode == BrandCode).first()
@@ -136,22 +136,22 @@ def makePlan():
                 pm.SchedulePlanCode = data.get("SchedulePlanCode")
                 pm.BatchID = BatchID
                 pm.PlanQuantity = data.get("PlanQuantity")
-                pm.PlanNum = data.get("PlanNum")
                 pm.Unit = data.get("Unit")
+                pm.PlanNum = data.get("PlanNum")
                 pm.BrandCode = BrandCode
                 pm.BrandName = data.get("BrandName")
-                pm.PlanStatus = Global.PlanStatus.NEW.value
-                pm.PlanBeginTime = data.get("PlanBeginTime")
-                pm.PlanEndTime = data.get("PlanEndTime")
+                pm.PlanStatus = Global.PlanStatus.Confirm.value
+                # pm.PlanBeginTime = data.get("PlanBeginTime")
+                # pm.PlanEndTime = data.get("PlanEndTime")
                 pm.BrandType = data.get("BrandType")
                 pm.EqpCodes = data.get("EqpCodes")
                 db_session.add(pm)
                 sp = SchedulePlan()
-                SchedulePlanCode = PlanEndTime[0:10]
-                Description = Global.SCHEDULETYPE.DAY.value
-                dEndTime = datetime.datetime.strptime(PlanEndTime[0:10], '%Y-%m-%d') + timedelta(days=1)
-                PlanBeginTime = PlanBeginTime
-                PlanEndTime = PlanEndTime
+                sp.SchedulePlanCode = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))[0:10]
+                sp.Description = Global.SCHEDULETYPE.DAY.value
+                sp.dEndTime = datetime.datetime.strptime(str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))[0:10], '%Y-%m-%d') + timedelta(days=1)
+                sp.PlanBeginTime = ""
+                sp.PlanEndTime = ""
                 Type = Global.SCHEDULETYPE.DAY.value
                 db_session.add(sp)
                 db_session.commit()
@@ -168,19 +168,19 @@ def makePlan():
         try:
             ID = data.get("ID")
             BatchID = data.get("BatchID")
-            PlanQuantity = data.get("PlanQuantity")
-            PlanBeginTime = data.get("PlanBeginTime")
-            PlanEndTime = data.get("PlanEndTime")
-            Unit = data.get("Unit")
+            # PlanQuantity = data.get("PlanQuantity")
+            # PlanBeginTime = data.get("PlanBeginTime")
+            # PlanEndTime = data.get("PlanEndTime")
+            # Unit = data.get("Unit")
             ocalss = db_session.query(PlanManager).filter(PlanManager.ID == ID).first()
             if ocalss:
                 pl = db_session.query(PlanManager).filter(PlanManager == BatchID).first()
                 if not pl:
                     ocalss.BatchID = BatchID
-                    ocalss.PlanQuantity = PlanQuantity
-                    ocalss.PlanBeginTime = PlanBeginTime
-                    ocalss.PlanEndTime = PlanEndTime
-                    ocalss.Unit = Unit
+                    # ocalss.PlanQuantity = PlanQuantity
+                    # ocalss.PlanBeginTime = PlanBeginTime
+                    # ocalss.PlanEndTime = PlanEndTime
+                    # ocalss.Unit = Unit
                     db_session.commit()
                     return json.dumps({"code": "200", "message": "修改成功！"})
                 else:
