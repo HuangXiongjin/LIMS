@@ -354,6 +354,11 @@ def batchequimentselect():
                         eqp_dir["EQPCode"] = eqp.EQPCode
                         eqp_dir["EQPName"] = eqp.EQPName
                         eqp_dir["EQPStatus"] = eqp.EQPStatus
+                        eqp_dir["StartTime"] = ""
+                        eqp_dir["EndTime"] = ""
+                        eqp_dir["StartBC"] = ""
+                        eqp_dir["EndBC"] = ""
+                        eqp_dir["isSelected"] = False
                         # runeqp = db_session.query(EquipmentBatchRunTime).filter(
                         #     EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
                         #     EquipmentBatchRunTime.BatchID == oclass.BatchID).first()
@@ -593,7 +598,7 @@ def selectplanmanager():
                 rowsnumber) + " " + columns + " from [LIMS].[dbo].[" + tableName + "] where " + params + \
                   "AND ID not in (select top " + str(
                 (
-                            pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo].[" + tableName + "] ORDER BY ID ASC) ORDER BY ID ASC"
+                            pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo].[" + tableName + "] where " + params +" ORDER BY ID DESC) ORDER BY ID DESC"
             sqlcount = "select count(ID) from [LIMS].[dbo].[" + tableName + "] where " + params
             re = db_session.execute(sql).fetchall()
             recount = db_session.execute(sqlcount).fetchall()
