@@ -601,8 +601,8 @@ def selectplanmanager():
             for i in re:
                 dir = {}
                 column_list = columns.split(",")
-                for column in column_list:
-                    dir[column[1:-1]] = i[column[1:-1]]
+                for col in column_list:
+                    dir[col[1:-1]] = i[col[1:-1]]
                 dict_list.append(dir)
             return json.dumps({"code": "200", "message": "查询成功！", "data": {"total": recount[0][0], "rows": dict_list}})
         except Exception as e:
