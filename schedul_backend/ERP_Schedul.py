@@ -435,18 +435,18 @@ def planschedul():
             for i in data_list:
                 dir = {}
                 proclass = db_session.query(ProductRule).filter(
-                    ProductRule.BrandCode == i.BrandCode).first()
-                i = 0
+                    ProductRule.BrandCode == i.get("BrandCode")).first()
+                s = 1
                 for BatchNo in range(0,int(i.get("BatchNum"))):
                     pm = PlanManager()
                     pm.PlanNum = i.get("PlanNum")
                     pm.SchedulePlanCode = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))[0:10]
                     nowtime = datetime.datetime.now().strftime("%Y-%m %M:%S").replace(":","").replace("-","").replace(" ","")
-                    pm.BatchID = nowtime + str(i)
+                    pm.BatchID = nowtime + str(s)
                     pm.PlanQuantity = proclass.BatchWeight
                     pm.Unit = i.get("Unit")
-                    pm.BrandCode = i.BrandCode
-                    pm.BrandName = i.BrandName
+                    pm.BrandCode = i.get("BrandCode")
+                    pm.BrandName = i.get("BrandName")
                     # #计算计划开始时间结束时间
                     # pu = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == oclass.BrandCode, ProductUnit.PUName.like("%提%")).first()
                     # proc = db_session.query(ProcessUnit).filter(ProcessUnit.PUCode == pu.PUCode).first()
@@ -458,9 +458,10 @@ def planschedul():
                     #     hours=end)).strftime("%Y-%m-%d %H:%M:%S")
                     # pm.PlanBeginTime = PlanBeginTime
                     # pm.PlanEndTime = PlanEndTime
-                    pm.BrandType = i.BrandType
+                    pm.BrandType = i.get("BrandType")
                     db_session.add(pm)
                     db_session.commit()
+                    s = s + 1
             return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
