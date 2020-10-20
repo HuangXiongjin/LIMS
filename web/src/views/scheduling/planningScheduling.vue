@@ -2,9 +2,9 @@
   <el-row>
     <el-col :span='24'>
       <el-steps :active="steps" finish-status="wait" align-center class="marginBottom">
-        <el-step title="审核计划" @click.native="toStep(0)"></el-step>
-        <el-step title="设备配置" @click.native="toStep(1)"></el-step>
-        <el-step title="执行计划列表" @click.native="toStep(2)"></el-step>
+        <el-step title="审核计划" @click.native="toStep(0)" class="cursor-pointer"></el-step>
+        <el-step title="设备配置" @click.native="toStep(1)" class="cursor-pointer"></el-step>
+        <el-step title="执行计划列表" @click.native="toStep(2)" class="cursor-pointer"></el-step>
       </el-steps>
        <el-row v-if='steps==0'>
           <el-col :span='24' class="platformContainer">
@@ -20,7 +20,7 @@
                   style="width: 100%">
                   <el-table-column type="selection"></el-table-column>
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
-                  <el-table-column label="操作">
+                  <el-table-column label="操作" fixed="right" width='160'>
                     <template slot-scope="scope">
                       <el-button
                         size="mini"
@@ -76,15 +76,12 @@
                   @current-change="xfHandleCurrentChange">
                   </el-pagination>
             </div>
-            <el-dialog title="工艺段配置计划" :visible.sync="dialogTableVisible" width='90%'>
+            <el-dialog title="工艺段配置计划" :visible.sync="dialogTableVisible" width='95%'>
               <el-row :gutter='20'>
               <el-col :span='4'>
                   <el-steps :active="configactive" direction="vertical" finish-status="wait" space='100px'>
                     <el-step title="基础配置" @click.native="Activeconfig(0)"></el-step>
-                    <el-step title="提取配置" @click.native="Activeconfig(1)"></el-step>
-                    <el-step title="浓缩配置" @click.native="Activeconfig(2)"></el-step>
-                    <el-step title="醇沉配置" @click.native="Activeconfig(3)"></el-step>
-                    <el-step title="收膏配置" @click.native="Activeconfig(4)"></el-step>
+                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName" @click.native="Activeconfig(index+1)"></el-step>
                   </el-steps>
               </el-col>
               <el-col :span='20' v-if='configactive===0'>
@@ -128,99 +125,50 @@
                     </el-col>
                   </el-row>
               </el-col>
-              <el-col :span='20' v-if='configactive===1'>
-                  <div style="fontSize:18px;fontWeight:700;">提取配置</div>
-                  <el-row style="marginTop:24px;">
-                    <el-col :span='24'>
-                      <el-radio-group v-model="radio2" size="small">
-                          <el-radio-button label="水提"></el-radio-button>
-                          <el-radio-button label="醇提"></el-radio-button>
-                          <el-radio-button label="渗滤"></el-radio-button>
-                          <el-radio-button label="醇+渗"></el-radio-button>
-                      </el-radio-group>
-                    </el-col>
-                    <el-col :span='24' style="marginTop:18px;">
-                      <el-row>
-                        <el-col :span='24'  v-for="(item,index) in eqlist" :key='index' class="marginBottom">
-                          <el-checkbox v-model="item.isselect"></el-checkbox>
-                          <span style="margin:0 30px;">{{item.eqpame}}</span>
-                          <span style="margin:0 30px;">{{item.eqpcode}}</span>
-                          <el-date-picker
-                            v-model="item.startDate"
-                            type="date"
-                            size='small'
-                            placeholder="选择日期">
-                          </el-date-picker>
-                          <el-radio-group v-model="item.startBc" size="small">
-                            <el-radio-button label="早"></el-radio-button>
-                            <el-radio-button label="中"></el-radio-button>
-                            <el-radio-button label="晚"></el-radio-button>
-                          </el-radio-group>
-                          <span style="margin:0 30px;">至</span>
-                           <el-date-picker
-                            v-model="item.endDate"
-                            type="date"
-                            size='small'
-                            placeholder="选择日期">
-                          </el-date-picker>
-                          <el-radio-group v-model="item.endBc" size="small">
-                            <el-radio-button label="早"></el-radio-button>
-                            <el-radio-button label="中"></el-radio-button>
-                            <el-radio-button label="晚"></el-radio-button>
-                          </el-radio-group>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-                  </el-row>
-              </el-col>
-              <el-col :span='20' v-if='configactive===2'>
-                  <div style="fontSize:18px;fontWeight:700;">浓缩配置</div>
-                  <el-row style="marginTop:24px;">
-                    <el-col :span='24'>
-                      <el-radio-group v-model="radio3" size="small">
-                          <el-radio-button label="单效"></el-radio-button>
-                          <el-radio-button label="双效"></el-radio-button>
-                          <el-radio-button label="三效"></el-radio-button>
-                          <el-radio-button label="球形"></el-radio-button>
-                      </el-radio-group>
-                    </el-col>
-                    <el-col :span='24' style="marginTop:18px;">
+              <el-col v-for='(item,index) in inProcessList' :key='index+1' :span='20'>
+                <el-col v-if='configactive===index+1'>
+                    <div style="fontSize:18px;fontWeight:700;">{{item.PUName}}配置</div>
+                    <el-row style="marginTop:24px;">
                       <el-col :span='24' style="marginTop:18px;">
-                      <el-row>
-                        <el-col :span='24'  v-for="(item,index) in eqlist" :key='index' class="marginBottom">
-                          <el-checkbox v-model="item.isselect"></el-checkbox>
-                          <span style="margin:0 30px;">{{item.eqpame}}</span>
-                          <span style="margin:0 30px;">{{item.eqpcode}}</span>
-                          <el-date-picker
-                            v-model="item.startDate"
-                            type="date"
-                            size='small'
-                            placeholder="选择日期">
-                          </el-date-picker>
-                          <el-radio-group v-model="item.startBc" size="small">
-                            <el-radio-button label="早"></el-radio-button>
-                            <el-radio-button label="中"></el-radio-button>
-                            <el-radio-button label="晚"></el-radio-button>
-                          </el-radio-group>
-                          <span style="margin:0 30px;">至</span>
-                           <el-date-picker
-                            v-model="item.endDate"
-                            type="date"
-                            size='small'
-                            placeholder="选择日期">
-                          </el-date-picker>
-                          <el-radio-group v-model="item.endBc" size="small">
-                            <el-radio-button label="早"></el-radio-button>
-                            <el-radio-button label="中"></el-radio-button>
-                            <el-radio-button label="晚"></el-radio-button>
-                          </el-radio-group>
-                        </el-col>
-                      </el-row>
-                    </el-col>
-                    </el-col>
-                  </el-row>
+                        <el-row>
+                          <el-col :span='24'  v-for="(item,index) in inProcessList[index].eqList" :key='index' class="marginBottom">
+                            <el-checkbox v-model="item.isSelected"></el-checkbox>
+                            <span style="margin:0 30px;">{{item.EQPCode}}</span>
+                            <span style="margin:0 30px;">{{item.EQPName}}</span>
+                            <el-date-picker
+                              v-model="item.StartTime"
+                              type="date"
+                              size='small'
+                              placeholder="选择日期">
+                            </el-date-picker>
+                            <el-radio-group v-model="item.StartBC" size="small">
+                              <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="中"></el-radio-button>
+                              <el-radio-button label="晚"></el-radio-button>
+                            </el-radio-group>
+                            <span style="margin:0 30px;">至</span>
+                            <el-date-picker
+                              v-model="item.EndTime"
+                              type="date"
+                              size='small'
+                              placeholder="选择日期">
+                            </el-date-picker>
+                            <el-radio-group v-model="item.EndBC" size="small">
+                              <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="中"></el-radio-button>
+                              <el-radio-button label="晚"></el-radio-button>
+                            </el-radio-group>
+                          </el-col>
+                        </el-row>
+                      </el-col>
+                    </el-row>
+                </el-col>
               </el-col>
               </el-row>
+              <span slot="footer" class="dialog-footer">
+              <el-button @click="dialogTableVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveSelectedEq">确 定</el-button>
+              </span>
             </el-dialog>
         </el-col>
        </el-row>
@@ -256,15 +204,9 @@ var moment=require('moment')
         BatchID:'',
         value1:'',
         radio1:'早',
-        radio2:'水提',
-        radio3:'单效',
-        checked:false,
+        ID:0,
         dialogTableVisible:false,
         inProcessList:[],
-        eqlist:[
-          {isselect:true,eqpame:'3000L水提1',eqpcode:'T0001',startDate:'2020-08-20',startBc:'早',endDate:'2020-08-21',endBc:'早'},
-          {isselect:false,eqpame:'6000L水提2',eqpcode:'T0002',startDate:'2020-08-30',startBc:'中',endDate:'2020-08-31',endBc:'晚'}
-          ],
         batchtableconfig:[{prop:'PlanBeginTime',label:"计划开始时间"},{prop:'BatchID',label:'批次号'},{prop:'BrandName',label:'品名'},{prop:'PlanQuantity',label:'计划重量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'批次状态'}],//批次列表
       }
     },
@@ -274,7 +216,18 @@ var moment=require('moment')
     mounted(){
     },
     methods:{
-      getEq(BatchID,BrandCode){
+      saveSelectedEq(){ //保存所选设备触发
+        this.dialogTableVisible = false
+        var params={
+          processList:JSON.stringify(this.inProcessList),
+          ID:this.ID
+        }
+        this.axios.post('/addEquipmentBatchRunTime',this.qs.stringify(params)).then((res) => {
+          console.log(res)
+        })
+
+      },
+      getEq(BatchID,BrandCode){ //获取设备
          var params = {
                 BatchID: BatchID,
                 BrandCode:BrandCode
@@ -283,7 +236,6 @@ var moment=require('moment')
                 params: params
             }).then(res => {
                 if(res.data.code === "200"){
-                  console.log(res)
                 function compare(property){
                     return function(a,b){
                     var value1 = a[property];
@@ -292,6 +244,7 @@ var moment=require('moment')
                     }
                 }
                 this.inProcessList = res.data.data.processList.sort(compare('Seq'))
+                
                 }})
       },
       Activeconfig(index){ //配置进度条设置
@@ -428,6 +381,7 @@ var moment=require('moment')
       },
        xfTabCurrentChange(e){ //下发批次计划 点击显示当前的tab行显示详细信息
         this.getEq(e.BatchID,e.BrandCode)
+        this.ID=e.ID
         this.$refs.xfmultipleTable.clearSelection();
         this.$refs.xfmultipleTable.toggleRowSelection(e)
       },
