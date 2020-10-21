@@ -355,14 +355,14 @@ def batchequimentselect():
                         eqp_dir["EQPCode"] = eqp.EQPCode
                         eqp_dir["EQPName"] = eqp.EQPName
                         eqp_dir["EQPStatus"] = eqp.EQPStatus
-                        eqp_dir["StartTime"] = ""
-                        eqp_dir["EndTime"] = ""
-                        eqp_dir["StartBC"] = ""
-                        eqp_dir["EndBC"] = ""
                         runeqp = db_session.query(EquipmentBatchRunTime).filter(
                             EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
                             EquipmentBatchRunTime.BrandCode == oclass.BrandCode,
-                            EquipmentBatchRunTime.BatchID == oclass.BatchID).first()
+                            EquipmentBatchRunTime.BatchID == oclass.BatchID, EquipmentBatchRunTime.PUCode == pre.PUCode).first()
+                        eqp_dir["StartTime"] = runeqp.StartTime
+                        eqp_dir["EndTime"] = runeqp.EndTime
+                        eqp_dir["StartBC"] = runeqp.StartBC
+                        eqp_dir["EndBC"] = runeqp.EndBC
                         eqp_dir["isSelected"] = False
                         if runeqp:#如果被选中过True，没被选中就是False
                             eqp_dir["isSelected"] = True
