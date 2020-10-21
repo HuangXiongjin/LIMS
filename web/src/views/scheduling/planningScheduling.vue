@@ -170,6 +170,29 @@
             </el-dialog>
         </el-col>
        </el-row>
+       <el-row v-if="steps===2">
+           <el-col :span='24' class="platformContainer">
+           <div style="height:40px;fontSize:16px;fontWeight:700;">已选列表</div>
+              <el-table
+                  :data="eqlistTableData.data"
+                  highlight-current-row
+                  size='small'
+                  border
+                  ref="eqlistmultipleTable"
+                  style="width: 100%">
+                  <el-table-column v-for="item in eqlistableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+              </el-table>
+              <div class="paginationClass">
+                  <el-pagination background  layout="total,prev, pager, next, jumper"
+                  :total="eqlistTableData.total"
+                  :current-page="eqlistTableData.offset"
+                  :page-size="eqlistTableData.limit"
+                  @size-change="eqlistHandleSizeChange"
+                  @current-change="eqlistHandleCurrentChange">
+                  </el-pagination>
+            </div>
+        </el-col>
+       </el-row>
     </el-col>
   </el-row>
 </template>
@@ -196,6 +219,13 @@ var moment=require('moment')
             offset: 1,//当前处于多少页
             total: 0,//总的多少页
         },
+        eqlistTableData:{ //批次列表
+            tableName:"EquipmentBatchRunTime",
+            data:[],
+            limit: 10,//当前显示多少条
+            offset: 1,//当前处于多少页
+            total: 0,//总的多少页
+        },
         batchmultipleSelection:[],
         xfmultipleSelection:[],
         BrandCode:'',
@@ -206,6 +236,7 @@ var moment=require('moment')
         dialogTableVisible:false,
         inProcessList:[],
         batchtableconfig:[{prop:'PlanBeginTime',label:"计划开始时间"},{prop:'BatchID',label:'批次号'},{prop:'BrandName',label:'品名'},{prop:'PlanQuantity',label:'计划重量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'批次状态'}],//批次列表
+        eqlistableconfig:[{prop:'BatchID',label:"批次号"},{prop:'BrandName',label:'品名名称'},{prop:'PUName',label:'工艺段名称'},{prop:'StartTime',label:'批次开始运行时间'},{prop:'EndTime',label:'批次结束运行时间'},{prop:'StartBC',label:'批次开始运行班次'},{prop:'EndBC',label:'批次结束运行班次'},{prop:'WorkTime',label:'设备运行时长'}],//批次列表
       }
     },
     created(){
@@ -221,9 +252,18 @@ var moment=require('moment')
           ID:this.ID
         }
         this.axios.post('/api/addEquipmentBatchRunTime',this.qs.stringify(params)).then((res) => {
-          console.log(res)
+          if(res.data.code==='200'){
+            this.$message({
+              type:'success',
+              message:res.data.message
+            })
+          }else{
+            this.$message({
+              type:'error',
+              message:'获取数据失败'
+            })
+          }
         })
-
       },
       getEq(BatchID,BrandCode){ //获取设备
          var params = {
@@ -243,6 +283,22 @@ var moment=require('moment')
                 }
                 this.inProcessList = res.data.data.processList.sort(compare('Seq'))
                 }})
+      },
+      getSelectedEq(){    //  查询完成设备选择的批次信息
+        var params={
+          tableName:this.eqlistTableData.tableName,
+          offset:this.eqlistTableData.offset-1,
+          limit:this.eqlistTableData.limit,
+        }
+        this.axios.get('/api/CUID',{params:params}).then(res => {
+           if(res.data.code === "200"){
+            var data = res.data.data
+            this.eqlistTableData.data = data.rows
+            this.eqlistTableData.total = data.total
+          }
+          },err=>{
+            console.log("请求错误")
+          })
       },
       Activeconfig(index){ //配置进度条设置
           this.configactive=index
@@ -320,7 +376,7 @@ var moment=require('moment')
         }else if(this.steps===1){
           this.getConfigbatch()
         }else if(this.steps===2){
-
+            this.getSelectedEq()
         }else{
 
         }
@@ -379,6 +435,14 @@ var moment=require('moment')
        xfHandleCurrentChange(offset) { //下发批次计划 页码切换
         this.xfTableData.offset = offset
         this.getConfigbatch()
+      },
+      eqlistHandleSizeChange(limit){ //已选设备 每页条数切换
+        this.eqlistTableData.limit = limit
+        this.getSelectedEq()
+      },
+       eqlistHandleCurrentChange(offset) { //已选设备 页码切换
+        this.eqlistTableData.offset = offset
+        this.getSelectedEq()
       }
     }
   }
