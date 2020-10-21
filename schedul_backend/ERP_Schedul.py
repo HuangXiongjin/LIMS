@@ -359,13 +359,18 @@ def batchequimentselect():
                             EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
                             EquipmentBatchRunTime.BrandCode == oclass.BrandCode,
                             EquipmentBatchRunTime.BatchID == oclass.BatchID, EquipmentBatchRunTime.PUCode == pre.PUCode).first()
-                        eqp_dir["StartTime"] = runeqp.StartTime
-                        eqp_dir["EndTime"] = runeqp.EndTime
-                        eqp_dir["StartBC"] = runeqp.StartBC
-                        eqp_dir["EndBC"] = runeqp.EndBC
                         eqp_dir["isSelected"] = False
                         if runeqp:#如果被选中过True，没被选中就是False
                             eqp_dir["isSelected"] = True
+                            eqp_dir["StartTime"] = runeqp.StartTime[0:10]
+                            eqp_dir["EndTime"] = runeqp.EndTime[0:10]
+                            eqp_dir["StartBC"] = runeqp.StartBC
+                            eqp_dir["EndBC"] = runeqp.EndBC
+                        else:
+                            eqp_dir["StartTime"] = ""
+                            eqp_dir["EndTime"] = ""
+                            eqp_dir["StartBC"] = ""
+                            eqp_dir["EndBC"] = ""
                         # begin = db_session.query(EquipmentBatchRunTime).filter(
                         #     EquipmentBatchRunTime.EQPCode == eqp.EQPCode,
                         #     EquipmentBatchRunTime.StartTime.between(oclass.PlanBeginTime,oclass.PlanEndTime)).first()
@@ -503,14 +508,14 @@ def addEquipmentBatchRunTime():
                             ert.BrandName = oclass.BrandName
                             ert.EQPCode = el.get("EQPCode")
                             ert.EQPName = el.get("EQPName")
-                            ert.PUCode = PUName
-                            ert.PUName = PUCode
+                            ert.PUCode = PUCode
+                            ert.PUName = PUName
                             ert.StartBC = el.get("StartBC")
                             ert.EndBC = el.get("EndBC")
                             sft = db_session.query(Shifts).filter(Shifts.ShiftsName == ert.StartBC).first()
-                            ert.StartTime = sft.BeginTime
+                            ert.StartTime = str(el.get("StartTime")) + " " + sft.BeginTime
                             eft = db_session.query(Shifts).filter(Shifts.ShiftsName == ert.EndBC).first()
-                            ert.EndTime = eft.EndTime
+                            ert.EndTime = str(el.get("EndTime")) + " " + eft.EndTime
                             db_session.add(ert)
                 oclass.PlanStatus = Global.PlanStatus.ConfirmEquipment.value
                 db_session.commit()
