@@ -146,6 +146,7 @@
                             <span style="margin:0 30px;">至</span>
                             <el-date-picker
                               v-model="item.EndTime"
+                              value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
                               placeholder="选择日期">
