@@ -389,42 +389,39 @@ def batchequimentselect():
             logger.error(e)
             insertSyslog("error", "查询批次下对应的设备报错Error：" + str(e), current_user.Name)
             return json.dumps("查询批次下对应的设备报错", cls=AlchemyEncoder, ensure_ascii=False)
-# @erp_schedul.route('/batchconflictequimentselect', methods=['GET', 'POST'])
-# def batchconflictequimentselect():
-#     '''
-#     查询选择时间段下对应的冲突设备的批次品名
-#     :return:
-#     '''
-#     if request.method == 'GET':
-#         data = request.values
-#         try:
-#             EQPCode = data.get('EQPCode')
-#             StartTime = data.get('StartTime')
-#             EndTime = data.get('EndTime')
-#             startoclass = db_session.query(EquipmentBatchRunTime).filter(
-#                 EquipmentBatchRunTime.EQPCode == EQPCode,
-#                 EquipmentBatchRunTime.StartTime.between(StartTime, EndTime)).all()
-#             endoclass = db_session.query(EquipmentBatchRunTime).filter(
-#                 EquipmentBatchRunTime.EQPCode == EQPCode,
-#                 EquipmentBatchRunTime.EndTime.between(StartTime, EndTime)).all()
-#             ebr_list = []
-#             eqp = {}
-#             eqp["EQPStatus"] = False#设备没有被选中过是false
-#             if startoclass:
-#                 eqp["EQPStatus"] = True
-#                 for oc in startoclass:
-#                     ebr_list.append(oc)
-#             if endoclass:
-#                 eqp["EQPStatus"] = True
-#                 for oc in endoclass:
-#                     ebr_list.append(oc)
-#             ebr_list.append(eqp)
-#             return json.dumps({"code": "200", "message": "查询成功！", "data": ebr_list})
-#         except Exception as e:
-#             db_session.rollback()
-#             logger.error(e)
-#             insertSyslog("error", "查询选择时间段下对应的冲突设备的批次品名报错Error：" + str(e), current_user.Name)
-#             return json.dumps("查询选择时间段下对应的冲突设备的批次品名报错", cls=AlchemyEncoder, ensure_ascii=False)
+
+@erp_schedul.route('/batchconflictequimentselect', methods=['GET', 'POST'])
+def batchconflictequimentselect():
+    '''
+    查询选择时间段下对应的冲突设备的批次品名
+    :return:
+    '''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            EQPCode = data.get('EQPCode')
+            DateTime = data.get('DateTime')
+            BCType = data.get('BCType')
+            sft = db_session.query(Shifts).filter(Shifts.ShiftsName == BCType).first()
+            if sft:
+                beginoclass = db_session.query(EquipmentBatchRunTime).filter(
+                    EquipmentBatchRunTime.EQPCode == EQPCode,
+                    EquipmentBatchRunTime.StartTime.between(str(DateTime +" "+ sft.BeginTime),str(DateTime +" " + sft.EndTime))).all()
+                endoclass = db_session.query(EquipmentBatchRunTime).filter(
+                    EquipmentBatchRunTime.EQPCode == EQPCode,
+                    EquipmentBatchRunTime.EndTime.between(str(DateTime +" "+ sft.BeginTime),str(DateTime +" " + sft.EndTime))).all()
+                dict_list = []
+                for i in beginoclass:
+                    dict_list.append(i)
+                for j in endoclass:
+                    if j not in dict_list:
+                        dict_list.append(j)
+            return json.dumps({"code": "200", "message": "查询成功！", "data": dict_list}, cls=AlchemyEncoder, ensure_ascii=False)
+        except Exception as e:
+            db_session.rollback()
+            logger.error(e)
+            insertSyslog("error", "查询选择时间段下对应的冲突设备的批次品名报错Error：" + str(e), current_user.Name)
+            return json.dumps("查询选择时间段下对应的冲突设备的批次品名报错", cls=AlchemyEncoder, ensure_ascii=False)
 
 import ast
 import math
