@@ -274,8 +274,11 @@ class ZYTask(Base):
     # 单位:
     Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 录入时间:
-    EnterTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    # 计划开始时间
+    PlanStartTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 计划结束时间
+    PlanEndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 实际开始时间:
     ActBeginTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
