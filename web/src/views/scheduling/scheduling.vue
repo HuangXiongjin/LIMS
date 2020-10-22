@@ -147,7 +147,7 @@
             <el-dialog :title="PlanManagerTableData.dialogTitle" :visible.sync="PlanManagerTableData.dialogVisible" width="40%" :append-to-body="true">
               <el-form :model="PlanManagerTableData.formField" label-width="110px">
                 <el-form-item label="订单编号">
-                  <el-select v-model="PlanManagerTableData.formField.PlanNum" placeholder="请选择" @change="selectPlanNum">
+                  <el-select v-model="PlanManagerTableData.formField.PlanNum" placeholder="请选择" @change="selectPlanNum" :disabled="PlanManagerTableData.dialogTitle === '编辑'">
                     <el-option v-for="(item,index) in selectPlanList" :key="index" :label="item.PlanNum" :value="item.PlanNum"></el-option>
                   </el-select>
                 </el-form-item>
@@ -467,6 +467,9 @@
         this.PlanManagerTableData.handleRow = row
         this.PlanManagerTableData.formField = {
           BatchID:row.BatchID,
+          PlanNum:row.PlanNum,
+          BrandName:row.BrandName,
+          BrandCode:row.BrandCode
         }
       },
       handleDelete(index, row) {
