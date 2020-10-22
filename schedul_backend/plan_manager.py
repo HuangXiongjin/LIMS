@@ -14,7 +14,7 @@ from datetime import timedelta
 from common import Global
 from common.batch_plan_model import ProductUnit, PlanManager, ZYPlan, ZYTask, TaskNoGenerator, \
     ProcessUnit, SchedulePlan, \
-    BatchModel, BatchUseModel, BatchMaterialInfo, EletronicBatchDataStore
+    BatchModel, BatchUseModel, BatchMaterialInfo, EletronicBatchDataStore, ProductRule
 from common.schedul_model import EquipmentBatchRunTime
 from database.connect_db import CONNECT_DATABASE
 
@@ -133,17 +133,18 @@ def makePlan():
                 if pcBatchID:
                     return json.dumps({"code": "201", "message": "批次号重复！"})
                 pm = PlanManager()
-                pm.SchedulePlanCode = data.get("SchedulePlanCode")
+                pm.SchedulePlanCode = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))[0:10]
                 pm.BatchID = BatchID
-                pm.PlanQuantity = data.get("PlanQuantity")
-                pm.Unit = data.get("Unit")
+                pr = db_session.query(ProductRule).filter(ProductRule.BrandCode == BrandCode).first()
+                pm.PlanQuantity = pr.BatchWeight
+                pm.Unit = pr.Unit
                 pm.PlanNum = data.get("PlanNum")
                 pm.BrandCode = BrandCode
-                pm.BrandName = data.get("BrandName")
+                pm.BrandName = pr.BrandName
                 pm.PlanStatus = Global.PlanStatus.Confirm.value
                 # pm.PlanBeginTime = data.get("PlanBeginTime")
                 # pm.PlanEndTime = data.get("PlanEndTime")
-                pm.BrandType = data.get("BrandType")
+                pm.BrandType = pr.BrandType
                 pm.EqpCodes = data.get("EqpCodes")
                 db_session.add(pm)
                 sp = SchedulePlan()
