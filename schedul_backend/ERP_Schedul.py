@@ -497,7 +497,7 @@ def addEquipmentBatchRunTime():
                     PUName = pl.get("PUName")
                     PUCode = pl.get("PUCode")
                     eqList = pl.get('eqList')
-                    for el in eqList:
+                    for el in eqList:     
                         isSelected = el.get("isSelected")
                         if isSelected == True:#选中过的设备
                             ert = EquipmentBatchRunTime()
