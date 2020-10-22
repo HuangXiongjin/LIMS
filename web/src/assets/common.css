@@ -150,10 +150,15 @@
   line-height: 48px;
 }
 .white-theme .el-collapse .el-collapse-item__header {
-  padding-left: 10px;
+  padding: 0 15px;
+  font-size: 16px;
+  border: 1px solid #EBEEF5;
 }
 .white-theme .el-collapse .el-collapse-item__wrap {
   padding: 10px;
+}
+.white-theme .el-collapse .el-collapse-item__wrap .el-collapse-item__content {
+  padding-bottom: 0;
 }
 /*  */
 .black-theme {

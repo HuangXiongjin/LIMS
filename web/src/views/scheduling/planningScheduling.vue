@@ -136,6 +136,7 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
+                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC)"
                               placeholder="选择日期">
                             </el-date-picker>
                             <el-radio-group v-model="item.StartBC" size="small">
@@ -149,6 +150,7 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
+                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)"
                               placeholder="选择日期">
                             </el-date-picker>
                             <el-radio-group v-model="item.EndBC" size="small">
@@ -167,6 +169,11 @@
               <el-button @click="dialogTableVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveSelectedEq">确 定</el-button>
               </span>
+              <el-dialog title="冲突信息" :visible.sync="ctdialogTableVisible" width='80%' :modal=false>
+                  <el-table :data="ctlist">
+                   <el-table-column v-for="item in tipstableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  </el-table>
+              </el-dialog>
             </el-dialog>
         </el-col>
        </el-row>
@@ -233,10 +240,13 @@ var moment=require('moment')
         value1:'',
         radio1:'早',
         ID:0,
+        ctdialogTableVisible:false,//冲突显示
+        ctlist:[],//冲突存储
         dialogTableVisible:false,
         inProcessList:[],
         batchtableconfig:[{prop:'PlanBeginTime',label:"计划开始时间"},{prop:'BatchID',label:'批次号'},{prop:'BrandName',label:'品名'},{prop:'PlanQuantity',label:'计划重量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'批次状态'}],//批次列表
-        eqlistableconfig:[{prop:'BatchID',label:"批次号"},{prop:'BrandName',label:'品名名称'},{prop:'PUName',label:'工艺段名称'},{prop:'StartTime',label:'批次开始运行时间'},{prop:'EndTime',label:'批次结束运行时间'},{prop:'StartBC',label:'批次开始运行班次'},{prop:'EndBC',label:'批次结束运行班次'},{prop:'WorkTime',label:'设备运行时长'}],//批次列表
+        eqlistableconfig:[{prop:'BatchID',label:"批次号"},{prop:'BrandName',label:'品名名称'},{prop:'PUName',label:'工艺段名称'},{prop:'EQPCode',label:'设备编码'},{prop:'StartTime',label:'批次开始运行时间'},{prop:'EndTime',label:'批次结束运行时间'},{prop:'StartBC',label:'批次开始运行班次'},{prop:'EndBC',label:'批次结束运行班次'},{prop:'WorkTime',label:'设备运行时长'}],//批次列表
+        tipstableconfig:[{prop:'BatchID',label:"冲突批次号"},{prop:'BrandName',label:'冲突品名'},{prop:'EQPName',label:'冲突设备名称'},{prop:'EQPCode',label:'冲突设备编码'},{prop:'StartTime',label:'冲突开始运行时间'},{prop:'EndTime',label:'冲突结束运行时间'},{prop:'StartBC',label:'冲突开始运行班次'},{prop:'EndBC',label:'冲突结束运行班次'}],//冲突列表
       }
     },
     created(){
@@ -245,6 +255,22 @@ var moment=require('moment')
     mounted(){
     },
     methods:{
+      judgeConflict(EQPCode,time,Bc){
+       var params={
+         EQPCode:EQPCode,
+         DateTime:moment(time).format('YYYY-MM-DD'),
+         BCType:Bc
+       }
+       this.axios.get('/api/batchconflictequimentselect',{params:params}).then((res) => {
+         if(res.data.code==='200'){
+           var arr=res.data.data
+           if(arr.length!==0){
+             this.ctdialogTableVisible=true
+             this.ctlist=arr
+           }
+         }
+       })
+      },
       saveSelectedEq(){ //保存所选设备触发
         this.dialogTableVisible = false
         var params={
