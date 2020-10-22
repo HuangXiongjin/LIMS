@@ -84,14 +84,17 @@ def makeZYPlanZYTask(id):
                 zyplan.INFStatus = Global.TASKSTATUS.NEW.value
                 zyplan.WMSStatus = Global.TASKSTATUS.NEW.value
                 db_session.add(zyplan)
+
+                ebps = db_session.query(EquipmentBatchRunTime).filter(EquipmentBatchRunTime.BrandCode == ocalss.BrandCode,
+                                EquipmentBatchRunTime.BatchID == ocalss.BatchID, EquipmentBatchRunTime.PUCode == i.PUCode).all()
                 iTaskSeq = 0
-                for j in range(0, pu.RelateTaskCount):
+                for j in ebps:
                     iTaskSeq = iTaskSeq + 1
                     bReturn, strTaskNo = getTaskNo()
                     if bReturn == False:
                         return False
                     zytask = ZYTask()
-                    zytask.PlanDate = ocalss.PlanBeginTime
+                    zytask.PlanDate = j.StartTime
                     zytask.TaskID = strTaskNo
                     zytask.BatchID = ocalss.BatchID
                     zytask.PlanSeq = iTaskSeq
@@ -103,7 +106,8 @@ def makeZYPlanZYTask(id):
                     zytask.PlanQuantity = ocalss.PlanQuantity
                     zytask.Unit = ocalss.Unit
                     zytask.EnterTime = ""
-                    # zytask.SetRepeatCount = i.RelateTaskCount
+                    zytask.EQPCode = j.EQPCode
+                    zytask.EQPName = j.EQPName
                     zytask.TaskStatus = Global.TASKSTATUS.NEW.value
                     zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
                     db_session.add(zytask)
