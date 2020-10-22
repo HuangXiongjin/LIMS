@@ -174,7 +174,7 @@
        </el-row>
        <el-row v-if="steps===2">
            <el-col :span='24' class="platformContainer">
-           <div style="height:40px;fontSize:16px;fontWeight:700;">已选列表</div>
+           <div style="height:40px;fontSize:16px;fontWeight:700;">执行列表</div>
               <el-table
                   :data="eqlistTableData.data"
                   highlight-current-row
@@ -183,6 +183,18 @@
                   ref="eqlistmultipleTable"
                   style="width: 100%">
                   <el-table-column v-for="item in eqlistableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table-column label="操作" fixed="right" width='160'>
+                    <template slot-scope="scope">
+                      <el-button
+                        size="mini"
+                        type='success'
+                        @click="xfPlan(scope.$index, scope.row)">下发</el-button>
+                      <el-button
+                        size="mini"
+                        type="primary"
+                        @click="chPlan(scope.$index, scope.row)">撤回</el-button>
+                    </template>
+                  </el-table-column>
               </el-table>
               <div class="paginationClass">
                   <el-pagination background  layout="total,prev, pager, next, jumper"
@@ -221,8 +233,8 @@ var moment=require('moment')
             offset: 1,//当前处于多少页
             total: 0,//总的多少页
         },
-        eqlistTableData:{ //批次列表
-            tableName:"EquipmentBatchRunTime",
+        eqlistTableData:{ //下发批次列表
+            tableName:"PlanManager",
             data:[],
             limit: 10,//当前显示多少条
             offset: 1,//当前处于多少页
@@ -240,9 +252,9 @@ var moment=require('moment')
         ctlist:[],//冲突存储
         dialogTableVisible:false, //选择设备显示
         inProcessList:[],//存储工序设备集合
-        BatchWeight:'',
-        batchtableconfig:[{prop:'PlanBeginTime',label:"计划开始时间"},{prop:'BatchID',label:'批次号'},{prop:'BrandName',label:'品名'},{prop:'PlanQuantity',label:'计划重量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'批次状态'}],//批次列表
-        eqlistableconfig:[{prop:'BatchID',label:"批次号"},{prop:'BrandName',label:'品名名称'},{prop:'PUName',label:'工艺段名称'},{prop:'EQPCode',label:'设备编码'},{prop:'StartTime',label:'批次开始运行时间'},{prop:'EndTime',label:'批次结束运行时间'},{prop:'StartBC',label:'批次开始运行班次'},{prop:'EndBC',label:'批次结束运行班次'},{prop:'WorkTime',label:'设备运行时长'}],//批次列表
+        BatchWeight:'200片',
+        batchtableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'计划状态'}],//批次列表
+        eqlistableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'计划状态'}],//选择设备列表
         tipstableconfig:[{prop:'BatchID',label:"冲突批次号"},{prop:'BrandName',label:'冲突品名'},{prop:'EQPName',label:'冲突设备名称'},{prop:'EQPCode',label:'冲突设备编码'},{prop:'StartTime',label:'冲突开始运行时间'},{prop:'EndTime',label:'冲突结束运行时间'},{prop:'StartBC',label:'冲突开始运行班次'},{prop:'EndBC',label:'冲突结束运行班次'}],//冲突列表
       }
     },
@@ -323,6 +335,7 @@ var moment=require('moment')
       getSelectedEq(){    //  查询完成设备选择的批次信息
         var params={
           tableName:this.eqlistTableData.tableName,
+          PlanStatus:'已选设备',
           offset:this.eqlistTableData.offset-1,
           limit:this.eqlistTableData.limit,
         }
@@ -335,6 +348,46 @@ var moment=require('moment')
           },err=>{
             console.log("请求错误")
           })
+      },
+      xfPlan(index,row){
+        var id=row.ID
+        var params={
+          PlanStatus:'已下发',
+          ID:id
+        }
+        this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
+          if(res.data.code==='200'){
+            this.$message({
+              type:'success',
+              message:res.data.message
+            })
+          }else{
+            this.$message({
+              type:'error',
+              message:'下发失败,请重试'
+            })
+          }
+        })
+      },
+      chPlan(index,row){
+        var id=row.ID
+        var params={
+          PlanStatus:'撤回',
+          ID:id
+        }
+        this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
+          if(res.data.code==='200'){
+            this.$message({
+              type:'success',
+              message:res.data.message
+            })
+          }else{
+            this.$message({
+              type:'error',
+              message:'撤回失败,请重试'
+            })
+          }
+        })
       },
       Activeconfig(index){ //配置进度条设置
           this.configactive=index
