@@ -175,7 +175,7 @@ def makePlan():
             # Unit = data.get("Unit")
             ocalss = db_session.query(PlanManager).filter(PlanManager.ID == ID).first()
             if ocalss:
-                pl = db_session.query(PlanManager).filter(PlanManager == BatchID).first()
+                pl = db_session.query(PlanManager).filter(PlanManager.BatchID == BatchID, PlanManager.BrandCode == ocalss.BrandCode).first()
                 if not pl:
                     ocalss.BatchID = BatchID
                     # ocalss.PlanQuantity = PlanQuantity
