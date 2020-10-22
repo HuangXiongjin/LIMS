@@ -1,16 +1,22 @@
 <template>
   <el-row>
     <el-col :span="24">
-      <el-steps :active="steps" finish-status="wait" align-center class="marginBottom">
-        <el-step title="选择订单计划"></el-step>
+      <el-steps :active="steps" finish-status="success" align-center class="marginBottom">
+        <el-step title="选择订单"></el-step>
         <el-step title="数据统计"></el-step>
         <el-step title="订单分批"></el-step>
       </el-steps>
       <el-row :gutter="15" v-show="steps == 0">
         <el-col :span="24">
           <el-collapse class="marginBottom">
-            <el-collapse-item title="多条件查询订单计划">
+            <el-collapse-item title="多条件查询订单">
               <el-form :model="planTableData.searchField" :inline="true" label-width="110px">
+                <el-form-item label="状态">
+                   <el-select v-model="planTableData.searchField.PlanStatus" placeholder="请选择">
+                    <el-option v-for="item in optionsPlanStatus" :key="item.value" :label="item.value" :value="item.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
                 <el-form-item label="创建/同步时间">
                    <el-date-picker v-model="planTableData.searchField.CreateTimeTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
@@ -29,6 +35,7 @@
             <el-table :data="planTableData.data" border size="small" ref="multipleTable" @selection-change="handleSelectionChange" @row-click="handleRowClick">
               <el-table-column type="selection"></el-table-column>
               <el-table-column prop="PlanNum" label="编号"></el-table-column>
+              <el-table-column prop="BrandCode" label="品名编码"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
               <el-table-column prop="PlanStatus" label="状态"></el-table-column>
@@ -114,10 +121,12 @@
             <el-table :data="PlanManagerTableData.data" border size="small">
               <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
+              <el-table-column prop="BrandCode" label="品名编码"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="BrandType" label="产品类型"></el-table-column>
               <el-table-column prop="PlanQuantity" label="每批产量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
+              <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
               <el-table-column label="操作" fixed="right" width="150">
                 <template slot-scope="scope">
                   <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -137,6 +146,14 @@
             </div>
             <el-dialog :title="PlanManagerTableData.dialogTitle" :visible.sync="PlanManagerTableData.dialogVisible" width="40%" :append-to-body="true">
               <el-form :model="PlanManagerTableData.formField" label-width="110px">
+                <el-form-item label="订单编号">
+                  <el-select v-model="PlanManagerTableData.formField.PlanNum" placeholder="请选择" @change="selectPlanNum">
+                    <el-option v-for="(item,index) in selectPlanList" :key="index" :label="item.PlanNum" :value="item.PlanNum"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="品名">
+                  <el-input v-model="PlanManagerTableData.formField.BrandName" :disabled="true"></el-input>
+                </el-form-item>
                 <el-form-item label="批次号">
                   <el-input v-model="PlanManagerTableData.formField.BatchID"></el-input>
                 </el-form-item>
@@ -165,6 +182,10 @@
     data(){
       return{
         steps:0,
+        optionsPlanStatus:[
+          {value:"待分批"},
+          {value:"已分批"},
+        ],
         scheduleData:[],
         planTableData:{
           data:[],
@@ -184,7 +205,8 @@
             Description:""
           },
           searchField:{
-            CreateTimeTime:""
+            PlanStatus:"",
+            CreateTimeTime:"",
           }
         },
         selectPlanList:[],
@@ -201,9 +223,10 @@
           dialogTitle:"",
           handleRow:"",
           formField:{
+            PlanNum:"",
             BatchID:"",
-            PlanQuantity:"",
-            Unit:"",
+            BrandCode:"",
+            BrandName:"",
           },
         },
       }
@@ -272,6 +295,7 @@
         var that = this
         var params = {
           tableName: "product_plan",
+          PlanStatus:this.planTableData.searchField.PlanStatus,
           CreateTimeTime:this.planTableData.searchField.CreateTimeTime,
         }
         this.axios.get("/api/CUID",{
@@ -425,16 +449,17 @@
       },
       handleFormPlanManager(label){
         if(label === "添加"){
-          if(this.BrandActive){
-            this.PlanManagerTableData.dialogVisible = true
-            this.PlanManagerTableData.dialogTitle = label
-          }else{
-            this.$message({
-              type: 'info',
-              message: '请选择品名'
-            });
-          }
+          this.PlanManagerTableData.dialogVisible = true
+          this.PlanManagerTableData.dialogTitle = label
         }
+      },
+      selectPlanNum(){
+        this.selectPlanList.forEach(item =>{
+          if(item.PlanNum === this.PlanManagerTableData.formField.PlanNum){
+            this.PlanManagerTableData.formField.BrandName = item.BrandName
+            this.PlanManagerTableData.formField.BrandCode = item.BrandCode
+          }
+        })
       },
       handleEdit(index, row){
         this.PlanManagerTableData.dialogVisible = true
@@ -445,7 +470,7 @@
         }
       },
       handleDelete(index, row) {
-        var params = {tableName:"Scheduling"}
+        var params = {tableName:"PlanManager"}
         var mulId = [{id:row.ID}]
         params.delete_data = JSON.stringify(mulId)
         this.$confirm('确定删除所选记录？', '提示', {
@@ -475,11 +500,9 @@
       savePlanManager(){
         if(this.PlanManagerTableData.dialogTitle === "添加"){
           var params = {
-            BrandName:this.BrandActive,
-            BrandCode:this.BrandCode,
-            BrandType:this.BrandType,
-            PlanNum:this.planTableData.multipleSelection[0].PlanNum,
+            PlanNum:this.PlanManagerTableData.formField.PlanNum,
             BatchID:this.PlanManagerTableData.formField.BatchID,
+            BrandCode:this.PlanManagerTableData.formField.BrandCode
           }
           this.axios.post("/api/makePlan",this.qs.stringify(params)).then(res =>{
             if(res.data.code === "200"){
@@ -501,10 +524,6 @@
         }else if(this.PlanManagerTableData.dialogTitle === "编辑"){
           var params = {
             ID:this.PlanManagerTableData.handleRow.ID,
-            BrandName:this.BrandActive,
-            BrandCode:this.BrandCode,
-            BrandType:this.BrandType,
-            PlanNum:this.planTableData.multipleSelection[0].PlanNum,
             BatchID:this.PlanManagerTableData.formField.BatchID,
           }
           this.axios.get("/api/makePlan",{
