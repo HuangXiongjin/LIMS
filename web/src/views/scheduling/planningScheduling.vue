@@ -22,10 +22,12 @@
                       <el-button
                         size="mini"
                         type='success'
+                         v-if="scope.row.PlanStatus==='待审核'"
                         @click="checkPass(scope.$index, scope.row)">通过</el-button>
                       <el-button
                         size="mini"
                         type="primary"
+                         v-if="scope.row.PlanStatus==='待审核'"
                         @click="checkNopass(scope.$index, scope.row)">不通过</el-button>
                     </template>
                   </el-table-column>
@@ -134,7 +136,7 @@
                               @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC)"
                               placeholder="选择日期">
                             </el-date-picker>
-                            <el-radio-group v-model="item.StartBC" size="small">
+                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC)'>
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -148,7 +150,7 @@
                               @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)"
                               placeholder="选择日期">
                             </el-date-picker>
-                            <el-radio-group v-model="item.EndBC" size="small">
+                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)">
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -242,7 +244,7 @@ var moment=require('moment')
         },
         BrandCode:'',
         BatchID:'',
-        blstartBc:'早',//备料开始班次
+        blstartBc:'',//备料开始班次
         blendBc:'',//备料结束班次
         blstartTime:'', //备料开始时间
         blendTime:'', //备料结束时间`,
@@ -251,8 +253,10 @@ var moment=require('moment')
         ctdialogTableVisible:false,//冲突显示
         ctlist:[],//冲突存储
         dialogTableVisible:false, //选择设备显示
+        xfdialogVisible:false,//是否下发弹框
         inProcessList:[],//存储工序设备集合
         BatchWeight:'200片',
+        row:{},
         batchtableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'计划状态'}],//批次列表
         eqlistableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'计划状态'}],//选择设备列表
         tipstableconfig:[{prop:'BatchID',label:"冲突批次号"},{prop:'BrandName',label:'冲突品名'},{prop:'EQPName',label:'冲突设备名称'},{prop:'EQPCode',label:'冲突设备编码'},{prop:'StartTime',label:'冲突开始运行时间'},{prop:'EndTime',label:'冲突结束运行时间'},{prop:'StartBC',label:'冲突开始运行班次'},{prop:'EndBC',label:'冲突结束运行班次'}],//冲突列表
@@ -305,6 +309,7 @@ var moment=require('moment')
               type:'success',
               message:res.data.message
             })
+            this.getConfigbatch()
           }else{
             this.$message({
               type:'error',
@@ -355,8 +360,14 @@ var moment=require('moment')
           PlanStatus:'已下发',
           ID:id
         }
+        this.$confirm('此操作将下发执行此批次, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
         this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
           if(res.data.code==='200'){
+            this.getSelectedEq()
             this.$message({
               type:'success',
               message:res.data.message
@@ -367,7 +378,7 @@ var moment=require('moment')
               message:'下发失败,请重试'
             })
           }
-        })
+        })})
       },
       chPlan(index,row){
         var id=row.ID
@@ -375,8 +386,14 @@ var moment=require('moment')
           PlanStatus:'撤回',
           ID:id
         }
+        this.$confirm('此操作将撤回此批次, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
         this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
           if(res.data.code==='200'){
+            this.getSelectedEq()
             this.$message({
               type:'success',
               message:res.data.message
@@ -387,7 +404,7 @@ var moment=require('moment')
               message:'撤回失败,请重试'
             })
           }
-        })
+        })})
       },
       Activeconfig(index){ //配置进度条设置
           this.configactive=index
@@ -411,6 +428,7 @@ var moment=require('moment')
           }
           this.axios.post('/api/checkPlanManager',this.qs.stringify(params)).then((res) => {
             if(res.data.code==='200'){
+              this.getPlanManager()
                this.$message({
                 type: 'success',
                 message: '审核成功'
@@ -439,6 +457,7 @@ var moment=require('moment')
           }
           this.axios.post('/api/checkPlanManager',this.qs.stringify(params)).then((res) => {
             if(res.data.code==='200'){
+              this.getPlanManager()
                this.$message({
                 type: 'success',
                 message: '提交成功'
