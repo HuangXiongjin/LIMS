@@ -82,27 +82,40 @@
               <el-col :span='20' v-if='configactive===0'>
                   <div style="fontSize:18px;fontWeight:700;">备料配置</div>
                   <el-row style="marginTop:24px;">
-                    <el-col :span='10'>
+                    <el-col :span='19'>
                       <span class="mgr">备料</span>
                       <el-date-picker
-                        v-model="value1"
+                        v-model="blstartTime"
                         value-format='yyyy-MM-dd'
                         type="date"
                         size='small'
                         placeholder="选择日期">
                       </el-date-picker>
-                      <el-radio-group v-model="radio1" size="small">
+                      <el-radio-group v-model="blstartBc" size="small">
                           <el-radio-button label="早"></el-radio-button>
                           <el-radio-button label="中"></el-radio-button>
                           <el-radio-button label="晚"></el-radio-button>
                       </el-radio-group>
+                      <span style="margin:0 30px;">至</span>
+                            <el-date-picker
+                              v-model="blendTime"
+                              value-format='yyyy-MM-dd'
+                              type="date"
+                              size='small'
+                              placeholder="选择日期">
+                            </el-date-picker>
+                            <el-radio-group v-model="blendBc" size="small">
+                              <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="中"></el-radio-button>
+                              <el-radio-button label="晚"></el-radio-button>
+                            </el-radio-group>
                     </el-col>
-                    <el-col :span='10'>
+                    <el-col :span='4'>
                       <span class="mgr">批量</span>
                       <el-tag type='info'>200万粒</el-tag>
                     </el-col>
                     </el-row>
-                    <el-row style="marginTop:24px;">
+                    <!-- <el-row style="marginTop:24px;">
                     <el-col :span='4'>
                       <span class="mgr">成品量</span>
                       <el-tag type='info'>2000kg</el-tag>
@@ -119,7 +132,7 @@
                       <span class="mgr">得率</span>
                       <el-tag type='info'>2000kg</el-tag>
                     </el-col>
-                  </el-row>
+                  </el-row> -->
               </el-col>
               <el-col v-for='(item,index) in inProcessList' :key='index+1' :span='20'>
                 <el-col v-if='configactive===index+1'>
@@ -233,17 +246,17 @@ var moment=require('moment')
             offset: 1,//当前处于多少页
             total: 0,//总的多少页
         },
-        batchmultipleSelection:[],
-        xfmultipleSelection:[],
         BrandCode:'',
         BatchID:'',
-        value1:'',
-        radio1:'早',
+        blstartBc:'早',//备料开始班次
+        blendBc:'',//备料结束班次
+        blstartTime:'', //备料开始时间
+        blendTime:'', //备料结束时间`
         ID:0,
         ctdialogTableVisible:false,//冲突显示
         ctlist:[],//冲突存储
-        dialogTableVisible:false,
-        inProcessList:[],
+        dialogTableVisible:false, //选择设备显示
+        inProcessList:[],//存储工序设备集合
         batchtableconfig:[{prop:'PlanBeginTime',label:"计划开始时间"},{prop:'BatchID',label:'批次号'},{prop:'BrandName',label:'品名'},{prop:'PlanQuantity',label:'计划重量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'批次状态'}],//批次列表
         eqlistableconfig:[{prop:'BatchID',label:"批次号"},{prop:'BrandName',label:'品名名称'},{prop:'PUName',label:'工艺段名称'},{prop:'EQPCode',label:'设备编码'},{prop:'StartTime',label:'批次开始运行时间'},{prop:'EndTime',label:'批次结束运行时间'},{prop:'StartBC',label:'批次开始运行班次'},{prop:'EndBC',label:'批次结束运行班次'},{prop:'WorkTime',label:'设备运行时长'}],//批次列表
         tipstableconfig:[{prop:'BatchID',label:"冲突批次号"},{prop:'BrandName',label:'冲突品名'},{prop:'EQPName',label:'冲突设备名称'},{prop:'EQPCode',label:'冲突设备编码'},{prop:'StartTime',label:'冲突开始运行时间'},{prop:'EndTime',label:'冲突结束运行时间'},{prop:'StartBC',label:'冲突开始运行班次'},{prop:'EndBC',label:'冲突结束运行班次'}],//冲突列表
@@ -274,6 +287,18 @@ var moment=require('moment')
       saveSelectedEq(){ //保存所选设备触发
         this.dialogTableVisible = false
         var params={
+          PUCode: "1038",
+          PUName: "备料",
+          Seq: 0,
+          eqList:[{      
+            EndBC:this.blendBc,
+            EndTime:this.blendTime,
+            StartBC:this.blstartBc,
+            StartTime:this.blstartTime
+          }]
+        }
+        this.inProcessList.unshift(params)
+        var params={
           processList:JSON.stringify(this.inProcessList),
           ID:this.ID
         }
@@ -299,6 +324,7 @@ var moment=require('moment')
             this.axios.get("/api/batchequimentselect",{
                 params: params
             }).then(res => {
+              console.log(res)
                 if(res.data.code === "200"){
                 function compare(property){
                     return function(a,b){
