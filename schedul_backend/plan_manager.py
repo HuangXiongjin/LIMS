@@ -108,6 +108,8 @@ def makeZYPlanZYTask(id):
                     zytask.EnterTime = ""
                     zytask.EQPCode = j.EQPCode
                     zytask.EQPName = j.EQPName
+                    zytask.StartBC = j.StartBC
+                    zytask.EndBC = j.EndBC
                     zytask.TaskStatus = Global.TASKSTATUS.NEW.value
                     zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
                     db_session.add(zytask)
@@ -238,11 +240,11 @@ def createZYPlanZYtask():
                     oclassplan.PlanStatus = Global.PlanStatus.Realse.value
                     db_session.commit()
                     return json.dumps({"code": "200", "message": "下发成功！！"})
-                elif PlanStatus == "撤回":
+                elif PlanStatus == "":
                     oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
                     oclassplan.PlanStatus = Global.PlanStatus.Recall.value
                     db_session.commit()
-                    return json.dumps({"code": "200", "message": "撤回成功！！"})
+                    return json.dumps({"code": "200", "message": "成功！！"})
                 else:
                     return json.dumps({"code": "200", "message": "批次计划状态不正确！"})
         except Exception as e:

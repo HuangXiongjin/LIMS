@@ -262,7 +262,7 @@ class ZYTask(Base):
     # 品名编码:
     BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    # 牌号名称:
+    # 品名名称:
     BrandName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
     # 计划重量:
@@ -282,6 +282,12 @@ class ZYTask(Base):
 
     # 实际完成时间:
     ActEndTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+
+    # 批次开始运行班次
+    StartBC = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 批次结束运行班次
+    EndBC = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # # 设定重复次数:
     # SetRepeatCount = Column(Integer, primary_key=False, autoincrement=False, nullable=True, default=1)
