@@ -1,210 +1,217 @@
 <template>
-    <el-row :gutter="15">
-        <el-col :span="4">
-            <div class="platformContainer">
-                <p class="marginBottom">请选择要展示的品名</p>
-                <el-input class="marginBottom" v-model="productName" placeholder="关键字搜索" @change="handleChangeProductName"></el-input>
-                <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in results" :key="index" v-bind:effect="item.BrandName===BrandActive?'dark':'plain'" @click="clickBrandTag(item.BrandName,item.BrandCode)">{{item.BrandName}}</el-tag>
-            </div>
-        </el-col>
-        <el-col :span='20'>
-            <el-row>
-                <el-col :span='24'>
-                    <p class="platformContainer" v-if="BrandActive">当前展示的品名：{{BrandActive}}</p>
-                </el-col>
-                <el-col :span='24'>
-                    <div class="platformContainer" style="backgroundColor:#fff;">
-                        <el-form :inline="true" :model="formInline">
-                                <el-form-item label="计划单号">
-                                    <el-select v-model="formInline.CurrentBrandNum" placeholder="计划单号" @change="onSubmit">
-                                        <el-option v-for="(item,index) in selectBrandNum" :key='index'  :label='item.BrandCodelabel'  :value="item.BrandCodevalue" ></el-option>
-                                    </el-select>
-                                </el-form-item>
-                        </el-form>
-                        <div id="main" style="width:100%; height:750px;" v-loading="loading">排产进度表</div>
-                    </div>
-                </el-col>
-            </el-row>
-        </el-col>
-    </el-row>
+  <el-row :gutter="15">
+    <el-col :span="24">
+      <el-collapse class="marginBottom">
+        <el-collapse-item title="多条件查询生产日程安排">
+          <el-form :model="ZYTaskTableData.searchField" :inline="true" label-width="120px">
+            <el-form-item label="批次号">
+              <el-input v-model="ZYTaskTableData.searchField.BatchID"></el-input>
+            </el-form-item>
+            <el-form-item label="品名">
+              <el-select v-model="ZYTaskTableData.searchField.BrandName" placeholder="请选择" style="width:200px">
+                <el-option v-for="item in scheduleData" :key="item.ID" :label="item.BrandName" :value="item.BrandName">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="工艺段">
+              <el-select v-model="ZYTaskTableData.searchField.PUName" placeholder="请选择" style="width:200px" @change="getEqTableData">
+                <el-option v-for="item in optionsPUName" :key="item.ID" :label="item.PUName" :value="item.PUName">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="设备">
+               <el-select v-model="ZYTaskTableData.searchField.EQPCode" placeholder="请选择" style="width:200px">
+                <el-option v-for="item in optionsProductEquipment" :key="item.value" :label="item.EQPCode+ '-' +item.EQPName" :value="item.EQPCode">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="计划开始时间">
+               <el-date-picker v-model="ZYTaskTableData.searchField.PlanStartTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width:200px"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="计划结束时间">
+               <el-date-picker v-model="ZYTaskTableData.searchField.PlanEndTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width:200px"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="实际开始时间">
+               <el-date-picker v-model="ZYTaskTableData.searchField.ActBeginTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width:200px"></el-date-picker>
+            </el-form-item>
+            <el-form-item label="实际结束时间">
+               <el-date-picker v-model="ZYTaskTableData.searchField.ActEndTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width:200px"></el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" size="small" @click="resetSearchField">重置</el-button>
+              <el-button type="primary" size="small" @click="getSelectedEq">查询</el-button>
+            </el-form-item>
+          </el-form>
+        </el-collapse-item>
+      </el-collapse>
+    </el-col>
+    <el-col :span="4">
+      <div class="platformContainer">
+        <p>设备计划生产时间线</p>
+        <el-timeline>
+          <el-timeline-item
+            v-for="(item, index) in eqTimeLineData"
+            :key="index"
+            :timestamp="item.time">
+            <span>{{ item.StartBC }}班</span>{{item.label}} <span>{{ item.EQPName }}</span>
+          </el-timeline-item>
+        </el-timeline>
+      </div>
+    </el-col>
+    <el-col :span="20">
+      <div class="platformContainer">
+        <el-table :data="ZYTaskTableData.data" border size="small">
+          <el-table-column type="selection"></el-table-column>
+          <el-table-column prop="BatchID" label="批次号"></el-table-column>
+          <el-table-column prop="BrandName" label="品名"></el-table-column>
+          <el-table-column prop="PlanQuantity" label="批次重量"></el-table-column>
+          <el-table-column prop="PUName" label="工艺段名称"></el-table-column>
+          <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
+          <el-table-column prop="EQPName" label="设备名称"></el-table-column>
+          <el-table-column prop="PlanStartTime" label="计划开始时间"></el-table-column>
+          <el-table-column prop="PlanEndTime" label="计划结束时间"></el-table-column>
+          <el-table-column prop="ActBeginTime" label="实际开始时间"></el-table-column>
+          <el-table-column prop="ActEndTime" label="实际结束时间"></el-table-column>
+          <el-table-column prop="StartBC" label="开始运行班次"></el-table-column>
+          <el-table-column prop="EndBC" label="结束运行班次"></el-table-column>
+        </el-table>
+      </div>
+    </el-col>
+  </el-row>
 </template>
 <script>
 import echarts from '@/assets/js/echarts.js'
 export default {
-    data(){
-        return {
-            datesection:'月',
-            loading:false,
-            productName:'',
-            results:[],
-            BrandActive:'',
-            BrandCode:'',
-            PUCode:'',
-            PUName:'',
-            inProcessList:[],
-            fileList: [],
-            ActiveIndex:10,
-            FileName:'',
-            scheduleTableData:[],
-            formInline: {CurrentBrandNum: '45'},
-            selectBrandNum:[],
-            ydata:[],
-            PlanStartTime:[],
-            PlanEndTime:[]
+  name:"ProductionSchedule",
+  data(){
+    return {
+      scheduleData:[],
+      optionsPUName:[],
+      optionsProductEquipment:[],
+      ZYTaskTableData:{
+        tableName:"ZYTask",
+        data:[],
+        searchField:{
+          BatchID:"",
+          BrandName:"",
+          PUName:"",
+          EQPCode:"",
+          PlanStartTime:"",
+          PlanEndTime:"",
+          ActBeginTime:"",
+          ActEndTime:"",
+          StartBC:"",
+          EndBC:"",
         }
-    },
-     created(){
-      this.getScheduleTableData()
-      this.onSubmit() //初始化展示效果添加
-    },
-    methods: {
-        onSubmit(){
-            var PlanNum=this.formInline.CurrentBrandNum
-            var api="/api/CUID?tableName=Scheduling&PlanNum="+PlanNum
-            this.axios.get(api).then(res => {
-                var arr=res.data.data.rows
-                this.ydata=arr.map((res) => {
-                    return res.BatchID
-                })
-                this.PlanStartTime=arr.map((res) => {
-                    return new Date(res.PlanBeginTime.replace('-', '/'))
-                })
-                this.PlanEndTime=arr.map((res) => {
-                    return new Date(res.PlanEndTime.replace('-', '/'))
-                })
-                this.drawPic(this.ydata,this.PlanStartTime,this.PlanEndTime)
-        })
-        },
-        drawPic(ydata,planstarttime,planendtime) {
-            var myCharts = echarts.init(document.getElementById('main'));
-            var option = {
-                title: {
-                    text: '排产进度表',
-                    left: 10,
-                    textStyle: {
-                      color: '#666'  //设置title文字颜色
-                  }
-                },
-                legend: {
-                    y: 'top',
-                    data: ['计划完成时间'], //修改的地方1,
-                    textStyle: {
-                      color: '#666' //设置图例文字颜色
-                  }
-                },
-                grid: {
-                    containLabel: true,
-                    left: 20,
-                    bottom:10
-                },
-                xAxis: {
-                    name:'时间',
-                    type: 'time',
-                    axisLine: { lineStyle: { color: '#666' } } //控制x轴坐标文字颜色
-                },
-                yAxis: {
-                    name:'批次',
-                    data:[...ydata],
-                    axisLine: { lineStyle: { color: '#666' } }  //控制y轴坐标文字颜色
-                },
-                tooltip: {
-                    trigger: 'axis',
-                    formatter: function(params) {
-                        var res = params[0].name + "</br>"
-                        var date0 = params[0].data;
-                        var date1 = params[1].data;
-                        date0 = date0.getFullYear() + "-" + (date0.getMonth() + 1) + "-" + (date0.getDate().toString().padStart(2,0))+ "  " + (date0.getHours().toString().padStart(2,0))+':'+(date0.getMinutes().toString().padStart(2,0))+':'+(date0.getSeconds().toString().padStart(2,0));
-                        date1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + (date1.getDate().toString().padStart(2,0))+ "  " + (date1.getHours().toString().padStart(2,0))+':'+(date1.getMinutes().toString().padStart(2,0))+':'+(date1.getSeconds().toString().padStart(2,0));
-                        res += params[0].seriesName + "~" + params[1].seriesName + ":</br>" + date0 + "~" + date1 + "</br>"
-                        return res;
-                    }
-
-                },
-                series: [
-                    {
-                        name: '计划开始时间',
-                        type: 'bar',
-                        stack: 'test1',
-                        itemStyle: {
-                            normal: {
-                                color: 'rgba(0,0,0,0)'
-                            }
-                        },
-                        data:planstarttime,
-                        barMaxWidth: 30,
-                    },
-                    {
-                        name: '计划完成时间',
-                        type: 'bar',
-                        stack: 'test1',
-                        //修改地方2
-                        itemStyle: {
-                            normal: {
-                                color: '#06ACB5'
-                            }
-                        },
-                        data:planendtime,
-                        barMaxWidth:20,
-                    }
-                ]
-            };
-            myCharts.setOption(option);
-        },
-        getScheduleTableData(){ //获取品名
-        var that = this
-        var params = {
-          tableName: "ProductRule",
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res => {
-          if(res.data.code === "200"){
-            that.scheduleTableData = res.data.data.rows
-            that.results = that.scheduleTableData
-          }else{
-            that.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        })
       },
-        handleChangeProductName(queryString){ //左侧模糊查询
-            if(queryString != ""){
-            this.results = this.scheduleTableData.filter((string) =>{
-                return Object.keys(string).some(function(key) {
-                return String(string[key]).toLowerCase().indexOf(queryString) > -1
-                })
-            })
-            }else{
-            this.results = this.scheduleTableData
-            }
-      },
-       clickBrandTag(BrandName,BrandCode){
-        this.BrandActive = BrandName
-        this.BrandCode = BrandCode
-        this.selectBrandNum=[{BrandCodelabel:'',BrandCodevalue:''}]
-        this.formInline.CurrentBrandNum=''
-        this.getBrandCode(BrandName)
-      },
-       getBrandCode(BrandName){ //查询当前品名绑定的工序
-        var that = this
-        var api="/api/CUID?tableName=product_plan&BrandName="+BrandName
-        this.axios.get(api).then(res => {
-          if(res.data.code === "200"){
-           var arr=res.data.data.rows
-           this.selectBrandNum=arr.map((res, index) => {
-               return {BrandCodelabel:res.PlanNum,BrandCodevalue:res.PlanNum}
-           })
-          }else{
-            that.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        })
+      eqTimeLineData:[]
+    }
+  },
+  created(){
+    this.getScheduleTableData()
+    this.getPUNameTableData()
+    this.getEqTableData()
+  },
+  methods: {
+    getScheduleTableData(){ //获取品名
+      var that = this
+      var params = {
+        tableName: "ProductRule",
       }
+      this.axios.get("/api/CUID",{
+        params: params
+      }).then(res => {
+        if(res.data.code === "200"){
+          that.scheduleData = res.data.data.rows
+        }else{
+          that.$message({
+            type: 'info',
+            message: res.data.message
+          });
+        }
+      })
     },
+    getPUNameTableData(){ //获取工序
+      var that = this
+      var params = {
+        tableName: "ProcessUnit",
+      }
+      this.axios.get("/api/CUID",{
+        params: params
+      }).then(res => {
+        if(res.data.code === "200"){
+          that.optionsPUName = res.data.data.rows
+        }else{
+          that.$message({
+            type: 'info',
+            message: res.data.message
+          });
+        }
+      })
+    },
+    getEqTableData(){ //获取设备
+      var that = this
+      var params = {
+        tableName: "ProductEquipment",
+        PUName: this.ZYTaskTableData.searchField.PUName,
+      }
+      this.axios.get("/api/CUID",{
+        params: params
+      }).then(res => {
+        if(res.data.code === "200"){
+          that.optionsProductEquipment = res.data.data.rows
+        }else{
+          that.$message({
+            type: 'info',
+            message: res.data.message
+          });
+        }
+      })
+    },
+    getSelectedEq(){ // 查询绑定设备
+      var params={
+        tableName:this.ZYTaskTableData.tableName,
+        BatchID:this.ZYTaskTableData.searchField.BatchID,
+        BrandName:this.ZYTaskTableData.searchField.BrandName,
+        PUName:this.ZYTaskTableData.searchField.PUName,
+        EQPCode:this.ZYTaskTableData.searchField.EQPCode,
+        PlanStartTime:this.ZYTaskTableData.searchField.PlanStartTime,
+        PlanEndTime:this.ZYTaskTableData.searchField.PlanEndTime,
+        ActBeginTime:this.ZYTaskTableData.searchField.ActBeginTime,
+        ActEndTime:this.ZYTaskTableData.searchField.ActEndTime,
+        StartBC:this.ZYTaskTableData.searchField.StartBC,
+        EndBC:this.ZYTaskTableData.searchField.EndBC
+      }
+      this.axios.get('/api/CUID',{params:params}).then(res => {
+        if(res.data.code === "200"){
+          var data = res.data.data
+          this.ZYTaskTableData.data = data.rows
+          this.ZYTaskTableData.data.forEach(item =>{
+            this.eqTimeLineData.push(
+              {time:item.PlanStartTime,label:"计划开始",StartBC:item.StartBC,EQPName:item.EQPName},
+              {time:item.PlanEndTime,label:"计划结束",EndBC:item.EndBC,EQPName:item.EQPName},
+            )
+          })
+        }
+      },error=>{
+        console.log("请求错误")
+      })
+    },
+    resetSearchField(){
+      this.ZYTaskTableData.searchField = {
+        BatchID:"",
+        BrandName:"",
+        PUName:"",
+        EQPCode:"",
+        PlanStartTime:"",
+        PlanEndTime:"",
+        ActBeginTime:"",
+        ActEndTime:"",
+        StartBC:"",
+        EndBC:"",
+      }
+    }
+  },
 }
 </script>
 <style scoped>
