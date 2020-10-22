@@ -446,7 +446,7 @@ def planschedul():
                     nowtime = datetime.datetime.now().strftime("%Y-%m %M:%S").replace(":","").replace("-","").replace(" ","")
                     pm.BatchID = nowtime + str(BatchNo+1)
                     pm.PlanQuantity = proclass.BatchWeight
-                    pm.Unit = i.get("Unit")
+                    pm.Unit = proclass.Unit
                     pm.BrandCode = i.get("BrandCode")
                     pm.BrandName = i.get("BrandName")
                     # #计算计划开始时间结束时间
@@ -460,7 +460,7 @@ def planschedul():
                     #     hours=end)).strftime("%Y-%m-%d %H:%M:%S")
                     # pm.PlanBeginTime = PlanBeginTime
                     # pm.PlanEndTime = PlanEndTime
-                    pm.BrandType = i.get("BrandType")
+                    pm.BrandType = proclass.BrandType
                     db_session.add(pm)
                     db_session.commit()
             return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
