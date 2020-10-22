@@ -83,7 +83,7 @@
                   <div style="fontSize:18px;fontWeight:700;">备料配置</div>
                   <el-row style="marginTop:24px;">
                     <el-col :span='19'>
-                      <span class="mgr">备料</span>
+                      <el-checkbox v-model="blSelected" style="marginRight:20px;"></el-checkbox>
                       <el-date-picker
                         v-model="blstartTime"
                         value-format='yyyy-MM-dd'
@@ -112,27 +112,9 @@
                     </el-col>
                     <el-col :span='4'>
                       <span class="mgr">批量</span>
-                      <el-tag type='info'>200万粒</el-tag>
+                      <el-tag type='info'>{{BatchWeight}}</el-tag>
                     </el-col>
                     </el-row>
-                    <!-- <el-row style="marginTop:24px;">
-                    <el-col :span='4'>
-                      <span class="mgr">成品量</span>
-                      <el-tag type='info'>2000kg</el-tag>
-                    </el-col>
-                    <el-col :span='4'>
-                      <span class="mgr">取样量</span>
-                      <el-tag type='info'>2000kg</el-tag>
-                    </el-col>
-                    <el-col :span='4'>
-                      <span class="mgr">总料量</span>
-                      <el-tag type='info'>2000kg</el-tag>
-                    </el-col>
-                    <el-col :span='4'>
-                      <span class="mgr">得率</span>
-                      <el-tag type='info'>2000kg</el-tag>
-                    </el-col>
-                  </el-row> -->
               </el-col>
               <el-col v-for='(item,index) in inProcessList' :key='index+1' :span='20'>
                 <el-col v-if='configactive===index+1'>
@@ -251,12 +233,14 @@ var moment=require('moment')
         blstartBc:'早',//备料开始班次
         blendBc:'',//备料结束班次
         blstartTime:'', //备料开始时间
-        blendTime:'', //备料结束时间`
+        blendTime:'', //备料结束时间`,
+        blSelected:false,
         ID:0,
         ctdialogTableVisible:false,//冲突显示
         ctlist:[],//冲突存储
         dialogTableVisible:false, //选择设备显示
         inProcessList:[],//存储工序设备集合
+        BatchWeight:'',
         batchtableconfig:[{prop:'PlanBeginTime',label:"计划开始时间"},{prop:'BatchID',label:'批次号'},{prop:'BrandName',label:'品名'},{prop:'PlanQuantity',label:'计划重量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'批次状态'}],//批次列表
         eqlistableconfig:[{prop:'BatchID',label:"批次号"},{prop:'BrandName',label:'品名名称'},{prop:'PUName',label:'工艺段名称'},{prop:'EQPCode',label:'设备编码'},{prop:'StartTime',label:'批次开始运行时间'},{prop:'EndTime',label:'批次结束运行时间'},{prop:'StartBC',label:'批次开始运行班次'},{prop:'EndBC',label:'批次结束运行班次'},{prop:'WorkTime',label:'设备运行时长'}],//批次列表
         tipstableconfig:[{prop:'BatchID',label:"冲突批次号"},{prop:'BrandName',label:'冲突品名'},{prop:'EQPName',label:'冲突设备名称'},{prop:'EQPCode',label:'冲突设备编码'},{prop:'StartTime',label:'冲突开始运行时间'},{prop:'EndTime',label:'冲突结束运行时间'},{prop:'StartBC',label:'冲突开始运行班次'},{prop:'EndBC',label:'冲突结束运行班次'}],//冲突列表
@@ -290,7 +274,8 @@ var moment=require('moment')
           PUCode: "1038",
           PUName: "备料",
           Seq: 0,
-          eqList:[{      
+          eqList:[{
+            isSelected:this.blSelected,   
             EndBC:this.blendBc,
             EndTime:this.blendTime,
             StartBC:this.blstartBc,
@@ -324,7 +309,6 @@ var moment=require('moment')
             this.axios.get("/api/batchequimentselect",{
                 params: params
             }).then(res => {
-              console.log(res)
                 if(res.data.code === "200"){
                 function compare(property){
                     return function(a,b){
@@ -466,6 +450,19 @@ var moment=require('moment')
             console.log("请求错误")
           })
       },
+      getBatchWeight(BrandCode,BrandName){ //获取品名表的BatchWeight
+        var params={
+          tableName:'ProductRule'
+        }
+        this.axios.get('/api/CUID',{params:params}).then((res) => {
+          var arr=res.data.data.rows
+          arr.forEach((item) => {
+            if(item.BrandName===BrandName){
+             this.BatchWeight=item.BatchWeight+item.Unit
+            }
+          })
+        })
+      },
       batchHandleSizeChange(limit){ //批次计划 每页条数切换
         this.batchTableData.limit = limit
         this.getPlanManager()
@@ -477,6 +474,7 @@ var moment=require('moment')
        xfTabCurrentChange(e){ //下发批次计划 点击显示当前的tab行显示详细信息
         this.getEq(e.BatchID,e.BrandCode)
         this.ID=e.ID
+        this.getBatchWeight(e.BrandCode,e.BrandName)
         this.$refs.xfmultipleTable.clearSelection();
         this.$refs.xfmultipleTable.toggleRowSelection(e)
       },
