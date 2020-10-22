@@ -461,6 +461,7 @@ def planschedul():
                     # pm.PlanBeginTime = PlanBeginTime
                     # pm.PlanEndTime = PlanEndTime
                     pm.BrandType = proclass.BrandType
+                    pm.PlanStatus = Global.PlanStatus.Confirm.value
                     db_session.add(pm)
                     db_session.commit()
             return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
