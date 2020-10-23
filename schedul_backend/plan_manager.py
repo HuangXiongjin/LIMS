@@ -190,6 +190,7 @@ def makePlan():
                     # ocalss.PlanBeginTime = PlanBeginTime
                     # ocalss.PlanEndTime = PlanEndTime
                     # ocalss.Unit = Unit
+                    ocalss.PlanStatus = Global.PlanStatus.Confirm.value
                     db_session.commit()
                     return json.dumps({"code": "200", "message": "修改成功！"})
                 else:
@@ -214,7 +215,7 @@ def checkPlanManager():
             ID = data.get("ID")
             oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
             oclassplan.PlanStatus = PlanStatus
-            oclassplan = Description
+            oclassplan.Description = Description
             db_session.commit()
             return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:

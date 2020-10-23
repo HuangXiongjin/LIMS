@@ -464,6 +464,12 @@ def planschedul():
                     pm.PlanStatus = Global.PlanStatus.Confirm.value
                     db_session.add(pm)
                     db_session.commit()
+                PlanNums = i.get("PlanNum").split(",")
+                for pn in PlanNums:
+                    oc = db_session.query(product_plan).filter(product_plan.PlanNum == pn).first()
+                    if oc:
+                        oc.PlanStatus = "已分批"
+                        db_session.commit()
             return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
