@@ -29,6 +29,11 @@
                         type="primary"
                          v-if="scope.row.PlanStatus==='待审核'"
                         @click="checkNopass(scope.$index, scope.row)">不通过</el-button>
+                      <el-button
+                        size="mini"
+                        v-if="scope.row.PlanStatus==='审核未通过'"
+                        @click="searchWhyNopass(scope.$index, scope.row)"
+                       >未通过原因</el-button>
                     </template>
                   </el-table-column>
               </el-table>
@@ -268,7 +273,16 @@ var moment=require('moment')
     mounted(){
     },
     methods:{
-      judgeConflict(EQPCode,time,Bc){
+      searchWhyNopass(index,row){
+         this.$alert(row.Description, '原因', {
+          confirmButtonText: '知道了',
+          callback: action => {
+            
+          }
+        });
+
+      },
+      judgeConflict(EQPCode,time,Bc){ //判断冲突
        var params={
          EQPCode:EQPCode,
          DateTime:moment(time).format('YYYY-MM-DD'),
