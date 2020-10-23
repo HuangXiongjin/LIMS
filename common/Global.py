@@ -20,9 +20,9 @@ class PlanStatus(Enum):
     Configured = "待配置"
     WaitRealse = "待下发"
     Realse = "已下发"
+    Recall = "撤回"
     FSWMS = "已发送投料计划"
     FSMWMS = "已发送物料明细"
-    Recall = "撤回"
     RUN = "执行"
     FINISH = "已完成"
 

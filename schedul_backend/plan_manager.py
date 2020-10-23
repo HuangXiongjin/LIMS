@@ -243,7 +243,7 @@ def createZYPlanZYtask():
                     oclassplan.PlanStatus = Global.PlanStatus.Realse.value
                     db_session.commit()
                     return json.dumps({"code": "200", "message": "下发成功！！"})
-                elif PlanStatus == "":
+                elif PlanStatus == "撤回":
                     oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
                     oclassplan.PlanStatus = Global.PlanStatus.Recall.value
                     db_session.commit()
