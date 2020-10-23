@@ -48,8 +48,15 @@
             </div>
         </el-col>
        </el-row>
+       
        <el-row v-if='steps==1'>
-          <el-col :span='24' class="platformContainer">
+         <div style="margin:20px 0">
+          <el-radio-group v-model="radio3" size="small" @change="setStatus">
+            <el-radio-button label="待配置"></el-radio-button>
+            <el-radio-button label="撤回"></el-radio-button>
+          </el-radio-group>
+        </div>
+          <el-col :span='24' class="platformContainer" v-if="radio3==='待配置'">
            <div style="height:40px;fontSize:16px;fontWeight:700;">待配置列表</div>
               <el-table
                   :data="xfTableData.data"
@@ -169,7 +176,267 @@
               </el-row>
               <span slot="footer" class="dialog-footer">
               <el-button @click="dialogTableVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveSelectedEq">确 定</el-button>
+                <el-button type="primary" @click="saveSelectedEq">保存</el-button>
+              </span>
+              <el-dialog title="冲突信息" :visible.sync="ctdialogTableVisible" width='80%' :modal=false>
+                  <el-table :data="ctlist">
+                   <el-table-column v-for="item in tipstableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  </el-table>
+              </el-dialog>
+            </el-dialog>
+        </el-col>
+
+        <el-col :span='24' class="platformContainer" v-if="radio3==='撤回'">
+           <div style="height:40px;fontSize:16px;fontWeight:700;">撤回列表</div>
+              <el-table
+                  :data="chTableData.data"
+                  highlight-current-row
+                  size='small'
+                  border
+                  ref="chmultipleTable"
+                  @row-click="chTabCurrentChange"
+                  style="width: 100%">
+                  <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <el-button
+                        size="mini"
+                        type='primary'
+                        @click="Eqconfig(scope.$index, scope.row)">生产配置</el-button>
+                    </template>
+                  </el-table-column>
+              </el-table>
+              <div class="paginationClass">
+                  <el-pagination background  layout="total,prev, pager, next, jumper"
+                  :total="chTableData.total"
+                  :current-page="chTableData.offset"
+                  :page-size="chTableData.limit"
+                  @size-change="chHandleSizeChange"
+                  @current-change="chHandleCurrentChange">
+                  </el-pagination>
+            </div>
+            <el-dialog title="工艺段配置计划" :visible.sync="dialogTableVisible" width='95%'>
+              <el-row :gutter='20'>
+              <el-col :span='4'>
+                  <el-steps :active="configactive" direction="vertical" finish-status="wait" space='100px'>
+                    <el-step title="基础配置" @click.native="Activeconfig(0)"></el-step>
+                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName" @click.native="Activeconfig(index+1)"></el-step>
+                  </el-steps>
+              </el-col>
+              <el-col :span='20' v-if='configactive===0'>
+                  <div style="fontSize:18px;fontWeight:700;">备料配置</div>
+                  <el-row style="marginTop:24px;">
+                    <el-col :span='19'>
+                      <el-checkbox v-model="blSelected" style="marginRight:20px;"></el-checkbox>
+                      <el-date-picker
+                        v-model="blstartTime"
+                        value-format='yyyy-MM-dd'
+                        type="date"
+                        size='small'
+                        placeholder="选择日期">
+                      </el-date-picker>
+                      <el-radio-group v-model="blstartBc" size="small">
+                          <el-radio-button label="早"></el-radio-button>
+                          <el-radio-button label="中"></el-radio-button>
+                          <el-radio-button label="晚"></el-radio-button>
+                      </el-radio-group>
+                      <span style="margin:0 30px;">至</span>
+                            <el-date-picker
+                              v-model="blendTime"
+                              value-format='yyyy-MM-dd'
+                              type="date"
+                              size='small'
+                              placeholder="选择日期">
+                            </el-date-picker>
+                            <el-radio-group v-model="blendBc" size="small">
+                              <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="中"></el-radio-button>
+                              <el-radio-button label="晚"></el-radio-button>
+                            </el-radio-group>
+                    </el-col>
+                    <el-col :span='4'>
+                      <span class="mgr">批量</span>
+                      <el-tag type='info'>{{BatchWeight}}</el-tag>
+                    </el-col>
+                    </el-row>
+              </el-col>
+              <el-col v-for='(item,index) in inProcessList' :key='index+1' :span='20'>
+                <el-col v-if='configactive===index+1'>
+                    <div style="fontSize:18px;fontWeight:700;">{{item.PUName}}配置</div>
+                    <el-row style="marginTop:24px;">
+                      <el-col :span='24' style="marginTop:18px;">
+                        <el-row>
+                          <el-col :span='24'  v-for="(item,index) in inProcessList[index].eqList" :key='index' class="marginBottom">
+                            <el-checkbox v-model="item.isSelected"></el-checkbox>
+                            <span style="margin:0 30px;">{{item.EQPCode}}</span>
+                            <span style="margin:0 30px;">{{item.EQPName}}</span>
+                            <el-date-picker
+                              v-model="item.StartTime"
+                              value-format='yyyy-MM-dd'
+                              type="date"
+                              size='small'
+                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC)"
+                              placeholder="选择日期">
+                            </el-date-picker>
+                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC)'>
+                              <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="中"></el-radio-button>
+                              <el-radio-button label="晚"></el-radio-button>
+                            </el-radio-group>
+                            <span style="margin:0 30px;">至</span>
+                            <el-date-picker
+                              v-model="item.EndTime"
+                              value-format='yyyy-MM-dd'
+                              type="date"
+                              size='small'
+                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)"
+                              placeholder="选择日期">
+                            </el-date-picker>
+                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)">
+                              <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="中"></el-radio-button>
+                              <el-radio-button label="晚"></el-radio-button>
+                            </el-radio-group>
+                          </el-col>
+                        </el-row>
+                      </el-col>
+                    </el-row>
+                </el-col>
+              </el-col>
+              </el-row>
+              <span slot="footer" class="dialog-footer">
+              <el-button @click="dialogTableVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveSelectedEq">保存</el-button>
+              </span>
+              <el-dialog title="冲突信息" :visible.sync="ctdialogTableVisible" width='80%' :modal=false>
+                  <el-table :data="ctlist">
+                   <el-table-column v-for="item in tipstableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  </el-table>
+              </el-dialog>
+            </el-dialog>
+        </el-col>
+
+        <el-col :span='24' class="platformContainer">
+           <div style="height:40px;fontSize:16px;fontWeight:700;">配置更改列表</div>
+              <el-table
+                  :data="eqlistTableData.data"
+                  highlight-current-row
+                  size='small'
+                  border
+                  ref="xfmultipleTable"
+                  @row-click="xfTabCurrentChange"
+                  style="width: 100%">
+                  <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <el-button
+                        size="mini"
+                        type='primary'
+                        @click="Eqconfig(scope.$index, scope.row)">生产配置</el-button>
+                    </template>
+                  </el-table-column>
+              </el-table>
+              <div class="paginationClass">
+                  <el-pagination background  layout="total,prev, pager, next, jumper"
+                  :total="xfTableData.total"
+                  :current-page="xfTableData.offset"
+                  :page-size="xfTableData.limit"
+                  @size-change="xfHandleSizeChange"
+                  @current-change="xfHandleCurrentChange">
+                  </el-pagination>
+            </div>
+            <el-dialog title="工艺段配置计划" :visible.sync="dialogTableVisible" width='95%'>
+              <el-row :gutter='20'>
+              <el-col :span='4'>
+                  <el-steps :active="configactive" direction="vertical" finish-status="wait" space='100px'>
+                    <el-step title="基础配置" @click.native="Activeconfig(0)"></el-step>
+                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName" @click.native="Activeconfig(index+1)"></el-step>
+                  </el-steps>
+              </el-col>
+              <el-col :span='20' v-if='configactive===0'>
+                  <div style="fontSize:18px;fontWeight:700;">备料配置</div>
+                  <el-row style="marginTop:24px;">
+                    <el-col :span='19'>
+                      <el-checkbox v-model="blSelected" style="marginRight:20px;"></el-checkbox>
+                      <el-date-picker
+                        v-model="blstartTime"
+                        value-format='yyyy-MM-dd'
+                        type="date"
+                        size='small'
+                        placeholder="选择日期">
+                      </el-date-picker>
+                      <el-radio-group v-model="blstartBc" size="small">
+                          <el-radio-button label="早"></el-radio-button>
+                          <el-radio-button label="中"></el-radio-button>
+                          <el-radio-button label="晚"></el-radio-button>
+                      </el-radio-group>
+                      <span style="margin:0 30px;">至</span>
+                            <el-date-picker
+                              v-model="blendTime"
+                              value-format='yyyy-MM-dd'
+                              type="date"
+                              size='small'
+                              placeholder="选择日期">
+                            </el-date-picker>
+                            <el-radio-group v-model="blendBc" size="small">
+                              <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="中"></el-radio-button>
+                              <el-radio-button label="晚"></el-radio-button>
+                            </el-radio-group>
+                    </el-col>
+                    <el-col :span='4'>
+                      <span class="mgr">批量</span>
+                      <el-tag type='info'>{{BatchWeight}}</el-tag>
+                    </el-col>
+                    </el-row>
+              </el-col>
+              <el-col v-for='(item,index) in inProcessList' :key='index+1' :span='20'>
+                <el-col v-if='configactive===index+1'>
+                    <div style="fontSize:18px;fontWeight:700;">{{item.PUName}}配置</div>
+                    <el-row style="marginTop:24px;">
+                      <el-col :span='24' style="marginTop:18px;">
+                        <el-row>
+                          <el-col :span='24'  v-for="(item,index) in inProcessList[index].eqList" :key='index' class="marginBottom">
+                            <el-checkbox v-model="item.isSelected"></el-checkbox>
+                            <span style="margin:0 30px;">{{item.EQPCode}}</span>
+                            <span style="margin:0 30px;">{{item.EQPName}}</span>
+                            <el-date-picker
+                              v-model="item.StartTime"
+                              value-format='yyyy-MM-dd'
+                              type="date"
+                              size='small'
+                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC)"
+                              placeholder="选择日期">
+                            </el-date-picker>
+                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC)'>
+                              <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="中"></el-radio-button>
+                              <el-radio-button label="晚"></el-radio-button>
+                            </el-radio-group>
+                            <span style="margin:0 30px;">至</span>
+                            <el-date-picker
+                              v-model="item.EndTime"
+                              value-format='yyyy-MM-dd'
+                              type="date"
+                              size='small'
+                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)"
+                              placeholder="选择日期">
+                            </el-date-picker>
+                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)">
+                              <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="中"></el-radio-button>
+                              <el-radio-button label="晚"></el-radio-button>
+                            </el-radio-group>
+                          </el-col>
+                        </el-row>
+                      </el-col>
+                    </el-row>
+                </el-col>
+              </el-col>
+              </el-row>
+              <span slot="footer" class="dialog-footer">
+              <el-button @click="dialogTableVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveSelectedEq">保存</el-button>
               </span>
               <el-dialog title="冲突信息" :visible.sync="ctdialogTableVisible" width='80%' :modal=false>
                   <el-table :data="ctlist">
@@ -181,7 +448,7 @@
        </el-row>
        <el-row v-if="steps===2">
            <el-col :span='24' class="platformContainer">
-           <div style="height:40px;fontSize:16px;fontWeight:700;">执行列表</div>
+           <div style="height:40px;fontSize:16px;fontWeight:700;">待下发列表</div>
               <el-table
                   :data="eqlistTableData.data"
                   highlight-current-row
@@ -225,6 +492,7 @@ var moment=require('moment')
     data(){
       return {
         steps:0,
+        radio3:'待配置',
         configactive:0,
         batchTableData:{ //批次列表
             tableName:"PlanManager",
@@ -233,19 +501,26 @@ var moment=require('moment')
             offset: 1,//当前处于多少页
             total: 0,//总的多少页
         },
-        xfTableData:{ //批次列表
+        xfTableData:{ //待配置批次列表
             tableName:"PlanManager",
             data:[],
-            limit: 10,//当前显示多少条
-            offset: 1,//当前处于多少页
-            total: 0,//总的多少页
+            limit: 10,
+            offset: 1,
+            total: 0,
+        },
+        chTableData:{ //撤回批次列表
+            tableName:"PlanManager",
+            data:[],
+            limit: 10,
+            offset: 1,
+            total: 0,
         },
         eqlistTableData:{ //下发批次列表
             tableName:"PlanManager",
             data:[],
-            limit: 10,//当前显示多少条
-            offset: 1,//当前处于多少页
-            total: 0,//总的多少页
+            limit: 10,
+            offset: 1,
+            total: 0,
         },
         BrandCode:'',
         BatchID:'',
@@ -273,6 +548,9 @@ var moment=require('moment')
     mounted(){
     },
     methods:{
+      setStatus(e){
+        this.radio3=e
+      },
       searchWhyNopass(index,row){
          this.$alert(row.Description, '原因', {
           confirmButtonText: '知道了',
@@ -324,6 +602,7 @@ var moment=require('moment')
               message:res.data.message
             })
             this.getConfigbatch()
+            this.getSelectedEq()
           }else{
             this.$message({
               type:'error',
@@ -354,7 +633,7 @@ var moment=require('moment')
       getSelectedEq(){    //  查询完成设备选择的批次信息
         var params={
           tableName:this.eqlistTableData.tableName,
-          PlanStatus:'已选设备',
+          PlanStatus:'待下发',
           offset:this.eqlistTableData.offset-1,
           limit:this.eqlistTableData.limit,
         }
@@ -446,7 +725,7 @@ var moment=require('moment')
           type: 'warning'
         }).then(() => {
            var params={
-            PlanStatus:'待下发',
+            PlanStatus:'待配置',
             Describtion:'',
             ID:id
           }
@@ -507,6 +786,8 @@ var moment=require('moment')
           this.getPlanManager()
         }else if(this.steps===1){
           this.getConfigbatch()
+          this.chConfigbatch()
+          this.getSelectedEq()
         }else if(this.steps===2){
             this.getSelectedEq()
         }else{
@@ -529,18 +810,35 @@ var moment=require('moment')
             console.log("请求错误")
           })
       },
-      getConfigbatch(){ //获取下发列表配置
+      getConfigbatch(){ //待配置列表配置
          var params={
           tableName:'PlanManager',
           offset:this.xfTableData.offset-1,
           limit:this.xfTableData.limit,
-          PlanStatus:'待下发'
+          PlanStatus:'待配置'
         }
         this.axios.get('/api/CUID',{params:params}).then(res => {
            if(res.data.code === "200"){
             var data = res.data.data
             this.xfTableData.data = data.rows
             this.xfTableData.total = data.total
+          }
+          },err=>{
+            console.log("请求错误")
+          })
+      },
+      chConfigbatch(){ //撤回列表配置
+         var params={
+          tableName:'PlanManager',
+          offset:this.chTableData.offset-1,
+          limit:this.chTableData.limit,
+          PlanStatus:'撤回'
+        }
+        this.axios.get('/api/CUID',{params:params}).then(res => {
+           if(res.data.code === "200"){
+            var data = res.data.data
+            this.chTableData.data = data.rows
+            this.chTableData.total = data.total
           }
           },err=>{
             console.log("请求错误")
@@ -574,6 +872,13 @@ var moment=require('moment')
         this.$refs.xfmultipleTable.clearSelection();
         this.$refs.xfmultipleTable.toggleRowSelection(e)
       },
+       chTabCurrentChange(e){ //下发批次计划 点击显示当前的tab行显示详细信息
+        this.getEq(e.BatchID,e.BrandCode)
+        this.ID=e.ID
+        this.getBatchWeight(e.BrandCode,e.BrandName)
+        this.$refs.chmultipleTable.clearSelection();
+        this.$refs.chmultipleTable.toggleRowSelection(e)
+      },
       xfHandleSizeChange(limit){ //下发批次计划 每页条数切换
         this.xfTableData.limit = limit
         this.getConfigbatch()
@@ -581,6 +886,15 @@ var moment=require('moment')
        xfHandleCurrentChange(offset) { //下发批次计划 页码切换
         this.xfTableData.offset = offset
         this.getConfigbatch()
+      },
+      chHandleSizeChange(limit){ //下发批次计划 每页条数切换
+        this.chTableData.limit = limit
+        this.chConfigbatch()
+      },
+       chHandleCurrentChange(offset) { //下发批次计划 页码切换
+        this.chTableData.offset = offset
+        this.chConfigbatch()
+       
       },
       eqlistHandleSizeChange(limit){ //已选设备 每页条数切换
         this.eqlistTableData.limit = limit

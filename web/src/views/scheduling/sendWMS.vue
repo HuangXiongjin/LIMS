@@ -1,45 +1,155 @@
 <template>
   <el-row>
     <el-col :span="24">
-      <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-18">发送投料段计划到WMS</span>
-        <span class="text-size-12 color-grayblack">要发送的计划为已下发状态的计划</span>
-      </div>
-      <div class="platformContainer">
-        <el-form :inline="true">
-          <el-form-item>
-            <el-button type="primary" size="small" @click="sendToWMS">发送计划到WMS</el-button>
-          </el-form-item>
-          <el-form-item class="floatRight">
-            <el-radio-group v-model="radioGroup" size="small" @change="Selectstatus">
-              <el-radio-button v-for="(item,index) in status" :label="item.name" :key="index"></el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-        </el-form>
-        <el-table :data="PlanManagerTableData.data" border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
-          <el-table-column type="selection"></el-table-column>
-          <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
-          <el-table-column prop="BatchID" label="批次号"></el-table-column>
-          <el-table-column prop="PlanQuantity" label="批次计划重量"></el-table-column>
-          <el-table-column prop="Unit" label="单位"></el-table-column>
-          <el-table-column prop="BrandName" label="品名"></el-table-column>
-          <el-table-column prop="BrandType" label="产品类型"></el-table-column>
-          <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
-          <el-table-column prop="PlanBeginTime" label="计划开始时间"></el-table-column>
-          <el-table-column prop="PlanEndTime" label="计划完成时间"></el-table-column>
-          <el-table-column prop="Describtion" label="描述"></el-table-column>
-        </el-table>
-        <div class="paginationClass">
-          <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
-           :total="PlanManagerTableData.total"
-           :current-page="PlanManagerTableData.offset"
-           :page-sizes="[5,10,20]"
-           :page-size="PlanManagerTableData.limit"
-           @size-change="handleSizeChangePlanManager"
-           @current-change="handleCurrentChangePlanManager">
-          </el-pagination>
-        </div>
-      </div>
+      <el-steps :active="steps" finish-status="wait" align-center class="marginBottom">
+        <el-step title="发送投料计划到WMS" @click.native="toStep(0)" class="cursor-pointer"></el-step>
+        <el-step title="发送物料明细到WMS" @click.native="toStep(1)" class="cursor-pointer"></el-step>
+      </el-steps>
+      <el-row :gutter="15" v-if="steps == 0">
+        <el-col :span="24">
+          <div class="page-title">
+            <span class="text-size-16 marginLeft">选择批计划，给WMS发送此计划的投料计划</span>
+          </div>
+          <div class="platformContainer">
+            <el-form :inline="true">
+              <el-form-item>
+                <el-button type="primary" size="small" @click="sendPlan">发送投料计划</el-button>
+              </el-form-item>
+              <el-form-item class="floatRight">
+                <el-radio-group v-model="sendPlanPlanStatus" size="small" @change="getPlanManagerTableData">
+                  <el-radio-button label="待发送"></el-radio-button>
+                  <el-radio-button label="已发送"></el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-form>
+            <el-table :data="PlanManagerTableData.data" border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
+              <el-table-column type="selection"></el-table-column>
+              <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
+              <el-table-column prop="BatchID" label="批次号"></el-table-column>
+              <el-table-column prop="BrandCode" label="品名编码"></el-table-column>
+              <el-table-column prop="BrandName" label="品名"></el-table-column>
+              <el-table-column prop="Unit" label="单位"></el-table-column>
+              <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
+            </el-table>
+            <div class="paginationClass">
+              <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
+               :total="PlanManagerTableData.total"
+               :current-page="PlanManagerTableData.offset"
+               :page-sizes="[5,10,20]"
+               :page-size="PlanManagerTableData.limit"
+               @size-change="handleSizeChangePlanManager"
+               @current-change="handleCurrentChangePlanManager">
+              </el-pagination>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+      <el-row :gutter="15" v-if="steps == 1">
+        <el-col :span="24">
+          <div class="page-title">
+            <span class="text-size-16 marginLeft">选择计划，先下方录入物料明细</span>
+          </div>
+          <div class="platformContainer">
+            <el-form :inline="true">
+              <el-form-item class="floatRight">
+                <el-radio-group v-model="sendPlanPlanStatus" size="small" @change="getPlanManagerTableData">
+                  <el-radio-button label="待发送"></el-radio-button>
+                  <el-radio-button label="已发送"></el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+            </el-form>
+            <el-table :data="PlanManagerTableData.data" border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
+              <el-table-column type="selection"></el-table-column>
+              <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
+              <el-table-column prop="BatchID" label="批次号"></el-table-column>
+              <el-table-column prop="BrandCode" label="品名编码"></el-table-column>
+              <el-table-column prop="BrandName" label="品名"></el-table-column>
+              <el-table-column prop="Unit" label="单位"></el-table-column>
+              <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
+            </el-table>
+            <div class="paginationClass">
+              <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
+               :total="PlanManagerTableData.total"
+               :current-page="PlanManagerTableData.offset"
+               :page-sizes="[5,10,20]"
+               :page-size="PlanManagerTableData.limit"
+               @size-change="handleSizeChangePlanManager"
+               @current-change="handleCurrentChangePlanManager">
+              </el-pagination>
+            </div>
+          </div>
+          <div class="platformContainer">
+            <el-form :inline="true">
+              <el-form-item>
+                <el-button type="primary" size="small" @click="addMaterialForm">录入物料</el-button>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" size="small" @click="sendMaterialInfo">发送物料明细</el-button>
+              </el-form-item>
+            </el-form>
+            <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial" @selection-change="handleMaterialSelectionChange" @row-click="handleMaterialRowClick">
+              <el-table-column type="selection"></el-table-column>
+              <el-table-column prop="BatchID" label="批次号"></el-table-column>
+              <el-table-column prop="BrandName" label="品名"></el-table-column>
+              <el-table-column prop="MATName" label="物料名称"></el-table-column>
+              <el-table-column prop="BucketNum" label="桶号"></el-table-column>
+              <el-table-column prop="BucketWeight" label="重量"></el-table-column>
+              <el-table-column prop="Unit" label="单位"></el-table-column>
+              <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
+              <el-table-column prop="EQPName" label="设备名称"></el-table-column>
+              <el-table-column prop="FeedingSeq" label="投料顺序"></el-table-column>
+              <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
+              <el-table-column prop="SendFlag" label="发送WMS标识"></el-table-column>
+              <el-table-column label="操作" fixed="right" width="150">
+                <template slot-scope="scope">
+                  <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)">编辑</el-button>
+                  <el-button size="mini" type="danger" @click="DeleteMaterial(scope.$index, scope.row)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-dialog :title="MaterialTableData.dialogTitle" :visible.sync="MaterialTableData.dialogVisible" width="40%" :append-to-body="true" v-if="MaterialTableData.dialogVisible">
+              <el-form :model="MaterialTableData.formField" label-width="110px">
+                <el-form-item label="批次号">
+                  <el-input v-model="PlanManagerTableData.multipleSelection[0].BatchID" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="品名">
+                  <el-input v-model="PlanManagerTableData.multipleSelection[0].BrandName" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="物料名称">
+                  <el-input v-model="MaterialTableData.formField.MATName"></el-input>
+                </el-form-item>
+                <el-form-item label="桶号">
+                  <el-input v-model="MaterialTableData.formField.BucketNum"></el-input>
+                </el-form-item>
+                <el-form-item label="重量">
+                  <el-input v-model="MaterialTableData.formField.BucketWeight"></el-input>
+                </el-form-item>
+                <el-form-item label="单位">
+                  <el-input v-model="MaterialTableData.formField.Unit"></el-input>
+                </el-form-item>
+                <el-form-item label="桶/托盘标识">
+                  <el-select v-model="MaterialTableData.formField.Flag" placeholder="请选择">
+                    <el-option label="桶" value="桶"></el-option>
+                    <el-option label="托盘" value="托盘"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="选择投料设备">
+                  <el-select v-model="MaterialTableData.formField.EQPCode" placeholder="请选择">
+                    <el-option v-for="(item,index) in TLEQList" :key="index" :label="item.EQPCode+'-'+item.EQPName" :value="item.EQPCode"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="投料顺序">
+                  <el-input v-model="MaterialTableData.formField.FeedingSeq"></el-input>
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="MaterialTableData.dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveMaterial">保 存</el-button>
+              </span>
+            </el-dialog>
+          </div>
+        </el-col>
+      </el-row>
     </el-col>
   </el-row>
 </template>
@@ -49,6 +159,8 @@
     name: "sendWMS",
     data(){
       return{
+        steps:0,
+        sendPlanPlanStatus:"待发送",
         PlanManagerTableData:{
           data:[],
           limit: 5,
@@ -56,29 +168,52 @@
           total: 0,
           multipleSelection: [],
         },
-        status:[
-          {name:"待发送"},
-          {name:"已发送"},
-        ],
-        radioGroup:"待发送"
+        MaterialTableData:{
+          data:[],
+          multipleSelection: [],
+          dialogVisible:false,
+          dialogTitle:"",
+          formField:{
+            ID:"",
+            MATName:"",
+            BucketNum:"",
+            BucketWeight:"",
+            Unit:"",
+            Flag:"",
+            EQPCode:"",
+            EQPName:"",
+            FeedingSeq:"",
+          },
+        },
+        TLEQList:[],
       }
     },
     mounted(){
       this.getPlanManagerTableData()
     },
     methods:{
-      //批次计划
+      toStep(index){
+        this.steps = index
+        this.sendPlanPlanStatus = "待发送"
+        this.getPlanManagerTableData()
+        this.PlanManagerTableData.multipleSelection = []
+      },
+      //选择批计划
       getPlanManagerTableData(){
         var that = this
-        var fieldvalue = ""
-        if(this.radioGroup === "待发送"){
-          fieldvalue = "已下发"
-        }else if(this.radioGroup === "已发送"){
-          fieldvalue = "已发送投料计划"
+        var PlanStatus = ""
+        if(this.sendPlanPlanStatus === "待发送"){
+          PlanStatus = "已下发"
+        }else if(this.sendPlanPlanStatus === "已发送"){
+          if(this.steps == 0){
+            PlanStatus = "已发送投料计划"
+          }else if(this.steps == 1){
+            PlanStatus = "已发送物料明细"
+          }
         }
         var params = {
           tableName: "PlanManager",
-          PlanStatus:fieldvalue,
+          PlanStatus:PlanStatus,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }
@@ -108,20 +243,205 @@
         this.PlanManagerTableData.multipleSelection = row
       },
       handleRowClickPlanManager(row){
+        this.$refs.multipleTablePlanManager.clearSelection()
         this.$refs.multipleTablePlanManager.toggleRowSelection(row)
+        this.getMaterialTableData()
       },
-      Selectstatus(){
-        this.getPlanManagerTableData()
+      //查询物料明细-录入
+      getMaterialTableData(){
+        var that = this
+        var params = {
+          tableName: "BatchMaterialInfo",
+          BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.MaterialTableData.data = res.data.data.rows
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
       },
-      sendToWMS(){
-        if(this.PlanManagerTableData.multipleSelection.length > 0){
-          var mulId = []
-          var params = {}
-          this.PlanManagerTableData.multipleSelection.forEach(item =>{
-            mulId.push({id:item.ID});
+      handleMaterialSelectionChange(row){
+        this.MaterialTableData.multipleSelection = row
+      },
+      handleMaterialRowClick(row){
+        this.$refs.multipleTableMaterial.toggleRowSelection(row)
+      },
+      addMaterialForm(){
+        if(this.PlanManagerTableData.multipleSelection.length == 1){
+          this.MaterialTableData.dialogVisible = true
+          this.MaterialTableData.dialogTitle = "物料明细录入"
+          this.getTiQuEquipment()
+        }else{
+          this.$message({
+            type: 'info',
+            message: "请选择物料需绑定的一条批计划"
+          });
+        }
+      },
+      getTiQuEquipment(){
+        this.TLEQList = []
+        var params = {
+          ID:this.PlanManagerTableData.multipleSelection[0].ID,
+        }
+        this.axios.get("/api/selectTiQuEquipment",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            this.TLEQList = res.data.data
+          }else{
+            this.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
+      EditMaterial(index,row){
+        this.MaterialTableData.dialogVisible = true
+        this.MaterialTableData.dialogTitle = "编辑"
+        this.getTiQuEquipment()
+        this.MaterialTableData.formField = {
+          ID:row.ID,
+          BrandCode:row.BrandCode,
+          BatchID:row.BatchID,
+          MATName:row.MATName,
+          BucketNum:row.BucketNum,
+          BucketWeight:row.BucketWeight,
+          Unit:row.Unit,
+          Flag:row.Flag,
+          EQPCode:row.EQPCode,
+          FeedingSeq:row.FeedingSeq,
+        }
+      },
+      DeleteMaterial(index,row){
+        var params = {tableName:"BatchMaterialInfo"}
+        var mulId = []
+        mulId.push({
+          id:row.ID
+        })
+        params.delete_data = JSON.stringify(mulId)
+        this.$confirm('确定删除所选记录？', '提示', {
+          distinguishCancelAndClose:true,
+          type: 'warning'
+        }).then(()  => {
+          this.axios.delete("/api/CUID",{
+            params: params
+          }).then(res =>{
+            if(res.data.code === "200"){
+              this.$message({
+                type: 'success',
+                message: res.data.message
+              });
+            }
+            this.getMaterialTableData()
+          },res =>{
+            console.log("请求错误")
           })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
+      saveMaterial(){
+        if(this.MaterialTableData.dialogTitle === "物料明细录入"){
+          if(this.MaterialTableData.formField.EQPCode){
+            this.TLEQList.forEach(item =>{
+              if(item.EQPCode === this.MaterialTableData.formField.EQPCode){
+                this.MaterialTableData.formField.EQPName = item.EQPName
+              }
+            })
+          }
+          var params = {
+            tableName:"BatchMaterialInfo",
+            BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
+            BrandName:this.PlanManagerTableData.multipleSelection[0].BrandName,
+            BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
+            MATName:this.MaterialTableData.formField.MATName,
+            BucketNum:this.MaterialTableData.formField.BucketNum,
+            BucketWeight:this.MaterialTableData.formField.BucketWeight,
+            Unit:this.MaterialTableData.formField.Unit,
+            Flag:this.MaterialTableData.formField.Flag,
+            EQPCode:this.MaterialTableData.formField.EQPCode,
+            EQPName:this.MaterialTableData.formField.EQPName,
+            FeedingSeq:this.MaterialTableData.formField.FeedingSeq,
+            SendFlag:"待发送",
+          }
+          this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
+            if(res.data.code === "200"){
+              this.$message({
+                type: 'success',
+                message: res.data.message
+              });
+              this.MaterialTableData.dialogVisible = false
+              this.getMaterialTableData()
+            }else{
+              this.$message({
+                type: 'info',
+                message: res.data.message
+              });
+            }
+          },res =>{
+            console.log("请求错误")
+          })
+        }else if(this.MaterialTableData.dialogTitle === "编辑"){
+          if(this.MaterialTableData.formField.EQPCode){
+            this.TLEQList.forEach(item =>{
+              if(item.EQPCode === this.MaterialTableData.formField.EQPCode){
+                this.MaterialTableData.formField.EQPName = item.EQPName
+              }
+            })
+          }
+          var params = {
+            tableName:"BatchMaterialInfo",
+            ID:this.MaterialTableData.formField.ID,
+            BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
+            BrandName:this.PlanManagerTableData.multipleSelection[0].BrandName,
+            BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
+            MATName:this.MaterialTableData.formField.MATName,
+            BucketNum:this.MaterialTableData.formField.BucketNum,
+            BucketWeight:this.MaterialTableData.formField.BucketWeight,
+            Unit:this.MaterialTableData.formField.Unit,
+            Flag:this.MaterialTableData.formField.Flag,
+            EQPCode:this.MaterialTableData.formField.EQPCode,
+            EQPName:this.MaterialTableData.formField.EQPName,
+            FeedingSeq:this.MaterialTableData.formField.FeedingSeq
+          }
+          this.axios.put("/api/CUID",this.qs.stringify(params)).then(res =>{
+            if(res.data.code === "200"){
+              this.$message({
+                type: 'success',
+                message: res.data.message
+              });
+              this.MaterialTableData.dialogVisible = false
+              this.getMaterialTableData()
+            }else{
+              this.$message({
+                type: 'info',
+                message: res.data.message
+              });
+            }
+          },res =>{
+            console.log("请求错误")
+          })
+        }
+      },
+      //发送投料计划到WMS
+      sendPlan(){
+        if(this.PlanManagerTableData.multipleSelection.length == 1){
+          var mulId = []
+          mulId.push({id:this.PlanManagerTableData.multipleSelection[0].ID});
+          var params = {}
           params.sendData = JSON.stringify(mulId)
-          this.$confirm('确定发送所选计划到WMS？', '提示', {
+          this.$confirm('确定发送此批的投料计划到WMS吗？', '提示', {
             distinguishCancelAndClose:true,
             type: 'warning'
           }).then(()  => {
@@ -145,7 +465,44 @@
         }else{
           this.$message({
             type: 'info',
-            message: "请选择计划"
+            message: "请选择一条计划"
+          });
+        }
+      },
+      //发送物料明细到WMS
+      sendMaterialInfo(){
+        if(this.PlanManagerTableData.multipleSelection.length > 0){
+          var mulId = []
+          this.PlanManagerTableData.multipleSelection.forEach(item =>{
+            mulId.push({id:item.ID});
+          })
+          var params = {}
+          params.sendData = JSON.stringify(mulId)
+          this.$confirm('确定发送此批的投料计划到WMS吗？', '提示', {
+            distinguishCancelAndClose:true,
+            type: 'warning'
+          }).then(()  => {
+            this.axios.post("/api/WMS_SendMatils",this.qs.stringify(params)).then(res =>{
+              if(res.data.code === "200"){
+                this.$message({
+                  type: 'success',
+                  message: res.data.message
+                });
+              }
+              this.getPlanManagerTableData()
+            },res =>{
+              console.log("请求错误")
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消发送'
+            });
+          });
+        }else{
+          this.$message({
+            type: 'info',
+            message: "请选择物料"
           });
         }
       }

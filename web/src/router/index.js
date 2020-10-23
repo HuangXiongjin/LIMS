@@ -30,7 +30,6 @@ import ProductionSchedule from '@/views/scheduling/ProductionSchedule'
 import scheduling from '@/views/scheduling/scheduling'
 import planningScheduling from '@/views/scheduling/planningScheduling'
 import sendWMS from '@/views/scheduling/sendWMS'
-import sendMaterialDetail from '@/views/scheduling/sendMaterialDetail'
 //生产数据
 import ElectronicBatchRecord from '@/views/production/ElectronicBatchRecord'
 import BatchRecordFiles from '@/views/production/BatchRecordFiles'
@@ -82,8 +81,7 @@ export default new Router({
         {path:'/ERPDataManage',name:'ERPDataManage',meta:{ title:'ERP数据管理',type:"排产调度系统"},component:ERPDataManage},
         {path:'/scheduling',name:'scheduling',meta:{ title:'订单计划分批',type:"排产调度系统"},component:scheduling},
         {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度',type:"排产调度系统"},component:planningScheduling},
-        {path:'/sendWMS',name:'sendWMS',meta:{ title:'发送计划到WMS',type:"排产调度系统"},component:sendWMS},
-        {path:'/sendMaterialDetail',name:'sendMaterialDetail',meta:{ title:'发送物料明细',type:"排产调度系统"},component:sendMaterialDetail},
+        {path:'/sendWMS',name:'sendWMS',meta:{ title:'发送到WMS',type:"排产调度系统"},component:sendWMS},
         {path:'/ProductionSchedule',name:'ProductionSchedule',meta:{ title:'生产日程明细',type:"排产调度系统"},component:ProductionSchedule},
 
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据系统"},component:MaterialBalanceStatistics},
