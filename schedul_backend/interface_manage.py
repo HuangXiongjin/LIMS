@@ -252,8 +252,7 @@ def WMS_SendMatils():
                 for key in jsonnumber:
                     id = int(key)
                     oclass = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.ID == id).first()
-                    process = db_session.query(ProcessUnit).filter(ProcessUnit.PUName == "投料").first()
-                    zyplan = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID, ZYPlan.PUCode == process.PUCode).first()
+                    zyplan = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID, ZYPlan.PUName == "备料段").first()
                     dic.append({"ZYPlanNo": zyplan.ID, "BrandCode": zyplan.BrandCode, "BrandName": zyplan.BrandName,
                                 "BatchID": oclass.BatchID, "FlagCode": oclass.BucketNum,
                                 "Weight": oclass.BucketWeight, "Unit": oclass.Unit, "Flag": oclass.Flag, "Seq": oclass.FeedingSeq})
