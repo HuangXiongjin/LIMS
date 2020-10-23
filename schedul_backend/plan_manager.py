@@ -214,7 +214,7 @@ def checkPlanManager():
             ID = data.get("ID")
             oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
             oclassplan.PlanStatus = PlanStatus
-            oclassplan = Description
+            oclassplan.Description = Description
             db_session.commit()
             return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
