@@ -549,3 +549,30 @@ def addUpdateEletronicBatchDataStore(BrandID, PUCode, BatchID, ke, val):
         insertSyslog("error", "保存更新EletronicBatchDataStore报错：" + str(e), current_user.Name)
         return json.dumps("保存更新EletronicBatchDataStore报错", cls=AlchemyEncoder,
                           ensure_ascii=False)
+
+@batch_plan.route('/selectTiQuEquipment', methods=['GET', 'POST'])
+def selectTiQuEquipment():
+    '''
+    查询提取设备
+    :return:
+    '''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            ID = data.get("ID")
+            oclass = db_session.query(PlanManager).filter(PlanManager.ID == ID).first()
+            eqps = db_session.query(EquipmentBatchRunTime).filter(EquipmentBatchRunTime.BatchID == oclass.BatchID,
+                           EquipmentBatchRunTime.BrandCode == oclass.BrandCode, EquipmentBatchRunTime.PUName.like("%提%")).all()
+            redata_list = []
+            for eq in eqps:
+                dir = {}
+                dir["EQPCode"] = eq.EQPCode
+                dir["EQPName"] = eq.EQPName
+                redata_list.append(dir)
+            return json.dumps({"code": "200", "message": "查询成功！", "data": redata_list})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "查询提取设备报错Error：" + str(e), current_user.Name)
+            return json.dumps("查询提取设备报错", cls=AlchemyEncoder, ensure_ascii=False)
