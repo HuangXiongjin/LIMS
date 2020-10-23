@@ -481,63 +481,6 @@ def BatchMaterialInfoselect():
             insertSyslog("error", "物料明细查询报错Error：" + str(e), current_user.Name)
             return json.dumps({"code": "500", "message": "后端报错"})
 
-
-@batch_plan.route('/saveEQPCode', methods=['POST', 'GET'])
-def saveEQPCode():
-    '''生产调度添加设备'''
-    if request.method == 'POST':
-        data = request.values  # 返回请求中的参数和form
-        try:
-            jsonstr = json.dumps(data.to_dict())
-            if len(jsonstr) > 10:
-                ID = data.get('ID')
-                oclass = db_session.query(PlanManager).filter(PlanManager.ID == ID).first()
-                PUName = data.get("PUName")
-                PUCode = data.get("PUCode")
-                eqList = json.loads(data.get('eqList'))
-                # for el in eqList:  # 为查询设备是否是已经使用过的做添加数据
-                #     ert = EquipmentBatchRunTime()
-                #     ert.BatchID = oclass.BatchID
-                #     ert.EQPCode = el.get("EQPCode")
-                #     ert.EQPName = el.get("EQPName")
-                #     ert.BrandCode = oclass.BrandCode
-                #     ert.BrandName = oclass.BrandName
-                #     ert.PUCode = PUName
-                #     ert.PUName = PUCode
-                #     ert.StartTime = el.get("StartTime")
-                #     ert.EndTime = el.get("EndTime")
-                #     ert.WorkTime = el.get("workTime")
-                #     ert.WaitTime = el.get("waitTime")
-                #     db_session.add(ert)
-                oclasstasks = db_session.query(ZYTask).filter(ZYTask.PUCode == PUCode,
-                                                              ZYTask.BrandCode == oclass.BrandCode,
-                                                              ZYTask.BatchID == oclass.BatchID).all()
-                for i in range(len(oclasstasks)):
-                    oclasstasks[i].EQPCode = eqList[i % len(eqList)]
-                    oclasstasks[i].TaskStatus = Global.TASKSTATUS.Confirm.value
-                db_session.commit()
-                oclasstasks = db_session.query(ZYTask).filter(ZYTask.BatchID == oclass.BatchID,
-                                                              ZYTask.PUCode == PUCode,
-                                                              ZYTask.BrandCode == oclass.BrandCode).all()
-                flag = "TRUE"
-                for task in oclasstasks:
-                    if (task.TaskStatus != Global.TASKSTATUS.Confirm.value):
-                        flag = "FALSE"
-                if (flag == "TRUE"):
-                    zyplanc = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID,
-                                                              ZYPlan.PUCode == PUCode,
-                                                              ZYPlan.BrandCode == oclass.BrandCode).first()
-                    zyplanc.ZYPlanStatus = Global.ZYPlanStatus.Confirm.value
-                    db_session.commit()
-
-                return json.dumps({"code": "200", "message": "添加设备成功！"})
-        except Exception as e:
-            db_session.rollback()
-            print(e)
-            logger.error(e)
-            insertSyslog("error", "生产调度添加设备报错Error：" + str(e), current_user.Name)
-            return json.dumps({"code": "500", "message": "生产调度添加设备报错"})
-
 # 所有工艺段保存查询操作
 @batch_plan.route('/allUnitDataMutual', methods=['POST', 'GET'])
 def allUnitDataMutual():

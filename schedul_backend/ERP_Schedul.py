@@ -521,7 +521,7 @@ def addEquipmentBatchRunTime():
                             eft = db_session.query(Shifts).filter(Shifts.ShiftsName == ert.EndBC).first()
                             ert.EndTime = str(el.get("EndTime")) + " " + eft.EndTime
                             db_session.add(ert)
-                oclass.PlanStatus = Global.PlanStatus.ConfirmEquipment.value
+                oclass.PlanStatus = Global.PlanStatus.WaitRealse.value
                 db_session.commit()
             return json.dumps({"code": "200", "message": "保存成功！", "data": "OK"})
         except Exception as e:
