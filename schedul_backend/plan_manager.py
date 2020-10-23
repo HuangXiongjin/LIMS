@@ -190,6 +190,7 @@ def makePlan():
                     # ocalss.PlanBeginTime = PlanBeginTime
                     # ocalss.PlanEndTime = PlanEndTime
                     # ocalss.Unit = Unit
+                    ocalss.PlanStatus = Global.PlanStatus.Confirm.value
                     db_session.commit()
                     return json.dumps({"code": "200", "message": "修改成功！"})
                 else:
