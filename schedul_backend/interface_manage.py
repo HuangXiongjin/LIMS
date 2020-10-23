@@ -220,8 +220,7 @@ def WMS_SendZYPlan():
                 for key in jsonnumber:
                     id = int(key)
                     plan = db_session.query(PlanManager).filter(PlanManager.ID == id).first()
-                    process = db_session.query(ProcessUnit).filter(ProcessUnit.PUName == "投料").first()
-                    oclass = db_session.query(ZYPlan).filter(ZYPlan.BrandCode == plan.BrandCode, ZYPlan.PUCode == process.PUCode).first()
+                    oclass = db_session.query(ZYPlan).filter(ZYPlan.BatchID == plan.BatchID, ZYPlan.BrandCode == plan.BrandCode, ZYPlan.PUName == "备料段").first()
                     dic.append({"PlanNo": oclass.PlanNo, "ZYPlanNo": oclass.ID, "BrandCode": oclass.BrandCode,
                                 "BrandName": oclass.BrandName, "BatchID": oclass.BatchID,
                                 "Weight": oclass.PlanQuantity, "Unit": oclass.Unit})
