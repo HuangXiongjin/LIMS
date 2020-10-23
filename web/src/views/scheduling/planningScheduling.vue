@@ -378,7 +378,12 @@ var moment=require('moment')
               message:'下发失败,请重试'
             })
           }
-        })})
+        })},()=>{
+          this.$message({
+              type:'info',
+              message:'已取消操作'
+            })
+        })
       },
       chPlan(index,row){
         var id=row.ID
@@ -404,7 +409,12 @@ var moment=require('moment')
               message:'撤回失败,请重试'
             })
           }
-        })})
+        })},()=>{
+           this.$message({
+              type:'info',
+              message:'已取消操作'
+            })
+        })
       },
       Activeconfig(index){ //配置进度条设置
           this.configactive=index
