@@ -25,7 +25,7 @@
             {prop:"BrandCode",label:"产品编码",type:"input",value:""},
             {prop:"BrandName",label:" 产品名称",type:"input",value:""},
             {prop:"BrandType",label:" 产品类型",type:"input",value:""},
-            {prop:"BatchWeight",label:" 批次重量",type:"input",value:""},
+            {prop:"BatchWeight",label:" 批生产能力",type:"input",value:""},
             {prop:"BatchTimeLength",label:" 批次时长",type:"input",value:""},
             {prop:"Version",label:"版本",type:"input",value:""},
             {prop:"Desc",label:"描述",type:"input",value:""},

@@ -126,11 +126,16 @@
               <el-table-column prop="BrandType" label="产品类型"></el-table-column>
               <el-table-column prop="PlanQuantity" label="每批产量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
-              <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
+              <el-table-column prop="PlanStatus" label="计划状态">
+                <template slot-scope="scope">
+                  <span class="color-darkblue cursor-pointer" v-if="scope.row.PlanStatus === '审核未通过'" @click="seeDescription(scope.$index, scope.row)">{{ scope.row.PlanStatus }}</span>
+                  <span v-else>{{ scope.row.PlanStatus }}</span>
+                </template>
+              </el-table-column>
               <el-table-column label="操作" fixed="right" width="150">
                 <template slot-scope="scope">
-                  <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                  <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                  <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" v-if="scope.row.PlanStatus === '待审核' || scope.row.PlanStatus === '审核未通过'">编辑</el-button>
+                  <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)" v-if="scope.row.PlanStatus === '待审核' || scope.row.PlanStatus === '审核未通过'">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -362,6 +367,7 @@
       },
       save(){
         if(this.planTableData.dialogTitle === "添加"){
+          this.planTableData.dialogVisible = false
           var params = {
             tableName:"product_plan",
             PlanNum:this.planTableData.formField.PlanNum,
@@ -377,7 +383,6 @@
                 type: 'success',
                 message: res.data.message
               });
-              this.planTableData.dialogVisible = false
               this.getPlanTableData()
             }else{
               this.$message({
@@ -578,6 +583,12 @@
             type: 'info',
             message: '已取消排产'
           });
+        });
+      },
+      seeDescription(index,row){ //查看未通过原因
+        this.$alert(row.Description, '未通过原因', {
+          confirmButtonText: '知道了',
+          callback: action => {}
         });
       },
     }
