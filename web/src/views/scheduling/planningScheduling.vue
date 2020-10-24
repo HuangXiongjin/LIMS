@@ -603,6 +603,7 @@ var moment=require('moment')
             })
             this.getConfigbatch()
             this.getSelectedEq()
+            this.chConfigbatch()
           }else{
             this.$message({
               type:'error',
