@@ -159,6 +159,9 @@ def batchconflictequimentselect():
             EQPCode = data.get('EQPCode')
             DateTime = data.get('DateTime')
             BCType = data.get('BCType')
+            PlanNum = data.get('PlanNum')
+            BatchID = data.get('BatchID')
+            BrandCode = data.get('BrandCode')
             sft = db_session.query(Shifts).filter(Shifts.ShiftsName == BCType).first()
             if sft:
                 beginoclass = db_session.query(EquipmentBatchRunTime).filter(
@@ -169,8 +172,12 @@ def batchconflictequimentselect():
                     EquipmentBatchRunTime.EndTime.between(str(DateTime +" "+ sft.BeginTime),str(DateTime +" " + sft.EndTime))).all()
                 dict_list = []
                 for i in beginoclass:
+                    if i.PlanNum == PlanNum and i.BatchID == BatchID and i.BrandCode == BrandCode:
+                        continue#跳出当前循环
                     dict_list.append(i)
                 for j in endoclass:
+                    if i.PlanNum == PlanNum and i.BatchID == BatchID and i.BrandCode == BrandCode:
+                        continue
                     if j not in dict_list:
                         dict_list.append(j)
             return json.dumps({"code": "200", "message": "查询成功！", "data": dict_list}, cls=AlchemyEncoder, ensure_ascii=False)
