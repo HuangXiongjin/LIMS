@@ -210,14 +210,16 @@ def checkPlanManager():
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
         try:
-            PlanStatus = data.get("PlanStatus")
-            Description = data.get("Describtion")
-            ID = data.get("ID")
-            oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
-            oclassplan.PlanStatus = PlanStatus
-            oclassplan.Description = Description
-            db_session.commit()
-            return json.dumps({"code": "200", "message": "OK"})
+            data_list = json.loads(data.get("datalist"))
+            for i in data_list:
+                PlanStatus = i.get("PlanStatus")
+                Description = i.get("Describtion")
+                ID = i.get("ID")
+                oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
+                oclassplan.PlanStatus = PlanStatus
+                oclassplan.Description = Description
+                db_session.commit()
+                return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
             db_session.rollback()
             print(e)

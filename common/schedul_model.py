@@ -136,6 +136,8 @@ class product_plan(Base):
     BrandType = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 计划产值
     PlanQuantity = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 产值单位
+    Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 计划时长
     PlanTimeLen = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 创建时间

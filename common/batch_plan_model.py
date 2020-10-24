@@ -613,8 +613,8 @@ class PlanManager(Base):
     # PLineName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
 
-# # 序号:
-# Seq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    # 序号:
+    Seq = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 # PLineID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
 #
