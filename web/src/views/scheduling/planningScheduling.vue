@@ -9,6 +9,7 @@
        <el-row v-if='steps==0'>
           <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">批次列表</div>
+           <div class="marginBottom"><el-button type="primary" icon="el-icon-folder-checked" size='mini' @click="shMultiplebatch">多批次下发</el-button></div>
               <el-table
                   :data="batchTableData.data"
                   highlight-current-row
@@ -895,8 +896,13 @@ var moment=require('moment')
       },
       shMultiplebatch(){
         var params={
-          datalist:this.datalist
+          datalist:JSON.stringify(this.datalist)
         }
+        // this.$confirm('是否多批次审核通过, 是否继续?', '提示', {
+        //   confirmButtonText: '确定',
+        //   cancelButtonText: '取消',
+        //   type: 'warning'
+        // }).then(() => {})
         this.axios.post('/api/checkPlanManager',this.qs.stringify(params)).then((res) => {
            console.log(res)
          })
