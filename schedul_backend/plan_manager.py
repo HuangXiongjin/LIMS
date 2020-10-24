@@ -219,7 +219,7 @@ def checkPlanManager():
                 oclassplan.PlanStatus = PlanStatus
                 oclassplan.Description = Description
                 db_session.commit()
-                return json.dumps({"code": "200", "message": "OK"})
+            return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
             db_session.rollback()
             print(e)
