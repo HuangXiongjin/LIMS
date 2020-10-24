@@ -38,6 +38,7 @@
               <el-table-column prop="BrandCode" label="品名编码"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
+              <el-table-column prop="Unit" label="单位"></el-table-column>
               <el-table-column prop="PlanStatus" label="状态"></el-table-column>
               <el-table-column prop="Description" label="描述"></el-table-column>
               <el-table-column prop="CreateTimeTime" label="创建/同步时间"></el-table-column>
@@ -120,6 +121,7 @@
             </el-form>
             <el-table :data="PlanManagerTableData.data" border size="small">
               <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
+              <el-table-column prop="Seq" label="顺序号"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
               <el-table-column prop="BrandCode" label="品名编码"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>

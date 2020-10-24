@@ -15,7 +15,9 @@
                   size='small'
                   border
                   ref="batchmultipleTable"
+                  @select='getAllbatchrow'
                   style="width: 100%">
+                  <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                   <el-table-column label="操作" fixed="right" width='160'>
                     <template slot-scope="scope">
@@ -879,6 +881,9 @@ var moment=require('moment')
         this.getBatchWeight(e.BrandCode,e.BrandName)
         this.$refs.chmultipleTable.clearSelection();
         this.$refs.chmultipleTable.toggleRowSelection(e)
+      },
+      getAllbatchrow(e){ //审核计划批次点击
+        console.log(e)
       },
       xfHandleSizeChange(limit){ //下发批次计划 每页条数切换
         this.xfTableData.limit = limit
