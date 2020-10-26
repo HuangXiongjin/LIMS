@@ -482,7 +482,7 @@
               </span>
               <el-dialog title="冲突信息" :visible.sync="ctdialogTableVisible" width='80%' :modal=false>
                   <el-table :data="ctlist">
-                   <el-table-column v-for="item in tipstableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                   <el-table-column v-for="item in tipstableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width' class="color-red"></el-table-column>
                   </el-table>
               </el-dialog>
             </el-dialog>
@@ -532,6 +532,36 @@
                   </el-pagination>
             </div>
         </el-col>
+           <el-col :span='24' class="platformContainer">
+           <div style="height:40px;fontSize:16px;fontWeight:700;">已下发列表</div>
+              <el-table
+                  :data="yxfbatchTableData.data"
+                  highlight-current-row
+                  size='small'
+                  border
+                  style="width: 100%">
+                  <el-table-column v-for="item in eqlistableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table-column prop="PlanStatus" label="计划状态">
+                    <template slot-scope="scope">
+                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                    </template>
+                  </el-table-column>
+              </el-table>
+              <div class="paginationClass">
+                  <el-pagination background  layout="total,prev, pager, next, jumper"
+                  :total="yxfbatchTableData.total"
+                  :current-page="yxfbatchTableData.offset"
+                  :page-size="yxfbatchTableData.limit"
+                  @size-change="yxfbatchHandleSizeChange"
+                  @current-change="yxfbatchHandleCurrentChange">
+                  </el-pagination>
+            </div>
+        </el-col>
        </el-row>
     </el-col>
   </el-row>
@@ -574,6 +604,13 @@ var moment=require('moment')
             offset: 1,
             total: 0,
         },
+        yxfbatchTableData:{ //下发批次列表
+            tableName:"PlanManager",
+            data:[],
+            limit: 10,
+            offset: 1,
+            total: 0,
+        },
         BrandCode:'',
         BatchID:'',
         blstartBc:'',//备料开始班次
@@ -605,6 +642,24 @@ var moment=require('moment')
     mounted(){
     },
     methods:{
+      getYxfBatch(){
+        var params={
+          tableName:'PlanManager',
+          PlanStatus:'已下发',
+          offset:this.yxfbatchTableData.offset-1,
+          limit:this.yxfbatchTableData.limit,
+        }
+        this.axios.get('/api/CUID',{params:params}).then(res => {
+           if(res.data.code === "200"){
+            var data = res.data.data
+            this.yxfbatchTableData.data = data.rows
+            this.yxfbatchTableData.total = data.total
+          }
+          },err=>{
+            console.log("请求错误")
+          })
+
+      },
       setStatus(e){
         this.radio3=e
       },
@@ -851,6 +906,7 @@ var moment=require('moment')
           this.getSelectedEq()
         }else if(this.steps===2){
             this.getSelectedEq()
+            this.getYxfBatch()
         }else{
 
         }
@@ -1018,6 +1074,14 @@ var moment=require('moment')
        eqlistHandleCurrentChange(offset) { //已选设备 页码切换
         this.eqlistTableData.offset = offset
         this.getSelectedEq()
+      },
+      yxfbatchHandleSizeChange(limit){ //已选设备 每页条数切换
+        this.yxfbatchTableData.limit = limit
+        this.getYxfBatch()
+      },
+       yxfbatchHandleCurrentChange(offset) { //已选设备 页码切换
+        this.yxfbatchTableData.offset = offset
+        this.getYxfBatch()
       }
     }
   }
