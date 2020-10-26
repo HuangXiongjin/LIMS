@@ -26,6 +26,7 @@
                       <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
                       <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
                       <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</span>
                       <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
                     </template>
                   </el-table-column>
@@ -85,6 +86,7 @@
                       <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
                       <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
                       <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</span>
                       <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
                     </template>
                   </el-table-column>
@@ -166,10 +168,10 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
-                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC,this.PlanNum,this.BatchID,this.BrandCode1)"
+                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC)"
                               placeholder="选择日期">
                             </el-date-picker>
-                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC,this.PlanNum,this.BatchID,this.BrandCode1)'>
+                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC)'>
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -180,10 +182,10 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
-                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC,this.PlanNum,this.BatchID,this.BrandCode1)"
+                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)"
                               placeholder="选择日期">
                             </el-date-picker>
-                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC,this.PlanNum,this.BatchID,this.BrandCode1)">
+                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)">
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -305,10 +307,10 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
-                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC,this.PlanNum,this.BatchID,this.BrandCode1)"
+                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC)"
                               placeholder="选择日期">
                             </el-date-picker>
-                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC,this.PlanNum,this.BatchID,this.BrandCode1)'>
+                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC)'>
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -319,10 +321,10 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
-                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC,this.PlanNum,this.BatchID,this.BrandCode1)"
+                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)"
                               placeholder="选择日期">
                             </el-date-picker>
-                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC,this.PlanNum,this.BatchID,this.BrandCode1)">
+                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)">
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -445,10 +447,10 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
-                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC,this.PlanNum,this.BatchID,this.BrandCode1)"
+                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC)"
                               placeholder="选择日期">
                             </el-date-picker>
-                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC,this.PlanNum,this.BatchID,this.BrandCode1)'>
+                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC)'>
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -459,10 +461,10 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
-                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC,this.PlanNum,this.BatchID,this.BrandCode1)"
+                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)"
                               placeholder="选择日期">
                             </el-date-picker>
-                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC,this.PlanNum,this.BatchID,this.BrandCode1)">
+                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)">
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -615,14 +617,14 @@ var moment=require('moment')
         });
 
       },
-      judgeConflict(EQPCode,time,Bc,PlanNum,BatchID,BrandCode){ //判断冲突
+      judgeConflict(EQPCode,time,Bc){ //判断冲突
        var params={
          EQPCode:EQPCode,
          DateTime:moment(time).format('YYYY-MM-DD'),
          BCType:Bc,
-         PlanNum:PlanNum,
-         BatchID:BatchID,
-         BrandCode:BrandCode
+         PlanNum:this.PlanNum,
+         BatchID:this.BatchID,
+         BrandCode:this.BrandCode1
        }
        this.axios.get('/api/batchconflictequimentselect',{params:params}).then((res) => {
          if(res.data.code==='200'){
