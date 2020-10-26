@@ -20,6 +20,15 @@
                   style="width: 100%">
                   <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table-column prop="PlanStatus" label="计划状态">
+                    <template slot-scope="scope">
+                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column label="操作" fixed="right" width='160'>
                     <template slot-scope="scope">
                       <el-button
@@ -70,6 +79,15 @@
                   @row-click="xfTabCurrentChange"
                   style="width: 100%">
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table-column prop="PlanStatus" label="计划状态">
+                    <template slot-scope="scope">
+                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button
@@ -200,6 +218,15 @@
                   @row-click="chTabCurrentChange"
                   style="width: 100%">
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table-column prop="PlanStatus" label="计划状态">
+                    <template slot-scope="scope">
+                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button
@@ -330,6 +357,15 @@
                   @row-click="xfTabCurrentChange"
                   style="width: 100%">
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table-column prop="PlanStatus" label="计划状态">
+                    <template slot-scope="scope">
+                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button
@@ -460,6 +496,15 @@
                   ref="eqlistmultipleTable"
                   style="width: 100%">
                   <el-table-column v-for="item in eqlistableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table-column prop="PlanStatus" label="计划状态">
+                    <template slot-scope="scope">
+                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column label="操作" fixed="right" width='160'>
                     <template slot-scope="scope">
                       <el-button
@@ -542,8 +587,8 @@ var moment=require('moment')
         row:{},
         datalist:[],
         checkedRow:[],//勾选的原生数组
-        batchtableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'计划状态'}],//批次列表
-        eqlistableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'计划状态'}],//选择设备列表
+        batchtableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'}],//批次列表
+        eqlistableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'}],//选择设备列表
         tipstableconfig:[{prop:'BatchID',label:"冲突批次号"},{prop:'BrandName',label:'冲突品名'},{prop:'EQPName',label:'冲突设备名称'},{prop:'EQPCode',label:'冲突设备编码'},{prop:'StartTime',label:'冲突开始运行时间'},{prop:'EndTime',label:'冲突结束运行时间'},{prop:'StartBC',label:'冲突开始运行班次'},{prop:'EndBC',label:'冲突结束运行班次'}],//冲突列表
       }
     },
@@ -888,7 +933,7 @@ var moment=require('moment')
       getAllbatchrow(e){ //审核计划批次点击
         this.checkedRow=e
       },
-      shMultiplebatch(){
+      shMultiplebatch(){ //点击多批次下发
         this.datalist=[]
         var flag=true
         if(this.checkedRow.length===0){
