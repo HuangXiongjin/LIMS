@@ -26,7 +26,6 @@ import Unit from '@/views/ProductionModel/Unit'
 //排产调度
 import schedulingBoard from '@/views/scheduling/board'
 import ERPDataManage from '@/views/scheduling/ERPDataManage'
-import ProductionSchedule from '@/views/scheduling/ProductionSchedule'
 import scheduling from '@/views/scheduling/scheduling'
 import planningScheduling from '@/views/scheduling/planningScheduling'
 import sendWMS from '@/views/scheduling/sendWMS'
@@ -83,7 +82,6 @@ export default new Router({
         {path:'/scheduling',name:'scheduling',meta:{ title:'订单计划分批',type:"排产调度系统"},component:scheduling},
         {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度',type:"排产调度系统"},component:planningScheduling},
         {path:'/sendWMS',name:'sendWMS',meta:{ title:'发送到WMS',type:"排产调度系统"},component:sendWMS},
-        {path:'/ProductionSchedule',name:'ProductionSchedule',meta:{ title:'生产日程明细',type:"排产调度系统"},component:ProductionSchedule},
         {path:'/BatchDetails',name:'BatchDetails',meta:{ title:'批次实施明细',type:"排产调度系统"},component:BatchDetails},
 
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据系统"},component:MaterialBalanceStatistics},

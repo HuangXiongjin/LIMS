@@ -20,6 +20,15 @@
                   style="width: 100%">
                   <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table-column prop="PlanStatus" label="计划状态">
+                    <template slot-scope="scope">
+                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column label="操作" fixed="right" width='160'>
                     <template slot-scope="scope">
                       <el-button
@@ -70,6 +79,15 @@
                   @row-click="xfTabCurrentChange"
                   style="width: 100%">
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table-column prop="PlanStatus" label="计划状态">
+                    <template slot-scope="scope">
+                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button
@@ -148,10 +166,10 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
-                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC)"
+                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC,this.PlanNum,this.BatchID,this.BrandCode1)"
                               placeholder="选择日期">
                             </el-date-picker>
-                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC)'>
+                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC,this.PlanNum,this.BatchID,this.BrandCode1)'>
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -162,10 +180,10 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
-                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)"
+                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC,this.PlanNum,this.BatchID,this.BrandCode1)"
                               placeholder="选择日期">
                             </el-date-picker>
-                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)">
+                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC,this.PlanNum,this.BatchID,this.BrandCode1)">
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -200,6 +218,15 @@
                   @row-click="chTabCurrentChange"
                   style="width: 100%">
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table-column prop="PlanStatus" label="计划状态">
+                    <template slot-scope="scope">
+                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button
@@ -278,10 +305,10 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
-                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC)"
+                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC,this.PlanNum,this.BatchID,this.BrandCode1)"
                               placeholder="选择日期">
                             </el-date-picker>
-                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC)'>
+                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC,this.PlanNum,this.BatchID,this.BrandCode1)'>
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -292,10 +319,10 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
-                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)"
+                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC,this.PlanNum,this.BatchID,this.BrandCode1)"
                               placeholder="选择日期">
                             </el-date-picker>
-                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)">
+                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC,this.PlanNum,this.BatchID,this.BrandCode1)">
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -330,6 +357,16 @@
                   @row-click="xfTabCurrentChange"
                   style="width: 100%">
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table-column prop="PlanStatus" label="计划状态">
+                    <template slot-scope="scope">
+                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button
@@ -408,10 +445,10 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
-                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC)"
+                              @change="judgeConflict(item.EQPCode,item.StartTime,item.StartBC,this.PlanNum,this.BatchID,this.BrandCode1)"
                               placeholder="选择日期">
                             </el-date-picker>
-                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC)'>
+                            <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC,this.PlanNum,this.BatchID,this.BrandCode1)'>
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -422,10 +459,10 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
-                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)"
+                              @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC,this.PlanNum,this.BatchID,this.BrandCode1)"
                               placeholder="选择日期">
                             </el-date-picker>
-                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)">
+                            <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC,this.PlanNum,this.BatchID,this.BrandCode1)">
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -460,6 +497,16 @@
                   ref="eqlistmultipleTable"
                   style="width: 100%">
                   <el-table-column v-for="item in eqlistableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table-column prop="PlanStatus" label="计划状态">
+                    <template slot-scope="scope">
+                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</span>
+                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                    </template>
+                  </el-table-column>
                   <el-table-column label="操作" fixed="right" width='160'>
                     <template slot-scope="scope">
                       <el-button
@@ -533,6 +580,9 @@ var moment=require('moment')
         blendTime:'', //备料结束时间`,
         blSelected:false,
         ID:0,
+        PlanNum:'',
+        BatchID:'',
+        BrandCode1:'',//getEq中的
         ctdialogTableVisible:false,//冲突显示
         ctlist:[],//冲突存储
         dialogTableVisible:false, //选择设备显示
@@ -541,8 +591,9 @@ var moment=require('moment')
         BatchWeight:'200片',
         row:{},
         datalist:[],
-        batchtableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'计划状态'}],//批次列表
-        eqlistableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'计划状态'}],//选择设备列表
+        checkedRow:[],//勾选的原生数组
+        batchtableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'}],//批次列表
+        eqlistableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'}],//选择设备列表
         tipstableconfig:[{prop:'BatchID',label:"冲突批次号"},{prop:'BrandName',label:'冲突品名'},{prop:'EQPName',label:'冲突设备名称'},{prop:'EQPCode',label:'冲突设备编码'},{prop:'StartTime',label:'冲突开始运行时间'},{prop:'EndTime',label:'冲突结束运行时间'},{prop:'StartBC',label:'冲突开始运行班次'},{prop:'EndBC',label:'冲突结束运行班次'}],//冲突列表
       }
     },
@@ -564,11 +615,14 @@ var moment=require('moment')
         });
 
       },
-      judgeConflict(EQPCode,time,Bc){ //判断冲突
+      judgeConflict(EQPCode,time,Bc,PlanNum,BatchID,BrandCode){ //判断冲突
        var params={
          EQPCode:EQPCode,
          DateTime:moment(time).format('YYYY-MM-DD'),
-         BCType:Bc
+         BCType:Bc,
+         PlanNum:PlanNum,
+         BatchID:BatchID,
+         BrandCode:BrandCode
        }
        this.axios.get('/api/batchconflictequimentselect',{params:params}).then((res) => {
          if(res.data.code==='200'){
@@ -763,7 +817,7 @@ var moment=require('moment')
             Describtion:value,
             ID:id
           }
-          this.axios.post('/api/checkPlanManager',this.qs.stringify(params)).then((res) => {
+          this.axios.post('/api/checkPlanManagerSingle',this.qs.stringify(params)).then((res) => {
             if(res.data.code==='200'){
               this.getPlanManager()
                this.$message({
@@ -872,12 +926,15 @@ var moment=require('moment')
       },
        xfTabCurrentChange(e){ //下发批次计划 点击显示当前的tab行显示详细信息
         this.getEq(e.BatchID,e.BrandCode)
+        this.PlanNum=e.PlanNum
+        this.BatchID=e.BatchID
+        this.BrandCode1=e.BrandCode
         this.ID=e.ID
         this.getBatchWeight(e.BrandCode,e.BrandName)
         this.$refs.xfmultipleTable.clearSelection();
         this.$refs.xfmultipleTable.toggleRowSelection(e)
       },
-       chTabCurrentChange(e){ //下发批次计划 点击显示当前的tab行显示详细信息
+       chTabCurrentChange(e){ //点击撤回批次计划 点击显示当前的tab行显示详细信息
         this.getEq(e.BatchID,e.BrandCode)
         this.ID=e.ID
         this.getBatchWeight(e.BrandCode,e.BrandName)
@@ -885,16 +942,31 @@ var moment=require('moment')
         this.$refs.chmultipleTable.toggleRowSelection(e)
       },
       getAllbatchrow(e){ //审核计划批次点击
-        var arr=e
-        this.datalist=arr.map((item) => {
-          return {
-            PlanStatus:'待配置',
-            Describtion:'',
-            ID:item.ID
+        this.checkedRow=e
+      },
+      shMultiplebatch(){ //点击多批次下发
+        this.datalist=[]
+        var flag=true
+        if(this.checkedRow.length===0){
+            this.$message({
+               type:'info',
+               message:'请先勾选要下发的批次'
+             })
+             return;
+        }else{
+          this.checkedRow.forEach((item) => {
+          if(item.PlanStatus==='待审核'){
+            this.datalist.push(item)
+          }else{
+            flag=false
+            this.$message({
+               type:'info',
+               message:'当前所选批次包含其他状态，请重新选择'
+             })
+             return;
           }
         })
-      },
-      shMultiplebatch(){
+        if(flag){
         var params={
           datalist:JSON.stringify(this.datalist)
         }
@@ -917,7 +989,8 @@ var moment=require('moment')
             type: 'info',
             message: '已取消'
           });          
-        });  
+        });
+        }}
       },
       xfHandleSizeChange(limit){ //下发批次计划 每页条数切换
         this.xfTableData.limit = limit
