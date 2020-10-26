@@ -112,7 +112,6 @@
             {title:"生产计划调度",icon:"el-icon-s-claim",url:"/planningScheduling"},
             {title:"批次实施明细",icon:"el-icon-document",url:"/BatchDetails"},
             {title:"发送到WMS",icon:"el-icon-s-promotion",url:"/sendWMS"},
-            {title:'生产日程明细',icon:"el-icon-date",url:"/ProductionSchedule"},
           ]},
           {label: '生产建模',icon:"el-icon-s-management",mainMenu:[
             {title:"产品定义",icon:"fa fa-list-ul",url:"/ProductDefinition"},
