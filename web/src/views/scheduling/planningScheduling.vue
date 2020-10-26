@@ -541,6 +541,7 @@ var moment=require('moment')
         BatchWeight:'200片',
         row:{},
         datalist:[],
+        checkedRow:[],//勾选的原生数组
         batchtableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'计划状态'}],//批次列表
         eqlistableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'},{prop:'PlanStatus',label:'计划状态'}],//选择设备列表
         tipstableconfig:[{prop:'BatchID',label:"冲突批次号"},{prop:'BrandName',label:'冲突品名'},{prop:'EQPName',label:'冲突设备名称'},{prop:'EQPCode',label:'冲突设备编码'},{prop:'StartTime',label:'冲突开始运行时间'},{prop:'EndTime',label:'冲突结束运行时间'},{prop:'StartBC',label:'冲突开始运行班次'},{prop:'EndBC',label:'冲突结束运行班次'}],//冲突列表
@@ -763,7 +764,7 @@ var moment=require('moment')
             Describtion:value,
             ID:id
           }
-          this.axios.post('/api/checkPlanManager',this.qs.stringify(params)).then((res) => {
+          this.axios.post('/api/checkPlanManagerSingle',this.qs.stringify(params)).then((res) => {
             if(res.data.code==='200'){
               this.getPlanManager()
                this.$message({
@@ -877,7 +878,7 @@ var moment=require('moment')
         this.$refs.xfmultipleTable.clearSelection();
         this.$refs.xfmultipleTable.toggleRowSelection(e)
       },
-       chTabCurrentChange(e){ //下发批次计划 点击显示当前的tab行显示详细信息
+       chTabCurrentChange(e){ //点击撤回批次计划 点击显示当前的tab行显示详细信息
         this.getEq(e.BatchID,e.BrandCode)
         this.ID=e.ID
         this.getBatchWeight(e.BrandCode,e.BrandName)
@@ -885,16 +886,31 @@ var moment=require('moment')
         this.$refs.chmultipleTable.toggleRowSelection(e)
       },
       getAllbatchrow(e){ //审核计划批次点击
-        var arr=e
-        this.datalist=arr.map((item) => {
-          return {
-            PlanStatus:'待配置',
-            Describtion:'',
-            ID:item.ID
-          }
-        })
+        this.checkedRow=e
       },
       shMultiplebatch(){
+        this.datalist=[]
+        var flag=true
+        if(this.checkedRow.length===0){
+            this.$message({
+               type:'info',
+               message:'请先勾选要下发的批次'
+             })
+             return;
+        }else{
+          this.checkedRow.forEach((item) => {
+          if(item.PlanStatus==='待审核'){
+            this.datalist.push(item)
+          }else{
+            flag=false
+            this.$message({
+               type:'info',
+               message:'当前所选批次包含其他状态，请重新选择'
+             })
+             return;
+          }
+        })
+        if(flag){
         var params={
           datalist:JSON.stringify(this.datalist)
         }
@@ -917,7 +933,8 @@ var moment=require('moment')
             type: 'info',
             message: '已取消'
           });          
-        });  
+        });
+        }}
       },
       xfHandleSizeChange(limit){ //下发批次计划 每页条数切换
         this.xfTableData.limit = limit
