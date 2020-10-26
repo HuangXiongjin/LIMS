@@ -158,8 +158,11 @@
               <el-table-column prop="Unit" label="单位"></el-table-column>
               <el-table-column prop="PlanStatus" label="计划状态">
                 <template slot-scope="scope">
-                  <span class="color-darkblue cursor-pointer" v-if="scope.row.PlanStatus === '审核未通过'" @click="seeDescription(scope.$index, scope.row)">{{ scope.row.PlanStatus }}</span>
-                  <span v-else>{{ scope.row.PlanStatus }}</span>
+                  <span class="color-red cursor-pointer" v-if="scope.row.PlanStatus === '审核未通过'" @click="seeDescription(scope.$index, scope.row)">{{ scope.row.PlanStatus }}</span>
+                  <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
+                  <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
+                  <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
+                  <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
                 </template>
               </el-table-column>
               <el-table-column label="操作" fixed="right" width="150">
@@ -173,7 +176,7 @@
               <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
                :total="PlanManagerTableData.total"
                :current-page="PlanManagerTableData.offset"
-               :page-sizes="[5,10,20]"
+               :page-sizes="[10,15,20,30,50]"
                :page-size="PlanManagerTableData.limit"
                @size-change="handlePlanManagerSizeChange"
                @current-change="handlePlanManagerCurrentChange">
@@ -250,7 +253,7 @@
         selectPlanBatchTotal:0,
         PlanManagerTableData:{
           data:[],
-          limit:5,
+          limit:10,
           offset:1,
           total:0,
           handleType:[

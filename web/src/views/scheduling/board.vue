@@ -18,8 +18,8 @@
               <el-table-column prop="PlanStatus" label="计划状态">
                 <template slot-scope="scope">
                   <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
-                  <span class="color-lightgreen" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
-                  <span class="color-orange" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</span>
+                  <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
+                  <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
                 </template>
               </el-table-column>
             </el-table>

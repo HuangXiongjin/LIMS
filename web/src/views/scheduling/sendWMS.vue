@@ -8,7 +8,7 @@
       <el-row :gutter="15" v-if="steps == 0">
         <el-col :span="24">
           <div class="page-title">
-            <span class="text-size-16 marginLeft">选择批计划，给WMS发送此计划的投料计划</span>
+            <span class="text-size-16">选择批计划，给WMS发送此计划的投料计划</span>
           </div>
           <div class="platformContainer">
             <el-form :inline="true">
@@ -47,7 +47,7 @@
       <el-row :gutter="15" v-if="steps == 1">
         <el-col :span="24">
           <div class="page-title">
-            <span class="text-size-16 marginLeft">选择计划，先下方录入物料明细</span>
+            <span class="text-size-16">选择计划，先下方录入物料明细</span>
           </div>
           <div class="platformContainer">
             <el-form :inline="true">
