@@ -186,27 +186,27 @@ class ZYPlan(Base):
     ERPOrderNo = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 计划重量:
-    PlanQuantity = Column(Float(53), primary_key=False, autoincrement=False, nullable=True)
+    PlanQuantity = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 实际重量:
-    ActQuantity = Column(Float(53), primary_key=False, autoincrement=False, nullable=True)
+    ActQuantity = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 单位:
     Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 录入时间:
-    EnterTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    EnterTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 计划开始时间:
-    PlanBeginTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    PlanBeginTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
-    PlanEndTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    PlanEndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 实际开始时间:
-    ActBeginTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    ActBeginTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 实际完成时间:
-    ActEndTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    ActEndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 计划状态:
     ZYPlanStatus = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
@@ -239,13 +239,13 @@ class ZYTask(Base):
     PlanDate = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
     # 制药任务单号:
-    TaskID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    TaskID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 批次号:
     BatchID = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 顺序号:
-    PlanSeq = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    PlanSeq = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 工艺段编码:
     PUCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
@@ -266,10 +266,10 @@ class ZYTask(Base):
     BrandName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
     # 计划重量:
-    PlanQuantity = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    PlanQuantity = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 实际重量:
-    ActQuantity = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+    ActQuantity = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 单位:
     Unit = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
@@ -281,10 +281,10 @@ class ZYTask(Base):
     PlanEndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 实际开始时间:
-    ActBeginTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    ActBeginTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 实际完成时间:
-    ActEndTime = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    ActEndTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
     # 批次开始运行班次
     StartBC = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
