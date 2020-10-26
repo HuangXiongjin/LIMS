@@ -39,7 +39,12 @@
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
-              <el-table-column prop="PlanStatus" label="状态"></el-table-column>
+              <el-table-column prop="PlanStatus" label="状态">
+                <template slot-scope="scope">
+                  <span class="color-darkblue" v-if="scope.row.PlanStatus === '已分批'">{{ scope.row.PlanStatus }}</span>
+                  <span class="color-orange" v-if="scope.row.PlanStatus === '待分批'">{{ scope.row.PlanStatus }}</span>
+                </template>
+              </el-table-column>
               <el-table-column prop="Description" label="描述"></el-table-column>
               <el-table-column prop="CreateTimeTime" label="创建/同步时间"></el-table-column>
             </el-table>
@@ -72,7 +77,7 @@
       <el-row v-show="steps == 1">
         <el-col :span='24'>
           <div class="platformContainer">
-            <p class="marginBottom text-size-20">选中订单数据统计</p>
+            <p class="marginBottom text-size-20">已选中订单</p>
             <el-row v-for="(item,index) in selectPlanList" :key="index">
               <el-col :span="24">
                 <el-col :span="4">
@@ -97,6 +102,29 @@
                 <el-col :span="4">
                   <p class="marginBottom">分配批数</p>
                   <p class="marginBottom color-lightgreen">{{ item.BatchNum }}</p>
+                </el-col>
+              </el-col>
+            </el-row>
+          </div>
+          <div class="platformContainer">
+            <p class="marginBottom text-size-20">未选中待分批的订单</p>
+            <el-row v-for="(item,index) in unSelectPlanList" :key="index">
+              <el-col :span="24" class="text-center">
+                <el-col :span="6">
+                  <p class="marginBottom">订单号</p>
+                  <p class="marginBottom color-orange">{{ item.PlanNum }}</p>
+                </el-col>
+                <el-col :span="6">
+                  <p class="marginBottom">品名</p>
+                  <p class="marginBottom color-orange">{{ item.BrandName }}</p>
+                </el-col>
+                <el-col :span="6">
+                  <p class="marginBottom">计划产量</p>
+                  <p class="marginBottom color-orange">{{ item.PlanQuantity }}</p>
+                </el-col>
+                <el-col :span="6">
+                  <p class="marginBottom">单位</p>
+                  <p class="marginBottom color-orange">{{ item.Unit }}</p>
                 </el-col>
               </el-col>
             </el-row>
@@ -208,6 +236,7 @@
             PlanNum:"",
             BrandCode:"",
             BrandName:"",
+            Unit:"",
             PlanQuantity:"",
             Description:""
           },
@@ -217,6 +246,7 @@
           }
         },
         selectPlanList:[],
+        unSelectPlanList:[],
         selectPlanBatchTotal:0,
         PlanManagerTableData:{
           data:[],
@@ -252,6 +282,7 @@
         }).then(res => {
           if(res.data.code === "200"){
             this.planTableData.formField.BrandName = res.data.data.rows[0].BrandName
+            this.planTableData.formField.Unit = res.data.data.rows[0].Unit
           }else{
             this.$message({
               type: 'info',
@@ -263,8 +294,22 @@
       nextStep(){
         if(this.steps == 0){
           if(this.planTableData.multipleSelection.length > 0){
-            this.steps++
-            this.getselectpaichanrule()
+            var isFlag = true
+            this.planTableData.multipleSelection.forEach(item =>{
+              if(item.PlanStatus === "已分批"){
+                isFlag = false
+              }
+            })
+            if(isFlag){
+              this.steps++
+              this.getselectpaichanrule()
+              this.getUnSelectPlan()
+            }else{
+              this.$message({
+                type: 'info',
+                message: "只允许选择待分批计划"
+              });
+            }
           }else{
             this.$message({
               type: 'info',
@@ -376,6 +421,7 @@
             PlanQuantity:this.planTableData.formField.PlanQuantity,
             BrandName:this.planTableData.formField.BrandName,
             BrandCode:this.planTableData.formField.BrandCode,
+            Unit:this.planTableData.formField.Unit,
             PlanStatus:"待分批",
             CreateTimeTime:moment().format("YYYY-MM-DD HH:mm:ss"),
           }
@@ -397,7 +443,7 @@
           })
         }
       },
-      //获取排产参数
+      //选中订单获取排产参数
       getselectpaichanrule(){
         var that = this
         var params = {
@@ -419,6 +465,17 @@
             });
           }
         })
+      },
+      //获取未选中订单
+      getUnSelectPlan(){
+        this.unSelectPlanList = []
+        this.planTableData.data.forEach(item => {
+          if(!this.planTableData.multipleSelection.includes(item)){
+            if(item.PlanStatus === "待分批"){
+              this.unSelectPlanList.push(item)
+            }
+          }
+        });
       },
       //批次计划
       getPlanManagerTableData(){

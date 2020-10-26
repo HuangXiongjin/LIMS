@@ -898,14 +898,26 @@ var moment=require('moment')
         var params={
           datalist:JSON.stringify(this.datalist)
         }
-        // this.$confirm('是否多批次审核通过, 是否继续?', '提示', {
-        //   confirmButtonText: '确定',
-        //   cancelButtonText: '取消',
-        //   type: 'warning'
-        // }).then(() => {})
-        this.axios.post('/api/checkPlanManager',this.qs.stringify(params)).then((res) => {
-           console.log(res)
+        this.$confirm('是否通过多批次审核, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.axios.post('/api/checkPlanManager',this.qs.stringify(params)).then((res) => {
+           if(res.data.code==='200'){
+             this.$message({
+               type:'success',
+               message:'多批次下发成功'
+             })
+             this.getPlanManager()
+           }
          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });  
       },
       xfHandleSizeChange(limit){ //下发批次计划 每页条数切换
         this.xfTableData.limit = limit
