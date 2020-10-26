@@ -28,7 +28,8 @@ class PlanStatus(Enum):
 
 #计划ZYPlan
 class ZYPlanStatus(Enum):
-    Confirm = "已选设备" #已选设备
+    Produced = "待生产" #已选设备
+    Finshed = "已完成"  # 已选设备
     READY = "生产前准备"  # 准备
     Produncting = "计划进行"  # 计划进行
     Clear = "清场"  # 清场

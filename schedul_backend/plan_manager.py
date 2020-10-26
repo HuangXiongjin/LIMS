@@ -79,7 +79,7 @@ def makeZYPlanZYTask(id):
                 zyplan.Unit = ocalss.Unit
                 zyplan.EnterTime = ""
                 zyplan.PlanBeginTime = ""
-                zyplan.ZYPlanStatus = ""
+                zyplan.ZYPlanStatus = Global.ZYPlanStatus.Produced.value
                 zyplan.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
                 zyplan.INFStatus = Global.TASKSTATUS.NEW.value
                 zyplan.WMSStatus = Global.TASKSTATUS.NEW.value
