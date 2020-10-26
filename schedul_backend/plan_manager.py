@@ -226,6 +226,29 @@ def checkPlanManager():
             logger.error(e)
             insertSyslog("error", "审核计划报错Error：" + str(e), current_user.Name)
             return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+@batch_plan.route('/checkPlanManagerSingle', methods=['POST', 'GET'])
+def checkPlanManagerSingle():
+    '''
+    审核计划
+    :return:
+    '''
+    if request.method == 'POST':
+        data = request.values  # 返回请求中的参数和form
+        try:
+            PlanStatus = data.get("PlanStatus")
+            Description = data.get("Describtion")
+            ID = data.get("ID")
+            oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
+            oclassplan.PlanStatus = PlanStatus
+            oclassplan.Description = Description
+            db_session.commit()
+            return json.dumps({"code": "200", "message": "OK"})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "审核计划报错Error：" + str(e), current_user.Name)
+            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
 
 @batch_plan.route('/createZYPlanZYtask', methods=['POST', 'GET'])
 def createZYPlanZYtask():
