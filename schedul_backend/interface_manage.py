@@ -222,10 +222,11 @@ def WMS_SendPlan():
                     oclass = db_session.query(ZYTask).filter(ZYTask.BatchID == plan.BatchID,
                                                              ZYTask.BrandCode == plan.BrandCode).all()
                     for oc in oclass:
-                        dic.append({"PlanNo": plan.ID, "ZYPlanNo": oclass.ID, "BrandCode": oclass.BrandCode,
-                                    "BrandName": oclass.BrandName, "BatchID": oclass.BatchID,
-                                    "Weight": oclass.PlanQuantity, "Unit": oclass.Unit, "EQPCode": oclass.EQPCode, "EQPName":oclass.EQPName})
+                        dic.append({"PlanNo": plan.ID, "ZYPlanNo": oc.ID, "BrandCode": oc.BrandCode,
+                                    "BrandName": oc.BrandName, "BatchID": oc.BatchID,
+                                    "Weight": oc.PlanQuantity, "Unit": oc.Unit, "EQPCode": oc.EQPCode, "EQPName":oc.EQPName})
                     plan.PlanStatus = Global.PlanStatus.FSWMS.value
+                    db_session.commit()
                 url = Global.WMSurl + "api/WbeApi/RecvTransInfon"
                 dir = {}
                 dir["zyplan_list"] = dic
@@ -235,9 +236,9 @@ def WMS_SendPlan():
                 responjson = eval(responjson)
                 if responjson.get("code") != "0":
                     return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！" + responjson.get("msg")})
-                db_session.commit()
                 return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
+            db_session.rollback()
             print("调用WMS_SendPlan接口报错！")
             return json.dumps("调用WMS_SendPlan接口报错！")
 @interface_manage.route('/WMS_SendMatils', methods=['GET', 'POST'])
