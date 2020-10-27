@@ -212,8 +212,7 @@
       Searcheq(){
         var params={
           tableName:'ProductEquipment',
-          field:'PUName',
-          fieldvalue:this.PUName
+          PUName:this.PUName
         }
         this.axios.get("/api/CUID",{params: params}).then(res => {
           if(res.data.code === "200"){
