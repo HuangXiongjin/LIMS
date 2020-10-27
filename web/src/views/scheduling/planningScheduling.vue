@@ -202,10 +202,14 @@
                 <el-button type="primary" @click="saveSelectedEq">保存</el-button>
               </span>
               <el-dialog title="冲突信息" :visible.sync="ctdialogTableVisible" width='80%' :modal=false>
-                  <el-table :data="ctlist">
-                   <el-table-column v-for="item in tipstableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width' style='color:red;'></el-table-column>
+                  <el-table :data="ctlist" class="ctTable">
+                    <el-table-column v-for="item in tipstableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width' style='color:red;'></el-table-column>
                   </el-table>
+                  <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="ctdialogTableVisible = false" size='small'>确 定</el-button>
+                  </span>
               </el-dialog>
+
             </el-dialog>
         </el-col>
 
@@ -341,9 +345,12 @@
                 <el-button type="primary" @click="saveSelectedEq">保存</el-button>
               </span>
               <el-dialog title="冲突信息" :visible.sync="ctdialogTableVisible" width='80%' :modal=false>
-                  <el-table :data="ctlist">
-                   <el-table-column v-for="item in tipstableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                  <el-table :data="ctlist" class="ctTable">
+                    <el-table-column v-for="item in tipstableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                   </el-table>
+                  <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="ctdialogTableVisible = false" size='small'>确 定</el-button>
+                  </span>
               </el-dialog>
             </el-dialog>
         </el-col>
@@ -481,9 +488,12 @@
                 <el-button type="primary" @click="saveSelectedEq">保存</el-button>
               </span>
               <el-dialog title="冲突信息" :visible.sync="ctdialogTableVisible" width='80%' :modal=false>
-                  <el-table :data="ctlist">
-                   <el-table-column v-for="item in tipstableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width' class="color-red"></el-table-column>
+                  <el-table :data="ctlist" class="ctTable">
+                    <el-table-column v-for="item in tipstableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width' class="color-red"></el-table-column>
                   </el-table>
+                  <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="ctdialogTableVisible = false" size='small'>确 定</el-button>
+                  </span>
               </el-dialog>
             </el-dialog>
         </el-col>
@@ -777,6 +787,7 @@ var moment=require('moment')
         this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
           if(res.data.code==='200'){
             this.getSelectedEq()
+            this.getYxfBatch()
             this.$message({
               type:'success',
               message:res.data.message
