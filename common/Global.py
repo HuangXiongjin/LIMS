@@ -1,7 +1,7 @@
 from enum import Enum, IntEnum, unique
 
 #连接WMS接口URL
-WMSurl = "http://192.168.20.55:8090/"#192.168.20.68 192.168.20.55
+WMSurl = "http://192.168.20.68:8090/"#192.168.20.68 192.168.20.55
 
 GLOBAL_PLANSTARTTIME= "08:30:00"
 GLOBAL_PLANENDTIME= "08:29:59"

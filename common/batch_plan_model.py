@@ -421,6 +421,9 @@ class ProductRule(Base):
     # 是否使用:
     IsUsed = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
+    # 发送WMS:
+    SendFlag = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
     # # 可用生产线:
     # AvalProductLine = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
 

@@ -9,7 +9,7 @@ from common.BSFramwork import AlchemyEncoder
 from suds.client import Client
 import common.Global
 from common.batch_plan_model import ZYPlan, ZYPlanWMS, StapleProducts, WMSTrayNumber, MaterialBOM, SchedulingStock, \
-    WMStatusLoad, Material, PlanManager, ProcessUnit, BatchMaterialInfo
+    WMStatusLoad, Material, PlanManager, ProcessUnit, BatchMaterialInfo, ProductRule, ZYTask
 from database.connect_db import CONNECT_DATABASE
 from common import Global
 import json
@@ -177,7 +177,7 @@ headers = {
 
 @interface_manage.route('/WMS_SendMatilInfo', methods=['GET', 'POST'])
 def WMS_SendMatilInfo():
-    '''同步物料信息到WMS'''
+    '''同步药品信息到WMS'''
     if request.method == 'POST':
         data = request.values
         try:
@@ -187,10 +187,9 @@ def WMS_SendMatilInfo():
                 dic = []
                 for key in jsonnumber:
                     id = int(key)
-                    oclass = db_session.query(Material).filter(Material.ID == id).first()
-                    dic.append({"materialcode": oclass.MATCode, "materialName": oclass.MATName,
-                                "materialtype": oclass.MATType, "Unit": "", "specification": oclass.Grade})
-                    oclass.IsSend = "已发送"
+                    oclass = db_session.query(ProductRule).filter(ProductRule.ID == id).first()
+                    dic.append({"BrandCode": oclass.BrandCode, "BrandName": oclass.BrandName})
+                    oclass.SendFlag = "已发送"
                 url = Global.WMSurl + "api/WbeApi/RecvMaterialInfon"
                 dir = {}
                 dir["material_list"] = dic
@@ -207,9 +206,9 @@ def WMS_SendMatilInfo():
             return json.dumps("调用WMS_SendPlan接口报错！")
 
 
-@interface_manage.route('/WMS_SendZYPlan', methods=['GET', 'POST'])
-def WMS_SendZYPlan():
-    '''发送投料计划到WMS'''
+@interface_manage.route('/WMS_SendPlan', methods=['GET', 'POST'])
+def WMS_SendPlan():
+    '''发送投料任务到WMS'''
     if request.method == 'POST':
         data = request.values
         try:
@@ -220,10 +219,12 @@ def WMS_SendZYPlan():
                 for key in jsonnumber:
                     id = int(key)
                     plan = db_session.query(PlanManager).filter(PlanManager.ID == id).first()
-                    oclass = db_session.query(ZYPlan).filter(ZYPlan.BatchID == plan.BatchID, ZYPlan.BrandCode == plan.BrandCode, ZYPlan.PUName == "备料段").first()
-                    dic.append({"PlanNo": oclass.PlanNo, "ZYPlanNo": oclass.ID, "BrandCode": oclass.BrandCode,
-                                "BrandName": oclass.BrandName, "BatchID": oclass.BatchID,
-                                "Weight": oclass.PlanQuantity, "Unit": oclass.Unit})
+                    oclass = db_session.query(ZYTask).filter(ZYTask.BatchID == plan.BatchID,
+                                                             ZYTask.BrandCode == plan.BrandCode).all()
+                    for oc in oclass:
+                        dic.append({"PlanNo": plan.ID, "ZYPlanNo": oclass.ID, "BrandCode": oclass.BrandCode,
+                                    "BrandName": oclass.BrandName, "BatchID": oclass.BatchID,
+                                    "Weight": oclass.PlanQuantity, "Unit": oclass.Unit, "EQPCode": oclass.EQPCode, "EQPName":oclass.EQPName})
                     plan.PlanStatus = Global.PlanStatus.FSWMS.value
                 url = Global.WMSurl + "api/WbeApi/RecvTransInfon"
                 dir = {}
@@ -252,10 +253,11 @@ def WMS_SendMatils():
                 for key in jsonnumber:
                     id = int(key)
                     oclass = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.ID == id).first()
-                    zyplan = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID, ZYPlan.PUName == "备料段").first()
-                    dic.append({"ZYPlanNo": zyplan.ID, "BrandCode": zyplan.BrandCode, "BrandName": zyplan.BrandName,
+                    zytask = db_session.query(ZYTask).filter(ZYTask.BatchID == oclass.BatchID, ZYTask.BrandCode == oclass.BrandCode, ZYTask.EQPCode == oclass.EQPCode).first()
+                    dic.append({"ZYPlanNo": zytask.ID, "BrandCode": zytask.BrandCode, "BrandName": zytask.BrandName,
                                 "BatchID": oclass.BatchID, "FlagCode": oclass.BucketNum,
-                                "Weight": oclass.BucketWeight, "Unit": oclass.Unit, "Flag": oclass.Flag, "Seq": oclass.FeedingSeq})
+                                "Weight": oclass.BucketWeight, "Unit": oclass.Unit, "Flag": oclass.Flag, "Seq": oclass.FeedingSeq,
+                                "EQPCode": oclass.EQPCode, "EQPName":oclass.EQPName})
                     oclass.SendFlag = "已发送"
                 url = Global.WMSurl + "api/WbeApi/RecvContanerInfon"
                 dir = {}
