@@ -104,8 +104,7 @@
         var that = this
         var params = {
           tableName: "Material",
-          field:"SendFlag",
-          fieldvalue:this.radioGroup,
+          SendFlag:this.radioGroup,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }

@@ -141,8 +141,7 @@
         var that = this
         var params = {
           tableName: "MaterialBOM",
-          field:"BrandName",
-          fieldvalue:BrandName,
+          BrandName:BrandName,
         }
         this.axios.get("/api/CUID",{
           params: params
