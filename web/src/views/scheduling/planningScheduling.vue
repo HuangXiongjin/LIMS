@@ -109,7 +109,7 @@
                   </el-pagination>
             </div>
             <el-dialog title="工艺段配置计划" :visible.sync="dialogTableVisible" width='95%'>
-              <el-row :gutter='20'>
+              <el-row>
               <el-col :span='4'>
                   <el-steps :active="configactive" direction="vertical" finish-status="wait" space='100px'>
                     <el-step title="基础配置" @click.native="Activeconfig(0)"></el-step>
@@ -203,7 +203,7 @@
               </span>
               <el-dialog title="冲突信息" :visible.sync="ctdialogTableVisible" width='80%' :modal=false>
                   <el-table :data="ctlist">
-                   <el-table-column v-for="item in tipstableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                   <el-table-column v-for="item in tipstableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width' style='color:red;'></el-table-column>
                   </el-table>
               </el-dialog>
             </el-dialog>
@@ -248,7 +248,7 @@
                   </el-pagination>
             </div>
             <el-dialog title="工艺段配置计划" :visible.sync="dialogTableVisible" width='95%'>
-              <el-row :gutter='20'>
+              <el-row>
               <el-col :span='4'>
                   <el-steps :active="configactive" direction="vertical" finish-status="wait" space='100px'>
                     <el-step title="基础配置" @click.native="Activeconfig(0)"></el-step>
@@ -388,7 +388,7 @@
                   </el-pagination>
             </div>
             <el-dialog title="工艺段配置计划" :visible.sync="dialogTableVisible" width='95%'>
-              <el-row :gutter='20'>
+              <el-row >
               <el-col :span='4'>
                   <el-steps :active="configactive" direction="vertical" finish-status="wait" space='100px'>
                     <el-step title="基础配置" @click.native="Activeconfig(0)"></el-step>
