@@ -125,8 +125,7 @@
           ]},
           {label: '物料系统',icon:"fa fa-leaf",mainMenu:[
             {title:"物料基础信息",icon:"el-icon-box",url:"/MaterialInformation"},
-            {title:"物料BOM表",icon:"el-icon-box",url:"/MaterialBOM"},
-            {title:"物料明细表",icon:"el-icon-box",url:"/MaterialDetail"},
+            {title:"物料BOM",icon:"el-icon-box",url:"/MaterialBOM"},
             {title:"库存管理",icon:"el-icon-box",url:""},
             {title:"出入库管理",icon:"el-icon-box",url:""},
             {title:"物料追溯",icon:"el-icon-box",url:"/MaterialTraceability"},

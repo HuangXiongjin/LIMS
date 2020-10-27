@@ -39,7 +39,6 @@ import ProductionMonitoring from '@/views/production/ProductionMonitoring'
 //物料管理
 import MaterialInformation from '@/views/material/MaterialInformation'
 import MaterialBOM from '@/views/material/MaterialBOM'
-import MaterialDetail from '@/views/material/MaterialDetail'
 import MaterialTraceability from '@/views/material/MaterialTraceability'
 
 Vue.use(Router)
@@ -85,12 +84,11 @@ export default new Router({
         {path:'/BatchDetails',name:'BatchDetails',meta:{ title:'批次实施明细',type:"排产调度系统"},component:BatchDetails},
 
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据系统"},component:MaterialBalanceStatistics},
-        {path:'/MaterialTraceability',name:'MaterialTraceability',meta:{ title:'物料追溯',type:"生产数据系统"},component:MaterialTraceability},
         {path:'/TrendQuery',name:'TrendQuery',meta:{ title:'生产数据趋势分析',type:"生产数据系统"},component:TrendQuery},
 
         {path:'/MaterialInformation',name:'MaterialInformation',meta:{ title:'物料信息',type:"物料系统"},component:MaterialInformation},
-        {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'物料清单',type:"物料系统"},component:MaterialBOM},
-        {path:'/MaterialDetail',name:'MaterialDetail',meta:{ title:'物料详情',type:"物料系统"},component:MaterialDetail},
+        {path:'/MaterialBOM',name:'MaterialBOM',meta:{ title:'物料BOM',type:"物料系统"},component:MaterialBOM},
+        {path:'/MaterialTraceability',name:'MaterialTraceability',meta:{ title:'物料追溯',type:"生产数据系统"},component:MaterialTraceability},
 
         {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'批生产记录',type:"电子批记录"},component:ElectronicBatchRecord},
         {path:'/BatchRecordFiles',name:'BatchRecordFiles',meta:{ title:'批记录管理',type:"电子批记录"},component:BatchRecordFiles},

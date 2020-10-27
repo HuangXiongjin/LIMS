@@ -20,7 +20,7 @@
                 <el-button :type="item.type" size="small" @click="handleForm(item.label)">{{ item.label }}</el-button>
               </el-form-item>
             </el-form>
-            <el-table :data="BOMList" border size="small" @selection-change="handleSelectionChange">
+            <el-table :data="BOMList" border size="small" ref="multipleTable" @selection-change="handleSelectionChange" @row-click="handleRowClick">
               <el-table-column type="selection"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="MATCode" label="物料编码"></el-table-column>
@@ -46,7 +46,9 @@
                   <el-input v-model="formField.BatchSingleMATWeight"></el-input>
                 </el-form-item>
                 <el-form-item label="单位">
-                  <el-input v-model="formField.Unit"></el-input>
+                  <el-select v-model="formField.Unit" placeholder="请选择">
+                    <el-option v-for="(item,index) in UnitTableData" :key="index" :label="item.UnitValue" :value="item.UnitValue"></el-option>
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="百分比">
                   <el-input v-model="formField.BatchPercentage"></el-input>
@@ -96,12 +98,32 @@
           Grade:"",
         },
         addloading:false,
+        UnitTableData:[],
       }
     },
     created(){
+      this.getUnitTableData()
       this.getScheduleTableData()
     },
     methods:{
+      getUnitTableData(){ //获取单位
+        var that = this
+        var params = {
+          tableName: "Unit",
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.UnitTableData = res.data.data.rows
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
       getScheduleTableData(){ //获取品名
         var that = this
         var params = {
@@ -159,20 +181,14 @@
       handleSelectionChange(row){
         this.multipleSelection = row
       },
+      handleRowClick(row){
+        this.$refs.multipleTable.toggleRowSelection(row)
+      },
       handleForm(label){
         if(label === "添加"){
           if(this.BrandActive){
             this.dialogVisible = true
             this.dialogTitle = label
-            this.formField = {
-              MATCode:"",
-              MATName:"",
-              BatchTotalWeight:"",
-              BatchSingleMATWeight:"",
-              Unit:"",
-              BatchPercentage:"",
-              Grade:"",
-            }
           }else{
             this.$message({
               type: 'info',

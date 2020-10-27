@@ -29,9 +29,6 @@
             {prop:"BatchTimeLength",label:" 批次时长",type:"input",value:""},
             {prop:"Version",label:"版本",type:"input",value:""},
             {prop:"Desc",label:"描述",type:"input",value:""},
-            {prop:"Publish_date",label:"发布日期",type:"input",value:"",searchProp:false,canSubmit:false},
-            {prop:"Appy_date",label:"使用日期",type:"input",value:"",searchProp:false,canSubmit:false},
-            {prop:"IsUsed",label:"是否使用",type:"select",value:"",Downtable:'isFlag',showDownField:'Description'},//显示下拉框，显示是、否
           ],
           data:[],
           limit:5,
