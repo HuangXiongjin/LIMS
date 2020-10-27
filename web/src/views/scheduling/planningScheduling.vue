@@ -856,7 +856,7 @@ var moment=require('moment')
             Describtion:'',
             ID:id
           }
-          this.axios.post('/api/checkPlanManager',this.qs.stringify(params)).then((res) => {
+          this.axios.post('/api/checkPlanManagerSingle',this.qs.stringify(params)).then((res) => {
             if(res.data.code==='200'){
               this.getPlanManager()
                this.$message({
@@ -1036,6 +1036,13 @@ var moment=require('moment')
           }
         })
         if(flag){
+        this.datalist=this.datalist.map((item) => {
+          return {
+            PlanStatus:'待配置',
+            Description:'',
+            ID:item.ID
+                }
+        })
         var params={
           datalist:JSON.stringify(this.datalist)
         }
