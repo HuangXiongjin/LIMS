@@ -5,7 +5,7 @@
         <span>产品定义</span>
       </div>
       <div class="platformContainer">
-        <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable"></tableView>
+        <tableView class="" :tableData="PermissionTableData" @getTableData="getPermissionTable" @sendToWMS="sendToWMS"></tableView>
       </div>
     </el-col>
   </el-row>
@@ -29,6 +29,7 @@
             {prop:"BatchTimeLength",label:" 批次时长",type:"input",value:""},
             {prop:"Version",label:"版本",type:"input",value:""},
             {prop:"Desc",label:"描述",type:"input",value:""},
+            {prop:"SendFlag",label:"发送标识",disabled:true,type:"input",value:"",defaultValue:"待发送",dataJudge:[{color:"#168DD7",value:"已发送"},{color:"#FA7D00",value:"待发送"}]},
           ],
           data:[],
           limit:5,
@@ -44,6 +45,7 @@
             {type:"primary",label:"添加"},
             {type:"warning",label:"修改"},
             {type:"danger",label:"删除"},
+            {type:"primary",label:"发送到WMS",clickEvent:"sendToWMS"},
           ],
         },
       }
@@ -71,6 +73,42 @@
           console.log("请求错误")
         }
         )
+      },
+      sendToWMS(){
+        if(this.PermissionTableData.multipleSelection.length > 0){
+          var mulId = []
+          var params = {}
+          this.PermissionTableData.multipleSelection.forEach(item =>{
+            mulId.push({id:item.ID});
+          })
+          params.sendData = JSON.stringify(mulId)
+          this.$confirm('确定发送所选品名信息到WMS？', '提示', {
+            distinguishCancelAndClose:true,
+            type: 'warning'
+          }).then(()  => {
+            this.axios.post("/api/WMS_SendMatilInfo",this.qs.stringify(params)).then(res =>{
+              if(res.data.code === "200"){
+                this.$message({
+                  type: 'success',
+                  message: res.data.message
+                });
+              }
+              this.getPermissionTable()
+            },res =>{
+              console.log("请求错误")
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消发送'
+            });
+          });
+        }else{
+          this.$message({
+            type: 'info',
+            message: "请选择品名"
+          });
+        }
       },
     }
   }

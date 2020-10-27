@@ -1,58 +1,52 @@
 <template>
   <el-row :gutter="15">
     <el-col :span="4">
-         <div class="platformContainer">
-            <p class="marginBottom">选择要设置工序的品名</p>
-            <el-input class="marginBottom" v-model="productName" placeholder="关键字搜索" @change="handleChangeProductName"></el-input>
-            <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in results" :key="index" v-bind:effect="item.BrandName===BrandActive?'dark':'plain'" @click="clickBrandTag(item.BrandName,item.BrandCode)">{{item.BrandName}}</el-tag>
-          </div>
+       <div class="platformContainer">
+          <p class="marginBottom">选择要设置工序的品名</p>
+          <el-input class="marginBottom" v-model="productName" placeholder="关键字搜索" @change="handleChangeProductName"></el-input>
+          <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in results" :key="index" v-bind:effect="item.BrandName===BrandActive?'dark':'plain'" @click="clickBrandTag(item.BrandName,item.BrandCode)">{{item.BrandName}}</el-tag>
+       </div>
     </el-col>
     <el-col :span='20'>
-        <el-row>
-          <el-col :span='24'>
-            <div class="platformContainer">
-              <p>当前选择的品名：{{BrandActive}}</p>
-            </div>
-            <div class="platformContainer">
-              <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer" @click='showPGL(item.PUName,item.PUCode,index)'>
-                    <div class="container-col" :class='{"pactive":index===ActiveIndex}'>
-                      <span class="text-size-14">{{ item.PUName }}</span>
-                    </div>
+      <el-row>
+        <el-col :span='24'>
+          <div class="platformContainer">
+            <p>当前选择的品名：{{BrandActive}}</p>
+          </div>
+          <div class="platformContainer" v-if="!dialogTableVisible">
+            <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer" @click='showPGL(item.PUName,item.PUCode,index)'>
+              <div class="container-col" :class='{"pactive":index===ActiveIndex}'>
+                <span class="text-size-14">{{ item.PUName }}</span>
               </div>
             </div>
-          </el-col>
-          <el-col :span='24'>
-            <div class='platformContainer'>
-              <el-upload
-                class="marginBottom"
-                drag
-                accept=".doc,.docx"
-                action="/api/batchmodelexport"
-                :limit="1"
-                :on-preview="handlePreview"
-                :before-remove="beforeRemove"
-                :before-upload="handleBeforeUpload"
-                :on-remove="handleRemove"
-                :on-exceed="handleExceed"
-                :on-success='submitSuccess'
-                :on-error='submitError'
-                :file-list="fileList">
-                <i class="el-icon-upload"></i>
-                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                <div slot="tip" class="el-upload__tip">只能上传.docx 批记录表</div>
-              </el-upload>
-              <el-button type="primary" @click="FileHTMLPreview" size='small' v-if='ButtonVisible'>转换并配置接口参数</el-button>
-              <el-dialog title="转换后的批记录模板" :visible.sync="dialogTableVisible" width="80%">
-                <el-col :span="24">
-                  <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
-                </el-col>
-                <div slot="footer" class="dialog-footer">
-                  <el-button @click="dialogTableVisible = false">取 消</el-button>
-                </div>
-              </el-dialog>
-            </div>
-          </el-col>
-        </el-row>
+          </div>
+          <div class='platformContainer' v-if="!dialogTableVisible && BrandActive">
+            <el-upload
+              class="marginBottom"
+              drag
+              accept=".doc,.docx"
+              action="/api/batchmodelexport"
+              :limit="1"
+              :on-preview="handlePreview"
+              :before-remove="beforeRemove"
+              :before-upload="handleBeforeUpload"
+              :on-remove="handleRemove"
+              :on-exceed="handleExceed"
+              :on-success='submitSuccess'
+              :on-error='submitError'
+              :file-list="fileList">
+              <i class="el-icon-upload"></i>
+              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+              <div slot="tip" class="el-upload__tip">只能上传.docx 批记录表</div>
+            </el-upload>
+            <el-button type="primary" @click="FileHTMLPreview" size='small' v-if='ButtonVisible'>转换并配置接口参数</el-button>
+          </div>
+          <div class="platformContainer" v-if="dialogTableVisible">
+            <p>转换后的批记录模板</p>
+            <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
+          </div>
+        </el-col>
+      </el-row>
     </el-col>
   </el-row>
 </template>

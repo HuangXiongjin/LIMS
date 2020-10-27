@@ -15,14 +15,6 @@
           <el-form-item>
             <el-button type="danger" size="small" @click="handleForm('删除')">删除</el-button>
           </el-form-item>
-          <el-form-item>
-            <el-button type="primary" size="small" @click="sendToWMS">发送物料信息</el-button>
-          </el-form-item>
-          <el-form-item class="floatRight">
-            <el-radio-group v-model="radioGroup" size="small" @change="Selectstatus">
-              <el-radio-button v-for="(item,index) in status" :label="item.name" :key="index"></el-radio-button>
-            </el-radio-group>
-          </el-form-item>
         </el-form>
         <el-table :data="PlanManagerTableData.data" border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
           <el-table-column type="selection"></el-table-column>
@@ -30,7 +22,6 @@
           <el-table-column prop="MATName" label="物料名称"></el-table-column>
           <el-table-column prop="MATType" label="物料类型"></el-table-column>
           <el-table-column prop="Desc" label="物料描述"></el-table-column>
-          <el-table-column prop="SendFlag" label="发送WMS标识"></el-table-column>
         </el-table>
         <div class="paginationClass">
           <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
@@ -88,11 +79,6 @@
             Desc:"",
           },
         },
-        status:[
-          {name:"待发送"},
-          {name:"已发送"},
-        ],
-        radioGroup:"待发送"
       }
     },
     mounted(){
@@ -104,7 +90,6 @@
         var that = this
         var params = {
           tableName: "Material",
-          SendFlag:this.radioGroup,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }
@@ -138,42 +123,6 @@
       },
       Selectstatus(){
         this.getPlanManagerTableData()
-      },
-      sendToWMS(){
-        if(this.PlanManagerTableData.multipleSelection.length > 0){
-          var mulId = []
-          var params = {}
-          this.PlanManagerTableData.multipleSelection.forEach(item =>{
-            mulId.push({id:item.ID});
-          })
-          params.sendData = JSON.stringify(mulId)
-          this.$confirm('确定发送所选计划的物料信息到WMS？', '提示', {
-            distinguishCancelAndClose:true,
-            type: 'warning'
-          }).then(()  => {
-            this.axios.post("/api/WMS_SendMatilInfo",this.qs.stringify(params)).then(res =>{
-              if(res.data.code === "200"){
-                this.$message({
-                  type: 'success',
-                  message: res.data.message
-                });
-              }
-              this.getPlanManagerTableData()
-            },res =>{
-              console.log("请求错误")
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消发送'
-            });
-          });
-        }else{
-          this.$message({
-            type: 'info',
-            message: "请选择计划"
-          });
-        }
       },
       handleForm(label){
         if(label === "添加"){
@@ -243,7 +192,6 @@
             MATName:this.PlanManagerTableData.formField.MATName,
             MATType:this.PlanManagerTableData.formField.MATType,
             Desc:this.PlanManagerTableData.formField.Desc,
-            SendFlag:"待发送",
           }
           this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
             if(res.data.code === "200"){
@@ -270,7 +218,6 @@
             MATName:this.PlanManagerTableData.formField.MATName,
             MATType:this.PlanManagerTableData.formField.MATType,
             Desc:this.PlanManagerTableData.formField.Desc,
-            SendFlag:"待发送",
           }
           this.axios.get("/api/CUID",{
             params:params

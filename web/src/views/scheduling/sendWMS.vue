@@ -471,14 +471,14 @@
       },
       //发送物料明细到WMS
       sendMaterialInfo(){
-        if(this.PlanManagerTableData.multipleSelection.length > 0){
+        if(this.MaterialTableData.multipleSelection.length > 0){
           var mulId = []
-          this.PlanManagerTableData.multipleSelection.forEach(item =>{
+          this.MaterialTableData.multipleSelection.forEach(item =>{
             mulId.push({id:item.ID});
           })
           var params = {}
           params.sendData = JSON.stringify(mulId)
-          this.$confirm('确定发送此批的投料计划到WMS吗？', '提示', {
+          this.$confirm('确定发送此批的物料明细到WMS吗？', '提示', {
             distinguishCancelAndClose:true,
             type: 'warning'
           }).then(()  => {
@@ -489,7 +489,7 @@
                   message: res.data.message
                 });
               }
-              this.getPlanManagerTableData()
+              this.getMaterialTableData()
             },res =>{
               console.log("请求错误")
             })

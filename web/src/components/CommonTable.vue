@@ -144,14 +144,22 @@
           this.determineSubmitType()
           this.tableData.dialogVisible = true
           this.tableData.column.forEach(item =>{
-            item.value = ""
+            if(item.defaultValue){
+              item.value = item.defaultValue
+            }else{
+              item.value = ""
+            }
           })
         }else if(label === "修改"){
           this.determineSubmitType()
           if(this.tableData.multipleSelection.length == 1){
             this.tableData.dialogVisible = true
             this.tableData.column.forEach(item =>{
-              item.value = this.tableData.multipleSelection[0][item.prop]
+              if(item.defaultValue){
+                item.value = item.defaultValue
+              }else{
+                item.value = this.tableData.multipleSelection[0][item.prop]
+              }
             })
           }else{
             this.$message({
