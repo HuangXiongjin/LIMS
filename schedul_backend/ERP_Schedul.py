@@ -172,11 +172,11 @@ def batchconflictequimentselect():
                     EquipmentBatchRunTime.EndTime.between(str(DateTime +" "+ sft.BeginTime),str(DateTime +" " + sft.EndTime))).all()
                 dict_list = []
                 for i in beginoclass:
-                    if i.PlanNum == PlanNum and i.BatchID == BatchID and i.BrandCode == BrandCode:
+                    if i.BatchID == BatchID and i.BrandCode == BrandCode:
                         continue#跳出当前循环
                     dict_list.append(i)
                 for j in endoclass:
-                    if i.PlanNum == PlanNum and i.BatchID == BatchID and i.BrandCode == BrandCode:
+                    if j.BatchID == BatchID and j.BrandCode == BrandCode:
                         continue
                     if j not in dict_list:
                         dict_list.append(j)
