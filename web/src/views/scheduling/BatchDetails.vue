@@ -40,7 +40,7 @@
           <el-table-column prop="PlanStartTime" label="计划开始时间"></el-table-column>
           <el-table-column prop="PlanEndTime" label="计划结束时间"></el-table-column>
           <el-table-column prop="ActBeginTime" label="实际开始时间"></el-table-column>
-          <el-table-column prop="ActEndTime" label="实际开始时间"></el-table-column>
+          <el-table-column prop="ActEndTime" label="实际结束时间"></el-table-column>
         </el-table>
       </div>
     </el-col>

@@ -26,7 +26,7 @@
             {prop:"BrandName",label:" 产品名称",type:"input",value:""},
             {prop:"BrandType",label:" 产品类型",type:"input",value:""},
             {prop:"BatchWeight",label:" 批生产能力",type:"input",value:""},
-            {prop:"BatchTimeLength",label:" 批次时长",type:"input",value:""},
+            {prop:"Unit",label:" 单位",type:"input",value:""},
             {prop:"Version",label:"版本",type:"input",value:""},
             {prop:"Desc",label:"描述",type:"input",value:""},
             {prop:"SendFlag",label:"发送标识",disabled:true,type:"input",value:"",defaultValue:"待发送",dataJudge:[{color:"#168DD7",value:"已发送"},{color:"#FA7D00",value:"待发送"}]},

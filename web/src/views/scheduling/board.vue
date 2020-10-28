@@ -75,28 +75,28 @@
             var PlanStatus8 = 0
             var PlanStatus9 = 0
             res.data.data.rows.forEach(item =>{
-              if(item.PlanStatus === "新增"){
+              if(item.PlanStatus === "待审核"){
                 PlanStatus1 = PlanStatus1 + 1
               }
-              if(item.PlanStatus === "待审核"){
+              if(item.PlanStatus === "审核未通过"){
                 PlanStatus2 = PlanStatus2 + 1
               }
-              if(item.PlanStatus === "待下发"){
+              if(item.PlanStatus === "待配置"){
                 PlanStatus3 = PlanStatus3 + 1
               }
-              if(item.PlanStatus === "已下发"){
+              if(item.PlanStatus === "待下发"){
                 PlanStatus4 = PlanStatus4 + 1
               }
-              if(item.PlanStatus === "已发送投料计划"){
+              if(item.PlanStatus === "已下发"){
                 PlanStatus5 = PlanStatus5 + 1
               }
-              if(item.PlanStatus === "已发送物料明细"){
+              if(item.PlanStatus === "撤回"){
                 PlanStatus6 = PlanStatus6 + 1
               }
-              if(item.PlanStatus === "已选设备"){
+              if(item.PlanStatus === "已发送投料计划"){
                 PlanStatus7 = PlanStatus7 + 1
               }
-              if(item.PlanStatus === "执行"){
+              if(item.PlanStatus === "已发送物料明细"){
                 PlanStatus8 = PlanStatus8 + 1
               }
               if(item.PlanStatus === "已完成"){
@@ -107,14 +107,14 @@
               }
             })
             that.chartPlanData.rows = [
-              {"状态":"新增","数量":PlanStatus1},
-              {"状态":"待审核","数量":PlanStatus2},
-              {"状态":"待下发","数量":PlanStatus3},
-              {"状态":"已下发","数量":PlanStatus4},
-              {"状态":"已发送投料计划","数量":PlanStatus5},
-              {"状态":"已发送物料明细","数量":PlanStatus6},
-              {"状态":"已选设备","数量":PlanStatus7},
-              {"状态":"执行","数量":PlanStatus8},
+              {"状态":"待审核","数量":PlanStatus1},
+              {"状态":"审核未通过","数量":PlanStatus2},
+              {"状态":"待配置","数量":PlanStatus3},
+              {"状态":"待下发","数量":PlanStatus4},
+              {"状态":"已下发","数量":PlanStatus5},
+              {"状态":"撤回","数量":PlanStatus6},
+              {"状态":"已发送投料计划","数量":PlanStatus7},
+              {"状态":"已发送物料明细","数量":PlanStatus8},
               {"状态":"已完成","数量":PlanStatus9},
             ]
           }else{

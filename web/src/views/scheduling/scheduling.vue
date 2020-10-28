@@ -298,22 +298,9 @@
       nextStep(){
         if(this.steps == 0){
           if(this.planTableData.multipleSelection.length > 0){
-            var isFlag = true
-            this.planTableData.multipleSelection.forEach(item =>{
-              if(item.PlanStatus === "已分批"){
-                isFlag = false
-              }
-            })
-            if(isFlag){
-              this.steps++
-              this.getselectpaichanrule()
-              this.getUnSelectPlan()
-            }else{
-              this.$message({
-                type: 'info',
-                message: "只允许选择待分批计划"
-              });
-            }
+            this.steps++
+            this.getselectpaichanrule()
+            this.getUnSelectPlan()
           }else{
             this.$message({
               type: 'info',
@@ -620,33 +607,46 @@
       },
       planschedul(){
         var that = this
-        var params = {
-          selectPlanList:JSON.stringify(this.selectPlanList),
-        }
-        this.$confirm('确定自动生成批计划？(将生成'+ this.selectPlanBatchTotal +'批)', '提示', {
-          distinguishCancelAndClose:true,
-          type: 'warning'
-        }).then(()  => {
-          this.axios.post("/api/planschedul",this.qs.stringify(params)).then(res => {
-            if(res.data.code === "200"){
-              that.$message({
-                type: 'success',
-                message: res.data.message
-              });
-              this.getPlanManagerTableData()
-            }else{
-              that.$message({
-                type: 'info',
-                message: res.data.message
-              });
-            }
-          })
-        }).catch(() => {
+        var isFlag = true
+        this.planTableData.multipleSelection.forEach(item =>{
+          if(item.PlanStatus === "已分批"){
+            isFlag = false
+          }
+        })
+        if(isFlag){
+          var params = {
+            selectPlanList:JSON.stringify(this.selectPlanList),
+          }
+          this.$confirm('确定自动生成批计划？(将生成'+ this.selectPlanBatchTotal +'批)', '提示', {
+            distinguishCancelAndClose:true,
+            type: 'warning'
+          }).then(()  => {
+            this.axios.post("/api/planschedul",this.qs.stringify(params)).then(res => {
+              if(res.data.code === "200"){
+                that.$message({
+                  type: 'success',
+                  message: res.data.message
+                });
+                this.getPlanManagerTableData()
+              }else{
+                that.$message({
+                  type: 'info',
+                  message: res.data.message
+                });
+              }
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消排产'
+            });
+          });
+        }else{
           this.$message({
             type: 'info',
-            message: '已取消排产'
+            message: "只允许选择待分批计划生成"
           });
-        });
+        }
       },
       seeDescription(index,row){ //查看未通过原因
         this.$alert(row.Description, '未通过原因', {
