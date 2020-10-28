@@ -1073,7 +1073,7 @@ class EletronicBatchDataStore(Base):
     Description = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
 
     # 品名ID
-    BrandID = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 
 # 生成表单的执行语句

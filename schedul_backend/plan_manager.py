@@ -514,14 +514,14 @@ def allUnitDataMutual():
         data = data.to_dict()
         try:
             for key in data.keys():
-                if key == "BrandID":
+                if key == "BrandCode":
                     continue
                 if key == "PUCode":
                     continue
                 if key == "BatchID":
                     continue
                 val = data.get(key)
-                addUpdateEletronicBatchDataStore(data.get("BrandID"), data.get("PUCode"), data.get("BatchID"), key, val)
+                addUpdateEletronicBatchDataStore(data.get("BrandCode"), data.get("PUCode"), data.get("BatchID"), key, val)
             return 'OK'
         except Exception as e:
             db_session.rollback()
@@ -537,8 +537,8 @@ def allUnitDataMutual():
             if len(json_str) > 2:
                 PUCode = data['PUCode']
                 BatchID = data['BatchID']
-                BrandID = data.get("BrandID")
-                oclasss = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.BrandID == BrandID, EletronicBatchDataStore.PUCode == PUCode,
+                BrandCode = data.get("BrandCode")
+                oclasss = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.BrandCode == BrandCode, EletronicBatchDataStore.PUCode == PUCode,
                                                                            EletronicBatchDataStore.BatchID == BatchID).all()
                 dic = {}
                 for oclass in oclasss:
@@ -553,14 +553,14 @@ def allUnitDataMutual():
                               ensure_ascii=False)
 
 
-def addUpdateEletronicBatchDataStore(BrandID, PUCode, BatchID, ke, val):
+def addUpdateEletronicBatchDataStore(BrandCode, PUCode, BatchID, ke, val):
     try:
-        oc = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.BrandID == BrandID,
+        oc = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.BrandID == BrandCode,
                                                               EletronicBatchDataStore.PUCode == PUCode,
                                                               EletronicBatchDataStore.BatchID == BatchID,
                                                               EletronicBatchDataStore.Content == ke).first()
         if oc == None:
-            db_session.add(EletronicBatchDataStore(BrandID=BrandID, BatchID=BatchID, PUCode=PUCode, Content=ke, OperationpValue=val,
+            db_session.add(EletronicBatchDataStore(BrandCode=BrandCode, BatchID=BatchID, PUCode=PUCode, Content=ke, OperationpValue=val,
                                                    Operator=current_user.Name))
         else:
             oc.Content = ke
