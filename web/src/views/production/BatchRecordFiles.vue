@@ -42,7 +42,19 @@
             <el-button type="primary" @click="FileHTMLPreview" size='small' v-if='ButtonVisible'>转换并配置接口参数</el-button>
           </div>
           <div class="platformContainer" v-if="dialogTableVisible">
-            <p>转换后的批记录模板</p>
+            <p class="marginBottom">转换后的批记录模板</p>
+            <el-form :inline="true">
+              <el-form-item label="添加数据类型：">
+                 <el-radio-group v-model="handleCellRadio" size="small">
+                  <el-radio-button label="录入数据字段"></el-radio-button>
+                  <el-radio-button label="采集数据字段"></el-radio-button>
+                  <el-radio-button label="点击按钮"></el-radio-button>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="saveEditField" size='small'>保存配置</el-button>
+              </el-form-item>
+            </el-form>
             <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
           </div>
         </el-col>
@@ -58,20 +70,22 @@
     name: "BatchRecordFiles",
     data(){
       return {
-          productName:'',
-          results:[],
-          BrandActive:'',
-          BrandCode:'',
-          PUCode:'',
-          PUName:'',
-          inProcessList:[],
-          fileList: [],
-          ActiveIndex:10,
-          FileName:'',
-          scheduleTableData:[],
-          filebyte:'',
-          dialogTableVisible:false,
-          ButtonVisible:false
+        productName:'',
+        results:[],
+        BrandActive:'',
+        BrandCode:'',
+        PUCode:'',
+        PUName:'',
+        inProcessList:[],
+        fileList: [],
+        ActiveIndex:10,
+        FileName:'',
+        scheduleTableData:[],
+        filebyte:'',
+        fileID:'',
+        dialogTableVisible:false,
+        ButtonVisible:false,
+        handleCellRadio:"录入数据字段",
       }
     },
     created(){
@@ -87,48 +101,114 @@
             $(".elementTable").find("tbody").css("display","inline-table")
             $(".elementTable").find("td").each(function(){
               if($(this).html() === ""){
-                $(this).html("<p>-</p>")
+                $(this).html("<p>▬</p>")
               }
               $(this).find("p").click(function(){
-                if($(this).hasClass("isInput")){
-                  $(this).attr('class','')
-                }else{
-                  that.$prompt('请输入标签所需数据采集的字段', '提示', {
+                if($(this).hasClass("isInput") || $(this).hasClass("collect")){
+                  that.$confirm('此操作将删除已定义的字段, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
-                  }).then(({ value }) => {
-                    if(value != ""){
-                      $(this).addClass("isInput")
-                      $(this).addClass(value)
-                    }else{
-                      that.$message({
-                        type: 'info',
-                        message: '不能为空'
-                      });
-                    }
+                    type: 'warning'
+                  }).then(() => {
+                    $(this).attr('class','')
+                    $(this).attr('title','')
                   }).catch(() => {
                     that.$message({
                       type: 'info',
-                      message: '取消输入'
+                      message: '已取消删除'
                     });
                   });
+                }else{
+                  if(that.handleCellRadio === "录入数据字段"){
+                    that.$prompt('请输入单元格所需录入数据的字段', '提示', {
+                      confirmButtonText: '确定',
+                      cancelButtonText: '取消',
+                    }).then(({ value }) => {
+                      if(value != ""){
+                        $(this).addClass("isInput")
+                        $(this).attr("data-field",value)
+                        $(this).attr("title",value)
+                      }else{
+                        that.$message({
+                          type: 'info',
+                          message: '不能为空'
+                        });
+                      }
+                    }).catch(() => {
+                      that.$message({
+                        type: 'info',
+                        message: '取消输入'
+                      });
+                    });
+                  }else if(that.handleCellRadio === "采集数据字段"){
+                    that.$prompt('请输入单元格所需采集数据的字段', '提示', {
+                      confirmButtonText: '确定',
+                      cancelButtonText: '取消',
+                    }).then(({ value }) => {
+                      if(value != ""){
+                        $(this).addClass("collect")
+                        $(this).attr("data-field",value)
+                        $(this).attr("title",value)
+                      }else{
+                        that.$message({
+                          type: 'info',
+                          message: '不能为空'
+                        });
+                      }
+                    }).catch(() => {
+                      that.$message({
+                        type: 'info',
+                        message: '取消输入'
+                      });
+                    });
+                  }
                 }
               })
            })
           })
         }
       },
+      saveEditField(){
+        this.$confirm('是否保存当前已配置好的批记录模板?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          var newHtml = $('.elementTable').html();
+          var params = {
+            tableName:"BatchModel",
+            ID:this.fileID,
+            Parameter:newHtml
+          }
+          this.axios.put("/api/CUID",this.qs.stringify(params)).then(res =>{
+            if(res.data.code === "200"){
+              this.$message({
+                type: 'success',
+                message: res.data.message
+              });
+            }else{
+              this.$message({
+                type: 'info',
+                message: res.data.message
+              });
+            }
+          },res =>{
+            console.log("请求错误")
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消保存'
+          });
+        });
+      },
       handlePreview(file){ //点击文件列表提示是否下载
-        var FileName=file.name
-        var params={
-          FileName:FileName
-        }
          this.$confirm('是否下载该文件到本地?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          window.open("/api/ManualDownload?FileName="+FileName) //下载文件
+          window.open("/api/ManualDownload?FileName="+file.name) //下载文件
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -150,6 +230,7 @@
             if(res.data.message.length!==0){
               this.ButtonVisible=true
               this.filebyte=res.data.message[0].Parameter
+              this.fileID=res.data.message[0].ID
             }else{
               this.ButtonVisible=false
             }
@@ -217,6 +298,7 @@
               }
             }
             that.inProcessList = res.data.data.rows.sort(compare('Seq'))
+            this.dialogTableVisible = false
           }else{
             that.$message({
               type: 'info',

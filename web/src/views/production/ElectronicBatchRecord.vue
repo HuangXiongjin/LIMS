@@ -36,7 +36,7 @@
     <el-col :span='24' v-if="!currentBatch">
       <div>
         <el-button type="primary" @click="backTab" icon="el-icon-d-arrow-left" size='small'>返回列表</el-button>
-        <el-button type="primary" icon="el-icon-folder-opened" size='small'>保存</el-button>
+        <el-button type="primary" @click="saveCellData" icon="el-icon-folder-opened" size='small'>保存</el-button>
         <div class="platformContainer marginTop">
           <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
         </div>
@@ -60,6 +60,9 @@
         ZYPlanData:[],
         currentBatch:true,//控制显示表格 boolen
         filebyte:"",
+        BrandCode:"",
+        PUCode:"",
+        BatchID:"",
       }
     },
     created(){
@@ -133,6 +136,9 @@
         })
       },
       ClickPU(item){ //点击工艺展示电子批记录
+        this.BrandCode = item.BrandCode
+        this.PUCode = item.PUCode
+        this.BatchID = item.BatchID
         var params={
           PUCode:item.PUCode,
           BrandCode:item.BrandCode
@@ -142,13 +148,13 @@
             this.currentBatch=false
             if(res.data.message.length!==0){
               this.filebyte=res.data.message[0].Parameter
+              this.getBatchModelField()
               this.$nextTick(function () {
                 $(".elementTable").find("td").each(function(){
-                  if($(this).html() === ""){
-                    $(this).html("<p>-</p>")
+                  if($(this).find("p").hasClass("isInput")){
+                    $(this).attr("contenteditable","true")
                   }
                 })
-                $(".elementTable").find("p").attr("contenteditable","true")
                 $(".elementTable").find("tbody").css("display","inline-table")
               })
             }else{
@@ -161,6 +167,70 @@
             });
           }
         })
+      },
+      getBatchModelField(){
+        var params = {
+          BrandCode:this.BrandCode,
+          PUCode:this.PUCode,
+          BatchID:this.BatchID,
+        }
+        this.axios.get("/api/allUnitDataMutual",{
+          params:params
+        }).then(res =>{
+          if(res.data.code === "200"){
+            console.log(res.data)
+            this.$nextTick(function () {
+              $(".elementTable").find(".isInput").each(function(){
+                // $(this).html()
+              })
+            })
+          }else{
+            this.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        },res =>{
+          console.log("请求错误")
+        })
+      },
+      saveCellData(){
+        this.$confirm('是否保存当前批记录?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          var params = {
+            BrandCode:this.BrandCode,
+            PUCode:this.PUCode,
+            BatchID:this.BatchID,
+          }
+          this.$nextTick(function () {
+            $(".elementTable").find(".isInput").each(function(){
+              params[$(this).attr("data-field")] = $(this).html()
+            })
+          })
+          this.axios.post("/api/allUnitDataMutual",this.qs.stringify(params)).then(res =>{
+            if(res.data.code === "200"){
+              this.$message({
+                type: 'success',
+                message: res.data.message
+              });
+            }else{
+              this.$message({
+                type: 'info',
+                message: res.data.message
+              });
+            }
+          },res =>{
+            console.log("请求错误")
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消保存'
+          });
+        });
       },
       backTab(){ //返回上一级下发表格
         this.currentBatch=true
