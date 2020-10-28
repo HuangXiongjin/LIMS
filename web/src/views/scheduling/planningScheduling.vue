@@ -9,7 +9,7 @@
        <el-row v-if='steps==0'>
           <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">批次列表</div>
-           <div class="marginBottom"><el-button type="primary" icon="el-icon-folder-checked" size='mini' @click="shMultiplebatch">多批次下发</el-button></div>
+           <div class="marginBottom"><el-button type="primary" icon="el-icon-folder-checked" size='mini' @click="shMultiplebatch">多批次审核</el-button></div>
               <el-table
                   :data="batchTableData.data"
                   highlight-current-row
@@ -1055,7 +1055,7 @@ var moment=require('moment')
            if(res.data.code==='200'){
              this.$message({
                type:'success',
-               message:'多批次下发成功'
+               message:'多批次审核成功'
              })
              this.getPlanManager()
            }
