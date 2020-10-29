@@ -2,9 +2,9 @@
   <el-row>
     <el-col :span='24'>
       <el-steps :active="steps" finish-status="wait" align-center class="marginBottom">
-        <el-step title="审核计划" @click.native="toStep(0)" class="cursor-pointer"></el-step>
-        <el-step title="设备配置" @click.native="toStep(1)" class="cursor-pointer"></el-step>
-        <el-step title="执行计划列表" @click.native="toStep(2)" class="cursor-pointer"></el-step>
+        <el-step title="审核计划"></el-step>
+        <el-step title="设备配置"></el-step>
+        <el-step title="执行计划列表"></el-step>
       </el-steps>
        <el-row v-if='steps==0'>
           <el-col :span='24' class="platformContainer">
@@ -573,6 +573,10 @@
             </div>
         </el-col>
        </el-row>
+       <el-col :span="24" style="text-align: right;">
+         <el-button type="primary" v-show="steps != 0" @click="lastStep">上一步</el-button>
+          <el-button type="primary" v-show="steps != 3" @click="nextStep">下一步</el-button>
+         </el-col>
     </el-col>
   </el-row>
 </template>
@@ -907,8 +911,8 @@ var moment=require('moment')
           });       
         });
       },
-      toStep(index){
-          this.steps=index
+      nextStep(){ //点击下一步
+        this.steps++
         if(this.steps===0){
           this.getPlanManager()
         }else if(this.steps===1){
@@ -916,11 +920,14 @@ var moment=require('moment')
           this.chConfigbatch()
           this.getSelectedEq()
         }else if(this.steps===2){
-            this.getSelectedEq()
-            this.getYxfBatch()
-        }else{
-
+          this.getSelectedEq()
+          this.getYxfBatch()
+        }else if(this.steps==3){
+          this.$router.push('/BatchDetails')
         }
+      },
+      lastStep(){
+          this.steps--
       },
       getPlanManager(){ //获取批次列表
         var params={
