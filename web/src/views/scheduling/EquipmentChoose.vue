@@ -1,11 +1,11 @@
 <template>
     <el-row>
-         <div style="margin:20px 0">
-          <el-radio-group v-model="radio3" size="small" @change="setStatus">
-            <el-radio-button label="待配置"></el-radio-button>
-            <el-radio-button label="撤回"></el-radio-button>
-          </el-radio-group>
-        </div>
+          <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回上一步</el-button>
+            <el-radio-group v-model="radio3" size="small" @change="setStatus">
+                <el-radio-button label="待配置"></el-radio-button>
+                <el-radio-button label="撤回"></el-radio-button>
+            </el-radio-group>
+          </el-col>
           <el-col :span='24' class="platformContainer" v-if="radio3==='待配置'">
            <div style="height:40px;fontSize:16px;fontWeight:700;">待配置列表</div>
               <el-table
@@ -13,8 +13,8 @@
                   highlight-current-row
                   size='small'
                   border
-                  ref="xfmultipleTable"
-                  @row-click="xfTabCurrentChange"
+                  ref="xfallmultipleTable"
+                  @row-click="xfallTabCurrentChange"
                   style="width: 100%">
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                   <el-table-column prop="PlanStatus" label="计划状态">
@@ -146,7 +146,6 @@
                     <el-button type="primary" @click="ctdialogTableVisible = false" size='small'>确 定</el-button>
                   </span>
               </el-dialog>
-
             </el-dialog>
         </el-col>
 
@@ -490,6 +489,9 @@ export default {
          this.getSelectedEq()
     },
     methods:{
+      back(){ //返回上一步
+            this.$router.go(-1)
+        },
       setStatus(e){
         this.radio3=e
       },
@@ -637,7 +639,17 @@ export default {
           })
         })
       },
-       xfTabCurrentChange(e){ //下发批次计划 点击显示当前的tab行显示详细信息
+       xfallTabCurrentChange(e){ //待配置批次计划 点击显示当前的tab行显示详细信息
+        this.getEq(e.BatchID,e.BrandCode)
+        this.PlanNum=e.PlanNum
+        this.BatchID=e.BatchID
+        this.BrandCode1=e.BrandCode
+        this.ID=e.ID
+        this.getBatchWeight(e.BrandCode,e.BrandName)
+        this.$refs.xfallmultipleTable.clearSelection();
+        this.$refs.xfallmultipleTable.toggleRowSelection(e)
+      },
+       xfTabCurrentChange(e){ //配置更改批次计划 点击显示当前的tab行显示详细信息
         this.getEq(e.BatchID,e.BrandCode)
         this.PlanNum=e.PlanNum
         this.BatchID=e.BatchID

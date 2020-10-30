@@ -1,5 +1,6 @@
 <template>
     <el-row>
+           <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回上一步</el-button></el-col>
            <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">待下发列表</div>
               <el-table
@@ -102,6 +103,9 @@ export default {
         this.getYxfBatch()
     },
     methods: {
+        back(){ //返回上一步
+            this.$router.go(-1)
+        },
         yxfbatchHandleSizeChange(limit){ //已选设备 每页条数切换
         this.yxfbatchTableData.limit = limit
         this.getYxfBatch()

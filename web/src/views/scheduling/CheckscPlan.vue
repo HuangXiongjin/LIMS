@@ -2,6 +2,7 @@
   <el-row>
     <el-col :span='24'>
        <el-row>
+          <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回上一步</el-button></el-col>
           <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">批次列表</div>
            <div class="marginBottom"><el-button type="primary" icon="el-icon-folder-checked" size='mini' @click="shMultiplebatch">多批次审核</el-button></div>
@@ -93,6 +94,9 @@ var moment=require('moment')
     mounted(){
     },
     methods:{
+      back(){ //返回上一步
+            this.$router.go(-1)
+        },
       searchWhyNopass(index,row){
          this.$alert(row.Description, '原因', {
           confirmButtonText: '知道了',

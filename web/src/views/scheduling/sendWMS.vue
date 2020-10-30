@@ -1,5 +1,6 @@
 <template>
   <el-row>
+    <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回上一步</el-button></el-col>
     <el-col :span="24">
       <el-steps :active="steps" finish-status="wait" align-center class="marginBottom">
         <el-step title="发送投料计划到WMS" @click.native="toStep(0)" class="cursor-pointer"></el-step>
@@ -192,6 +193,9 @@
       this.getPlanManagerTableData()
     },
     methods:{
+      back(){ //返回上一步
+            this.$router.go(-1)
+        },
       toStep(index){
         this.steps = index
         this.sendPlanPlanStatus = "待发送"
