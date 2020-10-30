@@ -112,7 +112,7 @@ def makeZYPlanZYTask(id):
                     zytask.EndBC = j.EndBC
                     zytask.PlanStartTime = j.StartTime
                     zytask.PlanEndTime = j.EndTime
-                    zytask.TaskStatus = Global.TASKSTATUS.NEW.value
+                    zytask.TaskStatus = ""
                     zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
                     db_session.add(zytask)
             db_session.commit()
