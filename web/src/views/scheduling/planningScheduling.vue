@@ -6,19 +6,19 @@
           <span class="text-size-16">选择批计划，查看计划工艺进展</span>
         </div>
         <div style="display:inline-block;marginRight:18px;cursor:pointer" @click='shPlan'>
-          <div class="container-col text-size-14 bg-gray">审核计划</div>
+          <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待配置' || PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">审核计划</div>
           <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
         </div>
         <div style="display:inline-block;marginRight:18px;cursor:pointer" @click='chooseEq'>
-          <div class="container-col text-size-14 bg-gray">工艺配置</div>
+          <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">工艺配置</div>
           <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
         </div>
         <div style="display:inline-block;marginRight:18px;cursor:pointer" @click='distributionPlan'>
-          <div class="container-col text-size-14 bg-gray">下发计划</div>
+          <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">下发计划</div>
           <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
         </div>
         <div style="display:inline-block;cursor:pointer" @click='sendWMS'>
-          <div class="container-col text-size-14 bg-gray">发送到WMS</div>
+          <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '已发送物料明细'}">发送到WMS</div>
         </div>
         <div v-for="(item, index) in ZYPlanData" :key="index" style="display:inline-block;marginRight:18px;cursor:pointer" @click='ClickPU(item)'>
           <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;margin-right:10px;"></i>
@@ -60,6 +60,7 @@
           offset: 1,
           total: 0,
           multipleSelection: [],
+          PlanStatus:""
         },
         ZYPlanData:[],
       }
@@ -85,7 +86,6 @@
         var that = this
         var params = {
           tableName: "PlanManager",
-          PlanStatus:"已下发",
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }
@@ -115,6 +115,7 @@
         this.PlanManagerTableData.multipleSelection = row
       },
       handleRowClickPlanManager(row){
+        this.PlanManagerTableData.PlanStatus=row.PlanStatus
         this.$refs.multipleTablePlanManager.clearSelection()
         this.$refs.multipleTablePlanManager.toggleRowSelection(row)
         this.getZYPlan()
