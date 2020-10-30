@@ -28,6 +28,9 @@ import schedulingBoard from '@/views/scheduling/board'
 import ERPDataManage from '@/views/scheduling/ERPDataManage'
 import scheduling from '@/views/scheduling/scheduling'
 import planningScheduling from '@/views/scheduling/planningScheduling'
+import EquipmentChoose from '@/views/scheduling/EquipmentChoose'
+import DistributionPlan from '@/views/scheduling/DistributionPlan'
+import CheckscPlan from '@/views/scheduling/CheckscPlan'
 import sendWMS from '@/views/scheduling/sendWMS'
 import BatchDetails from '@/views/scheduling/BatchDetails'
 //生产数据
@@ -80,6 +83,9 @@ export default new Router({
         {path:'/ERPDataManage',name:'ERPDataManage',meta:{ title:'ERP数据管理',type:"排产调度系统"},component:ERPDataManage},
         {path:'/scheduling',name:'scheduling',meta:{ title:'订单计划分批',type:"排产调度系统"},component:scheduling},
         {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度',type:"排产调度系统"},component:planningScheduling},
+        {path:'/EquipmentChoose',name:'EquipmentChoose',meta:{ title:'设备选择',type:"排产调度系统"},component:EquipmentChoose},
+        {path:'/CheckscPlan',name:'CheckscPlan',meta:{ title:'审核计划',type:"排产调度系统"},component:CheckscPlan},
+        {path:'/DistributionPlan',name:'DistributionPlan',meta:{ title:'下发计划',type:"排产调度系统"},component:DistributionPlan},
         {path:'/sendWMS',name:'sendWMS',meta:{ title:'发送到WMS',type:"排产调度系统"},component:sendWMS},
         {path:'/BatchDetails',name:'BatchDetails',meta:{ title:'批次实施明细',type:"排产调度系统"},component:BatchDetails},
 
