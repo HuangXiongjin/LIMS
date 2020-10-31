@@ -583,6 +583,7 @@
           var params = {
             ID:this.PlanManagerTableData.handleRow.ID,
             BatchID:this.PlanManagerTableData.formField.BatchID,
+            PlanStatus:"待审核",
           }
           this.axios.get("/api/makePlan",{
             params:params

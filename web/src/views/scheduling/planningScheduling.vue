@@ -25,6 +25,38 @@
           <div class="container-col text-size-14 bg-gray" v-if="item.ZYPlanStatus === '待生产'">{{ item.PUName }}</div>
           <div class="container-col text-size-14 bg-success" v-if="item.ZYPlanStatus === '已完成'">{{ item.PUName }}</div>
         </div>
+        <el-dialog title="工艺计划明细" :visible.sync="dialogVisibleZYTask" width="80%" :append-to-body="true">
+          <p class="marginBottom">工艺段信息</p>
+          <el-table :data="ZYPlanTableData" border size="small" class="marginBottom">
+            <el-table-column prop="PlanNo" label="调度编号"></el-table-column>
+            <el-table-column prop="BatchID" label="批次号"></el-table-column>
+            <el-table-column prop="PlanSeq" label="顺序号"></el-table-column>
+            <el-table-column prop="PUName" label="工艺段名称"></el-table-column>
+            <el-table-column prop="BrandName" label="品名"></el-table-column>
+            <el-table-column prop="PlanQuantity" label="计划重量"></el-table-column>
+            <el-table-column prop="Unit" label="单位"></el-table-column>
+            <el-table-column prop="PlanStartTime" label="计划开始时间"></el-table-column>
+            <el-table-column prop="PlanEndTime" label="计划结束时间"></el-table-column>
+            <el-table-column prop="ActBeginTime" label="实际开始时间"></el-table-column>
+            <el-table-column prop="ActEndTime" label="实际结束时间"></el-table-column>
+            <el-table-column prop="ZYPlanStatus" label="计划状态"></el-table-column>
+          </el-table>
+          <p class="marginBottom">工艺段设备信息</p>
+          <el-table :data="ZYTaskData" border size="small">
+            <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
+            <el-table-column prop="EQPName" label="设备名称"></el-table-column>
+            <el-table-column prop="BatchID" label="批次号"></el-table-column>
+            <el-table-column prop="PUName" label="工艺段名称"></el-table-column>
+            <el-table-column prop="BrandName" label="品名"></el-table-column>
+            <el-table-column prop="PlanStartTime" label="计划开始时间"></el-table-column>
+            <el-table-column prop="PlanEndTime" label="计划结束时间"></el-table-column>
+            <el-table-column prop="ActBeginTime" label="实际开始时间"></el-table-column>
+            <el-table-column prop="ActEndTime" label="实际结束时间"></el-table-column>
+          </el-table>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisibleZYTask = false">取 消</el-button>
+          </span>
+        </el-dialog>
         <el-table :data="PlanManagerTableData.data" border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
           <el-table-column type="selection"></el-table-column>
           <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
@@ -63,6 +95,9 @@
           PlanStatus:""
         },
         ZYPlanData:[],
+        ZYPlanTableData:[],
+        ZYTaskData:[],
+        dialogVisibleZYTask:false
       }
     },
     created(){
@@ -148,7 +183,28 @@
         })
       },
       ClickPU(item){
-       
+        var that = this
+        this.dialogVisibleZYTask = true
+        this.ZYPlanTableData = []
+        this.ZYPlanTableData.push(item)
+        var params = {
+          tableName: "ZYTask",
+          BatchID:item.BatchID,
+          BrandCode:item.BrandCode,
+          PUCode:item.PUCode,
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.ZYTaskData = res.data.data.rows
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
       },
     }
   }
@@ -159,7 +215,6 @@
     display: inline-block;
     clear: both;
     overflow: hidden;
-    border:1px solid #999;
     border-radius: 4px;
     padding: 0 15px;
     margin-bottom: 15px;

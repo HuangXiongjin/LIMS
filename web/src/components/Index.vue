@@ -110,7 +110,6 @@
             {title:'ERP数据管理',icon:"fa fa-table",url:"/ERPDataManage"},
             {title:'订单计划分批',icon:"fa fa-list-alt",url:"/scheduling"},
             {title:"生产计划调度",icon:"el-icon-s-claim",url:"/planningScheduling"},
-            {title:"批次实施明细",icon:"el-icon-document",url:"/BatchDetails"}
           ]},
           {label: '生产建模',icon:"el-icon-s-management",mainMenu:[
             {title:"产品定义",icon:"fa fa-list-ul",url:"/ProductDefinition"},
