@@ -1,7 +1,6 @@
 <template>
     <el-row>
         <el-col :span='24' class="platformContainer">批次设备运行展示</el-col>
-        <el-col :span='24' class="platformContainer"><el-button  @click="showPic">click</el-button></el-col>
          <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">已选设备列表</div>
               <el-table
