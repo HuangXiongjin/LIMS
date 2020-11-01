@@ -67,6 +67,7 @@ export default {
                 var arr=res.data.data.rows
                 this.startTime = []
                 this.EndTime = []
+                this.yxeqlist=[]
                 arr.forEach((item) => {
                     this.startTime.push(moment(item.StartTime).format('YYYY-MM-DD HH:mm:ss'))
                     this.EndTime.push(moment(item.EndTime).format('YYYY-MM-DD HH:mm:ss'))
