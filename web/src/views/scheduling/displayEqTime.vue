@@ -1,29 +1,15 @@
 <template>
     <el-row>
         <el-col :span='24' class="platformContainer">批次设备运行展示</el-col>
-         <el-col :span='24' class="platformContainer">
-           <div style="height:40px;fontSize:16px;fontWeight:700;">已选设备列表</div>
-              <el-table
-                  :data="eqlistTableData.data"
-                  highlight-current-row
-                  size='small'
-                  border
-                  ref="eqlistmultipleTable"
-                  @row-click='getBatchID'
-                  style="width: 100%">
-                  <el-table-column v-for="item in eqlistableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
-              </el-table>
-              <div class="paginationClass">
-                  <el-pagination background  layout="total,prev, pager, next, jumper"
-                  :total="eqlistTableData.total"
-                  :current-page="eqlistTableData.offset"
-                  :page-size="eqlistTableData.limit"
-                  @size-change="eqlistHandleSizeChange"
-                  @current-change="eqlistHandleCurrentChange">
-                  </el-pagination>
-            </div>
-        </el-col>
         <el-col :span='24' class="platformContainer">
+            <el-select v-model="pucode" placeholder="请选择" @change='getEqlist' class="marginBottom">
+                <el-option
+                v-for="(item,index) in options"
+                :key="index"
+                :label="item.label"
+                :value="item.value">
+                </el-option>
+            </el-select>
             <div id="container" style="width:100%;height:700px;"></div>
         </el-col>
     </el-row>
@@ -45,74 +31,57 @@ export default {
             eqlistableconfig:[{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'}],//选择设备列表
             yxeqlist:[],
             startTime:[],
-            EndTime:[]
+            EndTime:[],
+            options:[],
+            pucode:''
 
         }
     },
     mounted(){
-        this.getEchartsData()
-    },
-    destroyed(){
-        this.echarts.dispose()
+        this.getPUName()
     },
     methods:{
-        getBatchID(e){
-            var BatchID=e.BatchID
+            //获取工艺段
+        getPUName(){
+            var params={
+                tableName:'ProcessUnit',
+            }
+            this.axios.get('/api/CUID',{params:params}).then((res) => {
+                var arr=res.data.data.rows
+                this.options=arr.map((item) => {
+                    return {
+                        value:item.PUCode,
+                        label:item.PUCode+item.PUName
+                    }
+                })
+            })
+        },
+        getEqlist(){ //渲染展示的设备
             var params={
                 tableName:'EquipmentBatchRunTime',
                 limit:10,
                 offset:0,
-                BatchID:BatchID
+                PUCode:this.pucode
             }
             this.axios('/api/CUID',{params:params}).then((res) => {
                 var arr=res.data.data.rows
+                this.startTime = []
+                this.EndTime = []
+                arr.forEach((item) => {
+                    this.startTime.push(moment(item.StartTime).format('YYYY-MM-DD HH:mm:ss'))
+                    this.EndTime.push(moment(item.EndTime).format('YYYY-MM-DD HH:mm:ss'))
+                    this.yxeqlist.push(item.EQPCode+item.EQPName)
+                })
                 if(this.echarts){
                     this.echarts.dispose()
                 }
-                this.yxeqlist=arr.map((item) => {
-                    return item.PUName
-                })
-                this.startTime=arr.map((item) => {
-                    return new Date(moment(item.startTime).format("YYYY/MM/DD HH:mm:ss"))
-                })
-                this.EndTime=arr.map((item) => {
-                    return new Date(moment(item.EndTime).format("YYYY/MM/DD HH:mm:ss"))
-                })
-                this.showPic(this.yxeqlist,this.startTime,this.EndTime)
+                this.showPic()
             })
 
         },
-        getEchartsData(){
-            var params={
-                tableName:'EquipmentBatchRunTime',
-                limit:10,
-                offset:0,
-            }
-            this.axios.get('/api/CUID',{params:params}).then((res) => {
-                if(res.data.code === "200"){
-                    var data = res.data.data
-                    this.eqlistTableData.data = data.rows
-                    this.eqlistTableData.total = data.total
-                }
-                },err=>{
-                    console.log("请求错误")
-                })
-        },
-        eqlistHandleSizeChange(limit){ //已选设备 每页条数切换
-            this.eqlistTableData.limit = limit
-            this.getEchartsData()
-        },
-        eqlistHandleCurrentChange(offset) { //已选设备 页码切换
-            this.eqlistTableData.offset = offset
-            this.getEchartsData()
-        },
-        showPic(yxeqlist,startTime,EndTime){
+        showPic(){
         this.echarts = echarts.init(document.getElementById('container'));
         var option = {
-            title: {
-                text: '项目实施进度表',
-                left: 10
-            },
             legend: {
                 y: 'top',
                 data: ['计划时间']  //修改的地方1
@@ -127,17 +96,16 @@ export default {
             },
         
             yAxis: {
-                data:yxeqlist
+                type: 'category',
+                data:this.yxeqlist
         
             },
             tooltip: {
                 trigger: 'axis',
                 formatter: function(params) {
                     var res = params[0].name + "</br>"
-                    var date0 = params[1].data;
-                    var date1 = params[0].data;
-                    date0 = date0.getFullYear() + "-" + (date0.getMonth() + 1) + "-" + date0.getDate()+"--"+date0.getHours()+":"+date0.getMinutes()+":"+date0.getSeconds();
-                    date1 = date1.getFullYear() + "-" + (date1.getMonth() + 1) + "-" + date1.getDate()+"--"+date1.getHours()+":"+date1.getMinutes()+":"+date1.getSeconds();
+                    var date0 = params[0].data;
+                    var date1 = params[1].data;
                     res += params[0].seriesName + "~" + params[1].seriesName + ":</br>" + date0 + "~" + date1 + "</br>"
                     return res;
                 }
@@ -154,7 +122,7 @@ export default {
                             color: 'rgba(0,0,0,0)'
                         }
                     },
-                    data:startTime
+                    data:this.startTime
                 },
                 {
                     name: '计划时间',
@@ -167,7 +135,7 @@ export default {
                             color: 'lightblue'
                         }
                     },
-                    data:EndTime
+                    data:this.EndTime
 
                 }
             ]
