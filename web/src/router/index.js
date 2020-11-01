@@ -32,6 +32,8 @@ import EquipmentChoose from '@/views/scheduling/EquipmentChoose'
 import DistributionPlan from '@/views/scheduling/DistributionPlan'
 import CheckscPlan from '@/views/scheduling/CheckscPlan'
 import sendWMS from '@/views/scheduling/sendWMS'
+import displayEqTime from '@/views/scheduling/displayEqTime'
+
 //生产数据
 import ElectronicBatchRecord from '@/views/production/ElectronicBatchRecord'
 import BatchRecordFiles from '@/views/production/BatchRecordFiles'
@@ -86,6 +88,7 @@ export default new Router({
         {path:'/CheckscPlan',name:'CheckscPlan',meta:{ title:'审核计划',type:"排产调度系统"},component:CheckscPlan},
         {path:'/DistributionPlan',name:'DistributionPlan',meta:{ title:'下发计划',type:"排产调度系统"},component:DistributionPlan},
         {path:'/sendWMS',name:'sendWMS',meta:{ title:'发送到WMS',type:"排产调度系统"},component:sendWMS},
+        {path:'/displayEqTime',name:'displayEqTime',meta:{ title:'设备运行时间展示',type:"排产调度系统"},component:displayEqTime},
 
         {path:'/ProductionMonitoring',name:'ProductionMonitoring',meta:{ title:'生产监控',type:"生产数据管理"},component:ProductionMonitoring},
         {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'批生产记录',type:"生产数据管理"},component:ElectronicBatchRecord},
