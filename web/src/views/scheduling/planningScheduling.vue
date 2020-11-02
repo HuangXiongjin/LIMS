@@ -5,26 +5,29 @@
         <div class="page-title">
           <span class="text-size-16">选择批计划，查看计划工艺进展</span>
         </div>
-        <div style="display:inline-block;marginRight:18px;cursor:pointer" @click='shPlan'>
-          <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待配置' || PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">审核计划</div>
-          <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
-        </div>
-        <div style="display:inline-block;marginRight:18px;cursor:pointer" @click='chooseEq'>
-          <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">工艺配置</div>
-          <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
-        </div>
-        <div style="display:inline-block;marginRight:18px;cursor:pointer" @click='distributionPlan'>
-          <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">下发计划</div>
-          <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
-        </div>
-        <div style="display:inline-block;cursor:pointer" @click='sendWMS'>
-          <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '已发送物料明细'}">发送到WMS</div>
-        </div>
-        <div v-for="(item, index) in ZYPlanData" :key="index" style="display:inline-block;marginRight:18px;cursor:pointer" @click='ClickPU(item)'>
-          <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;margin-right:10px;"></i>
-          <div class="container-col text-size-14 bg-gray" v-if="item.ZYPlanStatus === '待生产'">{{ item.PUName }}</div>
-          <div class="container-col text-size-14 bg-success" v-if="item.ZYPlanStatus === '已完成'">{{ item.PUName }}</div>
-        </div>
+        <el-row>
+          <el-col :span="24">
+            <div style="display:inline-block;marginRight:18px;cursor:pointer" @click='shPlan'>
+              <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待配置' || PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">审核计划</div>
+              <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
+            </div>
+            <div style="display:inline-block;marginRight:18px;cursor:pointer" @click='chooseEq'>
+              <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">工艺配置</div>
+              <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
+            </div>
+            <div style="display:inline-block;marginRight:18px;cursor:pointer" @click='distributionPlan'>
+              <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">下发计划</div>
+              <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
+            </div>
+            <div style="display:inline-block;cursor:pointer" @click='sendWMS'>
+              <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '已发送物料明细'}">发送到WMS</div>
+            </div>
+            <div v-for="(item, index) in ProcessSectionData" :key="index" style="display:inline-block;marginRight:18px;cursor:pointer" @click='ClickPU(item)'>
+              <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;margin-right:10px;"></i>
+              <div class="container-col text-size-14 bg-gray">{{ item.PUName }}</div>
+            </div>
+          </el-col>
+        </el-row>
         <el-dialog title="工艺计划明细" :visible.sync="dialogVisibleZYTask" width="80%" :append-to-body="true">
           <p class="marginBottom">工艺段信息</p>
           <el-table :data="ZYPlanTableData" border size="small" class="marginBottom">
@@ -42,21 +45,30 @@
             <el-table-column prop="ZYPlanStatus" label="计划状态"></el-table-column>
           </el-table>
           <p class="marginBottom">工艺段设备信息</p>
-          <el-table :data="ZYTaskData" border size="small">
+          <el-table :data="ZYTaskData" border size="small" ref="multipleTableZYTask" @selection-change="handleZYTaskSelectionChange" @row-click="handleZYTaskRowClick">
+            <el-table-column type="selection"></el-table-column>
             <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
             <el-table-column prop="EQPName" label="设备名称"></el-table-column>
             <el-table-column prop="BatchID" label="批次号"></el-table-column>
             <el-table-column prop="PUName" label="工艺段名称"></el-table-column>
             <el-table-column prop="BrandName" label="品名"></el-table-column>
-            <el-table-column prop="PlanStartTime" label="计划开始时间"></el-table-column>
-            <el-table-column prop="PlanEndTime" label="计划结束时间"></el-table-column>
-            <el-table-column prop="ActBeginTime" label="实际开始时间"></el-table-column>
-            <el-table-column prop="ActEndTime" label="实际结束时间"></el-table-column>
+            <!--<el-table-column prop="PlanStartTime" label="计划开始时间"></el-table-column>-->
+            <!--<el-table-column prop="PlanEndTime" label="计划结束时间"></el-table-column>-->
+            <!--<el-table-column prop="ActBeginTime" label="实际开始时间"></el-table-column>-->
+            <!--<el-table-column prop="ActEndTime" label="实际结束时间"></el-table-column>-->
           </el-table>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisibleZYTask = false">取 消</el-button>
           </span>
         </el-dialog>
+        <el-form :inline="true">
+          <el-form-item label="查询状态">
+            <el-select v-model="PlanManagerTableData.searchPlanStatus" placeholder="请选择" @change="getPlanManagerTableData">
+              <el-option v-for="(item,index) in PlanManagerTableData.searchFormData" :key="index" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
         <el-table :data="PlanManagerTableData.data" border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
           <el-table-column type="selection"></el-table-column>
           <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
@@ -92,11 +104,23 @@
           offset: 1,
           total: 0,
           multipleSelection: [],
-          PlanStatus:""
+          PlanStatus:"",
+          searchPlanStatus:"",
+          searchFormData:[
+            {label:"全部",value:""},
+            {label:"待审核",value:"待审核"},
+            {label:"待配置",value:"待配置"},
+            {label:"待下发",value:"待下发"},
+            {label:"已下发",value:"已下发"},
+            {label:"已发送投料计划",value:"已发送投料计划"},
+            {label:"已发送物料明细",value:"已发送物料明细"},
+            {label:"已完成",value:"已完成"},
+          ]
         },
-        ZYPlanData:[],
-        ZYPlanTableData:[],
+        ProcessSectionData:[], //品名的工艺段
+        ZYPlanTableData:[], //工艺计划
         ZYTaskData:[],
+        multipleSelectionZYTask:[],
         dialogVisibleZYTask:false
       }
     },
@@ -121,6 +145,7 @@
         var that = this
         var params = {
           tableName: "PlanManager",
+          PlanStatus:this.PlanManagerTableData.searchPlanStatus,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }
@@ -153,13 +178,12 @@
         this.PlanManagerTableData.PlanStatus=row.PlanStatus
         this.$refs.multipleTablePlanManager.clearSelection()
         this.$refs.multipleTablePlanManager.toggleRowSelection(row)
-        this.getZYPlan()
+        this.getProcessSection()
       },
-      getZYPlan(){
+      getProcessSection(){
         var that = this
         var params = {
-          tableName: "ZYPlan",
-          BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
+          tableName: "ProductUnit",
           BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
         }
         this.axios.get("/api/CUID",{
@@ -173,7 +197,7 @@
                 return value1 - value2;
               }
             }
-            that.ZYPlanData = res.data.data.rows.sort(compare('PlanSeq'))
+            that.ProcessSectionData = res.data.data.rows.sort(compare('Seq'))
           }else{
             that.$message({
               type: 'info',
@@ -183,15 +207,42 @@
         })
       },
       ClickPU(item){
-        var that = this
+        this.getZYPlan(item.PUCode)
         this.dialogVisibleZYTask = true
         this.ZYPlanTableData = []
-        this.ZYPlanTableData.push(item)
+        if(this.ZYPlanData){
+          this.ZYPlanTableData.push(this.ZYPlanData[0])
+        }
+        this.getZYTaskData(item.PUCode)
+      },
+      getZYPlan(PUCode){
+        var that = this
+        var params = {
+          tableName: "ZYPlan",
+          BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
+          BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
+          PUCode:PUCode
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.ZYPlanData = res.data.data.rows
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
+      getZYTaskData(PUCode){
+        var that = this
         var params = {
           tableName: "ZYTask",
-          BatchID:item.BatchID,
-          BrandCode:item.BrandCode,
-          PUCode:item.PUCode,
+          BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
+          BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
+          PUCode:PUCode,
         }
         this.axios.get("/api/CUID",{
           params: params
@@ -205,6 +256,12 @@
             });
           }
         })
+      },
+      handleZYTaskSelectionChange(row){
+        this.multipleSelectionZYTask = row
+      },
+      handleZYTaskRowClick(row){
+        this.$refs.multipleTableZYTask.toggleRowSelection(row)
       },
     }
   }
