@@ -10,7 +10,7 @@
         <el-col :span="24">
           <el-collapse class="marginBottom">
             <el-collapse-item title="多条件查询订单">
-              <el-form :model="planTableData.searchField" :inline="true" label-width="110px">
+              <el-form :model="planTableData.searchField" :inline="true" class="marginTop" label-width="110px">
                 <el-form-item label="状态">
                    <el-select v-model="planTableData.searchField.PlanStatus" placeholder="请选择">
                     <el-option v-for="item in optionsPlanStatus" :key="item.value" :label="item.value" :value="item.value">
@@ -61,6 +61,9 @@
                 </el-form-item>
                 <el-form-item label="计划产量">
                   <el-input v-model="planTableData.formField.PlanQuantity"></el-input>
+                </el-form-item>
+                <el-form-item label="单位">
+                  <el-input v-model="planTableData.formField.Unit" :disabled="true"></el-input>
                 </el-form-item>
                 <el-form-item label="描述">
                   <el-input v-model="planTableData.formField.Description"></el-input>

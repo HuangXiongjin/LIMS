@@ -241,8 +241,7 @@
                     this.axios.get("/api/CUID",{
                       params: {
                         tableName: childItem.Downtable,
-                        field:childItem.showDownField,
-                        fieldvalue:value,
+                        [childItem.showDownField]:value,
                         limit:100000000,
                         offset:0
                       }

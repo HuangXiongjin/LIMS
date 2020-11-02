@@ -126,7 +126,9 @@
                   <el-input v-model="MaterialTableData.formField.BucketWeight"></el-input>
                 </el-form-item>
                 <el-form-item label="单位">
-                  <el-input v-model="MaterialTableData.formField.Unit"></el-input>
+                  <el-select v-model="MaterialTableData.formField.Unit" placeholder="请选择">
+                    <el-option v-for="item in UnitData" :label="item.UnitValue" :value="item.UnitValue"></el-option>
+                  </el-select>
                 </el-form-item>
                 <el-form-item label="桶/托盘标识">
                   <el-select v-model="MaterialTableData.formField.Flag" placeholder="请选择">
@@ -187,10 +189,12 @@
           },
         },
         TLEQList:[],
+        UnitData:[],
       }
     },
     mounted(){
       this.getPlanManagerTableData()
+      this.getUnitData()
     },
     methods:{
       back(){ //返回上一步
@@ -250,6 +254,25 @@
         this.$refs.multipleTablePlanManager.clearSelection()
         this.$refs.multipleTablePlanManager.toggleRowSelection(row)
         this.getMaterialTableData()
+      },
+      //获取单位
+      getUnitData(){
+        var that = this
+        var params = {
+          tableName: "Unit",
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.UnitData = res.data.data.rows
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
       },
       //查询物料明细-录入
       getMaterialTableData(){
