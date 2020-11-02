@@ -697,6 +697,11 @@ export default {
        chTabCurrentChange(e){ //点击撤回批次计划 点击显示当前的tab行显示详细信息
         this.getEq(e.BatchID,e.BrandCode)
         this.ID=e.ID
+        this.blstartBc=''
+        this.blendBc=''
+        this.blstartTime=''
+        this.blendTime=''
+        this.blSelected=false
         this.getBatchWeight(e.BrandCode,e.BrandName)
         this.$refs.chmultipleTable.clearSelection();
         this.$refs.chmultipleTable.toggleRowSelection(e)
