@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span='24'>
        <el-row>
-          <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回上一步</el-button></el-col>
+          <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回主流程</el-button></el-col>
           <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">批次列表</div>
            <div class="marginBottom"><el-button type="primary" icon="el-icon-folder-checked" size='mini' @click="shMultiplebatch">多批次审核</el-button></div>
@@ -26,7 +26,7 @@
                       <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column label="操作" fixed="right" width='160'>
+                  <el-table-column label="操作" fixed="right" width='200'>
                     <template slot-scope="scope">
                       <el-button
                         size="mini"
@@ -58,6 +58,7 @@
             </div>
         </el-col>
        </el-row>
+       <el-col :span='24' class="marginBottom" style="textAlign:right;"><el-button type="primary" size="small" icon="el-icon-position" @click="forward">去配置</el-button></el-col>
     </el-col>
   </el-row>
 </template>
@@ -94,8 +95,11 @@ var moment=require('moment')
     mounted(){
     },
     methods:{
-      back(){ //返回上一步
-            this.$router.go(-1)
+      forward(){
+        this.$router.push('/EquipmentChoose')
+      },
+      back(){ //返回主流程
+            this.$router.push('/planningScheduling')
         },
       searchWhyNopass(index,row){
          this.$alert(row.Description, '原因', {

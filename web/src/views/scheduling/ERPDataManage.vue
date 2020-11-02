@@ -1,4 +1,6 @@
 <template>
+  <el-row>
+    <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="getERP">同步ERP</el-button></el-col>
      <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">ERP同步计划</div>
               <el-table
@@ -21,6 +23,7 @@
                   </el-pagination>
             </div>
         </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -44,6 +47,9 @@
       this.getERPData()
     },
     methods:{
+      getERP(){
+        alert('获取ERP数据')
+      },
       getERPData(){
         var params={
           tableName:this.ERPTableData.tableName,

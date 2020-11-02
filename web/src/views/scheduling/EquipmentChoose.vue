@@ -1,6 +1,6 @@
 <template>
     <el-row>
-          <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回上一步</el-button>
+          <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回主流程</el-button>
             <el-radio-group v-model="radio3" size="small" @change="setStatus">
                 <el-radio-button label="待配置"></el-radio-button>
                 <el-radio-button label="撤回"></el-radio-button>
@@ -148,7 +148,6 @@
               </el-dialog>
             </el-dialog>
         </el-col>
-
         <el-col :span='24' class="platformContainer" v-if="radio3==='撤回'">
            <div style="height:40px;fontSize:16px;fontWeight:700;">撤回列表</div>
               <el-table
@@ -432,6 +431,7 @@
               </el-dialog>
             </el-dialog>
         </el-col>
+        <el-col :span='24' class="marginBottom" style="textAlign:right;"><el-button type="primary" size="small" icon="el-icon-position" @click="forward">去下发</el-button></el-col>
        </el-row>
 </template>>
 <script>
@@ -489,9 +489,37 @@ export default {
          this.getSelectedEq()
     },
     methods:{
-      back(){ //返回上一步
-            this.$router.go(-1)
-        },
+      //点击同步备料信息
+      getSelectedBl(){
+        var params={
+          tableName:'EquipmentBatchRunTime',
+          BatchID:this.BatchID,
+          BrandCode:this.BrandCode1,
+          PUName:'备料'
+        }
+        this.axios.get('/api/CUID',{params:params}).then((res) => {
+          var arr=res.data.data.rows[0]
+          if(res.data.data.rows.length===0){
+            this.blstartBc=''
+            this.blendBc=''
+            this.blstartTime=''
+            this.blendTime=''
+            this.blSelected=false
+          }else{
+            this.blstartBc=arr.StartBC
+            this.blendBc=arr.EndBC
+            this.blstartTime=arr.StartTime
+            this.blendTime=arr.EndTime
+            this.blSelected=true
+          }
+        })
+      },
+      forward(){
+        this.$router.push('/DistributionPlan')
+      },
+      back(){ //返回主流程
+        this.$router.push('/planningScheduling')
+      },
       setStatus(e){
         this.radio3=e
       },
@@ -645,6 +673,12 @@ export default {
         this.BatchID=e.BatchID
         this.BrandCode1=e.BrandCode
         this.ID=e.ID
+        //备料置空
+        this.blstartBc=''
+        this.blendBc=''
+        this.blstartTime=''
+        this.blendTime=''
+        this.blSelected=false
         this.getBatchWeight(e.BrandCode,e.BrandName)
         this.$refs.xfallmultipleTable.clearSelection();
         this.$refs.xfallmultipleTable.toggleRowSelection(e)
@@ -655,6 +689,7 @@ export default {
         this.BatchID=e.BatchID
         this.BrandCode1=e.BrandCode
         this.ID=e.ID
+        this.getSelectedBl()
         this.getBatchWeight(e.BrandCode,e.BrandName)
         this.$refs.xfmultipleTable.clearSelection();
         this.$refs.xfmultipleTable.toggleRowSelection(e)
