@@ -127,7 +127,7 @@
                 </el-form-item>
                 <el-form-item label="单位">
                   <el-select v-model="MaterialTableData.formField.Unit" placeholder="请选择">
-                    <el-option v-for="item in UnitData" :label="item.UnitValue" :value="item.UnitValue"></el-option>
+                    <el-option v-for="(item,index) in UnitData" :key="indx" :label="item.UnitValue" :value="item.UnitValue"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item label="桶/托盘标识">
