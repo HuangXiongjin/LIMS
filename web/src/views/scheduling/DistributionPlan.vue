@@ -74,7 +74,7 @@
                   </el-pagination>
             </div>
         </el-col>
-        <el-col :span='24' class="marginBottom" style="textAlign:right;"><el-button type="primary" size="small" icon="el-icon-position" @click="forward">SendWMS</el-button></el-col>
+        <el-col :span='24' class="marginBottom" style="textAlign:right;"><el-button type="primary" size="small" icon="el-icon-position" @click="forward">发送到WMS</el-button></el-col>
        </el-row>
 </template>
 <script>

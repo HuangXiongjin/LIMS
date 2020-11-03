@@ -33,12 +33,13 @@ export default {
             startTime:[],
             EndTime:[],
             options:[],
-            pucode:''
+            pucode:'1006'
 
         }
     },
     mounted(){
         this.getPUName()
+        this.getEqlist()
     },
     methods:{
             //获取工艺段
