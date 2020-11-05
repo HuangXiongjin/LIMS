@@ -431,7 +431,6 @@
               </el-dialog>
             </el-dialog>
         </el-col>
-        <el-col :span='24' class="marginBottom" style="textAlign:right;"><el-button type="primary" size="small" icon="el-icon-position" @click="forward">去下发</el-button></el-col>
        </el-row>
 </template>>
 <script>
@@ -514,11 +513,8 @@ export default {
           }
         })
       },
-      forward(){
-        this.$router.push('/DistributionPlan')
-      },
       back(){ //返回主流程
-        this.$router.push('/planningScheduling')
+        this.$router.push('/planProgress')
       },
       setStatus(e){
         this.radio3=e

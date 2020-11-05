@@ -58,7 +58,6 @@
             </div>
         </el-col>
        </el-row>
-       <el-col :span='24' class="marginBottom" style="textAlign:right;"><el-button type="primary" size="small" icon="el-icon-position" @click="forward">去配置</el-button></el-col>
     </el-col>
   </el-row>
 </template>
@@ -95,11 +94,8 @@ var moment=require('moment')
     mounted(){
     },
     methods:{
-      forward(){
-        this.$router.push('/EquipmentChoose')
-      },
       back(){ //返回主流程
-            this.$router.push('/planningScheduling')
+            this.$router.push('/planProgress')
         },
       searchWhyNopass(index,row){
          this.$alert(row.Description, '原因', {

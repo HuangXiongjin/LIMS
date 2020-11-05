@@ -28,11 +28,18 @@ import schedulingBoard from '@/views/scheduling/board'
 import ERPDataManage from '@/views/scheduling/ERPDataManage'
 import scheduling from '@/views/scheduling/scheduling'
 import planningScheduling from '@/views/scheduling/planningScheduling'
+import planProgress from '@/views/scheduling/planProgress'
 import EquipmentChoose from '@/views/scheduling/EquipmentChoose'
 import DistributionPlan from '@/views/scheduling/DistributionPlan'
 import CheckscPlan from '@/views/scheduling/CheckscPlan'
-import sendWMS from '@/views/scheduling/sendWMS'
+import sendPlan from '@/views/scheduling/sendPlan'
 import displayEqTime from '@/views/scheduling/displayEqTime'
+
+//生产执行系统
+import equipmentAudit from '@/views/execution/equipmentAudit'
+import confirmProduction from '@/views/execution/confirmProduction'
+import sendMaterial from '@/views/execution/sendMaterial'
+import sendMaterialLog from '@/views/execution/sendMaterialLog'
 
 //生产数据
 import ElectronicBatchRecord from '@/views/production/ElectronicBatchRecord'
@@ -80,15 +87,21 @@ export default new Router({
         {path:'/ProductLineDefinition',name:'ProductLineDefinition',meta:{ title:'生产线定义',type:"生产建模"},component:ProductLineDefinition},
         {path:'/Unit',name:'Unit',meta:{ title:'生产线定义',type:"生产建模"},component:Unit},
 
-        {path:'/schedulingBoard',name:'schedulingBoard',meta:{ title:'排产调度看板',type:"排产调度系统"},component:schedulingBoard},
-        {path:'/ERPDataManage',name:'ERPDataManage',meta:{ title:'ERP数据管理',type:"排产调度系统"},component:ERPDataManage},
-        {path:'/scheduling',name:'scheduling',meta:{ title:'订单计划分批',type:"排产调度系统"},component:scheduling},
-        {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度',type:"排产调度系统"},component:planningScheduling},
-        {path:'/EquipmentChoose',name:'EquipmentChoose',meta:{ title:'设备选择',type:"排产调度系统"},component:EquipmentChoose},
-        {path:'/CheckscPlan',name:'CheckscPlan',meta:{ title:'审核计划',type:"排产调度系统"},component:CheckscPlan},
-        {path:'/DistributionPlan',name:'DistributionPlan',meta:{ title:'下发计划',type:"排产调度系统"},component:DistributionPlan},
-        {path:'/sendWMS',name:'sendWMS',meta:{ title:'发送到WMS',type:"排产调度系统"},component:sendWMS},
-        {path:'/displayEqTime',name:'displayEqTime',meta:{ title:'设备运行时间展示',type:"排产调度系统"},component:displayEqTime},
+        {path:'/schedulingBoard',name:'schedulingBoard',meta:{ title:'排产调度看板',type:"工厂排产系统"},component:schedulingBoard},
+        {path:'/ERPDataManage',name:'ERPDataManage',meta:{ title:'ERP数据管理',type:"工厂排产系统"},component:ERPDataManage},
+        {path:'/scheduling',name:'scheduling',meta:{ title:'订单计划分批',type:"工厂排产系统"},component:scheduling},
+        {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度',type:"工厂排产系统"},component:planningScheduling},
+        {path:'/planProgress',name:'planProgress',meta:{ title:'生产进度',type:"工厂排产系统"},component:planProgress},
+        {path:'/EquipmentChoose',name:'EquipmentChoose',meta:{ title:'设备选择',type:"工厂排产系统"},component:EquipmentChoose},
+        {path:'/CheckscPlan',name:'CheckscPlan',meta:{ title:'审核计划',type:"工厂排产系统"},component:CheckscPlan},
+        {path:'/DistributionPlan',name:'DistributionPlan',meta:{ title:'下发计划',type:"工厂排产系统"},component:DistributionPlan},
+        {path:'/sendPlan',name:'sendPlan',meta:{ title:'发送投料计划',type:"工厂排产系统"},component:sendPlan},
+        {path:'/displayEqTime',name:'displayEqTime',meta:{ title:'设备运行时间展示',type:"工厂排产系统"},component:displayEqTime},
+
+        {path:'/equipmentAudit',name:'equipmentAudit',meta:{ title:'批次设备审核',type:"调度执行系统"},component:equipmentAudit},
+        {path:'/confirmProduction',name:'confirmProduction',meta:{ title:'批次设备复核',type:"调度执行系统"},component:confirmProduction},
+        {path:'/sendMaterial',name:'sendMaterial',meta:{ title:'发送物料明细',type:"调度执行系统"},component:sendMaterial},
+        {path:'/sendMaterialLog',name:'sendMaterialLog',meta:{ title:'物料明细记录',type:"调度执行系统"},component:sendMaterialLog},
 
         {path:'/ProductionMonitoring',name:'ProductionMonitoring',meta:{ title:'生产监控',type:"生产数据管理"},component:ProductionMonitoring},
         {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'批生产记录',type:"生产数据管理"},component:ElectronicBatchRecord},

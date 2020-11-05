@@ -105,29 +105,19 @@
         sideIcon:'el-icon-arrow-left', //左侧菜单栏缩进点击切换图标
         systemActive:"",
         systemOptions:[
-          {label: '排产调度系统',icon:"el-icon-date",mainMenu:[
+          {label: '工厂排产系统',icon:"el-icon-date",mainMenu:[
             {title:'排产调度看板',icon:"el-icon-s-home",url:"/schedulingBoard"},
             {title:'ERP数据管理',icon:"fa fa-table",url:"/ERPDataManage"},
-            {title:'订单计划分批',icon:"fa fa-list-alt",url:"/scheduling"},
-            {title:"生产计划调度",icon:"el-icon-s-claim",url:"/planningScheduling"},
+            {title:'订单计划分批',icon:"el-icon-s-order",url:"/scheduling"},
+            {title:"生产计划调度",icon:"el-icon-folder-checked",url:"/planningScheduling"},
+            {title:"生产进度",icon:"fa fa-tasks",url:"/planProgress"},
             {title:"设备运行统计",icon:"el-icon-data-line",url:"/displayEqTime"},
           ]},
-          {label: '生产建模',icon:"el-icon-s-management",mainMenu:[
-            {title:"产品定义",icon:"fa fa-list-ul",url:"/ProductDefinition"},
-            {title:"工艺段定义",icon:"fa fa-list-alt",url:"/ProcessSectionDefinition"},
-            {title:"区域(车间)定义",icon:"el-icon-location-information",url:"/Area"},
-            {title:"生产设备定义",icon:"el-icon-odometer",url:"/Equipment"},
-            {title:"产品定义工艺段",icon:"fa fa-sitemap",url:"/ProductSectionDefinition"},
-            {title:"产品工艺段参数",icon:"el-icon-data-board",url:"/ProductParameter"},
-            {title:"产品单位定义",icon:"fa fa-balance-scale",url:"/Unit"},
-            {title:"生产线定义",icon:"fa fa-server",url:"/ProductLineDefinition"},
-          ]},
-          {label: '物料系统',icon:"fa fa-leaf",mainMenu:[
-            {title:"物料基础信息",icon:"el-icon-box",url:"/MaterialInformation"},
-            {title:"物料BOM",icon:"el-icon-box",url:"/MaterialBOM"},
-            {title:"库存管理",icon:"el-icon-box",url:""},
-            {title:"出入库管理",icon:"el-icon-box",url:""},
-            {title:"物料追溯",icon:"el-icon-box",url:"/MaterialTraceability"},
+          {label: '调度执行系统',icon:"el-icon-document-checked",mainMenu:[
+            {title:'批次设备审核',icon:"el-icon-s-claim",url:"/equipmentAudit"},
+            {title:'批次设备复核',icon:"el-icon-success",url:"/confirmProduction"},
+            {title:'发送物料明细',icon:"fa fa-paper-plane",url:"/sendMaterial"},
+            {title:"物料明细记录",icon:"fa fa-th",url:"/sendMaterialLog"},
           ]},
           {label: '生产数据管理',icon:"el-icon-tickets",mainMenu:[
             {title:"生产监控",icon:"el-icon-box",url:"/ProductionMonitoring"},
@@ -147,6 +137,23 @@
             {title:"效率报表",icon:"el-icon-box",url:""},
             {title:"OEE报表",icon:"el-icon-box",url:""},
             {title:"出货报表",icon:"el-icon-box",url:""},
+          ]},
+          {label: '生产建模',icon:"el-icon-s-management",mainMenu:[
+            {title:"产品定义",icon:"fa fa-list-ul",url:"/ProductDefinition"},
+            {title:"工艺段定义",icon:"fa fa-list-alt",url:"/ProcessSectionDefinition"},
+            {title:"区域(车间)定义",icon:"el-icon-location-information",url:"/Area"},
+            {title:"生产设备定义",icon:"el-icon-odometer",url:"/Equipment"},
+            {title:"产品定义工艺段",icon:"fa fa-sitemap",url:"/ProductSectionDefinition"},
+            {title:"产品工艺段参数",icon:"el-icon-data-board",url:"/ProductParameter"},
+            {title:"产品单位定义",icon:"fa fa-balance-scale",url:"/Unit"},
+            {title:"生产线定义",icon:"fa fa-server",url:"/ProductLineDefinition"},
+          ]},
+          {label: '物料系统',icon:"fa fa-leaf",mainMenu:[
+            {title:"物料基础信息",icon:"el-icon-box",url:"/MaterialInformation"},
+            {title:"物料BOM",icon:"el-icon-box",url:"/MaterialBOM"},
+            {title:"库存管理",icon:"el-icon-box",url:""},
+            {title:"出入库管理",icon:"el-icon-box",url:""},
+            {title:"物料追溯",icon:"el-icon-box",url:"/MaterialTraceability"},
           ]},
           {label: '系统管理',icon:"el-icon-s-tools",mainMenu:[
             {title:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
