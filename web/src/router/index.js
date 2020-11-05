@@ -28,10 +28,12 @@ import schedulingBoard from '@/views/scheduling/board'
 import ERPDataManage from '@/views/scheduling/ERPDataManage'
 import scheduling from '@/views/scheduling/scheduling'
 import planningScheduling from '@/views/scheduling/planningScheduling'
+import planProgress from '@/views/scheduling/planProgress'
 import EquipmentChoose from '@/views/scheduling/EquipmentChoose'
 import DistributionPlan from '@/views/scheduling/DistributionPlan'
 import CheckscPlan from '@/views/scheduling/CheckscPlan'
-import sendWMS from '@/views/scheduling/sendWMS'
+import sendMaterial from '@/views/scheduling/sendMaterial'
+import sendPlan from '@/views/scheduling/sendPlan'
 import displayEqTime from '@/views/scheduling/displayEqTime'
 
 //生产数据
@@ -84,10 +86,12 @@ export default new Router({
         {path:'/ERPDataManage',name:'ERPDataManage',meta:{ title:'ERP数据管理',type:"排产调度系统"},component:ERPDataManage},
         {path:'/scheduling',name:'scheduling',meta:{ title:'订单计划分批',type:"排产调度系统"},component:scheduling},
         {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度',type:"排产调度系统"},component:planningScheduling},
+        {path:'/planProgress',name:'planProgress',meta:{ title:'生产进度',type:"排产调度系统"},component:planProgress},
         {path:'/EquipmentChoose',name:'EquipmentChoose',meta:{ title:'设备选择',type:"排产调度系统"},component:EquipmentChoose},
         {path:'/CheckscPlan',name:'CheckscPlan',meta:{ title:'审核计划',type:"排产调度系统"},component:CheckscPlan},
         {path:'/DistributionPlan',name:'DistributionPlan',meta:{ title:'下发计划',type:"排产调度系统"},component:DistributionPlan},
-        {path:'/sendWMS',name:'sendWMS',meta:{ title:'发送到WMS',type:"排产调度系统"},component:sendWMS},
+        {path:'/sendMaterial',name:'sendMaterial',meta:{ title:'发送物料明细',type:"排产调度系统"},component:sendMaterial},
+        {path:'/sendPlan',name:'sendPlan',meta:{ title:'发送投料计划',type:"排产调度系统"},component:sendPlan},
         {path:'/displayEqTime',name:'displayEqTime',meta:{ title:'设备运行时间展示',type:"排产调度系统"},component:displayEqTime},
 
         {path:'/ProductionMonitoring',name:'ProductionMonitoring',meta:{ title:'生产监控',type:"生产数据管理"},component:ProductionMonitoring},

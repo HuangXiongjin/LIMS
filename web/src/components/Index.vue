@@ -110,6 +110,8 @@
             {title:'ERP数据管理',icon:"fa fa-table",url:"/ERPDataManage"},
             {title:'订单计划分批',icon:"fa fa-list-alt",url:"/scheduling"},
             {title:"生产计划调度",icon:"el-icon-s-claim",url:"/planningScheduling"},
+            {title:"发送物料明细",icon:"el-icon-s-claim",url:"/sendMaterial"},
+            {title:"生产进度",icon:"el-icon-s-claim",url:"/planProgress"},
             {title:"设备运行统计",icon:"el-icon-data-line",url:"/displayEqTime"},
           ]},
           {label: '生产建模',icon:"el-icon-s-management",mainMenu:[
