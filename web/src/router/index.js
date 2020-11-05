@@ -91,7 +91,6 @@ export default new Router({
         {path:'/ERPDataManage',name:'ERPDataManage',meta:{ title:'ERP数据管理',type:"工厂排产系统"},component:ERPDataManage},
         {path:'/scheduling',name:'scheduling',meta:{ title:'订单计划分批',type:"工厂排产系统"},component:scheduling},
         {path:'/planningScheduling',name:'planningScheduling',meta:{ title:'生产计划调度',type:"工厂排产系统"},component:planningScheduling},
-        {path:'/confirmProduction',name:'confirmProduction',meta:{ title:'生产设备确认',type:"工厂排产系统"},component:confirmProduction},
         {path:'/planProgress',name:'planProgress',meta:{ title:'生产进度',type:"工厂排产系统"},component:planProgress},
         {path:'/EquipmentChoose',name:'EquipmentChoose',meta:{ title:'设备选择',type:"工厂排产系统"},component:EquipmentChoose},
         {path:'/CheckscPlan',name:'CheckscPlan',meta:{ title:'审核计划',type:"工厂排产系统"},component:CheckscPlan},
