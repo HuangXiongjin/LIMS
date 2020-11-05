@@ -74,7 +74,6 @@
                   </el-pagination>
             </div>
         </el-col>
-        <el-col :span='24' class="marginBottom" style="textAlign:right;"><el-button type="primary" size="small" icon="el-icon-position" @click="forward">发送到WMS</el-button></el-col>
        </el-row>
 </template>
 <script>
@@ -104,11 +103,8 @@ export default {
         this.getYxfBatch()
     },
     methods: {
-        forward(){
-          this.$router.push('/sendWMS')
-        },
         back(){ //返回主流程
-          this.$router.push('/planningScheduling')
+          this.$router.push('/planProgress')
         },
         yxfbatchHandleSizeChange(limit){ //已选设备 每页条数切换
         this.yxfbatchTableData.limit = limit

@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回上一步</el-button></el-col>
+    <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回主线程</el-button></el-col>
     <el-col :span="24">
       <el-row :gutter="15">
         <el-col :span="24">
@@ -65,7 +65,7 @@
     },
     methods:{
       back(){ //返回上一步
-        this.$router.go(-1)
+        this.$router.push('/planProgress')
       },
       //选择批计划
       getPlanManagerTableData(){
