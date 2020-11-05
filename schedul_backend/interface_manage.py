@@ -249,7 +249,7 @@ def WMS_SendMatils():
         try:
             jsonstr = json.dumps(data.to_dict())
             if len(jsonstr) > 10:
-                jsonnumber = re.findall(r"\d+\.?\d*", jsonstr)
+                jsonnumber = re.findall(r"\d+\.?\d*", data.get("sendData"))
                 dic = []
                 for key in jsonnumber:
                     id = int(key)
@@ -271,6 +271,9 @@ def WMS_SendMatils():
                 responjson = eval(responjson)
                 if responjson.get("code") != "0":
                     return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！" + responjson.get("msg")})
+                PlanID = data.get("PlanID")
+                pmoc = db_session.query(PlanManager).filter(PlanManager.ID == PlanID).first()
+                pmoc.PlanStatus = data.get("PlanStatus")
                 db_session.commit()
                 return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
