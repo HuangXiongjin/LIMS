@@ -801,6 +801,9 @@ class BatchMaterialInfo(Base):
     # 发送WMS:
     SendFlag = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
+    # 操作时间:
+    OperationDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
 
 
 

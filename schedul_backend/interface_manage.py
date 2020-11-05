@@ -260,6 +260,7 @@ def WMS_SendMatils():
                                 "Weight": oclass.BucketWeight, "Unit": oclass.Unit, "Flag": oclass.Flag, "Seq": oclass.FeedingSeq,
                                 "EQPCode": oclass.EQPCode, "EQPName":oclass.EQPName})
                     oclass.SendFlag = "已发送"
+                    oclass.OperationDate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     zytask.TaskStatus = "已发送"
                     db_session.commit()
                 url = Global.WMSurl + "api/WbeApi/RecvContanerInfon"
