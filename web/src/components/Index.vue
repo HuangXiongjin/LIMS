@@ -113,7 +113,7 @@
             {title:"生产进度",icon:"fa fa-tasks",url:"/planProgress"},
             {title:"设备运行统计",icon:"el-icon-data-line",url:"/displayEqTime"},
           ]},
-          {label: '调度执行系统',icon:"el-icon-date",mainMenu:[
+          {label: '调度执行系统',icon:"el-icon-document-checked",mainMenu:[
             {title:'批次设备审核',icon:"el-icon-s-claim",url:"/equipmentAudit"},
             {title:'批次设备复核',icon:"el-icon-success",url:"/confirmProduction"},
             {title:'发送物料明细',icon:"fa fa-paper-plane",url:"/sendMaterial"},
