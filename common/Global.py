@@ -34,7 +34,6 @@ class ZYPlanStatus(Enum):
     EquipmentCheck = "设备审核"
     EquipmentReview = "设备复核"
     READY = "生产前准备"
-    READY = "生产前准备"
     Produncting = "计划进行"
     Clear = "清场"
     Finshed = "已完成"

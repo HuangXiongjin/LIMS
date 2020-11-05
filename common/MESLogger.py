@@ -131,7 +131,7 @@ def insertAuditTrace(Operation, DeitalMSG, TableName, User, Other):
     '''
     try:
         if Operation == None: Operation = ""
-        DeitalMSG = str(DeitalMSG) if  DeitalMSG == None else DeitalMSG = ""
+        if DeitalMSG == None: DeitalMSG = ""
         if TableName == None: TableName = ""
         if User == None: User = ""
         if Other == None: Other = ""
