@@ -114,10 +114,10 @@
             {title:"设备运行统计",icon:"el-icon-data-line",url:"/displayEqTime"},
           ]},
           {label: '调度执行系统',icon:"el-icon-document-checked",mainMenu:[
-            {title:'批次设备审核',icon:"el-icon-s-claim",url:"/equipmentAudit"},
-            {title:'批次设备复核',icon:"el-icon-success",url:"/confirmProduction"},
             {title:'发送物料明细',icon:"fa fa-paper-plane",url:"/sendMaterial"},
             {title:"物料明细记录",icon:"fa fa-th",url:"/sendMaterialLog"},
+            {title:'批次设备审核',icon:"el-icon-s-claim",url:"/equipmentAudit"},
+            {title:'批次设备复核',icon:"el-icon-success",url:"/confirmProduction"},
           ]},
           {label: '生产数据管理',icon:"el-icon-tickets",mainMenu:[
             {title:"生产监控",icon:"el-icon-box",url:"/ProductionMonitoring"},
