@@ -6,9 +6,13 @@
       </div>
       <div class="platformContainer">
         <el-form :inline="true">
+          <el-form-item>
+            <el-button type="primary" size="small" @click="sendMaterialFinish">物料明细发送完成</el-button>
+          </el-form-item>
           <el-form-item class="floatRight">
             <el-radio-group v-model="sendPlanPlanStatus" size="small" @change="getPlanManagerTableData">
               <el-radio-button label="待发送"></el-radio-button>
+              <el-radio-button label="发送中"></el-radio-button>
               <el-radio-button label="已发送"></el-radio-button>
             </el-radio-group>
           </el-form-item>
@@ -50,9 +54,6 @@
           <el-table-column prop="BucketNum" label="桶号"></el-table-column>
           <el-table-column prop="BucketWeight" label="重量"></el-table-column>
           <el-table-column prop="Unit" label="单位"></el-table-column>
-          <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
-          <el-table-column prop="EQPName" label="设备名称"></el-table-column>
-          <el-table-column prop="FeedingSeq" label="投料顺序"></el-table-column>
           <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
           <el-table-column prop="SendFlag" label="发送WMS标识"></el-table-column>
           <el-table-column label="操作" fixed="right" width="150">
@@ -71,7 +72,14 @@
               <el-input v-model="PlanManagerTableData.multipleSelection[0].BrandName" :disabled="true"></el-input>
             </el-form-item>
             <el-form-item label="物料名称">
-              <el-input v-model="MaterialTableData.formField.MATName"></el-input>
+              <el-select v-model="MaterialTableData.formField.MATName" multiple placeholder="请选择">
+                <el-option
+                  v-for="item in MATNameOptions"
+                  :key="item.value"
+                  :label="item.MATName"
+                  :value="item.MATName">
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item label="桶号">
               <el-input v-model="MaterialTableData.formField.BucketNum"></el-input>
@@ -89,14 +97,6 @@
                 <el-option label="桶" value="桶"></el-option>
                 <el-option label="托盘" value="托盘"></el-option>
               </el-select>
-            </el-form-item>
-            <el-form-item label="选择投料设备">
-              <el-select v-model="MaterialTableData.formField.EQPCode" placeholder="请选择">
-                <el-option v-for="(item,index) in TLEQList" :key="index" :label="item.EQPCode+'-'+item.EQPName" :value="item.EQPCode"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="投料顺序">
-              <el-input v-model="MaterialTableData.formField.FeedingSeq"></el-input>
             </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
@@ -129,22 +129,21 @@
           dialogTitle:"",
           formField:{
             ID:"",
-            MATName:"",
+            MATName:[],
             BucketNum:"",
             BucketWeight:"",
             Unit:"",
             Flag:"",
-            EQPCode:"",
-            EQPName:"",
-            FeedingSeq:"",
           },
         },
-        TLEQList:[],
         UnitData:[],
+        MATNameOptions:[],
       }
     },
     mounted(){
       this.getPlanManagerTableData()
+      this.getBOMData()
+      this.getUnitData()
     },
     methods:{
       //选择批计划
@@ -152,9 +151,11 @@
         var that = this
         var PlanStatus = ""
         if(this.sendPlanPlanStatus === "待发送"){
-          PlanStatus = "已下发"
+          PlanStatus = "已发送投料计划"
+        }else if(this.sendPlanPlanStatus === "发送中"){
+          PlanStatus = "物料发送中"
         }else if(this.sendPlanPlanStatus === "已发送"){
-          PlanStatus = "已发送物料明细"
+          PlanStatus = "物料发送完成"
         }
         var params = {
           tableName: "PlanManager",
@@ -192,6 +193,42 @@
         this.$refs.multipleTablePlanManager.toggleRowSelection(row)
         this.getMaterialTableData()
       },
+      //发送物料明细完成
+      sendMaterialFinish(){
+        if(this.PlanManagerTableData.multipleSelection.length == 1){
+          var params = {
+            sendData:"",
+            PlanStatus:"物料发送完成",
+            PlanID:this.PlanManagerTableData.multipleSelection[0].ID
+          }
+          this.$confirm('确定完成发送此批的物料明细吗？', '提示', {
+            distinguishCancelAndClose:true,
+            type: 'warning'
+          }).then(()  => {
+            this.axios.post("/api/WMS_SendMatils",this.qs.stringify(params)).then(res =>{
+              if(res.data.code === "200"){
+                this.$message({
+                  type: 'success',
+                  message: res.data.message
+                });
+              }
+              this.getMaterialTableData()
+            },res =>{
+              console.log("请求错误")
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消操作'
+            });
+          });
+        }else{
+          this.$message({
+            type: 'info',
+            message: "请选择需完成发送物料的批计划"
+          });
+        }
+      },
       //获取单位
       getUnitData(){
         var that = this
@@ -203,6 +240,26 @@
         }).then(res => {
           if(res.data.code === "200"){
             that.UnitData = res.data.data.rows
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
+      //获取物料BOM
+      getBOMData(){
+        var that = this
+        var params = {
+          tableName: "MaterialBOM",
+          BrandName:this.PlanManagerTableData.multipleSelection.BrandName,
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.MATNameOptions = res.data.data.rows
           }else{
             that.$message({
               type: 'info',
@@ -275,7 +332,7 @@
           ID:row.ID,
           BrandCode:row.BrandCode,
           BatchID:row.BatchID,
-          MATName:row.MATName,
+          MATName:row.MATName.split(","),
           BucketNum:row.BucketNum,
           BucketWeight:row.BucketWeight,
           Unit:row.Unit,
@@ -329,7 +386,7 @@
             BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
             BrandName:this.PlanManagerTableData.multipleSelection[0].BrandName,
             BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
-            MATName:this.MaterialTableData.formField.MATName,
+            MATName:this.MaterialTableData.formField.MATName.join(','),
             BucketNum:this.MaterialTableData.formField.BucketNum,
             BucketWeight:this.MaterialTableData.formField.BucketWeight,
             Unit:this.MaterialTableData.formField.Unit,
@@ -370,7 +427,7 @@
             BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
             BrandName:this.PlanManagerTableData.multipleSelection[0].BrandName,
             BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
-            MATName:this.MaterialTableData.formField.MATName,
+            MATName:this.MaterialTableData.formField.MATName.join(','),
             BucketNum:this.MaterialTableData.formField.BucketNum,
             BucketWeight:this.MaterialTableData.formField.BucketWeight,
             Unit:this.MaterialTableData.formField.Unit,
@@ -407,6 +464,8 @@
           })
           var params = {}
           params.sendData = JSON.stringify(mulId)
+          params.PlanStatus = "物料发送中"
+          params.PlanID = this.PlanManagerTableData.multipleSelection[0].ID
           this.$confirm('确定发送此批的物料明细到WMS吗？', '提示', {
             distinguishCancelAndClose:true,
             type: 'warning'
@@ -434,7 +493,7 @@
             message: "请选择物料"
           });
         }
-      }
+      },
     }
   }
 </script>
