@@ -1,10 +1,10 @@
 <template>
    <el-row>
     <el-col :span="24">
+      <div class="page-title">
+        <span class="text-size-16">选择批计划，查看计划工艺进展</span>
+      </div>
       <div class="platformContainer">
-        <div class="page-title">
-          <span class="text-size-16">选择批计划，查看计划工艺进展</span>
-        </div>
         <el-row>
           <el-col :span="24">
             <div style="display:inline-block;marginRight:18px;cursor:pointer">
