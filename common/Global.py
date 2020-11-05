@@ -23,8 +23,8 @@ class PlanStatus(Enum):
     Recall = "撤回"
     FSWMS = "已发送投料计划"
     UNFSMWMS = "未已发送物料明细"
-    FSMWMS = "发送物料明细中"
-    FSMWMSed = "已发送物料明细"
+    FSMWMS = "物料发送中"
+    FSMWMSed = "已发送投料计划"
     RUN = "执行"
     FINISH = "已完成"
 
