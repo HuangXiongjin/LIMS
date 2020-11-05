@@ -260,6 +260,8 @@ def WMS_SendMatils():
                                 "Weight": oclass.BucketWeight, "Unit": oclass.Unit, "Flag": oclass.Flag, "Seq": oclass.FeedingSeq,
                                 "EQPCode": oclass.EQPCode, "EQPName":oclass.EQPName})
                     oclass.SendFlag = "已发送"
+                    zytask.TaskStatus = "已发送"
+                    db_session.commit()
                 url = Global.WMSurl + "api/WbeApi/RecvContanerInfon"
                 dir = {}
                 dir["batchmaterial_list"] = dic
@@ -272,6 +274,7 @@ def WMS_SendMatils():
                 db_session.commit()
                 return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
+            db_session.rollback()
             print("调用WMS_SendPlan接口报错！")
             return json.dumps("调用WMS_SendPlan接口报错！")
 @interface_manage.route('/WMS_ReceiveDetail', methods=['GET', 'POST'])

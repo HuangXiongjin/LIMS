@@ -8,6 +8,7 @@ from flask_login import current_user,LoginManager
 import re
 from sqlalchemy import create_engine
 from common.BSFramwork import AlchemyEncoder
+from common.MESLogger import insertAuditTrace
 from common.common_cuid import logger,insertSyslog
 import os
 from datetime import timedelta
@@ -219,6 +220,8 @@ def checkPlanManager():
                 oclassplan.PlanStatus = PlanStatus
                 oclassplan.Description = Description
                 db_session.commit()
+                insertAuditTrace("审核计划", "批次号是：" + oclassplan.BatchID +"的" +oclassplan.BrandCode + "在"+
+                                 datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"进行计划审核操作", "PlanManager", current_user.Name, "")
             return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
             db_session.rollback()
@@ -242,6 +245,9 @@ def checkPlanManagerSingle():
             oclassplan.PlanStatus = PlanStatus
             oclassplan.Description = Description
             db_session.commit()
+            insertAuditTrace("审核计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandCode + "在" +
+                             datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行计划审核操作", "PlanManager",
+                             current_user.Name, "")
             return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
             db_session.rollback()
@@ -267,11 +273,17 @@ def createZYPlanZYtask():
                     oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
                     oclassplan.PlanStatus = Global.PlanStatus.Realse.value
                     db_session.commit()
+                    insertAuditTrace("下发计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandCode + "在" +
+                                     datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行下发计划操作", "PlanManager",
+                                     current_user.Name, "")
                     return json.dumps({"code": "200", "message": "下发成功！！"})
                 elif PlanStatus == "撤回":
                     oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
                     oclassplan.PlanStatus = Global.PlanStatus.Recall.value
                     db_session.commit()
+                    insertAuditTrace("撤回计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandCode + "在" +
+                                     datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行撤回计划操作", "PlanManager",
+                                     current_user.Name, "")
                     return json.dumps({"code": "200", "message": "成功！！"})
                 else:
                     return json.dumps({"code": "200", "message": "批次计划状态不正确！"})

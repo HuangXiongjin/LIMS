@@ -96,7 +96,7 @@ class MESLogger(logging.getLoggerClass()):
 
 logger = MESLogger('./logs', 'log')
 
-
+from common.system import SysLog, db_session, AuditTrace
 # 插入日志OperationType OperationContent OperationDate UserName ComputerName IP
 def insertSyslog(operationType, operationContent, userName):
     try:
@@ -107,11 +107,37 @@ def insertSyslog(operationType, operationContent, userName):
             operationContent = str(operationContent)
         if userName == None: userName = ""
         ComputerName = socket.gethostname()
-        from common.system import SysLog, db_session
+
         db_session.add(
             SysLog(OperationType=operationType, OperationContent=operationContent,
                    OperationDate=datetime.datetime.now(), UserName=userName,
                    ComputerName=ComputerName, IP=socket.gethostbyname(ComputerName)))
+        db_session.commit()
+    except Exception as e:
+        db_session.rollback()
+        print(e)
+        logger.error(e)
+
+def insertAuditTrace(Operation, DeitalMSG, TableName, User, Other):
+    '''
+    审计追踪记录
+    :param Operation: 操作
+    :param DeitalMSG: 详细信息
+    :param ReviseDate: 修改日期
+    :param TableName: 操作表
+    :param User: 用户
+    :param Other: 其他
+    :return:
+    '''
+    try:
+        if Operation == None: Operation = ""
+        DeitalMSG = str(DeitalMSG) if  DeitalMSG == None else DeitalMSG = ""
+        if TableName == None: TableName = ""
+        if User == None: User = ""
+        if Other == None: Other = ""
+        db_session.add(
+            AuditTrace(Operation=Operation, DeitalMSG=DeitalMSG,
+                   ReviseDate=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), User=User, Other=Other))
         db_session.commit()
     except Exception as e:
         db_session.rollback()

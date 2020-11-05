@@ -22,17 +22,22 @@ class PlanStatus(Enum):
     Realse = "已下发"
     Recall = "撤回"
     FSWMS = "已发送投料计划"
-    FSMWMS = "已发送物料明细"
+    UNFSMWMS = "未已发送物料明细"
+    FSMWMS = "发送物料明细中"
+    FSMWMSed = "已发送物料明细"
     RUN = "执行"
     FINISH = "已完成"
 
 #计划ZYPlan
 class ZYPlanStatus(Enum):
-    Produced = "待生产" #已选设备
-    Finshed = "已完成"  # 已选设备
-    READY = "生产前准备"  # 准备
-    Produncting = "计划进行"  # 计划进行
-    Clear = "清场"  # 清场
+    Produced = "待生产"
+    EquipmentCheck = "设备审核"
+    EquipmentReview = "设备复核"
+    READY = "生产前准备"
+    READY = "生产前准备"
+    Produncting = "计划进行"
+    Clear = "清场"
+    Finshed = "已完成"
 #任务ZYTask
 class TASKSTATUS(Enum):
     Confirm = "已选设备"#任务选择设备
