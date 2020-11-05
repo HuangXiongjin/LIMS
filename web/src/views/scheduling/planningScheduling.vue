@@ -9,9 +9,9 @@
       </el-steps>
     </el-col>
     <el-col :span="24" class="marginTop">
-      <CheckscPlan v-show="steps===0"></CheckscPlan>
-      <EquipmentChoose v-show="steps===1"></EquipmentChoose>
-      <DistributionPlan v-show="steps===2"></DistributionPlan>
+      <CheckscPlan v-show="steps===0" ref="child1"></CheckscPlan>
+      <EquipmentChoose v-show="steps===1" ref="child2"></EquipmentChoose>
+      <DistributionPlan v-show="steps===2" ref="child3"></DistributionPlan>
       <sendPlan v-show="steps===3"></sendPlan>
     </el-col>
     <el-col :span="24" style="textAlign:right">
@@ -35,12 +35,20 @@ import sendPlan from './sendPlan.vue'
       }
     },
     components:{CheckscPlan,EquipmentChoose,DistributionPlan,sendPlan},
-    created(){
-     
+    mounted(){
+     this.$refs.child1.getPlanManager()
     },
     methods:{
-        NextStep(){
-          this.steps++
+      NextStep(){
+        this.steps++
+        if(this.steps===1){
+          this.$refs.child2.getConfigbatch() 
+          this.$refs.child2.chConfigbatch() 
+          this.$refs.child2.getSelectedEq()
+        }else if(this.steps===2){
+          this.$refs.child3.getSelectedEq()
+          this.$refs.child3.getYxfBatch()
+        }
         },
         LastStep(){
           this.steps--
