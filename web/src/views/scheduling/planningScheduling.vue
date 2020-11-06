@@ -12,11 +12,11 @@
       <CheckscPlan v-show="steps===0" ref="child1"></CheckscPlan>
       <EquipmentChoose v-show="steps===1" ref="child2"></EquipmentChoose>
       <DistributionPlan v-show="steps===2" ref="child3"></DistributionPlan>
-      <sendPlan v-show="steps===3"></sendPlan>
+      <sendPlan v-show="steps===3" ref="child4"></sendPlan>
     </el-col>
     <el-col :span="24" style="textAlign:right">
       <el-button type="primary" v-show="steps != 0" @click="LastStep">上一步</el-button>
-      <el-button type="primary" v-show="steps != 3" @click="NextStep">下一步</el-button>
+      <el-button type="primary" v-show="steps != 4" @click="NextStep">下一步</el-button>
     </el-col>
   </el-row>
 </template>
@@ -48,6 +48,10 @@ import sendPlan from './sendPlan.vue'
         }else if(this.steps===2){
           this.$refs.child3.getSelectedEq()
           this.$refs.child3.getYxfBatch()
+        }else if(this.steps===3){
+          this.$refs.child4.getPlanManagerTableData()
+        }else if(this.steps===4){
+          this.$router.push('/planProgress')
         }
         },
         LastStep(){

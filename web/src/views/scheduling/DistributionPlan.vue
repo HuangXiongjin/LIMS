@@ -3,13 +3,16 @@
            <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回主流程</el-button></el-col>
            <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">待下发列表</div>
+           <el-button type="primary" icon="el-icon-check" size='mini' @click="distributemulBatch">下发勾选的多批次</el-button>
               <el-table
                   :data="eqlistTableData.data"
                   highlight-current-row
                   size='small'
                   border
+                  @select='getAllbatchrow'
                   ref="eqlistmultipleTable"
                   style="width: 100%">
+                  <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column v-for="item in eqlistableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                   <el-table-column prop="PlanStatus" label="计划状态">
                     <template slot-scope="scope">
@@ -94,7 +97,9 @@ export default {
             offset: 1,
             total: 0,
         },
-        eqlistableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'每批产量'},{prop:'Unit',label:'单位'}],//选择设备列表
+        checkedRow:[],
+        datalist:[],
+        eqlistableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'SchedulePlanCode',label:'调度编号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'计划产量'},{prop:'Unit',label:'单位'}],//选择设备列表
       }
 
     },
@@ -103,6 +108,62 @@ export default {
         this.getYxfBatch()
     },
     methods: {
+      distributemulBatch(){
+        this.datalist=[]
+        var flag=true
+        if(this.checkedRow.length===0){
+            this.$message({
+               type:'info',
+               message:'请先勾选要下发的批次'
+             })
+             return;
+        }else{
+          this.checkedRow.forEach((item) => {
+          if(item.PlanStatus==='待下发'){
+            this.datalist.push(item)
+          }else{
+            flag=false
+            this.$message({
+               type:'info',
+               message:'当前所选批次包含其他状态，请重新选择'
+             })
+             return;
+          }
+        })
+        if(flag){
+        this.datalist=this.datalist.map((item) => {
+          return item.ID
+        })
+        var params={
+          PlanStatus:'已下发',
+          IDs:JSON.stringify(this.datalist)
+        }
+        this.$confirm('是否下发勾选的多批次, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
+           if(res.data.code==='200'){
+             this.$message({
+               type:'success',
+               message:'多批次下发成功'
+             })
+            this.getSelectedEq()
+            this.getYxfBatch()
+           }
+         })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });
+        }}
+        },
+        getAllbatchrow(e){
+          this.checkedRow=e
+        },
         back(){ //返回主流程
           this.$router.push('/planProgress')
         },
