@@ -221,7 +221,7 @@ def checkPlanManager():
                 oclassplan.PlanStatus = PlanStatus
                 oclassplan.Description = Description
                 db_session.commit()
-                insertAuditTrace("审核计划", "批次号是：" + oclassplan.BatchID +"的" +oclassplan.BrandCode + "在"+
+                insertAuditTrace("审核计划", "批次号是：" + oclassplan.BatchID +"的" +oclassplan.BrandName + "在"+
                                  datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"进行计划审核操作", "PlanManager", current_user.Name, "")
             return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
@@ -246,7 +246,7 @@ def checkPlanManagerSingle():
             oclassplan.PlanStatus = PlanStatus
             oclassplan.Description = Description
             db_session.commit()
-            insertAuditTrace("审核计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandCode + "在" +
+            insertAuditTrace("审核计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandName + "在" +
                              datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行计划审核操作", "PlanManager",
                              current_user.Name, "")
             return json.dumps({"code": "200", "message": "OK"})
@@ -275,7 +275,7 @@ def createZYPlanZYtask():
                         oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
                         oclassplan.PlanStatus = Global.PlanStatus.Realse.value
                         db_session.commit()
-                        insertAuditTrace("下发计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandCode + "在" +
+                        insertAuditTrace("下发计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandName + "在" +
                                          datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行下发计划操作", "PlanManager",
                                          current_user.Name, "")
                     return json.dumps({"code": "200", "message": "下发成功！！"})
@@ -284,7 +284,7 @@ def createZYPlanZYtask():
                     oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
                     oclassplan.PlanStatus = Global.PlanStatus.Recall.value
                     db_session.commit()
-                    insertAuditTrace("撤回计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandCode + "在" +
+                    insertAuditTrace("撤回计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandName + "在" +
                                      datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行撤回计划操作", "PlanManager",
                                      current_user.Name, "")
                     return json.dumps({"code": "200", "message": "成功！！"})
@@ -617,25 +617,33 @@ def selectTiQuEquipment():
             insertSyslog("error", "查询提取设备报错Error：" + str(e), current_user.Name)
             return json.dumps("查询提取设备报错", cls=AlchemyEncoder, ensure_ascii=False)
 
-@batch_plan.route('/taskSaveEqp', methods=['GET', 'POST'])
-def taskSaveEqp():
+@batch_plan.route('/taskSaveEqpCheckReview', methods=['GET', 'POST'])
+def taskSaveEqpCheckReview():
     '''
-    任务选择设备
+    任务审核复核（选择设备）
     :return:
     '''
-    if request.method == 'GET':
+    if request.method == 'POST':
         data = request.values
         try:
-            datalist = json.loads(data.get("datalist"))
-            for i in datalist:
-                oclass = db_session.query(ZYTask).filter(ZYTask.ID == i.get("ID")).first()
-                oclass.EQPCode = i.get("EQPCode")
-                oclass.EQPName = i.get("EQPName")
-                db_session.commit()
+            ZYPlanStatus = data.get("ZYPlanStatus")
+            ocalss = db_session.query(ZYPlan).filter(ZYPlan.ID == data.get("ID")).first()
+            # datalist = json.loads(data.get("datalist"))
+            # iTaskSeq = 0
+            # for i in datalist:
+            #     ocalss = db_session.query(ZYTask).filter(ZYTask.ID == i.get("ID")).first()
+            #     ocalss.EQPCode = i.get("EQPCode")
+            #     ocalss.EQPName = i.get("EQPName")
+            #     db_session.commit()
+            ocalss.ZYPlanStatus = ZYPlanStatus
+            db_session.commit()
+            insertAuditTrace("任务审核复核（选择设备）", "批次号是：" + ocalss.BatchID + "的" + ocalss.BrandName + "在" +ocalss.PUName+"段的"+
+                             datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行计划审核操作", "PlanManager",
+                             current_user.Name, "")
             return json.dumps({"code": "200", "message": "任务选择设备成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
             print(e)
             logger.error(e)
-            insertSyslog("error", "任务选择设备报错Error：" + str(e), current_user.Name)
-            return json.dumps("任务选择设备报错", cls=AlchemyEncoder, ensure_ascii=False)
+            insertSyslog("error", "任务审核复核报错Error：" + str(e), current_user.Name)
+            return json.dumps("任务审核复核报错", cls=AlchemyEncoder, ensure_ascii=False)
