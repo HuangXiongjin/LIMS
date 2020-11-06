@@ -20,6 +20,7 @@ import calendar
 import schedul_backend
 from common import Global
 from common.BSFramwork import AlchemyEncoder
+from common.MESLogger import insertAuditTrace
 from common.common_cuid import logger,insertSyslog,insert,delete,update,select
 import os
 import openpyxl
@@ -235,6 +236,9 @@ def planschedul():
                     if oc:
                         oc.PlanStatus = "已分批"
                         db_session.commit()
+                    insertAuditTrace("订单排产", "订单号是：" + oc.PlanNum + "的" + oc.BrandName + "在" +
+                                     datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行订单排产操作", "PlanManager",
+                                     current_user.Name, "")
             return json.dumps({"code": "200", "message": "排产成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
@@ -288,6 +292,9 @@ def addEquipmentBatchRunTime():
                             db_session.add(ert)
                 oclass.PlanStatus = Global.PlanStatus.WaitRealse.value
                 db_session.commit()
+                insertAuditTrace("生产配置添加设备", "批次号是：" + oclass.BatchID + "的" + oclass.BrandName + "在" +
+                                 datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行生产配置添加设备操作", "PlanManager",
+                                 current_user.Name, "")
             return json.dumps({"code": "200", "message": "保存成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
