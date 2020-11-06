@@ -31,7 +31,6 @@ import sendPlan from './sendPlan.vue'
     data(){
       return{
           steps:0,
-
       }
     },
     components:{CheckscPlan,EquipmentChoose,DistributionPlan,sendPlan},
@@ -56,6 +55,18 @@ import sendPlan from './sendPlan.vue'
         },
         LastStep(){
           this.steps--
+          if(this.steps===0){
+              this.$refs.child1.getPlanManager()
+          }else if(this.steps===1){
+              this.$refs.child2.getConfigbatch() 
+              this.$refs.child2.chConfigbatch() 
+              this.$refs.child2.getSelectedEq()
+          }else if(this.steps===2){
+              this.$refs.child3.getSelectedEq()
+              this.$refs.child3.getYxfBatch()
+          }else if(this.steps===3){
+              this.$refs.child4.getPlanManagerTableData()
+          }
         }
     }
   }
