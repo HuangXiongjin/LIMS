@@ -154,10 +154,11 @@
               <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
               <el-table-column prop="Seq" label="顺序号"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
+              <el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>
               <el-table-column prop="BrandCode" label="品名编码"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="BrandType" label="产品类型"></el-table-column>
-              <el-table-column prop="PlanQuantity" label="每批产量"></el-table-column>
+              <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
               <el-table-column prop="PlanStatus" label="计划状态">
                 <template slot-scope="scope">
@@ -211,6 +212,7 @@
       <el-col :span="24" style="text-align: right;">
         <el-button type="primary" v-show="steps != 0" @click="lastStep">上一步</el-button>
         <el-button type="primary" v-show="steps != 2" @click="nextStep">下一步</el-button>
+        <el-button type="primary" v-show="steps == 2" @click="$router.push('/planningScheduling')">去调度</el-button>
       </el-col>
     </el-col>
   </el-row>

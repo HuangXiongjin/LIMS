@@ -23,8 +23,10 @@
               <el-table-column type="selection"></el-table-column>
               <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
+              <el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>
               <el-table-column prop="BrandCode" label="品名编码"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
+              <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
               <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
             </el-table>

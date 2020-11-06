@@ -105,7 +105,7 @@
         sideIcon:'el-icon-arrow-left', //左侧菜单栏缩进点击切换图标
         systemActive:"",
         systemOptions:[
-          {label: '工厂排产系统',icon:"el-icon-date",mainMenu:[
+          {label: '排产调度系统',icon:"el-icon-date",mainMenu:[
             {title:'排产调度看板',icon:"el-icon-s-home",url:"/schedulingBoard"},
             {title:'ERP数据管理',icon:"fa fa-table",url:"/ERPDataManage"},
             {title:'订单计划分批',icon:"el-icon-s-order",url:"/scheduling"},
@@ -113,7 +113,7 @@
             {title:"生产进度",icon:"fa fa-tasks",url:"/planProgress"},
             {title:"设备运行统计",icon:"el-icon-data-line",url:"/displayEqTime"},
           ]},
-          {label: '调度执行系统',icon:"el-icon-document-checked",mainMenu:[
+          {label: '生产执行系统',icon:"el-icon-document-checked",mainMenu:[
             {title:'发送物料明细',icon:"fa fa-paper-plane",url:"/sendMaterial"},
             {title:"物料明细记录",icon:"fa fa-th",url:"/sendMaterialLog"},
             {title:'批次设备审核',icon:"el-icon-s-claim",url:"/equipmentAudit"},
