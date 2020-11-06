@@ -548,6 +548,7 @@ def allUnitDataMutual():
     if request.method == 'GET':
         data = request.values
         try:
+            dic = {}
             json_str = json.dumps(data.to_dict())
             if len(json_str) > 2:
                 PUCode = data['PUCode']
@@ -555,7 +556,6 @@ def allUnitDataMutual():
                 BrandCode = data.get("BrandCode")
                 oclasss = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.BrandCode == BrandCode, EletronicBatchDataStore.PUCode == PUCode,
                                                                            EletronicBatchDataStore.BatchID == BatchID).all()
-                dic = {}
                 for oclass in oclasss:
                     dic[oclass.Content] = oclass.OperationpValue
             return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
