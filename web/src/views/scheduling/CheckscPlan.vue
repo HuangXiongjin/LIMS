@@ -5,7 +5,7 @@
           <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回主流程</el-button></el-col>
           <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">批次列表</div>
-           <div class="marginBottom"><el-button type="primary" icon="el-icon-folder-checked" size='mini' @click="shMultiplebatch">多批次审核</el-button></div>
+           <div class="marginBottom"><el-button type="success" icon="el-icon-position" size='mini' @click="shMultiplebatch">多批次审核</el-button></div>
               <el-table
                   :data="batchTableData.data"
                   highlight-current-row
@@ -26,13 +26,8 @@
                       <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column label="操作" fixed="right" width='200'>
+                  <el-table-column label="操作" fixed="right" width='100'>
                     <template slot-scope="scope">
-                      <el-button
-                        size="mini"
-                        type='success'
-                         v-if="scope.row.PlanStatus==='待审核'"
-                        @click="checkPass(scope.$index, scope.row)">通过</el-button>
                       <el-button
                         size="mini"
                         type="primary"
@@ -106,37 +101,6 @@ var moment=require('moment')
         });
 
       },
-      checkPass(index,row){
-        var id=row.ID
-        this.BatchID=row.BatchID
-        this.BrandCode=row.BrandCode
-        this.$confirm('此操作将审核通过此批次, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-           var params={
-            PlanStatus:'待配置',
-            Describtion:'',
-            ID:id
-          }
-          this.axios.post('/api/checkPlanManagerSingle',this.qs.stringify(params)).then((res) => {
-            if(res.data.code==='200'){
-              this.getPlanManager()
-               this.$message({
-                type: 'success',
-                message: '审核成功'
-              });
-              this.getPlanManager()
-            }
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });          
-        });
-      },
       checkNopass(index,row){
         var id=row.ID
         this.$prompt('请输入未通过的原因', '提示', {
@@ -209,13 +173,13 @@ var moment=require('moment')
              return;
         }else{
           this.checkedRow.forEach((item) => {
-          if(item.PlanStatus==='待审核'){
+          if(item.PlanStatus==='待审核'&& item.BatchID!==""){
             this.datalist.push(item)
           }else{
             flag=false
             this.$message({
                type:'info',
-               message:'当前所选批次包含其他状态，请重新选择'
+               message:'当前所选批次不是待审核状态或者无批次号，请重新选择'
              })
              return;
           }
