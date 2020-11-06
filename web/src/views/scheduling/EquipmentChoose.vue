@@ -16,15 +16,17 @@
                   ref="xfallmultipleTable"
                   @row-click="xfallTabCurrentChange"
                   style="width: 100%">
+                  <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                   <el-table-column prop="PlanStatus" label="计划状态">
                     <template slot-scope="scope">
-                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                      <b class="color-red cursor-pointer" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-brown" v-if="scope.row.PlanStatus === '已发送投料计划'">{{ scope.row.PlanStatus }}</b>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作">
@@ -49,8 +51,8 @@
               <el-row>
               <el-col :span='4'>
                   <el-steps :active="configactive" direction="vertical" finish-status="wait" space='100px'>
-                    <el-step title="基础配置" @click.native="Activeconfig(0)"></el-step>
-                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName" @click.native="Activeconfig(index+1)"></el-step>
+                    <el-step title="基础配置" @click.native="Activeconfig(0)" class="cursor-pointer"></el-step>
+                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName" @click.native="Activeconfig(index+1)" class="cursor-pointer"></el-step>
                   </el-steps>
               </el-col>
               <el-col :span='20' v-if='configactive===0'>
@@ -126,9 +128,10 @@
                       <el-col :span='24'>
                         <el-row>
                           <el-col :span='24'  v-for="(item,index) in inProcessList[configactive-1].eqList" :key='index' class="marginBottom">
-                            <el-checkbox v-model="item.isSelected" @change="setDefaultTime(item.isSelected,index,item.EQPCode)"></el-checkbox>
-                            <span style="margin:0 30px;">{{item.EQPCode}}</span>
-                            <span style="margin:0 30px;">{{item.EQPName}}</span>
+                            <el-checkbox v-model="item.isSelected" @change="setDefaultTime(item.isSelected,index,item.EQPCode)">
+                                <span style="margin:0 60px;">{{item.EQPCode}}</span>
+                                <span style="margin:0 60px;">{{item.EQPName}}</span>
+                            </el-checkbox> 
                           </el-col>
                         </el-row>
                       </el-col>
@@ -161,14 +164,17 @@
                   ref="chmultipleTable"
                   @row-click="chTabCurrentChange"
                   style="width: 100%">
+                  <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                   <el-table-column prop="PlanStatus" label="计划状态">
                     <template slot-scope="scope">
-                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                       <b class="color-red cursor-pointer" v-if="scope.row.PlanStatus === '审核未通过'"{{ scope.row.PlanStatus }}</b>
+                      <b class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-brown" v-if="scope.row.PlanStatus === '已发送投料计划'">{{ scope.row.PlanStatus }}</b>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作">
@@ -193,8 +199,8 @@
               <el-row>
               <el-col :span='4'>
                   <el-steps :active="configactive" direction="vertical" finish-status="wait" space='100px'>
-                    <el-step title="基础配置" @click.native="Activeconfig(0)"></el-step>
-                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName" @click.native="Activeconfig(index+1)"></el-step>
+                    <el-step title="基础配置" @click.native="Activeconfig(0)" class="cursor-pointer"></el-step>
+                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName" @click.native="Activeconfig(index+1)" class="cursor-pointer"></el-step>
                   </el-steps>
               </el-col>
               <el-col :span='20' v-if='configactive===0'>
@@ -270,9 +276,10 @@
                       <el-col :span='24'>
                         <el-row>
                           <el-col :span='24'  v-for="(item,index) in inProcessList[configactive-1].eqList" :key='index' class="marginBottom">
-                            <el-checkbox v-model="item.isSelected" @change="setDefaultTime(item.isSelected,index,item.EQPCode)"></el-checkbox>
-                            <span style="margin:0 30px;">{{item.EQPCode}}</span>
-                            <span style="margin:0 30px;">{{item.EQPName}}</span>
+                            <el-checkbox v-model="item.isSelected" @change="setDefaultTime(item.isSelected,index,item.EQPCode)">
+                                <span style="margin:0 60px;">{{item.EQPCode}}</span>
+                                <span style="margin:0 60px;">{{item.EQPName}}</span>
+                            </el-checkbox>
                           </el-col>
                         </el-row>
                       </el-col>
@@ -305,15 +312,17 @@
                   ref="xfmultipleTable"
                   @row-click="xfTabCurrentChange"
                   style="width: 100%">
+                  <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                   <el-table-column prop="PlanStatus" label="计划状态">
                     <template slot-scope="scope">
-                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                      <b class="color-red cursor-pointer" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-brown" v-if="scope.row.PlanStatus === '已发送投料计划'">{{ scope.row.PlanStatus }}</b>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作">
@@ -338,8 +347,8 @@
               <el-row >
               <el-col :span='4'>
                   <el-steps :active="configactive" direction="vertical" finish-status="wait" space='100px'>
-                    <el-step title="基础配置" @click.native="Activeconfig(0)"></el-step>
-                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName" @click.native="Activeconfig(index+1)"></el-step>
+                    <el-step title="基础配置" @click.native="Activeconfig(0)" class="cursor-pointer"></el-step>
+                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName" @click.native="Activeconfig(index+1)" class="cursor-pointer"></el-step>
                   </el-steps>
               </el-col>
               <el-col :span='20' v-if='configactive===0'>
@@ -486,6 +495,7 @@ export default {
             inProcessList:[],//存储工序设备集合
             BatchWeight:'200片',
             row:{},
+            currentclick:'撤回',
             EQdefaultStartTime:moment().format("YYYY-MM-DD"),
             EQdefaultStartBC:'早',
             EQdefaultEndBC:'早',
@@ -508,7 +518,6 @@ export default {
               item1.isSelected=false
             })}
         })
-        console.log(this.inProcessList)
       },
       setDefaultTime(e,index,EQPCode){
         if(e){
@@ -641,7 +650,7 @@ export default {
                     }
                 }
                 this.inProcessList = res.data.data.processList.sort(compare('Seq'))
-                if(this.radio3==='撤回'){
+                if(this.currentclick==='撤回'){
                   this.cleardefault()
                 }
                 }})
@@ -720,7 +729,9 @@ export default {
         })
       },
        xfallTabCurrentChange(e){ //待配置批次计划 点击显示当前的tab行显示详细信息
+        this.currentclick='待配置'
         this.getEq(e.BatchID,e.BrandCode)
+        this.$refs.xfallmultipleTable.setCurrentRow(e)
         this.PlanNum=e.PlanNum
         this.BatchID=e.BatchID
         this.BrandCode1=e.BrandCode
@@ -734,9 +745,12 @@ export default {
         this.getBatchWeight(e.BrandCode,e.BrandName)
         this.$refs.xfallmultipleTable.clearSelection();
         this.$refs.xfallmultipleTable.toggleRowSelection(e)
+
       },
        xfTabCurrentChange(e){ //配置更改批次计划 点击显示当前的tab行显示详细信息
+        this.currentclick='配置更改'
         this.getEq(e.BatchID,e.BrandCode)
+        this.$refs.xfmultipleTable.setCurrentRow(e)
         this.PlanNum=e.PlanNum
         this.BatchID=e.BatchID
         this.BrandCode1=e.BrandCode
@@ -747,7 +761,9 @@ export default {
         this.$refs.xfmultipleTable.toggleRowSelection(e)
       },
        chTabCurrentChange(e){ //点击撤回批次计划 点击显示当前的tab行显示详细信息
+        this.currentclick='撤回'
         this.getEq(e.BatchID,e.BrandCode)
+        this.$refs.chmultipleTable.setCurrentRow(e)
         this.ID=e.ID
         this.blstartBc=''
         this.blendBc=''

@@ -10,7 +10,8 @@
           <div class="platformContainer">
             <el-form :inline="true">
               <el-form-item>
-                <el-button type="primary" size="small" @click="sendPlan">发送投料计划</el-button>
+                <el-button type="primary" size="small" icon='el-icon-position' @click="sendPlan">发送投料计划</el-button>
+                <el-button type="primary" size="small" icon='el-icon-refresh-right' @click="refreshData">刷新</el-button>
               </el-form-item>
               <el-form-item class="floatRight">
                 <el-radio-group v-model="sendPlanPlanStatus" size="small" @change="getPlanManagerTableData">
@@ -19,7 +20,7 @@
                 </el-radio-group>
               </el-form-item>
             </el-form>
-            <el-table :data="PlanManagerTableData.data" border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
+            <el-table :data="PlanManagerTableData.data" border size="small" highlight-current-row ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @select="handleRowSelectPlanManager"  @row-click="handleRowClickPlanManager">
               <el-table-column type="selection"></el-table-column>
               <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
@@ -28,7 +29,17 @@
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
-              <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
+              <el-table-column prop="PlanStatus" label="计划状态">
+                <template slot-scope="scope">
+                    <b class="color-red cursor-pointer" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</b>
+                    <b class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</b>
+                    <b class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</b>
+                    <b class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</b>
+                    <b class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</b>
+                    <b class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</b>
+                    <b class="color-brown" v-if="scope.row.PlanStatus === '已发送投料计划'">{{ scope.row.PlanStatus }}</b>
+                </template>
+              </el-table-column>
             </el-table>
             <div class="paginationClass">
               <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
@@ -66,6 +77,9 @@
       this.getPlanManagerTableData()
     },
     methods:{
+      refreshData(){
+        this.getPlanManagerTableData()
+      },
       back(){ //返回上一步
         this.$router.push('/planProgress')
       },
@@ -109,9 +123,14 @@
       handleSelectionChangePlanManager(row){
         this.PlanManagerTableData.multipleSelection = row
       },
-      handleRowClickPlanManager(row){
+      handleRowSelectPlanManager(e,row){
         this.$refs.multipleTablePlanManager.clearSelection()
         this.$refs.multipleTablePlanManager.toggleRowSelection(row)
+        this.$refs.multipleTablePlanManager.setCurrentRow(row)
+      },
+      handleRowClickPlanManager(row){
+        this.$refs.multipleTablePlanManager.clearSelection()
+        this.$refs.multipleTablePlanManager.toggleRowSelection(row)  
       },
       //发送投料计划到WMS
       sendPlan(){
