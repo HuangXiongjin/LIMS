@@ -265,19 +265,21 @@ def createZYPlanZYtask():
             jsonstr = json.dumps(data.to_dict())
             if len(jsonstr) > 10:
                 PlanStatus = data.get("PlanStatus")
-                ID = data.get("ID")
                 if PlanStatus == "已下发":
-                    returnmsg = makeZYPlanZYTask(ID)
-                    if (returnmsg == False):
-                        return json.dumps({"code": "500", "message": "下发失败！"})
-                    oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
-                    oclassplan.PlanStatus = Global.PlanStatus.Realse.value
-                    db_session.commit()
-                    insertAuditTrace("下发计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandCode + "在" +
-                                     datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行下发计划操作", "PlanManager",
-                                     current_user.Name, "")
+                    IDs = json.loads(data.get("IDs"))
+                    for ID in IDs:
+                        returnmsg = makeZYPlanZYTask(ID)
+                        if (returnmsg == False):
+                            return json.dumps({"code": "500", "message": "下发失败！"})
+                        oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
+                        oclassplan.PlanStatus = Global.PlanStatus.Realse.value
+                        db_session.commit()
+                        insertAuditTrace("下发计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandCode + "在" +
+                                         datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行下发计划操作", "PlanManager",
+                                         current_user.Name, "")
                     return json.dumps({"code": "200", "message": "下发成功！！"})
                 elif PlanStatus == "撤回":
+                    ID = data.get("ID")
                     oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
                     oclassplan.PlanStatus = Global.PlanStatus.Recall.value
                     db_session.commit()
