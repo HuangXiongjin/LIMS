@@ -2,13 +2,17 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span class="text-size-16">复核批次使用设备</span>
+        <span class="text-size-16 marginRight">审核批次使用设备</span>
+        <span class="sideState bg-gray"></span><span class="text-size-14">待生产</span>
+        <span class="sideState bg-lightgreen"></span><span class="text-size-14">设备已审核</span>
+        <span class="sideState bg-darkblue"></span><span class="text-size-14">设备已复核</span>
+        <span class="sideState bg-success"></span><span class="text-size-14">已完成</span>
       </div>
       <div class="platformContainer">
         <el-row>
           <el-col :span="24">
             <div v-for="(item, index) in ZYPlanTableData.data" :key="index" style="display:inline-block;marginRight:18px;cursor:pointer" @click="PUPlan(item)">
-              <div class="container-col text-size-14 bg-gray" :class="{'bg-success':item.ZYPlanStatus === '已完成'}">{{ item.PUName }}</div>
+              <div class="container-col text-size-14 bg-white" :class="{'bg-gray':item.ZYPlanStatus === '待生产','bg-lightgreen':item.ZYPlanStatus === '设备已审核','bg-darkblue':item.ZYPlanStatus === '设备已复核','bg-success':item.ZYPlanStatus === '已完成'}">{{ item.PUName }}</div>
               <i class="fa fa-arrow-right" v-if="index != ZYPlanTableData.data.length -1" style="vertical-align: top;margin-top: 10px;margin-right:10px;"></i>
             </div>
           </el-col>
