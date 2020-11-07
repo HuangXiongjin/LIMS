@@ -2,11 +2,18 @@
   <el-row>
     <el-col :span='24'>
        <el-row>
-          <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回主流程</el-button></el-col>
+          <el-col :span='24' class="marginBottom">
+            <el-button type="primary" size="small" @click="back">返回主流程</el-button>
+            <el-button type="primary" size="small" icon='el-icon-refresh-right' @click="refreshData">刷新</el-button>
+          </el-col>
           <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">批次列表</div>
-           <div class="marginBottom"><el-button type="success" icon="el-icon-position" size='mini' @click="shMultiplebatch">多批次审核</el-button></div>
+           <div class="marginBottom">
+             <el-button type="success" icon="el-icon-position" size='mini' @click="shMultiplebatch">多批次审核</el-button></div>
               <el-table
+                  v-loading="loading"
+                  element-loading-text="拼命加载中"
+                  element-loading-spinner="el-icon-loading"
                   :data="batchTableData.data"
                   highlight-current-row
                   size='small'
@@ -80,6 +87,7 @@ var moment=require('moment')
         blSelected:false,
         row:{},
         datalist:[],
+        loading:false,
         checkedRow:[],//勾选的原生数组
         batchtableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'SchedulePlanCode',label:'调度编号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'计划产量'},{prop:'Unit',label:'单位'}],//批次列表
       }
@@ -90,6 +98,9 @@ var moment=require('moment')
     mounted(){
     },
     methods:{
+      refreshData(){ //刷新数据
+        this.getPlanManager()
+      },
       back(){ //返回主流程
             this.$router.push('/planProgress')
         },
@@ -137,12 +148,14 @@ var moment=require('moment')
         });
       },
       getPlanManager(){ //获取批次列表
+        this.loading=true
         var params={
           tableName:'PlanManager',
           offset:this.batchTableData.offset-1,
           limit:this.batchTableData.limit,
         }
         this.axios.get('/api/CUID',{params:params}).then(res => {
+          this.loading=false
            if(res.data.code === "200"){
             var data = res.data.data
             this.batchTableData.data = data.rows

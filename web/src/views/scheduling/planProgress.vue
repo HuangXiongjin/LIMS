@@ -5,7 +5,7 @@
         <span class="text-size-16">选择批计划，查看计划工艺进展</span>
       </div>
       <div class="platformContainer">
-        <el-row>
+        <el-row :gutter="15">
           <el-col :span="24">
             <div style="display:inline-block;marginRight:18px;cursor:pointer">
               <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待配置' || PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">审核计划</div>
@@ -34,6 +34,9 @@
               <el-option v-for="(item,index) in PlanManagerTableData.searchFormData" :key="index" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
+          </el-form-item>
+          <el-form-item class="floatRight">
+            <el-button type="primary" size="small" icon='el-icon-refresh-right' @click="getPlanManagerTableData">刷新</el-button>
           </el-form-item>
         </el-form>
         <el-table :data="PlanManagerTableData.data" highlight-current-row border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @select="handleSelectPlanManager" @row-click="handleRowClickPlanManager">
@@ -79,21 +82,27 @@
             <el-table-column prop="Unit" label="单位"></el-table-column>
             <el-table-column prop="ZYPlanStatus" label="计划状态"></el-table-column>
           </el-table>
-          <p class="text-size-18 marginBottom">工艺计划使用设备</p>
-          <el-table :data="ZYTaskTableData.data" border size="small">
-            <el-table-column prop="TaskID" label="任务单号"></el-table-column>
-            <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
-            <el-table-column prop="EQPName" label="设备名称"></el-table-column>
-            <el-table-column prop="BatchID" label="批次号"></el-table-column>
-            <el-table-column prop="PUName" label="工艺段名称"></el-table-column>
-            <el-table-column prop="BrandName" label="品名名称"></el-table-column>
-            <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
-            <el-table-column prop="Unit" label="单位"></el-table-column>
-            <el-table-column prop="PlanStartTime" label="计划开始时间"></el-table-column>
-            <el-table-column prop="PlanEndTime" label="计划结束时间"></el-table-column>
-            <el-table-column prop="ActBeginTime" label="实际开始时间"></el-table-column>
-            <el-table-column prop="ActEndTime" label="实际结束时间"></el-table-column>
-          </el-table>
+          <el-row :gutter="15">
+            <el-col :span="12">
+              <p class="text-size-18 marginBottom">计划使用设备</p>
+              <el-table :data="EquipmentBatchRunTimeTableData.data" border size="small">
+                <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
+                <el-table-column prop="EQPName" label="设备名称"></el-table-column>
+                <el-table-column prop="StartTime" label="计划开始时间"></el-table-column>
+                <el-table-column prop="EndTime" label="计划结束时间"></el-table-column>
+              </el-table>
+            </el-col>
+            <el-col :span="12">
+              <p class="text-size-18 marginBottom">实际使用设备</p>
+              <el-table :data="ZYTaskTableData.data" border size="small">
+                <el-table-column prop="TaskID" label="任务单号"></el-table-column>
+                <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
+                <el-table-column prop="EQPName" label="设备名称"></el-table-column>
+                <el-table-column prop="ActBeginTime" label="实际开始时间"></el-table-column>
+                <el-table-column prop="ActEndTime" label="实际结束时间"></el-table-column>
+              </el-table>
+            </el-col>
+          </el-row>
           <span slot="footer" class="dialog-footer">
             <el-button @click="PUDialogVisible = false">好 的</el-button>
           </span>
@@ -133,6 +142,9 @@
           data:[],
         },
         ZYTaskTableData:{
+          data:[]
+        },
+        EquipmentBatchRunTimeTableData:{
           data:[]
         }
       }
@@ -180,19 +192,20 @@
         this.$refs.multipleTablePlanManager.clearSelection()
         this.$refs.multipleTablePlanManager.toggleRowSelection(row)
         this.$refs.multipleTablePlanManager.setCurrentRow(row)
-        this.getProcessSection()
+        this.getZYPlanTableData()
       },
       handleRowClickPlanManager(row){
         this.PlanManagerTableData.PlanStatus=row.PlanStatus
         this.$refs.multipleTablePlanManager.clearSelection()
         this.$refs.multipleTablePlanManager.toggleRowSelection(row)
-        this.getProcessSection()
+        this.getZYPlanTableData()
       },
-      getProcessSection(){
+      getZYPlanTableData(){
         var that = this
         var params = {
-          tableName: "ProductUnit",
+          tableName: "ZYPlan",
           BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
+          BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
         }
         this.axios.get("/api/CUID",{
           params: params
@@ -205,7 +218,7 @@
                 return value1 - value2;
               }
             }
-            that.ProcessSectionData = res.data.data.rows.sort(compare('Seq'))
+            that.ProcessSectionData = res.data.data.rows.sort(compare('PlanSeq'))
           }else{
             that.$message({
               type: 'info',
@@ -246,6 +259,24 @@
         }).then(res => {
           if(res.data.code === "200"){
             that.ZYTaskTableData.data = res.data.data.rows
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+        var params2 = {
+          tableName: "EquipmentBatchRunTime",
+          BrandCode:item.BrandCode,
+          PUCode:item.PUCode,
+          BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
+        }
+        this.axios.get("/api/CUID",{
+          params: params2
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.EquipmentBatchRunTimeTableData.data = res.data.data.rows
           }else{
             that.$message({
               type: 'info',

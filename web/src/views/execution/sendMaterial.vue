@@ -17,7 +17,7 @@
             </el-radio-group>
           </el-form-item>
         </el-form>
-        <el-table :data="PlanManagerTableData.data" border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
+        <el-table :data="PlanManagerTableData.data" highlight-current-row border size="small" ref="multipleTablePlanManager" @select="handleSelectPlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
           <el-table-column type="selection"></el-table-column>
           <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
           <el-table-column prop="BatchID" label="批次号"></el-table-column>
@@ -187,6 +187,12 @@
       },
       handleSelectionChangePlanManager(row){
         this.PlanManagerTableData.multipleSelection = row
+      },
+      handleSelectPlanManager(selection,row){  //勾选时只能单选
+        this.$refs.multipleTablePlanManager.clearSelection()
+        this.$refs.multipleTablePlanManager.toggleRowSelection(row)
+        this.$refs.multipleTablePlanManager.setCurrentRow(row)
+        this.getMaterialTableData()
       },
       handleRowClickPlanManager(row){
         this.$refs.multipleTablePlanManager.clearSelection()
@@ -458,35 +464,48 @@
       //发送物料明细到WMS
       sendMaterialInfo(){
         if(this.MaterialTableData.multipleSelection.length > 0){
-          var mulId = []
+          var isFlag = true
           this.MaterialTableData.multipleSelection.forEach(item =>{
-            mulId.push({id:item.ID});
+            if(item.SendFlag === "已发送"){
+              isFlag = false
+            }
           })
-          var params = {}
-          params.sendData = JSON.stringify(mulId)
-          params.PlanStatus = "物料发送中"
-          params.PlanID = this.PlanManagerTableData.multipleSelection[0].ID
-          this.$confirm('确定发送此批的物料明细到WMS吗？', '提示', {
-            distinguishCancelAndClose:true,
-            type: 'warning'
-          }).then(()  => {
-            this.axios.post("/api/WMS_SendMatils",this.qs.stringify(params)).then(res =>{
-              if(res.data.code === "200"){
-                this.$message({
-                  type: 'success',
-                  message: res.data.message
-                });
-              }
-              this.getMaterialTableData()
-            },res =>{
-              console.log("请求错误")
+          if(isFlag){
+            var mulId = []
+            this.MaterialTableData.multipleSelection.forEach(item =>{
+              mulId.push({id:item.ID});
             })
-          }).catch(() => {
+            var params = {}
+            params.sendData = JSON.stringify(mulId)
+            params.PlanStatus = "物料发送中"
+            params.PlanID = this.PlanManagerTableData.multipleSelection[0].ID
+            this.$confirm('确定发送此批的物料明细到WMS吗？', '提示', {
+              distinguishCancelAndClose:true,
+              type: 'warning'
+            }).then(()  => {
+              this.axios.post("/api/WMS_SendMatils",this.qs.stringify(params)).then(res =>{
+                if(res.data.code === "200"){
+                  this.$message({
+                    type: 'success',
+                    message: res.data.message
+                  });
+                }
+                this.getMaterialTableData()
+              },res =>{
+                console.log("请求错误")
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消发送'
+              });
+            });
+          }else{
             this.$message({
               type: 'info',
-              message: '已取消发送'
+              message: "已发送的物料不能再发送"
             });
-          });
+          }
         }else{
           this.$message({
             type: 'info',
