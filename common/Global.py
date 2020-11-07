@@ -31,8 +31,8 @@ class PlanStatus(Enum):
 #计划ZYPlan
 class ZYPlanStatus(Enum):
     Produced = "待生产"
-    EquipmentCheck = "设备审核"
-    EquipmentReview = "设备复核"
+    EquipmentCheck = "设备已审核"
+    EquipmentReview = "设备已复核"
     READY = "生产前准备"
     Produncting = "计划进行"
     Clear = "清场"

@@ -110,12 +110,11 @@ class WMS_Interface(ServiceBase):
             jso = json.loads(json_data)
             for i in jso:
                 BatchID = i.get("BatchID")
-                BrandName = i.get("BrandName")
+                BrandCode = i.get("BrandCode")
                 status = i.get("status")
-                PUCode = i.get("PUCode")
                 if BatchID != None:
                     zy = db_session.query(ZYPlan).filter(ZYPlan.BatchID == BatchID,
-                                                         ZYPlan.BrandName == BrandName,ZYPlan.PUCode == PUCode).first()
+                                                         ZYPlan.BrandCode == BrandCode,ZYPlan.PUName == "备料").first()
                     if zy != None:
                         if status == "1":
                             zy.ZYPlanStatus = common.Global.ZYPlanStatus.READY.value
@@ -235,6 +234,7 @@ def WMS_SendPlan():
                 responjson = json.loads(resp.content)
                 responjson = eval(responjson)
                 if responjson.get("code") != "0":
+                    db_session.rollback()
                     return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！" + responjson.get("msg")})
                 return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
@@ -250,18 +250,20 @@ def WMS_SendMatils():
             jsonstr = json.dumps(data.to_dict())
             if len(jsonstr) > 10:
                 jsonnumber = re.findall(r"\d+\.?\d*", data.get("sendData"))
+                PlanID = data.get("PlanID")
+                pmoc = db_session.query(PlanManager).filter(PlanManager.ID == PlanID).first()
                 dic = []
                 for key in jsonnumber:
                     id = int(key)
                     oclass = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.ID == id).first()
-                    zytask = db_session.query(ZYTask).filter(ZYTask.BatchID == oclass.BatchID, ZYTask.BrandCode == oclass.BrandCode, ZYTask.EQPCode == oclass.EQPCode).first()
-                    dic.append({"ZYPlanNo": zytask.ID, "BrandCode": zytask.BrandCode, "BrandName": zytask.BrandName,
+                    # zypla = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID, ZYPlan.BrandCode == oclass.BrandCode, ZYPlan.PUName.like("%提取%")).first()
+                    dic.append({"ZYPlanNo": pmoc.ID, "BrandCode": pmoc.BrandCode, "BrandName": pmoc.BrandName,
                                 "BatchID": oclass.BatchID, "FlagCode": oclass.BucketNum,
                                 "Weight": oclass.BucketWeight, "Unit": oclass.Unit, "Flag": oclass.Flag, "Seq": oclass.FeedingSeq,
                                 "EQPCode": oclass.EQPCode, "EQPName":oclass.EQPName})
                     oclass.SendFlag = "已发送"
                     oclass.OperationDate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                    zytask.TaskStatus = "已发送"
+                    # zypla.TaskStatus = "已发送"
                     db_session.commit()
                 url = Global.WMSurl + "api/WbeApi/RecvContanerInfon"
                 dir = {}
@@ -272,8 +274,6 @@ def WMS_SendMatils():
                 responjson = eval(responjson)
                 if responjson.get("code") != "0":
                     return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！" + responjson.get("msg")})
-                PlanID = data.get("PlanID")
-                pmoc = db_session.query(PlanManager).filter(PlanManager.ID == PlanID).first()
                 pmoc.PlanStatus = data.get("PlanStatus")
                 db_session.commit()
                 return json.dumps({"code": "200", "message": "OK"})
