@@ -1,6 +1,9 @@
 <template>
     <el-row>
-           <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回主流程</el-button></el-col>
+           <el-col :span='24' class="marginBottom">
+             <el-button type="primary" size="small" @click="back">返回主流程</el-button>
+             <el-button type="primary" size="small" icon='el-icon-refresh-right' @click="refreshData">刷新</el-button>
+             </el-col>
            <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">待下发列表</div>
            <el-button type="success" icon="el-icon-position" size='mini' @click="distributemulBatch" class="marginBottom">下发</el-button>
@@ -110,7 +113,11 @@ export default {
         this.getYxfBatch()
     },
     methods: {
-      distributemulBatch(){
+      refreshData(){ // 刷新数据
+        this.getSelectedEq()
+        this.getYxfBatch()
+      },
+      distributemulBatch(){ //勾选下发多批次
         this.datalist=[]
         var flag=true
         if(this.checkedRow.length===0){

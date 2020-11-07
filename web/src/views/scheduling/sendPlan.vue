@@ -20,7 +20,18 @@
                 </el-radio-group>
               </el-form-item>
             </el-form>
-            <el-table :data="PlanManagerTableData.data" border size="small" highlight-current-row ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @select="handleRowSelectPlanManager"  @row-click="handleRowClickPlanManager">
+            <el-table 
+              :data="PlanManagerTableData.data"
+              border
+              size="small" 
+              highlight-current-row ref="multipleTablePlanManager" 
+              @selection-change="handleSelectionChangePlanManager" 
+              @select="handleRowSelectPlanManager" 
+              @row-click="handleRowClickPlanManager"
+              v-loading="loading"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
+              >
               <el-table-column type="selection"></el-table-column>
               <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
@@ -70,6 +81,7 @@
           offset: 1,
           total: 0,
           multipleSelection: [],
+          loading:false
         },
       }
     },
@@ -85,6 +97,7 @@
       },
       //选择批计划
       getPlanManagerTableData(){
+        this.loading=true
         var that = this
         var PlanStatus = ""
         if(this.sendPlanPlanStatus === "待发送"){
@@ -101,6 +114,7 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res => {
+          this.loading=false
           if(res.data.code === "200"){
             that.PlanManagerTableData.data = res.data.data.rows
             that.PlanManagerTableData.total = res.data.data.total
