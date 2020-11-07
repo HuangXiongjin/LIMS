@@ -3,35 +3,66 @@ import datetime
 from equipment_backend import db
 
 
-class Equipment(db.Model):
-    """设备数据"""
-    __tablename__ = 'Equipment'
+class EquipmentBaseData(db.Model):
+    """设备基本信息"""
+    __tablename__ = 'EquipmentBaseData'
 
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    # 车间号
-    workshop_no = db.Column(db.Unicode(128), nullable=True)
-    # 设备号
-    equipment_no = db.Column(db.Unicode(128), nullable=False)
+    # 设备遍号
+    no = db.Column(db.Unicode(128), nullable=False)
     # 设备名称
     name = db.Column(db.Unicode(32), nullable=False)
-    # 设备型号
-    model = db.Column(db.Unicode(128), nullable=True)
-    # 设备类型
+    # 资产编号
+    assets_no = db.Column(db.Unicode(128), nullable=True)
+    # 出厂编号
+    factory_no = db.Column(db.Unicode(128), nullable=True)
+    # 规格型号
+    specification_model = db.Column(db.Unicode(128), nullable=True)
+    # 设备类别
     type = db.Column(db.Unicode(32), nullable=True)
-    # 生产商
+    # 设备品牌
+    brand = db.Column(db.Unicode(32), nullable=True)
+    # 供应商
     manufacturer = db.Column(db.Unicode(32), nullable=True)
-    # SAP号
-    sap = db.Column(db.Unicode(64), nullable=True)
+    # 电子标签
+    electronic_tag = db.Column(db.Unicode(64), nullable=True)
+    # 单位
+    unit = db.Column(db.Unicode(32), nullable=True)
+    # 设备来源
+    source = db.Column(db.Unicode(32), nullable=True)
+    # 设备状态(正常，故障，带病运行)
+    equipment_status = db.Column(db.Unicode(16), default='正常', nullable=True)
+    # 负责人
+    # 购置时间
+    purchase_time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d'))
+    # 购置金额
+    purchase_money = db.Column(db.Unicode(32), nullable=True)
+    # 保修期
+    warranty = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d'))
+    # 投产时间
+    work_time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d'))
+    # 预计报废时间
+    scrap_time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d'))
+    # 使用状态（正常，闲置， 在用）
+    use_status = db.Column(db.Unicode(16), default='正常', nullable=True)
+    # 设备等级（关键，重要，一般）
+    level = db.Column(db.Unicode(16), default='重要', nullable=True)
+    # 所属部门
+    department = db.Column(db.Unicode(32), nullable=True)
+    # 存放位置
+    position = db.Column(db.Unicode(32), nullable=True)
+    # 是否计量设备
+    is_count = db.Column(db.Unicode(16), nullable=True)
+    # 是否开启折旧
+    is_depreciation = db.Column(db.Unicode(16), nullable=True)
+    # 当前净值
+    net_value = db.Column(db.Unicode(16), nullable=True)
+    # 技术参数
+    technical_parameter = db.Column(db.Unicode(16), nullable=True)
     # 固定资产编号
     fixed_assets_no = db.Column(db.Unicode(128), nullable=True)
     # 固定资产名称
     fixed_assets_name = db.Column(db.Unicode(32), nullable=True)
-    # 设备状态(1:良好 0：异常)
-    status = db.Column(db.Unicode(16), default='良好', nullable=True)
-    # 区域
-    area = db.Column(db.Unicode(32), nullable=True)
-    # 进厂日期
-    into_time = db.Column(db.Unicode(32), nullable=True, default=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
 class InstructionsCenter(db.Model):
@@ -386,7 +417,7 @@ class Monitor(db.Model):
     """设备实时监测数据"""
     __tablename__ = 'Monitor'
 
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)    
     # 设备号
     equipment_no = db.Column(db.Unicode(128), nullable=False)
     # 当前状态（1：良好 0：异常）

@@ -62,61 +62,62 @@ def makeZYPlanZYTask(id):
     try:
         ocalss = db_session.query(PlanManager).filter(PlanManager.ID == id).first()
         if ocalss:
-            proclass = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == ocalss.BrandCode).order_by("Seq").all()
-            for i in proclass:
-                pu = db_session.query(ProcessUnit).filter(ProcessUnit.PUCode == i.PUCode).first()
-                zyplan = ZYPlan()
-                zyplan.PlanDate = ocalss.PlanBeginTime
-                zyplan.PlanNo = ocalss.SchedulePlanCode
-                zyplan.BatchID = ocalss.BatchID
-                zyplan.PlanSeq = i.Seq
-                zyplan.PUCode = i.PUCode
-                zyplan.PUName = i.PUName
-                zyplan.PlanType = Global.PLANTYPE.SCHEDULE.value
-                zyplan.BrandCode = ocalss.BrandCode
-                zyplan.BrandName = ocalss.BrandName
-                zyplan.ERPOrderNo = ""
-                zyplan.PlanQuantity = ocalss.PlanQuantity
-                zyplan.Unit = ocalss.Unit
-                zyplan.EnterTime = ""
-                zyplan.PlanBeginTime = ""
-                zyplan.ZYPlanStatus = Global.ZYPlanStatus.Produced.value
-                zyplan.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
-                zyplan.INFStatus = Global.TASKSTATUS.NEW.value
-                zyplan.WMSStatus = Global.TASKSTATUS.NEW.value
-                db_session.add(zyplan)
+            if ocalss.PlanStatus == Global.PlanStatus.WaitRealse.value:
+                proclass = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == ocalss.BrandCode).order_by("Seq").all()
+                for i in proclass:
+                    pu = db_session.query(ProcessUnit).filter(ProcessUnit.PUCode == i.PUCode).first()
+                    zyplan = ZYPlan()
+                    zyplan.PlanDate = ocalss.PlanBeginTime
+                    zyplan.PlanNo = ocalss.SchedulePlanCode
+                    zyplan.BatchID = ocalss.BatchID
+                    zyplan.PlanSeq = i.Seq
+                    zyplan.PUCode = i.PUCode
+                    zyplan.PUName = i.PUName
+                    zyplan.PlanType = Global.PLANTYPE.SCHEDULE.value
+                    zyplan.BrandCode = ocalss.BrandCode
+                    zyplan.BrandName = ocalss.BrandName
+                    zyplan.ERPOrderNo = ""
+                    zyplan.PlanQuantity = ocalss.PlanQuantity
+                    zyplan.Unit = ocalss.Unit
+                    zyplan.EnterTime = ""
+                    zyplan.PlanBeginTime = ""
+                    zyplan.ZYPlanStatus = Global.ZYPlanStatus.Produced.value
+                    zyplan.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
+                    zyplan.INFStatus = Global.TASKSTATUS.NEW.value
+                    zyplan.WMSStatus = Global.TASKSTATUS.NEW.value
+                    db_session.add(zyplan)
 
-                ebps = db_session.query(EquipmentBatchRunTime).filter(EquipmentBatchRunTime.BrandCode == ocalss.BrandCode,
-                                EquipmentBatchRunTime.BatchID == ocalss.BatchID, EquipmentBatchRunTime.PUCode == i.PUCode).all()
-                iTaskSeq = 0
-                for j in ebps:
-                    iTaskSeq = iTaskSeq + 1
-                    bReturn, strTaskNo = getTaskNo()
-                    if bReturn == False:
-                        return False
-                    zytask = ZYTask()
-                    zytask.PlanDate = j.StartTime
-                    zytask.TaskID = strTaskNo
-                    zytask.BatchID = ocalss.BatchID
-                    zytask.PlanSeq = iTaskSeq
-                    zytask.PUCode = i.PUCode
-                    zytask.PUName = i.PUName
-                    zytask.PlanType = Global.PLANTYPE.SCHEDULE.value
-                    zytask.BrandCode = ocalss.BrandCode
-                    zytask.BrandName = ocalss.BrandName
-                    zytask.PlanQuantity = ocalss.PlanQuantity
-                    zytask.Unit = ocalss.Unit
-                    zytask.EnterTime = ""
-                    zytask.EQPCode = j.EQPCode
-                    zytask.EQPName = j.EQPName
-                    zytask.StartBC = j.StartBC
-                    zytask.EndBC = j.EndBC
-                    zytask.PlanStartTime = j.StartTime
-                    zytask.PlanEndTime = j.EndTime
-                    zytask.TaskStatus = ""
-                    zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
-                    db_session.add(zytask)
-            db_session.commit()
+                    ebps = db_session.query(EquipmentBatchRunTime).filter(EquipmentBatchRunTime.BrandCode == ocalss.BrandCode,
+                                    EquipmentBatchRunTime.BatchID == ocalss.BatchID, EquipmentBatchRunTime.PUCode == i.PUCode).all()
+                    iTaskSeq = 0
+                    for j in ebps:
+                        iTaskSeq = iTaskSeq + 1
+                        bReturn, strTaskNo = getTaskNo()
+                        if bReturn == False:
+                            return False
+                        zytask = ZYTask()
+                        zytask.PlanDate = j.StartTime
+                        zytask.TaskID = strTaskNo
+                        zytask.BatchID = ocalss.BatchID
+                        zytask.PlanSeq = iTaskSeq
+                        zytask.PUCode = i.PUCode
+                        zytask.PUName = i.PUName
+                        zytask.PlanType = Global.PLANTYPE.SCHEDULE.value
+                        zytask.BrandCode = ocalss.BrandCode
+                        zytask.BrandName = ocalss.BrandName
+                        zytask.PlanQuantity = ocalss.PlanQuantity
+                        zytask.Unit = ocalss.Unit
+                        zytask.EnterTime = ""
+                        zytask.EQPCode = j.EQPCode
+                        zytask.EQPName = j.EQPName
+                        zytask.StartBC = j.StartBC
+                        zytask.EndBC = j.EndBC
+                        zytask.PlanStartTime = j.StartTime
+                        zytask.PlanEndTime = j.EndTime
+                        zytask.TaskStatus = ""
+                        zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
+                        db_session.add(zytask)
+                db_session.commit()
     except Exception as ee:
         db_session.rollback()
         print(ee)
@@ -220,7 +221,7 @@ def checkPlanManager():
                 oclassplan.PlanStatus = PlanStatus
                 oclassplan.Description = Description
                 db_session.commit()
-                insertAuditTrace("审核计划", "批次号是：" + oclassplan.BatchID +"的" +oclassplan.BrandCode + "在"+
+                insertAuditTrace("审核计划", "批次号是：" + oclassplan.BatchID +"的" +oclassplan.BrandName + "在"+
                                  datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')+"进行计划审核操作", "PlanManager", current_user.Name, "")
             return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
@@ -245,7 +246,7 @@ def checkPlanManagerSingle():
             oclassplan.PlanStatus = PlanStatus
             oclassplan.Description = Description
             db_session.commit()
-            insertAuditTrace("审核计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandCode + "在" +
+            insertAuditTrace("审核计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandName + "在" +
                              datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行计划审核操作", "PlanManager",
                              current_user.Name, "")
             return json.dumps({"code": "200", "message": "OK"})
@@ -274,7 +275,7 @@ def createZYPlanZYtask():
                         oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
                         oclassplan.PlanStatus = Global.PlanStatus.Realse.value
                         db_session.commit()
-                        insertAuditTrace("下发计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandCode + "在" +
+                        insertAuditTrace("下发计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandName + "在" +
                                          datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行下发计划操作", "PlanManager",
                                          current_user.Name, "")
                     return json.dumps({"code": "200", "message": "下发成功！！"})
@@ -283,7 +284,7 @@ def createZYPlanZYtask():
                     oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
                     oclassplan.PlanStatus = Global.PlanStatus.Recall.value
                     db_session.commit()
-                    insertAuditTrace("撤回计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandCode + "在" +
+                    insertAuditTrace("撤回计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandName + "在" +
                                      datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行撤回计划操作", "PlanManager",
                                      current_user.Name, "")
                     return json.dumps({"code": "200", "message": "成功！！"})
@@ -547,6 +548,7 @@ def allUnitDataMutual():
     if request.method == 'GET':
         data = request.values
         try:
+            dic = {}
             json_str = json.dumps(data.to_dict())
             if len(json_str) > 2:
                 PUCode = data['PUCode']
@@ -554,7 +556,6 @@ def allUnitDataMutual():
                 BrandCode = data.get("BrandCode")
                 oclasss = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.BrandCode == BrandCode, EletronicBatchDataStore.PUCode == PUCode,
                                                                            EletronicBatchDataStore.BatchID == BatchID).all()
-                dic = {}
                 for oclass in oclasss:
                     dic[oclass.Content] = oclass.OperationpValue
             return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
@@ -615,3 +616,34 @@ def selectTiQuEquipment():
             logger.error(e)
             insertSyslog("error", "查询提取设备报错Error：" + str(e), current_user.Name)
             return json.dumps("查询提取设备报错", cls=AlchemyEncoder, ensure_ascii=False)
+
+@batch_plan.route('/taskSaveEqpCheckReview', methods=['GET', 'POST'])
+def taskSaveEqpCheckReview():
+    '''
+    任务审核复核（选择设备）
+    :return:
+    '''
+    if request.method == 'POST':
+        data = request.values
+        try:
+            ZYPlanStatus = data.get("ZYPlanStatus")
+            ocalss = db_session.query(ZYPlan).filter(ZYPlan.ID == data.get("ID")).first()
+            # datalist = json.loads(data.get("datalist"))
+            # iTaskSeq = 0
+            # for i in datalist:
+            #     ocalss = db_session.query(ZYTask).filter(ZYTask.ID == i.get("ID")).first()
+            #     ocalss.EQPCode = i.get("EQPCode")
+            #     ocalss.EQPName = i.get("EQPName")
+            #     db_session.commit()
+            ocalss.ZYPlanStatus = ZYPlanStatus
+            db_session.commit()
+            insertAuditTrace("任务审核复核（选择设备）", "批次号是：" + ocalss.BatchID + "的" + ocalss.BrandName + "在" +ocalss.PUName+"段的"+
+                             datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行计划审核操作", "PlanManager",
+                             current_user.Name, "")
+            return json.dumps({"code": "200", "message": "任务选择设备成功！", "data": "OK"})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "任务审核复核报错Error：" + str(e), current_user.Name)
+            return json.dumps("任务审核复核报错", cls=AlchemyEncoder, ensure_ascii=False)

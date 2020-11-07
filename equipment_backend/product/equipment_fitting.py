@@ -7,7 +7,7 @@ from flask import Blueprint, request
 from common.system import db_session, User
 from common.BSFramwork import AlchemyEncoder
 from equipment_backend import db
-from common.equipment_models import Fitting, Equipment, InstructionsCenter, Instructions, FittingInto, FittingOut
+from common.equipment_models import Fitting, EquipmentBaseData, InstructionsCenter, Instructions, FittingInto, FittingOut
 from equipment_backend.tools.handle import MyEncoder
 
 equipment = Blueprint('equipment', __name__)
@@ -16,7 +16,7 @@ equipment = Blueprint('equipment', __name__)
 @equipment.route('/', methods=['GET'])
 def index():
     user = db_session.query(User).all()
-    equipments = Equipment.query.all()
+    equipments = EquipmentBaseData.query.all()
     return json.dumps({'equipments': equipments, 'user': user}, cls=MyEncoder, ensure_ascii=False)
 
 
@@ -29,7 +29,7 @@ def add_data():
         # 检查文件类型
         # if not is_allowed_type(file.content_type):
         #     return json.dumps({'code': 100001, 'message': '文件类型错误'})
-        equipment_data = Equipment(workshop_no=result.get('workshop_no'), equipment_no=result.get('equipment_no'),
+        equipment_data = EquipmentBaseData(workshop_no=result.get('workshop_no'), equipment_no=result.get('equipment_no'),
                                    name=result.get('name'), model=result.get('model'), type=result.get('type'),
                                    manufacturer=result.get('manufacturer'), sap=result.get('sap'),
                                    fixed_assets_no=result.get('fixed_assets_no'),

@@ -3,7 +3,7 @@
            <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回主流程</el-button></el-col>
            <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">待下发列表</div>
-           <el-button type="primary" icon="el-icon-check" size='mini' @click="distributemulBatch">下发勾选的多批次</el-button>
+           <el-button type="success" icon="el-icon-position" size='mini' @click="distributemulBatch" class="marginBottom">下发</el-button>
               <el-table
                   :data="eqlistTableData.data"
                   highlight-current-row
@@ -16,20 +16,17 @@
                   <el-table-column v-for="item in eqlistableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                   <el-table-column prop="PlanStatus" label="计划状态">
                     <template slot-scope="scope">
-                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                      <b class="color-red cursor-pointer" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-brown" v-if="scope.row.PlanStatus === '已发送投料计划'">{{ scope.row.PlanStatus }}</b>
                     </template>
                   </el-table-column>
-                  <el-table-column label="操作" fixed="right" width='200'>
+                  <el-table-column label="操作" fixed="right" width='100'>
                     <template slot-scope="scope">
-                      <el-button
-                        size="mini"
-                        type='success'
-                        @click="xfPlan(scope.$index, scope.row)">下发</el-button>
                       <el-button
                         size="mini"
                         type="primary"
@@ -54,16 +51,21 @@
                   highlight-current-row
                   size='small'
                   border
+                  ref='dxfTable'
+                  @row-click='yxfClick'
+                  @select='yxfSelect'
                   style="width: 100%">
+                  <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column v-for="item in eqlistableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                   <el-table-column prop="PlanStatus" label="计划状态">
                     <template slot-scope="scope">
-                      <span class="color-red" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</span>
-                      <span class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</span>
+                      <b class="color-red cursor-pointer" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</b>
+                      <b class="color-brown" v-if="scope.row.PlanStatus === '已发送投料计划'">{{ scope.row.PlanStatus }}</b>
                     </template>
                   </el-table-column>
               </el-table>
@@ -138,7 +140,7 @@ export default {
           PlanStatus:'已下发',
           IDs:JSON.stringify(this.datalist)
         }
-        this.$confirm('是否下发勾选的多批次, 是否继续?', '提示', {
+        this.$confirm('是否下发勾选的批次, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -147,7 +149,7 @@ export default {
            if(res.data.code==='200'){
              this.$message({
                type:'success',
-               message:'多批次下发成功'
+               message:'勾选批次下发成功'
              })
             this.getSelectedEq()
             this.getYxfBatch()
@@ -161,8 +163,9 @@ export default {
         });
         }}
         },
-        getAllbatchrow(e){
+        getAllbatchrow(e,row){
           this.checkedRow=e
+          this.$refs.eqlistmultipleTable.setCurrentRow(row)
         },
         back(){ //返回主流程
           this.$router.push('/planProgress')
@@ -182,38 +185,6 @@ export default {
        eqlistHandleCurrentChange(offset) { //已选设备 页码切换
         this.eqlistTableData.offset = offset
         this.getSelectedEq()
-      },
-       xfPlan(index,row){
-        var id=row.ID
-        var params={
-          PlanStatus:'已下发',
-          ID:id
-        }
-        this.$confirm('此操作将下发执行此批次, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-        this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
-          if(res.data.code==='200'){
-            this.getSelectedEq()
-            this.getYxfBatch()
-            this.$message({
-              type:'success',
-              message:res.data.message
-            })
-          }else{
-            this.$message({
-              type:'error',
-              message:'下发失败,请重试'
-            })
-          }
-        })},()=>{
-          this.$message({
-              type:'info',
-              message:'已取消操作'
-            })
-        })
       },
       chPlan(index,row){
         var id=row.ID
@@ -281,6 +252,15 @@ export default {
           })
 
       },
+      yxfClick(row){
+        this.$refs.dxfTable.clearSelection()
+        this.$refs.dxfTable.toggleRowSelection(row)
+      },
+      yxfSelect(e,row){
+        this.$refs.dxfTable.clearSelection()
+        this.$refs.dxfTable.toggleRowSelection(row)
+        this.$refs.dxfTable.setCurrentRow(row)
+      }
     }
 }
 </script>

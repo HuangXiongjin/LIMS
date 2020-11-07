@@ -11,12 +11,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-from equipment_backend.product.equipment_fitting import equipment
-from equipment_backend.product.work_order import work_order
-from common.equipment_models import *
+# from equipment_backend.product.equipment_fitting import equipment
+# from equipment_backend.product.work_order import work_order
+# from common.equipment_models import *
 
-app.register_blueprint(equipment, url_prefix='/equipment')
-app.register_blueprint(work_order, url_prefix='/work')
+# app.register_blueprint(equipment, url_prefix='/equipment')
+# app.register_blueprint(work_order, url_prefix='/work')
 
 migrate = Migrate(app, db)
 manager = Manager(app)
@@ -25,4 +25,4 @@ manager.add_command('db', MigrateCommand)
 
 @app.route('/')
 def hello_world():
-    return 'This is equipment_backend!'
+    return 'This is lims_backend!'
