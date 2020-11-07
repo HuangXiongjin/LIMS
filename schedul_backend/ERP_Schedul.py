@@ -288,7 +288,10 @@ def addEquipmentBatchRunTime():
                             sft = db_session.query(Shifts).filter(Shifts.ShiftsName == ert.StartBC).first()
                             ert.StartTime = str(el.get("StartTime")) + " " + sft.BeginTime
                             eft = db_session.query(Shifts).filter(Shifts.ShiftsName == ert.EndBC).first()
-                            ert.EndTime = str(el.get("EndTime")) + " " + eft.EndTime
+                            endt = ""
+                            if eft.ShiftsName == "中" or eft.ShiftsName == "晚":
+                                endt = (datetime.datetime.strptime(el.get("EndTime"), "%Y-%m-%d") + datetime.timedelta(hours=24)).strftime("%Y-%m-%d")
+                            ert.EndTime = str(endt) + " " + eft.EndTime
                             db_session.add(ert)
                 oclass.PlanStatus = Global.PlanStatus.WaitRealse.value
                 db_session.commit()
