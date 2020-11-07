@@ -19,7 +19,10 @@
         </el-row>
         <el-form :inline="true">
           <el-form-item class="floatRight">
-            <el-button type="primary" size="small" icon='el-icon-refresh-right' @click="getPlanManagerTableData">刷新</el-button>
+            <el-radio-group v-model="sendPlanPlanStatus" size="small" @change="getPlanManagerTableData">
+              <el-radio-button label="已下发"></el-radio-button>
+              <el-radio-button label="已发送物料明细"></el-radio-button>
+            </el-radio-group>
           </el-form-item>
         </el-form>
         <el-table :data="PlanManagerTableData.data" highlight-current-row border size="small" ref="multipleTablePlanManager" @select="handleSelectPlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
@@ -102,6 +105,7 @@
     name:"confirmProduction",
     data() {
       return {
+        sendPlanPlanStatus:"已下发",
         PlanManagerTableData:{
           data:[],
           limit: 5,
@@ -131,7 +135,7 @@
         var that = this
         var params = {
           tableName: "PlanManager",
-          PlanStatus:"已发送投料计划",
+          PlanStatus:this.sendPlanPlanStatus,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }

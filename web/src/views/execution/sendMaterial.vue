@@ -151,7 +151,7 @@
         var that = this
         var PlanStatus = ""
         if(this.sendPlanPlanStatus === "待发送"){
-          PlanStatus = "已发送投料计划"
+          PlanStatus = "已下发"
         }else if(this.sendPlanPlanStatus === "发送中"){
           PlanStatus = "物料发送中"
         }else if(this.sendPlanPlanStatus === "已发送"){
