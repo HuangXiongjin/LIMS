@@ -32,7 +32,6 @@ import planProgress from '@/views/scheduling/planProgress'
 import EquipmentChoose from '@/views/scheduling/EquipmentChoose'
 import DistributionPlan from '@/views/scheduling/DistributionPlan'
 import CheckscPlan from '@/views/scheduling/CheckscPlan'
-import sendPlan from '@/views/scheduling/sendPlan'
 import displayEqTime from '@/views/scheduling/displayEqTime'
 
 //生产执行系统
@@ -40,6 +39,7 @@ import equipmentAudit from '@/views/execution/equipmentAudit'
 import confirmProduction from '@/views/execution/confirmProduction'
 import sendMaterial from '@/views/execution/sendMaterial'
 import sendMaterialLog from '@/views/execution/sendMaterialLog'
+import sendPlan from '@/views/execution/sendPlan'
 
 //生产数据
 import ElectronicBatchRecord from '@/views/production/ElectronicBatchRecord'
@@ -95,13 +95,13 @@ export default new Router({
         {path:'/EquipmentChoose',name:'EquipmentChoose',meta:{ title:'设备选择',type:"排产调度系统"},component:EquipmentChoose},
         {path:'/CheckscPlan',name:'CheckscPlan',meta:{ title:'审核计划',type:"工厂排产系统"},component:CheckscPlan},
         {path:'/DistributionPlan',name:'DistributionPlan',meta:{ title:'下发计划',type:"排产调度系统"},component:DistributionPlan},
-        {path:'/sendPlan',name:'sendPlan',meta:{ title:'发送投料计划',type:"排产调度系统"},component:sendPlan},
         {path:'/displayEqTime',name:'displayEqTime',meta:{ title:'设备运行时间展示',type:"排产调度系统"},component:displayEqTime},
 
         {path:'/equipmentAudit',name:'equipmentAudit',meta:{ title:'批次设备审核',type:"生产执行系统"},component:equipmentAudit},
         {path:'/confirmProduction',name:'confirmProduction',meta:{ title:'批次设备复核',type:"生产执行系统"},component:confirmProduction},
         {path:'/sendMaterial',name:'sendMaterial',meta:{ title:'发送物料明细',type:"生产执行系统"},component:sendMaterial},
         {path:'/sendMaterialLog',name:'sendMaterialLog',meta:{ title:'物料明细记录',type:"生产执行系统"},component:sendMaterialLog},
+        {path:'/sendPlan',name:'sendPlan',meta:{ title:'发送投料计划',type:"生产执行系统"},component:sendPlan},
 
         {path:'/ProductionMonitoring',name:'ProductionMonitoring',meta:{ title:'生产监控',type:"生产数据管理"},component:ProductionMonitoring},
         {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'批生产记录',type:"生产数据管理"},component:ElectronicBatchRecord},

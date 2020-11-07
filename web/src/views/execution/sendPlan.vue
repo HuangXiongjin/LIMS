@@ -1,9 +1,5 @@
 <template>
   <el-row>
-    <el-col :span='24' class="marginBottom">
-      <el-button type="primary" size="small" @click="back">返回主线程</el-button>
-      <el-button type="primary" size="small" icon='el-icon-refresh-right' @click="refreshData">刷新</el-button>
-      </el-col>
     <el-col :span="24">
       <el-row :gutter="15">
         <el-col :span="24">
@@ -91,12 +87,6 @@
       this.getPlanManagerTableData()
     },
     methods:{
-      refreshData(){
-        this.getPlanManagerTableData()
-      },
-      back(){ //返回上一步
-        this.$router.push('/planProgress')
-      },
       //选择批计划
       getPlanManagerTableData(){
         this.loading=true

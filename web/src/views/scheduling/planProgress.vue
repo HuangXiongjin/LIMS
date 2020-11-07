@@ -29,8 +29,11 @@
           </el-col>
         </el-row>
         <el-form :inline="true">
+          <el-form-item label="查询日期">
+            <el-date-picker type="date" v-model="PlanManagerTableData.searchDate" size="small" format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width: 160px;" @change="getPlanManagerTableData"></el-date-picker>
+          </el-form-item>
           <el-form-item label="查询状态">
-            <el-select v-model="PlanManagerTableData.searchPlanStatus" placeholder="请选择" @change="getPlanManagerTableData">
+            <el-select v-model="PlanManagerTableData.searchPlanStatus" placeholder="请选择" size="small" @change="getPlanManagerTableData">
               <el-option v-for="(item,index) in PlanManagerTableData.searchFormData" :key="index" :label="item.label" :value="item.value">
               </el-option>
             </el-select>
@@ -113,6 +116,7 @@
 </template>
 
 <script>
+  var moment = require('moment');
   export default {
     name: "planProgress",
     data(){
@@ -125,6 +129,7 @@
           multipleSelection: [],
           PlanStatus:"",
           searchPlanStatus:"",
+          searchDate:moment().format("YYYY-MM-DD"),
           searchFormData:[
             {label:"全部",value:""},
             {label:"待审核",value:"待审核"},
@@ -159,6 +164,7 @@
         var params = {
           tableName: "PlanManager",
           PlanStatus:this.PlanManagerTableData.searchPlanStatus,
+          SchedulePlanCode:this.PlanManagerTableData.searchDate,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }
