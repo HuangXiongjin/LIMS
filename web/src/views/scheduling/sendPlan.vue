@@ -83,8 +83,8 @@
           offset: 1,
           total: 0,
           multipleSelection: [],
-          loading:false
         },
+        loading:false
       }
     },
     mounted(){
