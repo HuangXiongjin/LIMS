@@ -164,7 +164,6 @@
       },
       getZYPlanTableData(){
         var that = this
-        this.ZYPlanTableData.data = []
         var params = {
           tableName: "ZYPlan",
           BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
