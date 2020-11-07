@@ -219,7 +219,8 @@ def WMS_SendPlan():
                     id = int(key)
                     plan = db_session.query(PlanManager).filter(PlanManager.ID == id).first()
                     oclass = db_session.query(ZYTask).filter(ZYTask.BatchID == plan.BatchID,
-                                                             ZYTask.BrandCode == plan.BrandCode).all()
+                                                             ZYTask.BrandCode == plan.BrandCode,
+                                                             ZYTask.PUName.like("%提取%")).all()
                     for oc in oclass:
                         dic.append({"PlanNo": plan.ID, "ZYPlanNo": oc.ID, "BrandCode": oc.BrandCode,
                                     "BrandName": oc.BrandName, "BatchID": oc.BatchID,
