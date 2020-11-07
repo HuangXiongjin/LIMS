@@ -88,7 +88,7 @@ export default {
                 this.ProductEquipmentTableData.forEach((item,index) => {
                    var barList = []
                    arr.forEach(value => {
-                       if(item.EQPName === value.EQPName){
+                       if(item.EQPCode === value.EQPCode){
                            barList.push({
                                "startTime":value.PlanStartTime,
                                "endTime":value.PlanEndTime,
