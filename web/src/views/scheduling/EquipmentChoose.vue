@@ -1,6 +1,8 @@
 <template>
     <el-row>
-          <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回主流程</el-button>
+          <el-col :span='24' class="marginBottom">
+            <el-button type="primary" size="small" @click="back">返回主流程</el-button>
+            <el-button type="primary" size="small" icon='el-icon-refresh-right' @click="refreshData">刷新</el-button>
             <el-radio-group v-model="radio3" size="small" @change="setStatus">
                 <el-radio-button label="待配置"></el-radio-button>
                 <el-radio-button label="撤回"></el-radio-button>
@@ -510,6 +512,11 @@ export default {
          this.getSelectedEq()
     },
     methods:{
+      refreshData(){
+         this.getConfigbatch()
+         this.chConfigbatch()
+         this.getSelectedEq()
+      },
       cleardefault(){
         this.inProcessList.forEach((item) => {
             var eqlist=item.eqList

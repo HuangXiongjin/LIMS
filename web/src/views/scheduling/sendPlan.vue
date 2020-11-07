@@ -1,6 +1,9 @@
 <template>
   <el-row>
-    <el-col :span='24' class="marginBottom"><el-button type="primary" size="small" @click="back">返回主线程</el-button></el-col>
+    <el-col :span='24' class="marginBottom">
+      <el-button type="primary" size="small" @click="back">返回主线程</el-button>
+      <el-button type="primary" size="small" icon='el-icon-refresh-right' @click="refreshData">刷新</el-button>
+      </el-col>
     <el-col :span="24">
       <el-row :gutter="15">
         <el-col :span="24">
@@ -11,7 +14,6 @@
             <el-form :inline="true">
               <el-form-item>
                 <el-button type="primary" size="small" icon='el-icon-position' @click="sendPlan">发送投料计划</el-button>
-                <el-button type="primary" size="small" icon='el-icon-refresh-right' @click="refreshData">刷新</el-button>
               </el-form-item>
               <el-form-item class="floatRight">
                 <el-radio-group v-model="sendPlanPlanStatus" size="small" @change="getPlanManagerTableData">
@@ -20,7 +22,18 @@
                 </el-radio-group>
               </el-form-item>
             </el-form>
-            <el-table :data="PlanManagerTableData.data" border size="small" highlight-current-row ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @select="handleRowSelectPlanManager"  @row-click="handleRowClickPlanManager">
+            <el-table 
+              :data="PlanManagerTableData.data"
+              border
+              size="small" 
+              highlight-current-row ref="multipleTablePlanManager" 
+              @selection-change="handleSelectionChangePlanManager" 
+              @select="handleRowSelectPlanManager" 
+              @row-click="handleRowClickPlanManager"
+              v-loading="loading"
+              element-loading-text="拼命加载中"
+              element-loading-spinner="el-icon-loading"
+              >
               <el-table-column type="selection"></el-table-column>
               <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
@@ -70,6 +83,7 @@
           offset: 1,
           total: 0,
           multipleSelection: [],
+          loading:false
         },
       }
     },
@@ -85,6 +99,7 @@
       },
       //选择批计划
       getPlanManagerTableData(){
+        this.loading=true
         var that = this
         var PlanStatus = ""
         if(this.sendPlanPlanStatus === "待发送"){
@@ -101,6 +116,7 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res => {
+          this.loading=false
           if(res.data.code === "200"){
             that.PlanManagerTableData.data = res.data.data.rows
             that.PlanManagerTableData.total = res.data.data.total
