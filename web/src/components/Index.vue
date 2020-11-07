@@ -118,6 +118,7 @@
             {title:"物料明细记录",icon:"fa fa-th",url:"/sendMaterialLog"},
             {title:'批次设备审核',icon:"el-icon-s-claim",url:"/equipmentAudit"},
             {title:'批次设备复核',icon:"el-icon-success",url:"/confirmProduction"},
+            {title:'发送投料计划',icon:"fa fa-paper-plane",url:"/sendPlan"},
           ]},
           {label: '生产数据管理',icon:"el-icon-tickets",mainMenu:[
             {title:"生产监控",icon:"el-icon-box",url:"/ProductionMonitoring"},

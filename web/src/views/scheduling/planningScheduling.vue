@@ -5,18 +5,16 @@
         <el-step title="审核计划"></el-step>
         <el-step title="工艺配置"></el-step>
         <el-step title="下发计划"></el-step>
-        <el-step title="发送投料计划"></el-step>
       </el-steps>
     </el-col>
     <el-col :span="24" class="marginTop">
       <CheckscPlan v-show="steps===0" ref="child1"></CheckscPlan>
       <EquipmentChoose v-show="steps===1" ref="child2"></EquipmentChoose>
       <DistributionPlan v-show="steps===2" ref="child3"></DistributionPlan>
-      <sendPlan v-show="steps===3" ref="child4"></sendPlan>
     </el-col>
     <el-col :span="24" style="textAlign:right">
       <el-button type="primary" v-show="steps != 0" @click="LastStep">上一步</el-button>
-      <el-button type="primary" v-show="steps != 4" @click="NextStep">下一步</el-button>
+      <el-button type="primary" v-show="steps != 3" @click="NextStep">下一步</el-button>
     </el-col>
   </el-row>
 </template>
@@ -25,7 +23,6 @@
 import CheckscPlan from './CheckscPlan.vue'
 import EquipmentChoose from './EquipmentChoose.vue'
 import DistributionPlan from './DistributionPlan.vue'
-import sendPlan from './sendPlan.vue'
   export default {
     name: "planningScheduling",
     data(){
@@ -33,7 +30,7 @@ import sendPlan from './sendPlan.vue'
           steps:0,
       }
     },
-    components:{CheckscPlan,EquipmentChoose,DistributionPlan,sendPlan},
+    components:{CheckscPlan,EquipmentChoose,DistributionPlan},
     mounted(){
      this.$refs.child1.getPlanManager()
     },
@@ -48,8 +45,6 @@ import sendPlan from './sendPlan.vue'
           this.$refs.child3.getSelectedEq()
           this.$refs.child3.getYxfBatch()
         }else if(this.steps===3){
-          this.$refs.child4.getPlanManagerTableData()
-        }else if(this.steps===4){
           this.$router.push('/planProgress')
         }
         },
@@ -64,8 +59,6 @@ import sendPlan from './sendPlan.vue'
           }else if(this.steps===2){
               this.$refs.child3.getSelectedEq()
               this.$refs.child3.getYxfBatch()
-          }else if(this.steps===3){
-              this.$refs.child4.getPlanManagerTableData()
           }
         }
     }
