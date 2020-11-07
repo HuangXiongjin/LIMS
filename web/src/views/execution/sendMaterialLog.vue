@@ -6,7 +6,7 @@
       </div>
       <div class="platformContainer">
         <el-form :inline="true">
-          <el-form-item>
+          <el-form-item label="发送时间">
             <el-date-picker type="date" v-model="OperationDate" size="mini" format="yyyy-MM-dd" style="width: 140px;" :clearable="false" @change="getMaterialTableData"></el-date-picker>
           </el-form-item>
         </el-form>
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+  var moment = require('moment');
   export default {
     name: "sendMaterialLog",
     data(){
@@ -48,8 +49,11 @@
           offset: 1,
           total: 0,
         },
-        OperationDate:""
+        OperationDate:moment().format("YYYY-MM-DD")
       }
+    },
+    mounted(){
+      this.getMaterialTableData()
     },
     methods:{
        getMaterialTableData(){
@@ -57,7 +61,7 @@
         var params = {
           tableName: "BatchMaterialInfo",
           OperationDate:this.OperationDate,
-          PlanStatus: "物料发送完成",
+          SendFlag: "已发送",
           limit:this.MaterialTableData.limit,
           offset:this.MaterialTableData.offset - 1
         }
