@@ -80,23 +80,21 @@
             <el-table-column prop="ZYPlanStatus" label="计划状态"></el-table-column>
           </el-table>
           <el-row :gutter="15">
-            <el-col :span="10">
+            <el-col :span="12">
               <p class="text-size-18 marginBottom">计划使用设备</p>
               <el-table :data="EquipmentBatchRunTimeTableData.data" border size="small">
                 <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
                 <el-table-column prop="EQPName" label="设备名称"></el-table-column>
-                <el-table-column prop="StartTime" label="开始时间"></el-table-column>
-                <el-table-column prop="EndTime" label="结束时间"></el-table-column>
+                <el-table-column prop="StartTime" label="计划开始时间"></el-table-column>
+                <el-table-column prop="EndTime" label="计划结束时间"></el-table-column>
               </el-table>
             </el-col>
-            <el-col :span="14">
+            <el-col :span="12">
               <p class="text-size-18 marginBottom">实际使用设备</p>
               <el-table :data="ZYTaskTableData.data" border size="small">
                 <el-table-column prop="TaskID" label="任务单号"></el-table-column>
                 <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
                 <el-table-column prop="EQPName" label="设备名称"></el-table-column>
-                <el-table-column prop="PlanStartTime" label="计划开始时间"></el-table-column>
-                <el-table-column prop="PlanEndTime" label="计划结束时间"></el-table-column>
                 <el-table-column prop="ActBeginTime" label="实际开始时间"></el-table-column>
                 <el-table-column prop="ActEndTime" label="实际结束时间"></el-table-column>
               </el-table>

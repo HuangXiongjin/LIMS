@@ -204,7 +204,7 @@
         var params = {
           tableName:"ZYTask",
           BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
-          PUName:this.PlanManagerTableData.multipleSelection[0].PUName,
+          PUName:this.ZYPlanPUData.PUName,
           BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
         }
         this.axios.get("/api/CUID",{
