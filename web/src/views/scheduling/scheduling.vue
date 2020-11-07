@@ -149,6 +149,9 @@
               <el-form-item v-for="(item,index) in PlanManagerTableData.handleType" :key="index">
                 <el-button :type="item.type" size="small" @click="handleFormPlanManager(item.label)">{{ item.label }}</el-button>
               </el-form-item>
+              <el-form-item class="floatRight">
+                <el-button type="primary" size="small" icon='el-icon-refresh-right' @click="getPlanManagerTableData">刷新</el-button>
+              </el-form-item>
             </el-form>
             <el-table :data="PlanManagerTableData.data" border size="small">
               <el-table-column prop="PlanNum" label="计划单号"></el-table-column>

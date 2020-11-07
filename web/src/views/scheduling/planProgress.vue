@@ -35,6 +35,9 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item class="floatRight">
+            <el-button type="primary" size="small" icon='el-icon-refresh-right' @click="getPlanManagerTableData">刷新</el-button>
+          </el-form-item>
         </el-form>
         <el-table :data="PlanManagerTableData.data" highlight-current-row border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @select="handleSelectPlanManager" @row-click="handleRowClickPlanManager">
           <el-table-column type="selection"></el-table-column>

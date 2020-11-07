@@ -17,6 +17,11 @@
             </div>
           </el-col>
         </el-row>
+        <el-form :inline="true">
+          <el-form-item class="floatRight">
+            <el-button type="primary" size="small" icon='el-icon-refresh-right' @click="getPlanManagerTableData">刷新</el-button>
+          </el-form-item>
+        </el-form>
         <el-table :data="PlanManagerTableData.data" highlight-current-row border size="small" ref="multipleTablePlanManager" @select="handleSelectPlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
           <el-table-column type="selection"></el-table-column>
           <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
