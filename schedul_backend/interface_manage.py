@@ -266,15 +266,17 @@ def WMS_SendMatils():
                     oclass.OperationDate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     # zypla.TaskStatus = "已发送"
                     db_session.commit()
-                url = Global.WMSurl + "api/WbeApi/RecvContanerInfon"
-                dir = {}
-                dir["batchmaterial_list"] = dic
-                dir = json.dumps(dir)
-                resp = requests.post(url, json=dir, headers=headers)
-                responjson = json.loads(resp.content)
-                responjson = eval(responjson)
-                if responjson.get("code") != "0":
-                    return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！" + responjson.get("msg")})
+                if len(dic)>0:
+                    url = Global.WMSurl + "api/WbeApi/RecvContanerInfon"
+                    dir = {}
+                    dir["batchmaterial_list"] = dic
+                    dir = json.dumps(dir)
+                    resp = requests.post(url, json=dir, headers=headers)
+                    responjson = json.loads(resp.content)
+                    responjson = eval(responjson)
+                    if responjson.get("code") != "0":
+                        db_session.rollback()
+                        return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！" + responjson.get("msg")})
                 pmoc.PlanStatus = data.get("PlanStatus")
                 db_session.commit()
                 return json.dumps({"code": "200", "message": "OK"})
