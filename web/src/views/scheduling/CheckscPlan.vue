@@ -153,6 +153,7 @@ var moment=require('moment')
           tableName:'PlanManager',
           offset:this.batchTableData.offset-1,
           limit:this.batchTableData.limit,
+          PlanStatus:'待审核'
         }
         this.axios.get('/api/CUID',{params:params}).then(res => {
           this.loading=false

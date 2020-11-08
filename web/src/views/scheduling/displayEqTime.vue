@@ -94,7 +94,6 @@ export default {
                                "colorNum":index,
                                "item":value.BatchID,
                                "BrandName":value.BrandName
-
                            })
                        }
                    })
