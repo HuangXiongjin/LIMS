@@ -73,7 +73,7 @@
            @current-change="handleCurrentChangePlanManager">
           </el-pagination>
         </div>
-        <el-dialog title="工艺信息" :visible.sync="PUDialogVisible" width="80%" :append-to-body="true">
+        <el-dialog title="工艺信息" :visible.sync="PUDialogVisible" width="80%" :append-to-body="true" v-if="PlanManagerTableData.multipleSelection.length > 0">
           <el-table :data="ZYPlanTableData.data" border size="small" class="marginBottom">
             <el-table-column prop="PlanNo" label="调度编号"></el-table-column>
             <el-table-column prop="BatchID" label="批次号"></el-table-column>
@@ -97,7 +97,7 @@
             </el-col>
             <el-col :span="12">
               <p class="text-size-18 marginBottom">实际使用设备</p>
-              <el-table :data="ZYTaskTableData.data" border size="small">
+              <el-table :data="ZYTaskTableData.data" border size="small" v-show="PlanManagerTableData.multipleSelection[0].PlanStatus === '已发送投料计划'">
                 <el-table-column prop="TaskID" label="任务单号"></el-table-column>
                 <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
                 <el-table-column prop="EQPName" label="设备名称"></el-table-column>
