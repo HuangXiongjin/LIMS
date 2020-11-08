@@ -81,7 +81,6 @@ export default {
             }
             this.axios('/api/CUID',{params:params}).then((res) => {
                 var arr=res.data.data.rows
-                console.log(arr)
                 this.innerData = []
                 this.outData = []
                 this.yxeqlist=[]
