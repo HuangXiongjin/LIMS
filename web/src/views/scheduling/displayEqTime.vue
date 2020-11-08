@@ -95,11 +95,11 @@ export default {
                                "item":value.BatchID,
                                "BrandName":value.BrandName
                            })
+                           this.innerData.push({
+                               "plant":item.EQPCode,
+                               "list":barList
+                           })
                        }
-                   })
-                   this.innerData.push({
-                       "plant":item.EQPCode,
-                       "list":barList
                    })
                 })
                 if(this.echarts){
