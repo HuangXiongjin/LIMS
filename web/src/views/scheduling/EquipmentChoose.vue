@@ -412,6 +412,16 @@ export default {
          this.getSelectedEq()
     },
     methods:{
+      initTime(){
+        this.EQdefaultStartTime=moment().format("YYYY-MM-DD")
+        this.EQdefaultStartBC='早'
+        this.EQdefaultEndBC='早'
+        this.stTime=new Date().getTime()
+        this.endTL=new Date().getTime()
+        this.lastendTL=new Date().getTime()
+        this.compareTime=false
+        this.EQdefaultEndTime=moment().format("YYYY-MM-DD")
+      },
       lastconfig(){
         this.configactive--
       },
@@ -429,7 +439,6 @@ export default {
        }else{
          this.compareTime=false
        }
-      
       },
      getdefeTime(e){
        this.endTL=new Date(e).getTime()
@@ -443,7 +452,6 @@ export default {
         this.lastendTL=new Date(e).getTime()
         this.compareTime=false
        }
-      
      },
       refreshData(){
          this.getConfigbatch()
@@ -465,8 +473,11 @@ export default {
           this.inProcessList[this.configactive].eqList[index].EndTime=this.EQdefaultEndTime
           this.inProcessList[this.configactive].eqList[index].StartBC=this.EQdefaultStartBC
           this.inProcessList[this.configactive].eqList[index].EndBC=this.EQdefaultEndBC
-          this.judgeConflict(EQPCode,this.EQdefaultStartTime,this.EQdefaultStartBC)
-          this.judgeConflict(EQPCode,this.EQdefaultEndTime,this.EQdefaultEndBC)
+          if(this.configactive!==0){
+            this.judgeConflict(EQPCode,this.EQdefaultStartTime,this.EQdefaultStartBC)
+            this.judgeConflict(EQPCode,this.EQdefaultEndTime,this.EQdefaultEndBC)
+
+          }
         }else{
           this.inProcessList[this.configactive].eqList[index].StartTime=''
           this.inProcessList[this.configactive].eqList[index].EndTime=''
@@ -669,6 +680,7 @@ export default {
         this.configactive=0
         this.currentclick='待配置'
         this.getEq(e.BatchID,e.BrandCode)
+        this.initTime()
         this.$refs.xfallmultipleTable.setCurrentRow(e)
         this.PlanNum=e.PlanNum
         this.BatchID=e.BatchID
@@ -688,6 +700,7 @@ export default {
        xfTabCurrentChange(e){ //配置更改批次计划 点击显示当前的tab行显示详细信息
         this.configactive=0
         this.currentclick='配置更改'
+        this.initTime()
         this.getEq(e.BatchID,e.BrandCode)
         this.$refs.xfmultipleTable.setCurrentRow(e)
         this.PlanNum=e.PlanNum
@@ -702,6 +715,7 @@ export default {
        chTabCurrentChange(e){ //点击撤回批次计划 点击显示当前的tab行显示详细信息
        this.configactive=0
         this.currentclick='撤回'
+        this.initTime()
         this.getEq(e.BatchID,e.BrandCode)
         this.$refs.chmultipleTable.setCurrentRow(e)
         this.ID=e.ID
