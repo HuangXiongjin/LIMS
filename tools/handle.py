@@ -49,6 +49,7 @@ def log(e, login_user):
     # pass
     user = login_user if login_user is None else 'no login'
     with open(file_path, 'a') as f:
+        print(f'{datetime.datetime.now()} -- {user} -- {call_func} --- {e}' + "\n\n")
         f.write(f'{datetime.datetime.now()} -- {user} -- {call_func} --- {e}' + "\n\n")
 
 
