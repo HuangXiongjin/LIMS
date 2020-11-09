@@ -2,33 +2,57 @@
    <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span class="text-size-16">选择批计划，查看计划工艺进展</span>
+        <span class="text-size-16 marginRight">选择批计划，查看计划工艺进展</span>
+        <span class="sideState bg-gray"></span><span class="text-size-14">待生产</span>
+        <span class="sideState bg-lightgreen"></span><span class="text-size-14">设备已审核</span>
+        <span class="sideState bg-darkblue"></span><span class="text-size-14">设备已复核</span>
+        <span class="sideState bg-success"></span><span class="text-size-14">已完成</span>
       </div>
       <div class="platformContainer">
         <el-row :gutter="15">
           <el-col :span="24">
-            <div style="display:inline-block;marginRight:18px;cursor:pointer">
-              <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待配置' || PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">审核计划</div>
+            <div style="display:inline-block;margin-right:18px;">
+              <div style="display: inline-block; text-align: center;">
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待配置' || PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">审核计划</div>
+              </div>
               <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
             </div>
-            <div style="display:inline-block;marginRight:18px;cursor:pointer">
-              <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">工艺配置</div>
+            <div style="display:inline-block;margin-right:18px;">
+              <div style="display: inline-block; text-align: center;">
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">工艺配置</div>
+              </div>
               <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
             </div>
-            <div style="display:inline-block;marginRight:18px;cursor:pointer">
-              <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">下发计划</div>
+            <div style="display:inline-block;margin-right:18px;">
+              <div style="display: inline-block; text-align: center;">
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">下发计划</div>
+              </div>
               <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
             </div>
-            <div style="display:inline-block;cursor:pointer">
-              <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '已发送物料明细'}">发送投料计划</div>
+            <div style="display:inline-block;">
+              <div style="display: inline-block; text-align: center;">
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '已发送物料明细'}">发送投料计划</div>
+              </div>
             </div>
-            <div v-for="(item, index) in ProcessSectionData" :key="index" style="display:inline-block;marginRight:18px;cursor:pointer" @click="PUPlan(item)">
+            <div v-for="(item, index) in ProcessSectionData" :key="index" style="display: inline-block;margin-right:18px;vertical-align: top;" @click="PUPlan(item)">
               <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;margin-right:10px;"></i>
-              <div class="container-col text-size-14 bg-gray">{{ item.PUName }}</div>
+              <div style="display: inline-block; text-align: center;">
+                <div class="container-col text-size-14 bg-white" :class="{'bg-gray':item.ZYPlanStatus === '待生产','bg-lightgreen':item.ZYPlanStatus === '设备已审核','bg-darkblue':item.ZYPlanStatus === '设备已复核','bg-success':item.ZYPlanStatus === '已完成'}">{{ item.PUName }}</div>
+                <div class="text-center" style="display: inherit;" v-show="item.PUName != '备料'">
+                  <p class="connectLine marginRight"></p>
+                  <p class="marginRight">
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '设备已审核' || item.ZYPlanStatus === '设备已复核' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '设备已审核' || item.ZYPlanStatus === '设备已复核' ? 'dark':'plain'">审核</el-tag>
+                  </p>
+                  <p class="connectLine marginRight"></p>
+                  <p class="marginRight">
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '设备已复核' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '设备已复核' ? 'dark':'plain'">复核</el-tag>
+                  </p>
+                </div>
+              </div>
             </div>
           </el-col>
         </el-row>
-        <el-form :inline="true">
+        <el-form :inline="true" class="marginTop">
           <el-form-item label="查询日期">
             <el-date-picker type="date" v-model="PlanManagerTableData.searchDate" size="small" format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width: 160px;" @change="getPlanManagerTableData"></el-date-picker>
           </el-form-item>
@@ -297,15 +321,20 @@
 
 <style scoped>
   .container-col{
-    display: inline-block;
     clear: both;
     overflow: hidden;
     border-radius: 4px;
     padding: 0 15px;
-    margin-bottom: 15px;
     margin-right: 10px;
     height: 40px;
     line-height: 40px;
     color: #000;
+  }
+  .connectLine{
+    display: inherit;
+    width: 1px;
+    height: 15px;
+    margin-top: 5px;
+    background: #ccc;
   }
 </style>
