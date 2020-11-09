@@ -32,7 +32,7 @@ class SysLog(Base):
     UserName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 操作日期:
-    OperationDate = Column(DateTime, primary_key=False, autoincrement=False, nullable=True)
+    OperationDate = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
     # 操作内容:
     OperationContent = Column(Unicode(2048), primary_key=False, autoincrement=False, nullable=True)

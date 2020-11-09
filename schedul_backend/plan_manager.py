@@ -100,8 +100,12 @@ def makeZYPlanZYTask(id):
                         zytask.TaskID = strTaskNo
                         zytask.BatchID = ocalss.BatchID
                         zytask.PlanSeq = iTaskSeq
-                        zytask.PUCode = i.PUCode
-                        zytask.PUName = i.PUName
+                        if i.PUName == "备料":#备料段为满足前端展示需要，虚拟了一个设备出来，所以下发要排除
+                            zytask.PUCode = ""
+                            zytask.PUName = ""
+                        else:
+                            zytask.PUCode = i.PUCode
+                            zytask.PUName = i.PUName
                         zytask.PlanType = Global.PLANTYPE.SCHEDULE.value
                         zytask.BrandCode = ocalss.BrandCode
                         zytask.BrandName = ocalss.BrandName
