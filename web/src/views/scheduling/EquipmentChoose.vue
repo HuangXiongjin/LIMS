@@ -58,7 +58,7 @@
               </el-col>
               <el-col v-for='(item,index) in inProcessList' :key='index' :span='20'>
                 <el-col v-if='configactive===index'>
-                    <div style="fontSize:18px;fontWeight:700;">{{item.PUName}}配置</div>
+                    <div style="fontSize:18px;fontWeight:700;">{{item.PUName}}配置<span style="marginLeft:10px;fontSize:14px;color:red;">(先选开始时间，再选结束时间,再"√"选设备)</span></div>
                     <!-- 设置默认时间 -->
                       <div class="marginTop">
                       <el-tag>默认时间</el-tag>
@@ -70,7 +70,7 @@
                               @change="getdefsTime"
                               placeholder="选择日期">
                       </el-date-picker>
-                      <el-radio-group v-model="EQdefaultStartBC" size="small">
+                      <el-radio-group v-model="EQdefaultStartBC" size="small" @change="clearactivedefault">
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -84,7 +84,7 @@
                               @change="getdefeTime"
                               placeholder="选择日期">
                       </el-date-picker>
-                      <el-radio-group v-model="EQdefaultEndBC" size="small">
+                      <el-radio-group v-model="EQdefaultEndBC" size="small" @change="clearactivedefault">
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -172,7 +172,7 @@
               </el-col>
                <el-col v-for='(item,index) in inProcessList' :key='index' :span='20'>
                <el-col v-if='configactive===index'>
-                    <div style="fontSize:18px;fontWeight:700;">{{item.PUName}}配置</div>
+                    <div style="fontSize:18px;fontWeight:700;">{{item.PUName}}配置<span style="marginLeft:10px;fontSize:14px;color:red;">(先选开始时间，再选结束时间,再"√"选设备)</span></div>
                     <!-- 设置默认时间 -->
                       <div class="marginTop">
                       <el-tag>默认时间</el-tag>
@@ -184,7 +184,7 @@
                               @change="getdefsTime"
                               placeholder="选择日期">
                       </el-date-picker>
-                      <el-radio-group v-model="EQdefaultStartBC" size="small">
+                      <el-radio-group v-model="EQdefaultStartBC" size="small" @change="clearactivedefault">
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -198,7 +198,7 @@
                               @change="getdefeTime"
                               placeholder="选择日期">
                       </el-date-picker>
-                      <el-radio-group v-model="EQdefaultEndBC" size="small">
+                      <el-radio-group v-model="EQdefaultEndBC" size="small" @change="clearactivedefault">
                               <el-radio-button label="早"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
                               <el-radio-button label="晚"></el-radio-button>
@@ -412,7 +412,7 @@ export default {
          this.getSelectedEq()
     },
     methods:{
-      initTime(){
+      initTime(){ //时间数据初始化
         this.EQdefaultStartTime=moment().format("YYYY-MM-DD")
         this.EQdefaultStartBC='早'
         this.EQdefaultEndBC='早'
@@ -428,8 +428,9 @@ export default {
       nextconfig(){
         this.configactive++
       },
-     getdefsTime(e){
+     getdefsTime(e){ //判断开始时间
        this.stTime=new Date(e).getTime()
+       this.clearactivedefault()
        if(this.stTime<this.lastendTL){
          this.$message({
               type:'error',
@@ -439,9 +440,19 @@ export default {
        }else{
          this.compareTime=false
        }
+       if(this.stTime>this.endTL){
+         this.$message({
+              type:'warning',
+              message:"当前开始时间大于当前结束时间，重新选择！"
+            })
+          this.compareTime=true
+       }else{
+         this.compareTime=false
+       }
       },
-     getdefeTime(e){
+     getdefeTime(e){ //判断结束时间
        this.endTL=new Date(e).getTime()
+       this.clearactivedefault()
        if(this.endTL<this.stTime){
          this.$message({
               type:'error',
@@ -453,12 +464,12 @@ export default {
         this.compareTime=false
        }
      },
-      refreshData(){
+      refreshData(){ //刷新数据
          this.getConfigbatch()
          this.chConfigbatch()
          this.getSelectedEq()
       },
-      cleardefault(){
+      cleardefault(){ //清除选择的全部勾选
         this.inProcessList.forEach((item) => {
             var eqlist=item.eqList
             if(eqlist!==[]){
@@ -467,7 +478,12 @@ export default {
             })}
         })
       },
-      setDefaultTime(e,index,EQPCode){
+      clearactivedefault(){ //更换时间班次清除选择
+        this.inProcessList[this.configactive].eqList.forEach((item) => {
+              item.isSelected=false
+        })
+      },
+      setDefaultTime(e,index,EQPCode){ //勾选设置默认时间
         if(e){
           this.inProcessList[this.configactive].eqList[index].StartTime=this.EQdefaultStartTime
           this.inProcessList[this.configactive].eqList[index].EndTime=this.EQdefaultEndTime
