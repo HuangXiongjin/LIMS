@@ -9,16 +9,28 @@
         <span class="sideState bg-success"></span><span class="text-size-14">已完成</span>
       </div>
       <div class="platformContainer">
-        <el-row>
+        <el-row class="marginBottom">
           <el-col :span="24">
-            <div v-for="(item, index) in ZYPlanTableData.data" :key="index" style="display:inline-block;marginRight:18px;cursor:pointer" @click="PUPlan(item)">
-              <div class="container-col text-size-14 bg-white" :class="{'bg-gray':item.ZYPlanStatus === '待生产','bg-lightgreen':item.ZYPlanStatus === '设备已审核','bg-darkblue':item.ZYPlanStatus === '设备已复核','bg-success':item.ZYPlanStatus === '已完成'}">{{ item.PUName }}</div>
+            <div v-for="(item, index) in ZYPlanTableData.data" :key="index" style="display: inline-block;margin-right:18px;vertical-align: top;">
+              <div style="display: inline-block; text-align: center;">
+                <div class="container-col text-size-14 bg-white" :class="{'bg-gray':item.ZYPlanStatus === '待生产','bg-lightgreen':item.ZYPlanStatus === '设备已审核','bg-darkblue':item.ZYPlanStatus === '设备已复核','bg-success':item.ZYPlanStatus === '已完成'}">{{ item.PUName }}</div>
+                <div class="text-center" style="display: inherit;" v-show="item.PUName != '备料'">
+                  <p class="connectLine marginRight"></p>
+                  <p class="marginRight">
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '设备已审核' || item.ZYPlanStatus === '设备已复核' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '设备已审核' || item.ZYPlanStatus === '设备已复核' ? 'dark':'plain'" @click="PUPlan(item,'审核')">审核</el-tag>
+                  </p>
+                  <p class="connectLine marginRight"></p>
+                  <p class="marginRight">
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '设备已复核' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '设备已复核' ? 'dark':'plain'" @click="PUPlan(item,'复核')">复核</el-tag>
+                  </p>
+                </div>
+              </div>
               <i class="fa fa-arrow-right" v-if="index != ZYPlanTableData.data.length -1" style="vertical-align: top;margin-top: 10px;margin-right:10px;"></i>
             </div>
           </el-col>
         </el-row>
         <el-form :inline="true">
-          <el-form-item class="floatRight">
+          <el-form-item>
             <el-radio-group v-model="sendPlanPlanStatus" size="small" @change="getPlanManagerTableData">
               <el-radio-button label="已下发"></el-radio-button>
               <el-radio-button label="物料发送完成"></el-radio-button>
@@ -44,7 +56,7 @@
            @current-change="handleCurrentChangePlanManager">
           </el-pagination>
         </div>
-        <el-dialog title="工艺信息" :visible.sync="PUDialogVisible" width="80%" :append-to-body="true">
+        <el-dialog :title="ZYPlanPUData.PUName+ '设备' + PUDialogType" :visible.sync="PUDialogVisible" width="80%" :append-to-body="true">
           <el-col :span="24">
             <el-form :inline="true">
               <el-form-item label="当前状态："><label class="marginRight color-darkblue">{{ ZYPlanPUData.ZYPlanStatus }}</label></el-form-item>
@@ -92,7 +104,8 @@
           </el-dialog>
           <span slot="footer" class="dialog-footer">
             <el-button @click="PUDialogVisible = false">关闭</el-button>
-            <el-button type="primary" @click="AuditPass">复核确认</el-button>
+            <el-button type="primary" @click="AuditPass" v-if="PUDialogType === '审核'">审核确认</el-button>
+            <el-button type="primary" @click="CheckPass" v-if="PUDialogType === '复核'">复核确认</el-button>
           </span>
         </el-dialog>
       </div>
@@ -117,6 +130,7 @@
           data:[]
         },
         PUDialogVisible:false,
+        PUDialogType:"",
         EQDialogVisible:false,
         ZYPlanPUData:{},
         ZYTaskTableData:[],
@@ -202,8 +216,9 @@
           }
         })
       },
-      PUPlan(item){
+      PUPlan(item,type){
         this.PUDialogVisible = true
+        this.PUDialogType = type
         this.ZYPlanPUData = item
         this.getProductEquipment(this.ZYPlanPUData.PUName)
         this.getZYTaskTable()
@@ -286,6 +301,36 @@
       },
       AuditPass(){
         let that = this
+        if(this.ZYPlanPUData.ZYPlanStatus === "待生产") {
+          var params = {
+            tableName: "ZYPlan",
+            ID: this.ZYPlanPUData.ID,
+            ZYPlanStatus: "设备已审核"
+          }
+          this.axios.put("/api/CUID", this.qs.stringify(params)).then(res => {
+            if (res.data.code === "200") {
+              this.$message({
+                type: 'success',
+                message: res.data.message
+              })
+              this.PUDialogVisible = false
+              this.getZYPlanTableData()
+            } else {
+              that.$message({
+                type: 'info',
+                message: res.data.message
+              });
+            }
+          })
+        }else{
+          this.$message({
+            type: 'info',
+            message: "当前工序状态不能做审核操作"
+          });
+        }
+      },
+      CheckPass(){
+        let that = this
         if(this.ZYPlanPUData.ZYPlanStatus === "设备已审核") {
           var params = {
             tableName: "ZYPlan",
@@ -320,15 +365,20 @@
 
 <style scoped>
   .container-col{
-    display: inline-block;
     clear: both;
     overflow: hidden;
     border-radius: 4px;
     padding: 0 15px;
-    margin-bottom: 15px;
     margin-right: 10px;
     height: 40px;
     line-height: 40px;
     color: #000;
+  }
+  .connectLine{
+    display: inherit;
+    width: 1px;
+    height: 15px;
+    margin-top: 5px;
+    background: #ccc;
   }
 </style>
