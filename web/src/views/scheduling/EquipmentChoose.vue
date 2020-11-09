@@ -52,50 +52,12 @@
             <el-dialog title="工艺段配置计划" :visible.sync="dialogTableVisible" width='90%'>
               <el-row>
               <el-col :span='4'>
-                  <el-steps :active="configactive" direction="vertical" finish-status="wait" space='100px'>
-                    <el-step title="基础配置" @click.native="Activeconfig(0)" class="cursor-pointer"></el-step>
-                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName" @click.native="Activeconfig(index+1)" class="cursor-pointer"></el-step>
+                  <el-steps :active="configactive" direction="vertical" finish-status="success" space='100px'>
+                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName"></el-step>
                   </el-steps>
               </el-col>
-              <el-col :span='20' v-if='configactive===0'>
-                  <div style="fontSize:18px;fontWeight:700;">备料配置</div>
-                  <el-row style="marginTop:24px;">
-                    <el-col :span='19'>
-                      <el-checkbox v-model="blSelected" style="marginRight:20px;"></el-checkbox>
-                      <el-date-picker
-                        v-model="blstartTime"
-                        value-format='yyyy-MM-dd'
-                        type="date"
-                        size='small'
-                        placeholder="选择日期">
-                      </el-date-picker>
-                      <el-radio-group v-model="blstartBc" size="small">
-                          <el-radio-button label="早"></el-radio-button>
-                          <el-radio-button label="中"></el-radio-button>
-                          <el-radio-button label="晚"></el-radio-button>
-                      </el-radio-group>
-                      <span style="margin:0 30px;">至</span>
-                            <el-date-picker
-                              v-model="blendTime"
-                              value-format='yyyy-MM-dd'
-                              type="date"
-                              size='small'
-                              placeholder="选择日期">
-                            </el-date-picker>
-                            <el-radio-group v-model="blendBc" size="small">
-                              <el-radio-button label="早"></el-radio-button>
-                              <el-radio-button label="中"></el-radio-button>
-                              <el-radio-button label="晚"></el-radio-button>
-                            </el-radio-group>
-                    </el-col>
-                    <el-col :span='4'>
-                      <span class="mgr">批量</span>
-                      <el-tag type='info'>{{BatchWeight}}</el-tag>
-                    </el-col>
-                    </el-row>
-              </el-col>
-              <el-col v-for='(item,index) in inProcessList' :key='index+1' :span='20'>
-                <el-col v-if='configactive===index+1'>
+              <el-col v-for='(item,index) in inProcessList' :key='index' :span='20'>
+                <el-col v-if='configactive===index'>
                     <div style="fontSize:18px;fontWeight:700;">{{item.PUName}}配置</div>
                     <!-- 设置默认时间 -->
                       <div class="marginTop">
@@ -105,6 +67,7 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
+                              @change="getdefsTime"
                               placeholder="选择日期">
                       </el-date-picker>
                       <el-radio-group v-model="EQdefaultStartBC" size="small">
@@ -118,6 +81,7 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
+                              @change="getdefeTime"
                               placeholder="选择日期">
                       </el-date-picker>
                       <el-radio-group v-model="EQdefaultEndBC" size="small">
@@ -129,7 +93,7 @@
                     <el-row style="marginTop:24px;">
                       <el-col :span='24'>
                         <el-row>
-                          <el-col :span='24'  v-for="(item,index) in inProcessList[configactive-1].eqList" :key='index' class="marginBottom">
+                          <el-col :span='24'  v-for="(item,index) in inProcessList[configactive].eqList" :key='index' class="marginBottom">
                             <el-checkbox v-model="item.isSelected" @change="setDefaultTime(item.isSelected,index,item.EQPCode)">
                                 <span style="margin:0 60px;">{{item.EQPCode}}</span>
                                 <span style="margin:0 60px;">{{item.EQPName}}</span>
@@ -142,8 +106,10 @@
               </el-col>
               </el-row>
               <span slot="footer" class="dialog-footer">
-              <el-button @click="dialogTableVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveSelectedEq">保存</el-button>
+                <el-button @click="dialogTableVisible = false">取 消</el-button>
+                <el-button type="primary" @click="lastconfig" v-show="configactive!==0">上一步</el-button>
+                <el-button type="primary" @click="nextconfig" v-show="configactive!==inProcessList.length-1" :disabled='compareTime'>下一步</el-button>
+                <el-button type="primary" @click="saveSelectedEq" v-show="configactive===inProcessList.length-1">保存</el-button>
               </span>
               <el-dialog title="冲突信息" :visible.sync="ctdialogTableVisible" width='80%' :modal=false>
                   <el-table :data="ctlist" class="ctTable">
@@ -200,50 +166,12 @@
             <el-dialog title="工艺段配置计划" :visible.sync="dialogTableVisible" width='90%'>
               <el-row>
               <el-col :span='4'>
-                  <el-steps :active="configactive" direction="vertical" finish-status="wait" space='100px'>
-                    <el-step title="基础配置" @click.native="Activeconfig(0)" class="cursor-pointer"></el-step>
-                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName" @click.native="Activeconfig(index+1)" class="cursor-pointer"></el-step>
+                  <el-steps :active="configactive" direction="vertical" finish-status="success" space='100px'>
+                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName"></el-step>
                   </el-steps>
               </el-col>
-              <el-col :span='20' v-if='configactive===0'>
-                  <div style="fontSize:18px;fontWeight:700;">备料配置</div>
-                  <el-row style="marginTop:24px;">
-                    <el-col :span='19'>
-                      <el-checkbox v-model="blSelected" style="marginRight:20px;"></el-checkbox>
-                      <el-date-picker
-                        v-model="blstartTime"
-                        value-format='yyyy-MM-dd'
-                        type="date"
-                        size='small'
-                        placeholder="选择日期">
-                      </el-date-picker>
-                      <el-radio-group v-model="blstartBc" size="small">
-                          <el-radio-button label="早"></el-radio-button>
-                          <el-radio-button label="中"></el-radio-button>
-                          <el-radio-button label="晚"></el-radio-button>
-                      </el-radio-group>
-                      <span style="margin:0 30px;">至</span>
-                            <el-date-picker
-                              v-model="blendTime"
-                              value-format='yyyy-MM-dd'
-                              type="date"
-                              size='small'
-                              placeholder="选择日期">
-                            </el-date-picker>
-                            <el-radio-group v-model="blendBc" size="small">
-                              <el-radio-button label="早"></el-radio-button>
-                              <el-radio-button label="中"></el-radio-button>
-                              <el-radio-button label="晚"></el-radio-button>
-                            </el-radio-group>
-                    </el-col>
-                    <el-col :span='4'>
-                      <span class="mgr">批量</span>
-                      <el-tag type='info'>{{BatchWeight}}</el-tag>
-                    </el-col>
-                    </el-row>
-              </el-col>
-               <el-col v-for='(item,index) in inProcessList' :key='index+1' :span='20'>
-               <el-col v-if='configactive===index+1'>
+               <el-col v-for='(item,index) in inProcessList' :key='index' :span='20'>
+               <el-col v-if='configactive===index'>
                     <div style="fontSize:18px;fontWeight:700;">{{item.PUName}}配置</div>
                     <!-- 设置默认时间 -->
                       <div class="marginTop">
@@ -253,6 +181,7 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
+                              @change="getdefsTime"
                               placeholder="选择日期">
                       </el-date-picker>
                       <el-radio-group v-model="EQdefaultStartBC" size="small">
@@ -266,6 +195,7 @@
                               value-format='yyyy-MM-dd'
                               type="date"
                               size='small'
+                              @change="getdefeTime"
                               placeholder="选择日期">
                       </el-date-picker>
                       <el-radio-group v-model="EQdefaultEndBC" size="small">
@@ -277,7 +207,7 @@
                     <el-row style="marginTop:24px;">
                       <el-col :span='24'>
                         <el-row>
-                          <el-col :span='24'  v-for="(item,index) in inProcessList[configactive-1].eqList" :key='index' class="marginBottom">
+                          <el-col :span='24'  v-for="(item,index) in inProcessList[configactive].eqList" :key='index' class="marginBottom">
                             <el-checkbox v-model="item.isSelected" @change="setDefaultTime(item.isSelected,index,item.EQPCode)">
                                 <span style="margin:0 60px;">{{item.EQPCode}}</span>
                                 <span style="margin:0 60px;">{{item.EQPName}}</span>
@@ -291,7 +221,9 @@
               </el-row>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogTableVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveSelectedEq">保存</el-button>
+                <el-button type="primary" @click="lastconfig" v-show="configactive!==0">上一步</el-button>
+                <el-button type="primary" @click="nextconfig" v-show="configactive!==inProcessList.length-1">下一步</el-button>
+                <el-button type="primary" @click="saveSelectedEq" v-show="configactive===inProcessList.length-1">保存</el-button>
               </span>
               <el-dialog title="冲突信息" :visible.sync="ctdialogTableVisible" width='80%' :modal=false>
                   <el-table :data="ctlist" class="ctTable">
@@ -348,50 +280,12 @@
             <el-dialog title="工艺段配置计划" :visible.sync="dpzdialogTableVisible" width='95%'>
               <el-row >
               <el-col :span='4'>
-                  <el-steps :active="configactive" direction="vertical" finish-status="wait" space='100px'>
-                    <el-step title="基础配置" @click.native="Activeconfig(0)" class="cursor-pointer"></el-step>
-                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName" @click.native="Activeconfig(index+1)" class="cursor-pointer"></el-step>
+                  <el-steps :active="configactive" direction="vertical" finish-status="success" space='100px'>
+                    <el-step v-for='(item,index) in inProcessList' :key='index' :title="item.PUName"></el-step>
                   </el-steps>
               </el-col>
-              <el-col :span='20' v-if='configactive===0'>
-                  <div style="fontSize:18px;fontWeight:700;">备料配置</div>
-                  <el-row style="marginTop:24px;">
-                    <el-col :span='19'>
-                      <el-checkbox v-model="blSelected" style="marginRight:20px;"></el-checkbox>
-                      <el-date-picker
-                        v-model="blstartTime"
-                        value-format='yyyy-MM-dd'
-                        type="date"
-                        size='small'
-                        placeholder="选择日期">
-                      </el-date-picker>
-                      <el-radio-group v-model="blstartBc" size="small">
-                          <el-radio-button label="早"></el-radio-button>
-                          <el-radio-button label="中"></el-radio-button>
-                          <el-radio-button label="晚"></el-radio-button>
-                      </el-radio-group>
-                      <span style="margin:0 30px;">至</span>
-                            <el-date-picker
-                              v-model="blendTime"
-                              value-format='yyyy-MM-dd'
-                              type="date"
-                              size='small'
-                              placeholder="选择日期">
-                            </el-date-picker>
-                            <el-radio-group v-model="blendBc" size="small">
-                              <el-radio-button label="早"></el-radio-button>
-                              <el-radio-button label="中"></el-radio-button>
-                              <el-radio-button label="晚"></el-radio-button>
-                            </el-radio-group>
-                    </el-col>
-                    <el-col :span='4'>
-                      <span class="mgr">批量</span>
-                      <el-tag type='info'>{{BatchWeight}}</el-tag>
-                    </el-col>
-                    </el-row>
-              </el-col>
-              <el-col v-for='(item,index) in inProcessList' :key='index+1' :span='20'>
-                <el-col v-if='configactive===index+1'>
+              <el-col v-for='(item,index) in inProcessList' :key='index' :span='20'>
+                <el-col v-if='configactive===index'>
                     <div style="fontSize:18px;fontWeight:700;">{{item.PUName}}配置</div>
                     <el-row style="marginTop:24px;">
                       <el-col :span='24' style="marginTop:18px;">
@@ -435,8 +329,10 @@
               </el-col>
               </el-row>
               <span slot="footer" class="dialog-footer">
-              <el-button @click="dpzdialogTableVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveSelectedEq">保存</el-button>
+                <el-button @click="dpzdialogTableVisible = false">取 消</el-button>
+                <el-button type="primary" @click="lastconfig" v-show="configactive!==0">上一步</el-button>
+                <el-button type="primary" @click="nextconfig" v-show="configactive!==inProcessList.length-1">下一步</el-button>
+                <el-button type="primary" @click="saveSelectedEq" v-show="configactive===inProcessList.length-1">保存</el-button>
               </span>
               <el-dialog title="冲突信息" :visible.sync="dpzctdialogTableVisible" width='80%' :modal=false>
                   <el-table :data="ctlist" class="ctTable">
@@ -501,6 +397,10 @@ export default {
             EQdefaultStartTime:moment().format("YYYY-MM-DD"),
             EQdefaultStartBC:'早',
             EQdefaultEndBC:'早',
+            stTime:new Date().getTime(),
+            endTL:new Date().getTime(),
+            lastendTL:new Date().getTime(),
+            compareTime:false,
             EQdefaultEndTime:moment().format("YYYY-MM-DD"),
             batchtableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'SchedulePlanCode',label:'调度编号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'计划产量'},{prop:'Unit',label:'单位'}],//批次列表
             tipstableconfig:[{prop:'BatchID',label:"冲突批次号"},{prop:'BrandName',label:'冲突品名'},{prop:'EQPName',label:'冲突设备名称'},{prop:'EQPCode',label:'冲突设备编码'},{prop:'StartTime',label:'冲突开始运行时间'},{prop:'EndTime',label:'冲突结束运行时间'},{prop:'StartBC',label:'冲突开始运行班次'},{prop:'EndBC',label:'冲突结束运行班次'}],//冲突列表
@@ -512,6 +412,39 @@ export default {
          this.getSelectedEq()
     },
     methods:{
+      lastconfig(){
+        this.configactive--
+      },
+      nextconfig(){
+        this.configactive++
+      },
+     getdefsTime(e){
+       this.stTime=new Date(e).getTime()
+       if(this.stTime<this.lastendTL){
+         this.$message({
+              type:'error',
+              message:"开始时间小于前步骤工序结束时间，重新选择！"
+            })
+          this.compareTime=true
+       }else{
+         this.compareTime=false
+       }
+      
+      },
+     getdefeTime(e){
+       this.endTL=new Date(e).getTime()
+       if(this.endTL<this.stTime){
+         this.$message({
+              type:'error',
+              message:"当前结束时间小于开始时间，重新选择！"
+            })
+        this.compareTime=true
+       }else{
+        this.lastendTL=new Date(e).getTime()
+        this.compareTime=false
+       }
+      
+     },
       refreshData(){
          this.getConfigbatch()
          this.chConfigbatch()
@@ -528,17 +461,17 @@ export default {
       },
       setDefaultTime(e,index,EQPCode){
         if(e){
-          this.inProcessList[this.configactive-1].eqList[index].StartTime=this.EQdefaultStartTime
-          this.inProcessList[this.configactive-1].eqList[index].EndTime=this.EQdefaultEndTime
-          this.inProcessList[this.configactive-1].eqList[index].StartBC=this.EQdefaultStartBC
-          this.inProcessList[this.configactive-1].eqList[index].EndBC=this.EQdefaultEndBC
+          this.inProcessList[this.configactive].eqList[index].StartTime=this.EQdefaultStartTime
+          this.inProcessList[this.configactive].eqList[index].EndTime=this.EQdefaultEndTime
+          this.inProcessList[this.configactive].eqList[index].StartBC=this.EQdefaultStartBC
+          this.inProcessList[this.configactive].eqList[index].EndBC=this.EQdefaultEndBC
           this.judgeConflict(EQPCode,this.EQdefaultStartTime,this.EQdefaultStartBC)
           this.judgeConflict(EQPCode,this.EQdefaultEndTime,this.EQdefaultEndBC)
         }else{
-          this.inProcessList[this.configactive-1].eqList[index].StartTime=''
-          this.inProcessList[this.configactive-1].eqList[index].EndTime=''
-          this.inProcessList[this.configactive-1].eqList[index].StartBC=''
-          this.inProcessList[this.configactive-1].eqList[index].EndBC=''
+          this.inProcessList[this.configactive].eqList[index].StartTime=''
+          this.inProcessList[this.configactive].eqList[index].EndTime=''
+          this.inProcessList[this.configactive].eqList[index].StartBC=''
+          this.inProcessList[this.configactive].eqList[index].EndBC=''
         }
       },
       //点击同步备料信息
@@ -570,7 +503,7 @@ export default {
         this.$router.push('/DistributionPlan')
       },
       back(){ //返回主流程
-        this.$router.push('/planningScheduling')
+        this.$router.push('/planProgress')
       },
       setStatus(e){
         this.radio3=e
@@ -679,9 +612,6 @@ export default {
             console.log("请求错误")
           })
       },
-      Activeconfig(index){ //配置进度条设置
-          this.configactive=index
-      },
       Eqconfig(){//点击设备配置
         this.dialogTableVisible=true
       },
@@ -736,6 +666,7 @@ export default {
         })
       },
        xfallTabCurrentChange(e){ //待配置批次计划 点击显示当前的tab行显示详细信息
+        this.configactive=0
         this.currentclick='待配置'
         this.getEq(e.BatchID,e.BrandCode)
         this.$refs.xfallmultipleTable.setCurrentRow(e)
@@ -755,6 +686,7 @@ export default {
 
       },
        xfTabCurrentChange(e){ //配置更改批次计划 点击显示当前的tab行显示详细信息
+        this.configactive=0
         this.currentclick='配置更改'
         this.getEq(e.BatchID,e.BrandCode)
         this.$refs.xfmultipleTable.setCurrentRow(e)
@@ -768,6 +700,7 @@ export default {
         this.$refs.xfmultipleTable.toggleRowSelection(e)
       },
        chTabCurrentChange(e){ //点击撤回批次计划 点击显示当前的tab行显示详细信息
+       this.configactive=0
         this.currentclick='撤回'
         this.getEq(e.BatchID,e.BrandCode)
         this.$refs.chmultipleTable.setCurrentRow(e)
