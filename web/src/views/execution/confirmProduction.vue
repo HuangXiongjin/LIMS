@@ -29,14 +29,6 @@
             </div>
           </el-col>
         </el-row>
-        <el-form :inline="true">
-          <el-form-item>
-            <el-radio-group v-model="sendPlanPlanStatus" size="small" @change="getPlanManagerTableData">
-              <el-radio-button label="已下发"></el-radio-button>
-              <el-radio-button label="物料发送完成"></el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-        </el-form>
         <el-table :data="PlanManagerTableData.data" highlight-current-row border size="small" ref="multipleTablePlanManager" @select="handleSelectPlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
           <el-table-column type="selection"></el-table-column>
           <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
@@ -89,6 +81,28 @@
               </template>
             </el-table-column>
           </el-table>
+          <p class="text-size-18 marginBottom marginTop">
+            <span class="marginRight">批次物料对应提取设备</span>
+          </p>
+          <el-table :data="MaterialTableData.data" border size="small">
+            <el-table-column type="selection"></el-table-column>
+            <el-table-column prop="BatchID" label="批次号"></el-table-column>
+            <el-table-column prop="BrandName" label="品名"></el-table-column>
+            <el-table-column prop="MATName" label="物料名称"></el-table-column>
+            <el-table-column prop="BucketNum" label="桶号"></el-table-column>
+            <el-table-column prop="BucketWeight" label="重量"></el-table-column>
+            <el-table-column prop="Unit" label="单位"></el-table-column>
+            <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
+            <el-table-column prop="EQPCode" label="提取设备编码"></el-table-column>
+            <el-table-column prop="EQPName" label="提取设备名称"></el-table-column>
+            <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
+            <el-table-column label="操作" fixed="right" width="150">
+              <template slot-scope="scope">
+                <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)" v-if="PUDialogType === '复核'">编辑</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+          <!--修改使用的设备-->
           <el-dialog title="更换设备" :visible.sync="EQDialogVisible" width="40%" :append-to-body="true">
             <el-form>
               <el-form-item label="选择设备">
@@ -100,6 +114,20 @@
             <span slot="footer" class="dialog-footer">
               <el-button @click="EQDialogVisible = false">取消</el-button>
               <el-button type="primary" @click="saveEQ">保存</el-button>
+            </span>
+          </el-dialog>
+          <!--选择物料桶投入的设备-->
+          <el-dialog title="选择已分配的设备" :visible.sync="EQMaterialDialogVisible" width="40%" :append-to-body="true">
+            <el-form>
+              <el-form-item label="选择设备">
+                <el-select v-model="MaterialEQPCode" placeholder="请选择" @change="selectMaterialEQPCode">
+                  <el-option v-for="(item,index) in ZYTaskTableData" :key="index" :label="item.EQPCode +'-'+ item.EQPName" :value="item.EQPCode"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="EQMaterialDialogVisible = false">取消</el-button>
+              <el-button type="primary" @click="saveMaterialEQ">保存</el-button>
             </span>
           </el-dialog>
           <span slot="footer" class="dialog-footer">
@@ -118,7 +146,6 @@
     name:"confirmProduction",
     data() {
       return {
-        sendPlanPlanStatus:"已下发",
         PlanManagerTableData:{
           data:[],
           limit: 5,
@@ -138,6 +165,13 @@
         EQPCode:"",
         EQPName:"",
         EQPID:"",
+        MaterialTableData:{
+          data:[]
+        },
+        EQMaterialDialogVisible:false,
+        MaterialEQPCode:"",
+        MaterialEQPName:"",
+        MaterialID:""
       }
     },
     mounted(){
@@ -149,7 +183,7 @@
         var that = this
         var params = {
           tableName: "PlanManager",
-          PlanStatus:this.sendPlanPlanStatus,
+          PlanStatus:"物料发送完成",
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }
@@ -222,6 +256,7 @@
         this.ZYPlanPUData = item
         this.getProductEquipment(this.ZYPlanPUData.PUName)
         this.getZYTaskTable()
+        this.getMaterialTableData()
       },
       getZYTaskTable(){
         let that = this
@@ -236,6 +271,28 @@
         }).then(res => {
           if(res.data.code === "200"){
             that.ZYTaskTableData = res.data.data.rows
+            console.log(that.ZYTaskTableData)
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
+      //查询物料明细
+      getMaterialTableData(){
+        var that = this
+        var params = {
+          tableName: "BatchMaterialInfo",
+          BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
+          SendFlag:"投料系统已接收"
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.MaterialTableData.data = res.data.data.rows
           }else{
             that.$message({
               type: 'info',
@@ -272,7 +329,6 @@
       },
       handleEdit(index,row){
         this.EQDialogVisible = true
-        this.EQPCode = row.EQPCode
         this.EQPID = row.ID
       },
       saveEQ(){
@@ -302,26 +358,36 @@
       AuditPass(){
         let that = this
         if(this.ZYPlanPUData.ZYPlanStatus === "待生产") {
-          var params = {
-            tableName: "ZYPlan",
-            ID: this.ZYPlanPUData.ID,
-            ZYPlanStatus: "设备已审核"
-          }
-          this.axios.put("/api/CUID", this.qs.stringify(params)).then(res => {
-            if (res.data.code === "200") {
-              this.$message({
-                type: 'success',
-                message: res.data.message
-              })
-              this.PUDialogVisible = false
-              this.getZYPlanTableData()
-            } else {
-              that.$message({
-                type: 'info',
-                message: res.data.message
-              });
+          this.$confirm('确定选择好生产设备并审核确认吗？确认后无法再次审核', '提示', {
+            distinguishCancelAndClose:true,
+            type: 'warning'
+          }).then(()  => {
+            var params = {
+              tableName: "ZYPlan",
+              ID: this.ZYPlanPUData.ID,
+              ZYPlanStatus: "设备已审核"
             }
-          })
+            this.axios.put("/api/CUID", this.qs.stringify(params)).then(res => {
+              if (res.data.code === "200") {
+                this.$message({
+                  type: 'success',
+                  message: res.data.message
+                })
+                this.PUDialogVisible = false
+                this.getZYPlanTableData()
+              } else {
+                that.$message({
+                  type: 'info',
+                  message: res.data.message
+                });
+              }
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消操作'
+            });
+          });
         }else{
           this.$message({
             type: 'info',
@@ -329,29 +395,74 @@
           });
         }
       },
+      EditMaterial(index,row){ //物料桶选择设备
+        this.EQMaterialDialogVisible = true
+        this.MaterialID = row.ID
+      },
+      selectMaterialEQPCode(){ //选择设备后根据编码获取设备名称
+        this.ZYTaskTableData.forEach(item =>{
+          if(this.MaterialEQPCode === item.EQPCode){
+            this.MaterialEQPName = item.EQPName
+          }
+        })
+      },
+      saveMaterialEQ(){ //保存选择投入物料的设备
+        let that = this
+        var params = {
+          tableName:"BatchMaterialInfo",
+          ID:this.MaterialID,
+          EQPCode:this.MaterialEQPCode,
+          EQPName:this.MaterialEQPName,
+        }
+        this.axios.put("/api/CUID",this.qs.stringify(params)).then(res => {
+          if(res.data.code === "200"){
+            this.$message({
+              type:'success',
+              message:res.data.message
+            })
+            this.EQMaterialDialogVisible = false
+            this.getMaterialTableData()
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
       CheckPass(){
         let that = this
         if(this.ZYPlanPUData.ZYPlanStatus === "设备已审核") {
-          var params = {
-            tableName: "ZYPlan",
-            ID: this.ZYPlanPUData.ID,
-            ZYPlanStatus: "设备已复核"
-          }
-          this.axios.put("/api/CUID", this.qs.stringify(params)).then(res => {
-            if (res.data.code === "200") {
-              this.$message({
-                type: 'success',
-                message: res.data.message
-              })
-              this.PUDialogVisible = false
-              this.getZYPlanTableData()
-            } else {
-              that.$message({
-                type: 'info',
-                message: res.data.message
-              });
+          this.$confirm('是否确定当前设备，并按照当前物料桶的投放的设备进行复核？确认后无法再复核', '提示', {
+            distinguishCancelAndClose:true,
+            type: 'warning'
+          }).then(()  => {
+            var params = {
+              tableName: "ZYPlan",
+              ID: this.ZYPlanPUData.ID,
+              ZYPlanStatus: "设备已复核"
             }
-          })
+            this.axios.put("/api/CUID", this.qs.stringify(params)).then(res => {
+              if (res.data.code === "200") {
+                this.$message({
+                  type: 'success',
+                  message: res.data.message
+                })
+                this.PUDialogVisible = false
+                this.getZYPlanTableData()
+              } else {
+                that.$message({
+                  type: 'info',
+                  message: res.data.message
+                });
+              }
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消操作'
+            });
+          });
         }else{
           this.$message({
             type: 'info',
