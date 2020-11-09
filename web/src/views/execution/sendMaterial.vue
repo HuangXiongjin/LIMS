@@ -45,6 +45,9 @@
           <el-form-item>
             <el-button type="primary" size="small" @click="sendMaterialInfo">发送物料明细</el-button>
           </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="small" @click="returnMaterialInfo">确认接收退料</el-button>
+          </el-form-item>
         </el-form>
         <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial" @selection-change="handleMaterialSelectionChange" @row-click="handleMaterialRowClick">
           <el-table-column type="selection"></el-table-column>
@@ -55,7 +58,7 @@
           <el-table-column prop="BucketWeight" label="重量"></el-table-column>
           <el-table-column prop="Unit" label="单位"></el-table-column>
           <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
-          <el-table-column prop="SendFlag" label="发送WMS标识"></el-table-column>
+          <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
           <el-table-column label="操作" fixed="right" width="150">
             <template slot-scope="scope">
               <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)">编辑</el-button>
@@ -142,7 +145,6 @@
     },
     mounted(){
       this.getPlanManagerTableData()
-      this.getBOMData()
       this.getUnitData()
     },
     methods:{
@@ -259,7 +261,7 @@
         var that = this
         var params = {
           tableName: "MaterialBOM",
-          BrandName:this.PlanManagerTableData.multipleSelection.BrandName,
+          BrandName:this.PlanManagerTableData.multipleSelection[0].BrandName,
         }
         this.axios.get("/api/CUID",{
           params: params
@@ -304,7 +306,7 @@
         if(this.PlanManagerTableData.multipleSelection.length == 1){
           this.MaterialTableData.dialogVisible = true
           this.MaterialTableData.dialogTitle = "物料明细录入"
-          this.getTiQuEquipment()
+          this.getBOMData()
         }else{
           this.$message({
             type: 'info',
@@ -312,81 +314,70 @@
           });
         }
       },
-      getTiQuEquipment(){
-        this.TLEQList = []
-        var params = {
-          ID:this.PlanManagerTableData.multipleSelection[0].ID,
-        }
-        this.axios.get("/api/selectTiQuEquipment",{
-          params: params
-        }).then(res => {
-          if(res.data.code === "200"){
-            this.TLEQList = res.data.data
-          }else{
-            this.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        })
-      },
       EditMaterial(index,row){
-        this.MaterialTableData.dialogVisible = true
-        this.MaterialTableData.dialogTitle = "编辑"
-        this.getTiQuEquipment()
-        this.MaterialTableData.formField = {
-          ID:row.ID,
-          BrandCode:row.BrandCode,
-          BatchID:row.BatchID,
-          MATName:row.MATName.split(","),
-          BucketNum:row.BucketNum,
-          BucketWeight:row.BucketWeight,
-          Unit:row.Unit,
-          Flag:row.Flag,
-          EQPCode:row.EQPCode,
-          FeedingSeq:row.FeedingSeq,
+        if(row.SendFlag != "WMS已接收"){
+          this.MaterialTableData.dialogVisible = true
+          this.MaterialTableData.dialogTitle = "编辑"
+          this.getBOMData()()
+          this.MaterialTableData.formField = {
+            ID:row.ID,
+            BrandCode:row.BrandCode,
+            BatchID:row.BatchID,
+            MATName:row.MATName.split(","),
+            BucketNum:row.BucketNum,
+            BucketWeight:row.BucketWeight,
+            Unit:row.Unit,
+            Flag:row.Flag,
+            EQPCode:row.EQPCode,
+            FeedingSeq:row.FeedingSeq,
+          }
+        }else{
+          this.$message({
+            type: 'info',
+            message: '已发送的物料不可修改'
+          });
         }
       },
       DeleteMaterial(index,row){
-        var params = {tableName:"BatchMaterialInfo"}
-        var mulId = []
-        mulId.push({
-          id:row.ID
-        })
-        params.delete_data = JSON.stringify(mulId)
-        this.$confirm('确定删除所选记录？', '提示', {
-          distinguishCancelAndClose:true,
-          type: 'warning'
-        }).then(()  => {
-          this.axios.delete("/api/CUID",{
-            params: params
-          }).then(res =>{
-            if(res.data.code === "200"){
-              this.$message({
-                type: 'success',
-                message: res.data.message
-              });
-            }
-            this.getMaterialTableData()
-          },res =>{
-            console.log("请求错误")
+        if(row.SendFlag != "WMS已接收"){
+          var params = {tableName:"BatchMaterialInfo"}
+          var mulId = []
+          mulId.push({
+            id:row.ID
           })
-        }).catch(() => {
+          params.delete_data = JSON.stringify(mulId)
+          this.$confirm('确定删除所选记录？', '提示', {
+            distinguishCancelAndClose:true,
+            type: 'warning'
+          }).then(()  => {
+            this.axios.delete("/api/CUID",{
+              params: params
+            }).then(res =>{
+              if(res.data.code === "200"){
+                this.$message({
+                  type: 'success',
+                  message: res.data.message
+                });
+              }
+              this.getMaterialTableData()
+            },res =>{
+              console.log("请求错误")
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+        }else{
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '已发送的物料不可删除'
           });
-        });
+        }
       },
       saveMaterial(){
         if(this.MaterialTableData.dialogTitle === "物料明细录入"){
-          if(this.MaterialTableData.formField.EQPCode){
-            this.TLEQList.forEach(item =>{
-              if(item.EQPCode === this.MaterialTableData.formField.EQPCode){
-                this.MaterialTableData.formField.EQPName = item.EQPName
-              }
-            })
-          }
           var params = {
             tableName:"BatchMaterialInfo",
             BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
@@ -397,8 +388,6 @@
             BucketWeight:this.MaterialTableData.formField.BucketWeight,
             Unit:this.MaterialTableData.formField.Unit,
             Flag:this.MaterialTableData.formField.Flag,
-            EQPCode:this.MaterialTableData.formField.EQPCode,
-            EQPName:this.MaterialTableData.formField.EQPName,
             FeedingSeq:this.MaterialTableData.formField.FeedingSeq,
             SendFlag:"待发送",
           }
@@ -420,13 +409,6 @@
             console.log("请求错误")
           })
         }else if(this.MaterialTableData.dialogTitle === "编辑"){
-          if(this.MaterialTableData.formField.EQPCode){
-            this.TLEQList.forEach(item =>{
-              if(item.EQPCode === this.MaterialTableData.formField.EQPCode){
-                this.MaterialTableData.formField.EQPName = item.EQPName
-              }
-            })
-          }
           var params = {
             tableName:"BatchMaterialInfo",
             ID:this.MaterialTableData.formField.ID,
@@ -438,8 +420,6 @@
             BucketWeight:this.MaterialTableData.formField.BucketWeight,
             Unit:this.MaterialTableData.formField.Unit,
             Flag:this.MaterialTableData.formField.Flag,
-            EQPCode:this.MaterialTableData.formField.EQPCode,
-            EQPName:this.MaterialTableData.formField.EQPName,
             FeedingSeq:this.MaterialTableData.formField.FeedingSeq
           }
           this.axios.put("/api/CUID",this.qs.stringify(params)).then(res =>{
@@ -466,7 +446,7 @@
         if(this.MaterialTableData.multipleSelection.length > 0){
           var isFlag = true
           this.MaterialTableData.multipleSelection.forEach(item =>{
-            if(item.SendFlag === "已发送"){
+            if(item.SendFlag === "投料系统已接收"){
               isFlag = false
             }
           })
@@ -504,6 +484,56 @@
             this.$message({
               type: 'info',
               message: "已发送的物料不能再发送"
+            });
+          }
+        }else{
+          this.$message({
+            type: 'info',
+            message: "请选择物料"
+          });
+        }
+      },
+      //确认接收退料
+      returnMaterialInfo(){
+        if(this.MaterialTableData.multipleSelection.length > 0){
+          var isFlag = true
+          this.MaterialTableData.multipleSelection.forEach(item =>{
+            if(item.SendFlag != "投料系统已接收"){
+              isFlag = false
+            }
+          })
+          if(isFlag){
+            var mulId = []
+            this.MaterialTableData.multipleSelection.forEach(item =>{
+              mulId.push({id:item.ID});
+            })
+            var params = {}
+            params.sendData = JSON.stringify(mulId)
+            this.$confirm('确定发送此批的物料明细到WMS吗？', '提示', {
+              distinguishCancelAndClose:true,
+              type: 'warning'
+            }).then(()  => {
+              this.axios.post("/api/WMS_SendReturnMaterialInfo",this.qs.stringify(params)).then(res =>{
+                if(res.data.code === "200"){
+                  this.$message({
+                    type: 'success',
+                    message: res.data.message
+                  });
+                }
+                this.getMaterialTableData()
+              },res =>{
+                console.log("请求错误")
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消发送'
+              });
+            });
+          }else{
+            this.$message({
+              type: 'info',
+              message: "只能选择已接收的物料"
             });
           }
         }else{

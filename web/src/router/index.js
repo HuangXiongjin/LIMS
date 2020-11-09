@@ -35,7 +35,6 @@ import CheckscPlan from '@/views/scheduling/CheckscPlan'
 import displayEqTime from '@/views/scheduling/displayEqTime'
 
 //生产执行系统
-import equipmentAudit from '@/views/execution/equipmentAudit'
 import confirmProduction from '@/views/execution/confirmProduction'
 import sendMaterial from '@/views/execution/sendMaterial'
 import sendMaterialLog from '@/views/execution/sendMaterialLog'
@@ -97,8 +96,7 @@ export default new Router({
         {path:'/DistributionPlan',name:'DistributionPlan',meta:{ title:'下发计划',type:"排产调度系统"},component:DistributionPlan},
         {path:'/displayEqTime',name:'displayEqTime',meta:{ title:'设备运行时间展示',type:"排产调度系统"},component:displayEqTime},
 
-        {path:'/equipmentAudit',name:'equipmentAudit',meta:{ title:'批次设备审核',type:"生产执行系统"},component:equipmentAudit},
-        {path:'/confirmProduction',name:'confirmProduction',meta:{ title:'批次设备复核',type:"生产执行系统"},component:confirmProduction},
+        {path:'/confirmProduction',name:'confirmProduction',meta:{ title:'设备确认',type:"生产执行系统"},component:confirmProduction},
         {path:'/sendMaterial',name:'sendMaterial',meta:{ title:'发送物料明细',type:"生产执行系统"},component:sendMaterial},
         {path:'/sendMaterialLog',name:'sendMaterialLog',meta:{ title:'物料明细记录',type:"生产执行系统"},component:sendMaterialLog},
         {path:'/sendPlan',name:'sendPlan',meta:{ title:'发送投料计划',type:"生产执行系统"},component:sendPlan},

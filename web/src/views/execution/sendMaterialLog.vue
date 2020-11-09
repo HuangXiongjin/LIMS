@@ -9,6 +9,12 @@
           <el-form-item label="发送时间">
             <el-date-picker type="date" v-model="OperationDate" size="mini" format="yyyy-MM-dd" style="width: 140px;" :clearable="false" @change="getMaterialTableData"></el-date-picker>
           </el-form-item>
+          <el-form-item class="floatRight">
+            <el-radio-group v-model="SendFlag" size="small" @change="getMaterialTableData">
+              <el-radio-button label="投料系统已接收"></el-radio-button>
+              <el-radio-button label="投料系统已接收退料"></el-radio-button>
+            </el-radio-group>
+          </el-form-item>
         </el-form>
         <el-table :data="MaterialTableData.data" border size="small">
           <el-table-column type="selection"></el-table-column>
@@ -19,7 +25,7 @@
           <el-table-column prop="BucketWeight" label="重量"></el-table-column>
           <el-table-column prop="Unit" label="单位"></el-table-column>
           <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
-          <el-table-column prop="SendFlag" label="发送WMS标识"></el-table-column>
+          <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
           <el-table-column prop="OperationDate" label="发送时间"></el-table-column>
         </el-table>
         <div class="paginationClass">
@@ -49,7 +55,8 @@
           offset: 1,
           total: 0,
         },
-        OperationDate:moment().format("YYYY-MM-DD")
+        OperationDate:moment().format("YYYY-MM-DD"),
+        SendFlag:"投料系统已接收",
       }
     },
     mounted(){
@@ -61,7 +68,7 @@
         var params = {
           tableName: "BatchMaterialInfo",
           OperationDate:this.OperationDate,
-          SendFlag: "已发送",
+          SendFlag: this.SendFlag,
           limit:this.MaterialTableData.limit,
           offset:this.MaterialTableData.offset - 1
         }
