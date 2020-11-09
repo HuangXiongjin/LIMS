@@ -6,7 +6,7 @@ from flask import Blueprint, request
 from equipment_backend import db
 from common.equipment_models import RepairPlan, LubricationPlan, Plan, RepairRecord, Record, FaultRepair, OrderVerify, \
     Task
-from equipment_backend.tools.handle import MyEncoder, get_time_stamp
+from tools.handle import MyEncoder, get_time_stamp
 
 work_order = Blueprint('work_order', __name__)
 

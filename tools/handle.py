@@ -38,7 +38,7 @@ def get_root_path():
     return os.path.join(path, 'instruction')
 
 
-def log(e):
+def log(e, login_user):
     """
     程序日志记录
     :param e:捕获异常参数`
@@ -46,9 +46,10 @@ def log(e):
     root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
     file_path = os.path.join(root_path, 'logs\\logs.txt')
     call_func = sys._getframe().f_back.f_code.co_name
-    pass
-    # with open(file_path, 'a') as f:
-    #     f.write(f'{datetime.datetime.now()} -- {call_func} --- {e}' + "\n\n")
+    # pass
+    user = login_user if login_user is None else 'no login'
+    with open(file_path, 'a') as f:
+        f.write(f'{datetime.datetime.now()} -- {user} -- {call_func} --- {e}' + "\n\n")
 
 
 class MyEncoder(json.JSONEncoder):
