@@ -55,18 +55,20 @@ class WMS_Interface(ServiceBase):
             dic = []
             jso = json.loads(json_data)
             for i in jso:
-                BillNo = i.get("BillNo")
+                BatchMaterialInfoID = i.get("BatchMaterialInfoID")
+                EQPCode = i.get("EQPCode")
+                EQPName = i.get("EQPName")
                 status = i.get("status")
-                BrandID = i.get("BrandID")
-                if BillNo != None:
-                    # BatchID = BillNo[0:-1]
-                    # BrandID = BillNo[-1:]
-                    zy = db_session.query(ZYPlanWMS).filter(ZYPlanWMS.BatchID == BillNo ,ZYPlanWMS.BrandID == BrandID).first()
-                    if zy:
+                if BatchMaterialInfoID != None:
+                    zy = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.ID == BatchMaterialInfoID).first()
+                    if zy:#批次明细增加完成时间
+                        if status == "End":
+                            status = "投料系统已投料"
                         zy.ExcuteStatus = status
+                        zy.FinishDate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                         db_session.commit()
                     else:
-                        return json.dumps("没有此单据号！")
+                        return json.dumps("没有此物料明细ID！")
                 else:
                     continue
             return json.dumps("SUCCESS")
@@ -109,17 +111,17 @@ class WMS_Interface(ServiceBase):
             dic = []
             jso = json.loads(json_data)
             for i in jso:
+                PlanNo = i.get("PlanNo")
                 BatchID = i.get("BatchID")
                 BrandCode = i.get("BrandCode")
                 status = i.get("status")
-                if BatchID != None:
-                    zy = db_session.query(ZYPlan).filter(ZYPlan.BatchID == BatchID,
-                                                         ZYPlan.BrandCode == BrandCode,ZYPlan.PUName == "备料").first()
+                if PlanNo != None:
+                    zy = db_session.query(PlanManager).filter(PlanManager.ID == PlanNo).first()
                     if zy != None:
-                        if status == "1":
+                        if status == "Start":
                             zy.ZYPlanStatus = common.Global.ZYPlanStatus.READY.value
                             zy.ActBeginTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                        elif status == "3":
+                        elif status == "End":
                             zy.ZYPlanStatus = common.Global.ZYPlanStatus.Clear.value
                             zy.ActEndTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     db_session.commit()
@@ -173,38 +175,6 @@ headers = {
     'Connection': 'keep-alive',
     'content-type': 'application/json'
     }
-
-@interface_manage.route('/WMS_SendMatilInfo', methods=['GET', 'POST'])
-def WMS_SendMatilInfo():
-    '''同步药品信息到WMS'''
-    if request.method == 'POST':
-        data = request.values
-        try:
-            jsonstr = json.dumps(data.to_dict())
-            if len(jsonstr) > 10:
-                jsonnumber = re.findall(r"\d+\.?\d*", jsonstr)
-                dic = []
-                for key in jsonnumber:
-                    id = int(key)
-                    oclass = db_session.query(ProductRule).filter(ProductRule.ID == id).first()
-                    dic.append({"BrandCode": oclass.BrandCode, "BrandName": oclass.BrandName})
-                    oclass.SendFlag = "已发送"
-                url = Global.WMSurl + "api/WbeApi/RecvMaterialInfon"
-                dir = {}
-                dir["material_list"] = dic
-                dir = json.dumps(dir)
-                resp = requests.post(url, json=dir, headers=headers)
-                responjson = json.loads(resp.content)
-                responjson = eval(responjson)
-                if responjson.get("code") != "0":
-                    return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！"+responjson.get("msg")})
-                db_session.commit()
-                return json.dumps({"code": "200", "message": "OK"})
-        except Exception as e:
-            print("调用WMS_SendPlan接口报错！")
-            return json.dumps("调用WMS_SendPlan接口报错！")
-
-
 @interface_manage.route('/WMS_SendPlan', methods=['GET', 'POST'])
 def WMS_SendPlan():
     '''发送投料任务到WMS'''
@@ -222,7 +192,7 @@ def WMS_SendPlan():
                                                              ZYTask.BrandCode == plan.BrandCode,
                                                              ZYTask.PUName.like("%提取%")).all()
                     for oc in oclass:
-                        dic.append({"PlanNo": plan.ID, "ZYPlanNo": oc.ID, "BrandCode": oc.BrandCode,
+                        dic.append({"PlanNo": plan.ID, "ZYTaskNo": oc.ID, "BrandCode": oc.BrandCode,
                                     "BrandName": oc.BrandName, "BatchID": oc.BatchID,
                                     "Weight": oc.PlanQuantity, "Unit": oc.Unit, "EQPCode": oc.EQPCode, "EQPName":oc.EQPName})
                     plan.PlanStatus = Global.PlanStatus.FSWMS.value
@@ -258,11 +228,11 @@ def WMS_SendMatils():
                     id = int(key)
                     oclass = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.ID == id).first()
                     # zypla = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID, ZYPlan.BrandCode == oclass.BrandCode, ZYPlan.PUName.like("%提取%")).first()
-                    dic.append({"ZYPlanNo": pmoc.ID, "BrandCode": pmoc.BrandCode, "BrandName": pmoc.BrandName,
+                    dic.append({"PlanNo": pmoc.ID, "BrandCode": pmoc.BrandCode, "BrandName": pmoc.BrandName,
                                 "BatchID": oclass.BatchID, "FlagCode": oclass.BucketNum,
                                 "Weight": oclass.BucketWeight, "Unit": oclass.Unit, "Flag": oclass.Flag, "Seq": oclass.FeedingSeq,
                                 "EQPCode": oclass.EQPCode, "EQPName":oclass.EQPName})
-                    oclass.SendFlag = "已发送"
+                    oclass.SendFlag = "投料系统已接收"
                     oclass.OperationDate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     # zypla.TaskStatus = "已发送"
                     db_session.commit()
@@ -279,6 +249,41 @@ def WMS_SendMatils():
                         return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！" + responjson.get("msg")})
                 pmoc.PlanStatus = data.get("PlanStatus")
                 db_session.commit()
+                return json.dumps({"code": "200", "message": "OK"})
+        except Exception as e:
+            db_session.rollback()
+            print("调用WMS_SendPlan接口报错！")
+            return json.dumps("调用WMS_SendPlan接口报错！")
+@interface_manage.route('/WMS_SendReturnMaterialInfo', methods=['GET', 'POST'])
+def WMS_SendReturnMaterialInfo():
+    '''发送退料信息到WMS'''
+    if request.method == 'POST':
+        data = request.values
+        try:
+            jsonstr = json.dumps(data.to_dict())
+            if len(jsonstr) > 10:
+                jsonnumber = re.findall(r"\d+\.?\d*", jsonstr)
+                dic = []
+                for key in jsonnumber:
+                    id = int(key)
+                    oclass = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.ID == id).first()
+                    dic.append({"BatchMaterialInfoID": oclass.ID, "BrandCode": oclass.BrandCode, "BrandName": oclass.BrandName,
+                                "BatchID": oclass.BatchID, "FlagCode": oclass.BucketNum,
+                                "Weight": oclass.BucketWeight, "Unit": oclass.Unit, "Flag": oclass.Flag,
+                                "Seq": oclass.FeedingSeq,
+                                "EQPCode": oclass.EQPCode, "EQPName": oclass.EQPName})
+                    oclass.SendFlag = "投料系统已接收退料"
+                    oclass.OperationDate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                url = Global.WMSurl + "api/WbeApi/RecvTransInfon"
+                dir = {}
+                dir["zyplan_list"] = dic
+                dir = json.dumps(dir)
+                resp = requests.post(url, json=dir, headers=headers)
+                responjson = json.loads(resp.content)
+                responjson = eval(responjson)
+                if responjson.get("code") != "0":
+                    db_session.rollback()
+                    return json.dumps({"code": "500", "message": "调用WMS_SendReturnMaterialInfo接口报错！" + responjson.get("msg")})
                 return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
             db_session.rollback()

@@ -801,6 +801,9 @@ class BatchMaterialInfo(Base):
     # 发送WMS:
     SendFlag = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
+    # 投料完成时间:
+    FinishDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
     # 操作时间:
     OperationDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
@@ -1077,6 +1080,21 @@ class EletronicBatchDataStore(Base):
 
     # 品名ID
     BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+# 投料规则表
+class FeedingRules(Base):
+    __tablename__ = "FeedingRules"
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    # 品名编码:
+    BrandCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 品名名称:
+    BrandName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 对应桶/托盘数:
+    BucketSum = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+    # 投料条件:
+    Condition = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
+
 
 
 # 生成表单的执行语句
