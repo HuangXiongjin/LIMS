@@ -5,10 +5,9 @@ import time
 from flask import Blueprint, request
 
 from common.system import db_session, User
-from common.BSFramwork import AlchemyEncoder
 from equipment_backend import db
 from common.equipment_models import Fitting, EquipmentBaseData, InstructionsCenter, Instructions, FittingInto, FittingOut
-from equipment_backend.tools.handle import MyEncoder
+from tools.handle import MyEncoder
 
 equipment = Blueprint('equipment', __name__)
 
