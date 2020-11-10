@@ -85,7 +85,9 @@
               </el-select>
             </el-form-item>
             <el-form-item label="桶号">
-              <el-input v-model="MaterialTableData.formField.BucketNum"></el-input>
+              <el-tag :key="tag" v-for="tag in MaterialTableData.formField.BucketNum" closable :disable-transitions="false" @close="handleClose(tag)">{{tag}}</el-tag>
+              <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm"></el-input>
+              <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 桶号</el-button>
             </el-form-item>
             <el-form-item label="重量">
               <el-input v-model="MaterialTableData.formField.BucketWeight"></el-input>
@@ -133,14 +135,16 @@
           formField:{
             ID:"",
             MATName:[],
-            BucketNum:"",
+            BucketNum:['12', '41', '27'],
             BucketWeight:"",
             Unit:"",
             Flag:"",
           },
         },
         UnitData:[],
-        MATNameOptions:[]
+        MATNameOptions:[],
+        inputVisible: false,
+        inputValue: ''
       }
     },
     mounted(){
@@ -275,6 +279,24 @@
             });
           }
         })
+      },
+      handleClose(tag) {
+        this.MaterialTableData.formField.BucketNum.splice(this.MaterialTableData.formField.BucketNum.indexOf(tag), 1);
+      },
+      showInput() {
+        this.inputVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+      },
+
+      handleInputConfirm() {
+        let inputValue = this.inputValue;
+        if (inputValue) {
+          this.MaterialTableData.formField.BucketNum.push(inputValue);
+        }
+        this.inputVisible = false;
+        this.inputValue = '';
       },
       //查询物料明细-录入
       getMaterialTableData(){
@@ -548,5 +570,19 @@
 </script>
 
 <style scoped>
-
+  .el-tag + .el-tag {
+    margin-left: 10px;
+  }
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
+  }
 </style>
