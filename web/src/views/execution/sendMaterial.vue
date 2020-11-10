@@ -40,20 +40,20 @@
       <div class="platformContainer">
         <el-form :inline="true">
           <el-form-item>
-            <el-button type="primary" size="small" @click="addMaterialForm">录入物料</el-button>
+            <el-button type="info" size="small" @click="addMaterialForm">录入物料</el-button>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="sendMaterialInfo">发送物料明细</el-button>
+            <el-button type="success" size="small" @click="sendMaterialInfo">发送物料明细</el-button>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="returnMaterialInfo">确认接收退料</el-button>
+            <el-button type="warning" size="small" @click="returnMaterialInfo">接收退料确认</el-button>
           </el-form-item>
         </el-form>
         <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial" @selection-change="handleMaterialSelectionChange" @row-click="handleMaterialRowClick">
           <el-table-column type="selection"></el-table-column>
           <el-table-column prop="BatchID" label="批次号"></el-table-column>
           <el-table-column prop="BrandName" label="品名"></el-table-column>
-          <el-table-column prop="MATName" label="物料名称"></el-table-column>
+          <el-table-column prop="MATName" label="物料名称" width="360"></el-table-column>
           <el-table-column prop="BucketNum" label="桶号"></el-table-column>
           <el-table-column prop="BucketWeight" label="重量"></el-table-column>
           <el-table-column prop="Unit" label="单位"></el-table-column>
@@ -75,7 +75,14 @@
               <el-input v-model="PlanManagerTableData.multipleSelection[0].BrandName" :disabled="true"></el-input>
             </el-form-item>
             <el-form-item label="物料名称">
-              <el-input v-model="MaterialTableData.formField.MATName"></el-input>
+              <el-select v-model="MaterialTableData.formField.MATName" multiple placeholder="请选择" style="width: 360px;">
+                <el-option
+                  v-for="item in MATNameOptions"
+                  :key="item.value"
+                  :label="item.MATName"
+                  :value="item.MATName">
+                </el-option>
+              </el-select>
             </el-form-item>
             <el-form-item label="桶号">
               <el-input v-model="MaterialTableData.formField.BucketNum"></el-input>
@@ -125,7 +132,7 @@
           dialogTitle:"",
           formField:{
             ID:"",
-            MATName:"",
+            MATName:[],
             BucketNum:"",
             BucketWeight:"",
             Unit:"",
@@ -133,6 +140,7 @@
           },
         },
         UnitData:[],
+        MATNameOptions:[]
       }
     },
     mounted(){
@@ -248,6 +256,26 @@
           }
         })
       },
+      //获取物料BOM
+      getBOMData(){
+        var that = this
+        var params = {
+          tableName: "MaterialBOM",
+          BrandName:this.PlanManagerTableData.multipleSelection[0].BrandName,
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.MATNameOptions = res.data.data.rows
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
       //查询物料明细-录入
       getMaterialTableData(){
         var that = this
@@ -290,11 +318,12 @@
         if(row.SendFlag != "WMS已接收"){
           this.MaterialTableData.dialogVisible = true
           this.MaterialTableData.dialogTitle = "编辑"
+          this.getBOMData()
           this.MaterialTableData.formField = {
             ID:row.ID,
             BrandCode:row.BrandCode,
             BatchID:row.BatchID,
-            MATName:row.MATName,
+            MATName:row.MATName.split(","),
             BucketNum:row.BucketNum,
             BucketWeight:row.BucketWeight,
             Unit:row.Unit,
@@ -354,7 +383,7 @@
             BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
             BrandName:this.PlanManagerTableData.multipleSelection[0].BrandName,
             BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
-            MATName:this.MaterialTableData.formField.MATName,
+            MATName:this.MaterialTableData.formField.MATName.join(','),
             BucketNum:this.MaterialTableData.formField.BucketNum,
             BucketWeight:this.MaterialTableData.formField.BucketWeight,
             Unit:this.MaterialTableData.formField.Unit,
@@ -386,7 +415,7 @@
             BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
             BrandName:this.PlanManagerTableData.multipleSelection[0].BrandName,
             BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
-            MATName:this.MaterialTableData.formField.MATName,
+            MATName:this.MaterialTableData.formField.MATName.join(','),
             BucketNum:this.MaterialTableData.formField.BucketNum,
             BucketWeight:this.MaterialTableData.formField.BucketWeight,
             Unit:this.MaterialTableData.formField.Unit,

@@ -20,13 +20,13 @@
           <el-table-column type="selection"></el-table-column>
           <el-table-column prop="BatchID" label="批次号"></el-table-column>
           <el-table-column prop="BrandName" label="品名"></el-table-column>
-          <el-table-column prop="MATName" label="物料名称"></el-table-column>
+          <el-table-column prop="MATName" label="物料名称" width="360"></el-table-column>
           <el-table-column prop="BucketNum" label="桶号"></el-table-column>
           <el-table-column prop="BucketWeight" label="重量"></el-table-column>
           <el-table-column prop="Unit" label="单位"></el-table-column>
           <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
           <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
-          <el-table-column prop="OperationDate" label="发送时间"></el-table-column>
+          <el-table-column prop="OperationDate" label="发送时间" width="110"></el-table-column>
         </el-table>
         <div class="paginationClass">
           <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
@@ -87,11 +87,11 @@
         })
       },
       handleSizeChange(limit){ //每页条数切换
-        this.PlanManagerTableData.limit = limit
+        this.MaterialTableData.limit = limit
         this.getMaterialTableData()
       },
       handleCurrentChange(offset) { // 页码切换
-        this.PlanManagerTableData.offset = offset
+        this.MaterialTableData.offset = offset
         this.getMaterialTableData()
       },
     }
