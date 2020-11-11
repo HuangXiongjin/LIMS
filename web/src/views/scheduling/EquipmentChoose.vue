@@ -72,8 +72,8 @@
                       </el-date-picker>
                       <el-radio-group v-model="EQdefaultStartBC" size="small" @change="clearactivedefault">
                               <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="白"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
-                              <el-radio-button label="晚"></el-radio-button>
                       </el-radio-group>
                       <span style="margin:0 30px;">至</span>
                       <el-date-picker
@@ -86,8 +86,8 @@
                       </el-date-picker>
                       <el-radio-group v-model="EQdefaultEndBC" size="small" @change="clearactivedefault">
                               <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="白"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
-                              <el-radio-button label="晚"></el-radio-button>
                       </el-radio-group>
                     </div>
                     <el-row style="marginTop:24px;">
@@ -186,8 +186,8 @@
                       </el-date-picker>
                       <el-radio-group v-model="EQdefaultStartBC" size="small" @change="clearactivedefault">
                               <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="白"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
-                              <el-radio-button label="晚"></el-radio-button>
                       </el-radio-group>
                       <span style="margin:0 30px;">至</span>
                       <el-date-picker
@@ -200,8 +200,8 @@
                       </el-date-picker>
                       <el-radio-group v-model="EQdefaultEndBC" size="small" @change="clearactivedefault">
                               <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="白"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
-                              <el-radio-button label="晚"></el-radio-button>
                       </el-radio-group>
                     </div>
                     <el-row style="marginTop:24px;">
@@ -304,8 +304,8 @@
                             </el-date-picker>
                             <el-radio-group v-model="item.StartBC" size="small" @change='judgeConflict(item.EQPCode,item.StartTime,item.StartBC)'>
                               <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="白"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
-                              <el-radio-button label="晚"></el-radio-button>
                             </el-radio-group>
                             <span style="margin:0 30px;">至</span>
                             <el-date-picker
@@ -318,8 +318,8 @@
                             </el-date-picker>
                             <el-radio-group v-model="item.EndBC" size="small" @change="judgeConflict(item.EQPCode,item.EndTime,item.EndBC)">
                               <el-radio-button label="早"></el-radio-button>
+                              <el-radio-button label="白"></el-radio-button>
                               <el-radio-button label="中"></el-radio-button>
-                              <el-radio-button label="晚"></el-radio-button>
                             </el-radio-group>
                           </el-col>
                         </el-row>
