@@ -8,7 +8,7 @@
         <el-step title="定义每组桶序"></el-step>
         <el-step title="发送物料明细"></el-step>
       </el-steps>
-      <el-row v-if="steps == 0">
+      <el-row v-show="steps == 0">
         <el-col :span="24">
           <div class="platformContainer">
             <el-form :inline="true">
@@ -45,16 +45,15 @@
           </div>
         </el-col>
       </el-row>
-      <el-row v-if="steps == 1">
+      <el-row v-show="steps == 1">
         <el-col :span="24">
           <div class="platformContainer">
             <el-form :inline="true">
               <el-form-item>
-                <el-button type="info" size="small" @click="addMaterialForm">录入物料</el-button>
+                <el-button type="info" size="small" @click="addMaterialForm">录入物料组</el-button>
               </el-form-item>
             </el-form>
-            <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial" @selection-change="handleMaterialSelectionChange" @row-click="handleMaterialRowClick">
-              <el-table-column type="selection"></el-table-column>
+            <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial">
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="MATName" label="物料名称" width="360"></el-table-column>
@@ -62,8 +61,11 @@
               <el-table-column prop="BucketWeight" label="重量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
               <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
-              <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
-              <el-table-column label="操作" fixed="right" width="150">
+              <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
+              <el-table-column prop="TaskTurn" label="轮次"></el-table-column>
+              <el-table-column prop="Description" label="描述"></el-table-column>
+              <el-table-column prop="SendFlag" label="发送状态"></el-table-column>
+              <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
                   <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)">编辑</el-button>
                   <el-button size="mini" type="danger" @click="DeleteMaterial(scope.$index, scope.row)">删除</el-button>
@@ -107,6 +109,30 @@
                     <el-option label="托盘" value="托盘"></el-option>
                   </el-select>
                 </el-form-item>
+                <el-form-item label="描述">
+                  <el-input v-model="MaterialTableData.formField.Description"></el-input>
+                </el-form-item>
+              </el-form>
+              <el-form :model="MaterialTableData.formField" label-width="110px" v-if="steps == 2">
+                <el-form-item label="批次号">
+                  <el-input v-model="PlanManagerTableData.multipleSelection[0].BatchID" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="品名">
+                  <el-input v-model="PlanManagerTableData.multipleSelection[0].BrandName" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="物料名称">
+                  <el-select v-model="MaterialTableData.formField.MATName" multiple placeholder="请选择" :disabled="true" style="width: 360px;">
+                    <el-option
+                      v-for="item in MATNameOptions"
+                      :key="item.value"
+                      :label="item.MATName"
+                      :value="item.MATName">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="轮次">
+                  <el-input v-model="MaterialTableData.formField.TaskTurn"></el-input>
+                </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="MaterialTableData.dialogVisible = false">取 消</el-button>
@@ -116,66 +142,133 @@
           </div>
         </el-col>
       </el-row>
-      <el-row v-if="steps == 2">
+      <el-row v-show="steps == 2">
         <el-col :span="24">
           <div class="platformContainer">
-            <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial" @selection-change="handleMaterialSelectionChange" @row-click="handleMaterialRowClick">
-              <el-table-column type="selection"></el-table-column>
+            <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial">
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
-              <el-table-column prop="MATName" label="物料名称" width="360"></el-table-column>
+              <el-table-column prop="MATName" label="物料名称" width="320"></el-table-column>
               <el-table-column prop="BucketNum" label="桶号"></el-table-column>
               <el-table-column prop="BucketWeight" label="重量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
               <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
+              <el-table-column prop="TaskTurn" label="轮次"></el-table-column>
+              <el-table-column prop="Description" label="描述"></el-table-column>
               <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
               <el-table-column label="操作" fixed="right" width="120">
                 <template slot-scope="scope">
-                  <el-button size="mini">设置轮次</el-button>
+                  <el-button size="mini" type="primary" @click="EditMaterialTurn(scope.$index, scope.row)">设置轮次</el-button>
                 </template>
               </el-table-column>
             </el-table>
+            <el-dialog title="修改轮次" :visible.sync="MaterialTableData.dialogTurnVisible" width="40%" :append-to-body="true" v-if="MaterialTableData.dialogTurnVisible">
+              <el-form :model="MaterialTableData.formField" label-width="110px">
+                <el-form-item label="批次号">
+                  <el-input v-model="PlanManagerTableData.multipleSelection[0].BatchID" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="品名">
+                  <el-input v-model="PlanManagerTableData.multipleSelection[0].BrandName" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="物料名称">
+                  <el-select v-model="MaterialTableData.formField.MATName" multiple placeholder="请选择" :disabled="true" style="width: 360px;">
+                    <el-option
+                      v-for="item in MATNameOptions"
+                      :key="item.value"
+                      :label="item.MATName"
+                      :value="item.MATName">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="轮次">
+                  <el-input v-model="MaterialTableData.formField.TaskTurn"></el-input>
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="MaterialTableData.dialogTurnVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveMaterial">保 存</el-button>
+              </span>
+            </el-dialog>
           </div>
         </el-col>
       </el-row>
-      <el-row v-if="steps == 3">
+      <el-row v-show="steps == 3">
         <el-col :span="24">
           <div class="platformContainer">
-            <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial" @selection-change="handleMaterialSelectionChange" @row-click="handleMaterialRowClick">
-              <el-table-column type="selection"></el-table-column>
+            <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial">
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
-              <el-table-column prop="MATName" label="物料名称" width="360"></el-table-column>
+              <el-table-column prop="MATName" label="物料名称" width="320"></el-table-column>
               <el-table-column prop="BucketNum" label="桶号"></el-table-column>
               <el-table-column prop="BucketWeight" label="重量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
               <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
+              <el-table-column prop="TaskTurn" label="轮次"></el-table-column>
+              <el-table-column prop="Description" label="描述"></el-table-column>
               <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
-              <el-table-column label="操作" fixed="right" width="120">
+              <el-table-column label="操作" fixed="right" width="150">
                 <template slot-scope="scope">
-                  <el-button size="mini">设置桶序</el-button>
+                  <el-button size="mini" type="primary" @click="EditMaterialSeq(scope.$index, scope.row)">设置物料投入顺序</el-button>
                 </template>
               </el-table-column>
             </el-table>
+            <el-dialog title="设置桶序" :visible.sync="MaterialTableData.dialogSeqVisible" width="40%" :append-to-body="true" v-if="MaterialTableData.dialogSeqVisible">
+              <el-form :model="MaterialTableData.formField" label-width="110px">
+                <el-form-item label="批次号">
+                  <el-input v-model="PlanManagerTableData.multipleSelection[0].BatchID" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="品名">
+                  <el-input v-model="PlanManagerTableData.multipleSelection[0].BrandName" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="物料名称">
+                  <el-select v-model="MaterialTableData.formField.MATName" multiple placeholder="请选择" :disabled="true" style="width: 360px;">
+                    <el-option
+                      v-for="item in MATNameOptions"
+                      :key="item.value"
+                      :label="item.MATName"
+                      :value="item.MATName">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="桶投入顺序">
+                  <draggable :list="MaterialTableData.formField.BucketNum" v-bind="{group:'article', disabled: false,sort: true}"
+                    class="dragArea11" style="border: 1px dashed #B9B9B9;padding: 10px;">
+                    <div v-for="(item, index) in MaterialTableData.formField.BucketNum" :key="index" class="list-complete-item">
+                      <div class="container-col">
+                        <span class="text-size-14">第{{ index +1 }}桶：{{ item }}</span>
+                      </div>
+                    </div>
+                  </draggable>
+                </el-form-item>
+                <el-form-item label="轮次">
+                  <el-input v-model="MaterialTableData.formField.TaskTurn" :disabled="true"></el-input>
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="MaterialTableData.dialogSeqVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveMaterial">保 存</el-button>
+              </span>
+            </el-dialog>
           </div>
         </el-col>
       </el-row>
-      <el-row v-if="steps == 4">
+      <el-row v-show="steps == 4">
         <el-col :span="24">
           <div class="platformContainer">
             <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial" @selection-change="handleMaterialSelectionChange" @row-click="handleMaterialRowClick">
-              <el-table-column type="selection"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="MATName" label="物料名称" width="360"></el-table-column>
               <el-table-column prop="BucketNum" label="桶号"></el-table-column>
               <el-table-column prop="BucketWeight" label="重量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
-              <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
+              <el-table-column prop="Flag" label="桶/托盘"></el-table-column>
+              <el-table-column prop="TaskTurn" label="轮次"></el-table-column>
+              <el-table-column prop="Description" label="描述"></el-table-column>
               <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
-              <el-table-column label="操作" fixed="right" width="120">
+              <el-table-column label="操作" fixed="right" width="130">
                 <template slot-scope="scope">
-                  <el-button size="mini">发送物料明细</el-button>
+                  <el-button size="mini" type="success" @click="sendMaterialInfo(scope.$index, scope.row)">发送物料明细</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -185,15 +278,17 @@
       <el-col :span="24" style="text-align: right;">
         <el-button type="primary" v-show="steps != 0" @click="lastStep">上一步</el-button>
         <el-button type="primary" v-show="steps != 4" @click="nextStep">下一步</el-button>
-        <el-button type="primary" v-show="steps == 4" @click="nextStep">发送物料明细</el-button>
+        <el-button type="primary" v-show="steps == 4" @click="nextStep">查看发送记录</el-button>
       </el-col>
     </el-col>
   </el-row>
 </template>
 
 <script>
+  import draggable from 'vuedraggable'
   export default {
     name: "sendMaterial",
+    components:{draggable},
     data(){
       return {
         steps:0,
@@ -210,6 +305,8 @@
           multipleSelection: [],
           dialogVisible:false,
           dialogTitle:"",
+          dialogTurnVisible:false,
+          dialogSeqVisible:false,
           formField:{
             ID:"",
             MATName:[],
@@ -217,6 +314,8 @@
             BucketWeight:"",
             Unit:"",
             Flag:"",
+            TaskTurn:"",
+            Description:"",
           },
         },
         UnitData:[],
@@ -242,7 +341,7 @@
             });
           }
         }else if(this.steps == 4){
-          this.sendMaterialInfo()
+          this.$router.push("/sendMaterialLog")
         }else{
           this.steps++
           this.getMaterialTableData()
@@ -250,6 +349,7 @@
       },
       lastStep(){
         this.steps--
+        this.getMaterialTableData()
       },
       //选择批计划
       getPlanManagerTableData(){
@@ -446,6 +546,8 @@
             BucketNum:row.BucketNum.split(","),
             BucketWeight:row.BucketWeight,
             Unit:row.Unit,
+            TaskTurn:row.TaskTurn,
+            Description:row.Description,
             Flag:row.Flag,
             EQPCode:row.EQPCode,
             FeedingSeq:row.FeedingSeq,
@@ -495,6 +597,58 @@
           });
         }
       },
+      EditMaterialTurn(index,row){
+        if(row.SendFlag != "WMS已接收"){
+          this.MaterialTableData.dialogTurnVisible = true
+          this.MaterialTableData.dialogTitle = "编辑"
+          this.getBOMData()
+          this.MaterialTableData.formField = {
+            ID:row.ID,
+            BrandCode:row.BrandCode,
+            BatchID:row.BatchID,
+            MATName:row.MATName.split(","),
+            BucketNum:row.BucketNum.split(","),
+            BucketWeight:row.BucketWeight,
+            Unit:row.Unit,
+            TaskTurn:row.TaskTurn,
+            Description:row.Description,
+            Flag:row.Flag,
+            EQPCode:row.EQPCode,
+            FeedingSeq:row.FeedingSeq,
+          }
+        }else{
+          this.$message({
+            type: 'info',
+            message: '已发送的物料不可修改'
+          });
+        }
+      },
+      EditMaterialSeq(index,row){
+        if(row.SendFlag != "WMS已接收"){
+          this.MaterialTableData.dialogSeqVisible = true
+          this.MaterialTableData.dialogTitle = "编辑"
+          this.getBOMData()
+          this.MaterialTableData.formField = {
+            ID:row.ID,
+            BrandCode:row.BrandCode,
+            BatchID:row.BatchID,
+            MATName:row.MATName.split(","),
+            BucketNum:row.BucketNum.split(","),
+            BucketWeight:row.BucketWeight,
+            Unit:row.Unit,
+            TaskTurn:row.TaskTurn,
+            Description:row.Description,
+            Flag:row.Flag,
+            EQPCode:row.EQPCode,
+            FeedingSeq:row.FeedingSeq,
+          }
+        }else{
+          this.$message({
+            type: 'info',
+            message: '已发送的物料不可修改'
+          });
+        }
+      },
       saveMaterial(){
         if(this.MaterialTableData.dialogTitle === "物料明细录入"){
           var params = {
@@ -506,6 +660,8 @@
             BucketNum:this.MaterialTableData.formField.BucketNum.join(','),
             BucketWeight:this.MaterialTableData.formField.BucketWeight,
             Unit:this.MaterialTableData.formField.Unit,
+            TaskTurn:this.MaterialTableData.formField.TaskTurn,
+            Description:this.MaterialTableData.formField.Description,
             Flag:this.MaterialTableData.formField.Flag,
             FeedingSeq:this.MaterialTableData.formField.FeedingSeq,
             SendFlag:"待发送",
@@ -517,6 +673,8 @@
                 message: res.data.message
               });
               this.MaterialTableData.dialogVisible = false
+              this.MaterialTableData.dialogTurnVisible = false
+              this.MaterialTableData.dialogSeqVisible = false
               this.getMaterialTableData()
             }else{
               this.$message({
@@ -538,6 +696,8 @@
             BucketNum:this.MaterialTableData.formField.BucketNum.join(','),
             BucketWeight:this.MaterialTableData.formField.BucketWeight,
             Unit:this.MaterialTableData.formField.Unit,
+            TaskTurn:this.MaterialTableData.formField.TaskTurn,
+            Description:this.MaterialTableData.formField.Description,
             Flag:this.MaterialTableData.formField.Flag,
             FeedingSeq:this.MaterialTableData.formField.FeedingSeq
           }
@@ -548,6 +708,8 @@
                 message: res.data.message
               });
               this.MaterialTableData.dialogVisible = false
+              this.MaterialTableData.dialogTurnVisible = false
+              this.MaterialTableData.dialogSeqVisible = false
               this.getMaterialTableData()
             }else{
               this.$message({
@@ -561,19 +723,10 @@
         }
       },
       //发送物料明细到WMS
-      sendMaterialInfo(){
+      sendMaterialInfo(index,row){
         if(this.MaterialTableData.multipleSelection.length > 0){
-          var isFlag = true
-          this.MaterialTableData.multipleSelection.forEach(item =>{
-            if(item.SendFlag === "投料系统已接收"){
-              isFlag = false
-            }
-          })
-          if(isFlag){
-            var mulId = []
-            this.MaterialTableData.multipleSelection.forEach(item =>{
-              mulId.push({id:item.ID});
-            })
+          if(row.SendFlag != "投料系统已接收"){
+            var mulId = [{id:row.ID}]
             var params = {}
             params.sendData = JSON.stringify(mulId)
             params.PlanStatus = "物料发送中"
