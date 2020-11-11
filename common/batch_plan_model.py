@@ -807,6 +807,9 @@ class BatchMaterialInfo(Base):
     # 操作时间:
     OperationDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
+    # 轮次:
+    TaskTurn = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
 
 
 
