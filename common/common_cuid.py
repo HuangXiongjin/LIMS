@@ -189,12 +189,19 @@ def select(data):
             else:
                 columns = columns + ",[" + str(column).split(".")[1] + "]"
         params = ""
+        searchModes = data.get("searchModes")
         for key in data.keys():
             if key != "offset" and key != "limit" and key != "tableName" and key != "":
-                if params == "":
-                    params = key + " like '%" + data[key] + "%'"
-                else:
-                    params = params + " AND " + key + " like '%" + data[key] + "%'"
+                if searchModes == None or searchModes == "":#模糊查询
+                    if params == "":
+                        params = key + " like '%" + data[key] + "%'"
+                    else:
+                        params = params + " AND " + key + " like '%" + data[key] + "%'"
+                else:#精确查询
+                    if params == "":
+                        params = key + " = '" + data[key] + "'"
+                    else:
+                        params = params + " AND " + key + " = '" + data[key] + "'"
         if pages == "":
             if params == "":
                 sql = "select " + columns + " from [LIMS].[dbo].[" + tableName + "] ORDER BY ID DESC"
@@ -237,44 +244,3 @@ def select(data):
 #         divi[str(j)] = str(i[a])
 #         a = a + 1
 #     dir.append(divi)
-
-
-
-def accurateSelect(data):
-    '''
-    精确查询
-    :param data:
-    :return:
-    '''
-    try:
-        pages = int(data.get("offset"))
-        rowsnumber = int(data.get("limit"))
-        param = data.get("field")
-        tableName = data.get("tableName")
-        paramvalue = data.get("fieldvalue")
-        inipage = pages * rowsnumber + 0  # 起始页
-        endpage = pages * rowsnumber + rowsnumber  # 截止页
-        newTable = Table(tableName, metadata, autoload=True, autoload_with=engine)
-        if (param == "" or param == None):
-            total = db_session.query(newTable).count()
-            oclass = db_session.query(newTable).order_by(desc("ID")).all()[inipage:endpage]
-        else:
-            total = db_session.query(newTable).filter(
-                newTable.columns._data[param] == paramvalue).count()
-            oclass = db_session.query(newTable).filter(
-                newTable.columns._data[param] == paramvalue).order_by(desc("ID")).all()[
-                     inipage:endpage]
-        dir = []
-        for i in oclass:
-            a = 0
-            divi = {}
-            for j in newTable.columns._data:
-                divi[str(j)] = str(i[a])
-                a = a + 1
-            dir.append(divi)
-        return {"code": "200", "message": "请求成功", "data": {"total": total, "rows": dir}}
-    except Exception as e:
-        print(e)
-        logger.error(e)
-        insertSyslog("error", "查询报错Error：" + str(e), current_user.Name)
-        return {"code": "500", "message": "请求错误", "data": "精确查询报错Error：" + str(e)}

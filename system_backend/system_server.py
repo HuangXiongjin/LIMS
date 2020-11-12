@@ -71,12 +71,7 @@ api = Api(app)
 from common.common_cuid import select, update, delete, insert
 class CUIDList(Resource):
     def get(self):
-        data = request.values
-        searchModes = data.get("searchModes")
-        if searchModes == "精确查询":
-            return accurateSelect(request.values)
-        else:  # 模糊查询
-            return select(request.values)
+        return select(request.values)
 
     def post(self):
         return insert(request.values)
