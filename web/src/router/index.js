@@ -36,6 +36,7 @@ import displayEqTime from '@/views/scheduling/displayEqTime'
 
 //生产执行系统
 import confirmProduction from '@/views/execution/confirmProduction'
+import executeProduction from '@/views/execution/executeProduction'
 import sendMaterial from '@/views/execution/sendMaterial'
 import sendMaterialLog from '@/views/execution/sendMaterialLog'
 import sendPlan from '@/views/execution/sendPlan'
@@ -97,6 +98,7 @@ export default new Router({
         {path:'/displayEqTime',name:'displayEqTime',meta:{ title:'设备运行时间展示',type:"排产调度系统"},component:displayEqTime},
 
         {path:'/confirmProduction',name:'confirmProduction',meta:{ title:'设备确认',type:"生产执行系统"},component:confirmProduction},
+        {path:'/executeProduction',name:'executeProduction',meta:{ title:'生产确认',type:"生产执行系统"},component:executeProduction},
         {path:'/sendMaterial',name:'sendMaterial',meta:{ title:'发送物料明细',type:"生产执行系统"},component:sendMaterial},
         {path:'/sendMaterialLog',name:'sendMaterialLog',meta:{ title:'物料明细记录',type:"生产执行系统"},component:sendMaterialLog},
         {path:'/sendPlan',name:'sendPlan',meta:{ title:'发送投料计划',type:"生产执行系统"},component:sendPlan},

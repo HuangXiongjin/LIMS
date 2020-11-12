@@ -54,6 +54,7 @@
               </el-form-item>
             </el-form>
             <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial">
+              <el-table-column prop="SendFlag" label="发送状态"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="MATName" label="物料名称" width="360"></el-table-column>
@@ -64,7 +65,7 @@
               <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
               <el-table-column prop="TaskTurn" label="轮次"></el-table-column>
               <el-table-column prop="Description" label="描述"></el-table-column>
-              <el-table-column prop="SendFlag" label="发送状态"></el-table-column>
+              <el-table-column prop="OperationDate" label="发送时间" width="110"></el-table-column>
               <el-table-column label="操作" width="150">
                 <template slot-scope="scope">
                   <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)">编辑</el-button>
@@ -146,6 +147,7 @@
         <el-col :span="24">
           <div class="platformContainer">
             <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial">
+              <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="MATName" label="物料名称" width="320"></el-table-column>
@@ -155,7 +157,7 @@
               <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
               <el-table-column prop="TaskTurn" label="轮次"></el-table-column>
               <el-table-column prop="Description" label="描述"></el-table-column>
-              <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
+              <el-table-column prop="OperationDate" label="发送时间" width="110"></el-table-column>
               <el-table-column label="操作" fixed="right" width="120">
                 <template slot-scope="scope">
                   <el-button size="mini" type="primary" @click="EditMaterialTurn(scope.$index, scope.row)">设置轮次</el-button>
@@ -196,6 +198,7 @@
         <el-col :span="24">
           <div class="platformContainer">
             <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial">
+              <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="MATName" label="物料名称" width="320"></el-table-column>
@@ -205,7 +208,7 @@
               <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
               <el-table-column prop="TaskTurn" label="轮次"></el-table-column>
               <el-table-column prop="Description" label="描述"></el-table-column>
-              <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
+              <el-table-column prop="OperationDate" label="发送时间" width="110"></el-table-column>
               <el-table-column label="操作" fixed="right" width="150">
                 <template slot-scope="scope">
                   <el-button size="mini" type="primary" @click="EditMaterialSeq(scope.$index, scope.row)">设置物料投入顺序</el-button>
@@ -256,6 +259,7 @@
         <el-col :span="24">
           <div class="platformContainer">
             <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial" @selection-change="handleMaterialSelectionChange" @row-click="handleMaterialRowClick">
+              <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="MATName" label="物料名称" width="360"></el-table-column>
@@ -265,7 +269,7 @@
               <el-table-column prop="Flag" label="桶/托盘"></el-table-column>
               <el-table-column prop="TaskTurn" label="轮次"></el-table-column>
               <el-table-column prop="Description" label="描述"></el-table-column>
-              <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
+              <el-table-column prop="OperationDate" label="发送时间" width="110"></el-table-column>
               <el-table-column label="操作" fixed="right" width="130">
                 <template slot-scope="scope">
                   <el-button size="mini" type="success" @click="sendMaterialInfo(scope.$index, scope.row)">发送物料明细</el-button>
@@ -724,7 +728,7 @@
       },
       //发送物料明细到WMS
       sendMaterialInfo(index,row){
-        if(this.MaterialTableData.multipleSelection.length > 0){
+        if(this.PlanManagerTableData.multipleSelection.length == 1){
           if(row.SendFlag != "投料系统已接收"){
             var mulId = [{id:row.ID}]
             var params = {}
@@ -761,7 +765,7 @@
         }else{
           this.$message({
             type: 'info',
-            message: "请选择物料"
+            message: "请选择批次"
           });
         }
       },

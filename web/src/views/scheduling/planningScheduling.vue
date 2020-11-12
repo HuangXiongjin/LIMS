@@ -3,25 +3,25 @@
     <el-col :span="24">
       <el-steps :active="steps" finish-status="success" align-center class="marginBottom">
         <el-step title="审核计划"></el-step>
-        <el-step title="工艺配置"></el-step>
+        <!-- <el-step title="工艺配置"></el-step> -->
         <el-step title="下发计划"></el-step>
       </el-steps>
     </el-col>
     <el-col :span="24" class="marginTop">
       <CheckscPlan v-show="steps===0" ref="child1"></CheckscPlan>
-      <EquipmentChoose v-show="steps===1" ref="child2"></EquipmentChoose>
-      <DistributionPlan v-show="steps===2" ref="child3"></DistributionPlan>
+      <!-- <EquipmentChoose v-show="steps===1" ref="child2"></EquipmentChoose> -->
+      <DistributionPlan v-show="steps===1" ref="child3"></DistributionPlan>
     </el-col>
     <el-col :span="24" style="textAlign:right">
       <el-button type="primary" v-show="steps != 0" @click="LastStep">上一步</el-button>
-      <el-button type="primary" v-show="steps != 3" @click="NextStep">下一步</el-button>
+      <el-button type="primary" v-show="steps != 2" @click="NextStep">下一步</el-button>
     </el-col>
   </el-row>
 </template>
 
 <script>
 import CheckscPlan from './CheckscPlan.vue'
-import EquipmentChoose from './EquipmentChoose.vue'
+// import EquipmentChoose from './EquipmentChoose.vue'
 import DistributionPlan from './DistributionPlan.vue'
   export default {
     name: "planningScheduling",
@@ -30,7 +30,7 @@ import DistributionPlan from './DistributionPlan.vue'
           steps:0,
       }
     },
-    components:{CheckscPlan,EquipmentChoose,DistributionPlan},
+    components:{CheckscPlan,DistributionPlan},
     mounted(){
      this.$refs.child1.getPlanManager()
     },
@@ -38,14 +38,14 @@ import DistributionPlan from './DistributionPlan.vue'
       NextStep(){
         this.steps++
         if(this.steps===1){
-          this.$refs.child2.getConfigbatch() 
-          this.$refs.child2.chConfigbatch() 
-          this.$refs.child2.getSelectedEq()
-        }else if(this.steps===2){
+          // this.$refs.child2.getConfigbatch() 
+          // this.$refs.child2.chConfigbatch() 
+          // this.$refs.child2.getSelectedEq()
           this.$refs.child3.getSelectedEq()
           this.$refs.child3.getYxfBatch()
-        }else if(this.steps===3){
+        }else if(this.steps===2){
           this.$router.push('/planProgress')
+        
         }
         },
         LastStep(){
@@ -53,10 +53,9 @@ import DistributionPlan from './DistributionPlan.vue'
           if(this.steps===0){
               this.$refs.child1.getPlanManager()
           }else if(this.steps===1){
-              this.$refs.child2.getConfigbatch() 
-              this.$refs.child2.chConfigbatch() 
-              this.$refs.child2.getSelectedEq()
-          }else if(this.steps===2){
+              // this.$refs.child2.getConfigbatch() 
+              // this.$refs.child2.chConfigbatch() 
+              // this.$refs.child2.getSelectedEq()
               this.$refs.child3.getSelectedEq()
               this.$refs.child3.getYxfBatch()
           }

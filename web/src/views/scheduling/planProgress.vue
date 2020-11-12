@@ -19,12 +19,6 @@
             </div>
             <div style="display:inline-block;margin-right:18px;">
               <div style="display: inline-block; text-align: center;">
-                <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">工艺配置</div>
-              </div>
-              <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
-            </div>
-            <div style="display:inline-block;margin-right:18px;">
-              <div style="display: inline-block; text-align: center;">
                 <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">下发计划</div>
               </div>
               <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
