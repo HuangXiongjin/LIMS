@@ -87,40 +87,40 @@ def makeZYPlanZYTask(id):
                     zyplan.WMSStatus = Global.TASKSTATUS.NEW.value
                     db_session.add(zyplan)
 
-                    ebps = db_session.query(EquipmentBatchRunTime).filter(EquipmentBatchRunTime.BrandCode == ocalss.BrandCode,
-                                    EquipmentBatchRunTime.BatchID == ocalss.BatchID, EquipmentBatchRunTime.PUCode == i.PUCode).all()
-                    iTaskSeq = 0
-                    for j in ebps:
-                        iTaskSeq = iTaskSeq + 1
-                        bReturn, strTaskNo = getTaskNo()
-                        if bReturn == False:
-                            return False
-                        zytask = ZYTask()
-                        zytask.PlanDate = j.StartTime
-                        zytask.TaskID = strTaskNo
-                        zytask.BatchID = ocalss.BatchID
-                        zytask.PlanSeq = iTaskSeq
-                        if i.PUName == "备料":#备料段为满足前端展示需要，虚拟了一个设备出来，所以下发要排除
-                            zytask.PUCode = ""
-                            zytask.PUName = ""
-                        else:
-                            zytask.PUCode = i.PUCode
-                            zytask.PUName = i.PUName
-                        zytask.PlanType = Global.PLANTYPE.SCHEDULE.value
-                        zytask.BrandCode = ocalss.BrandCode
-                        zytask.BrandName = ocalss.BrandName
-                        zytask.PlanQuantity = ocalss.PlanQuantity
-                        zytask.Unit = ocalss.Unit
-                        zytask.EnterTime = ""
-                        zytask.EQPCode = j.EQPCode
-                        zytask.EQPName = j.EQPName
-                        zytask.StartBC = j.StartBC
-                        zytask.EndBC = j.EndBC
-                        zytask.PlanStartTime = j.StartTime
-                        zytask.PlanEndTime = j.EndTime
-                        zytask.TaskStatus = ""
-                        zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
-                        db_session.add(zytask)
+                    # ebps = db_session.query(EquipmentBatchRunTime).filter(EquipmentBatchRunTime.BrandCode == ocalss.BrandCode,
+                    #                 EquipmentBatchRunTime.BatchID == ocalss.BatchID, EquipmentBatchRunTime.PUCode == i.PUCode).all()
+                    # iTaskSeq = 0
+                    # for j in ebps:
+                    #     iTaskSeq = iTaskSeq + 1
+                    #     bReturn, strTaskNo = getTaskNo()
+                    #     if bReturn == False:
+                    #         return False
+                    #     zytask = ZYTask()
+                    #     zytask.PlanDate = j.StartTime
+                    #     zytask.TaskID = strTaskNo
+                    #     zytask.BatchID = ocalss.BatchID
+                    #     zytask.PlanSeq = iTaskSeq
+                    #     if i.PUName == "备料":#备料段为满足前端展示需要，虚拟了一个设备出来，所以下发要排除
+                    #         zytask.PUCode = ""
+                    #         zytask.PUName = ""
+                    #     else:
+                    #         zytask.PUCode = i.PUCode
+                    #         zytask.PUName = i.PUName
+                    #     zytask.PlanType = Global.PLANTYPE.SCHEDULE.value
+                    #     zytask.BrandCode = ocalss.BrandCode
+                    #     zytask.BrandName = ocalss.BrandName
+                    #     zytask.PlanQuantity = ocalss.PlanQuantity
+                    #     zytask.Unit = ocalss.Unit
+                    #     zytask.EnterTime = ""
+                    #     zytask.EQPCode = j.EQPCode
+                    #     zytask.EQPName = j.EQPName
+                    #     zytask.StartBC = j.StartBC
+                    #     zytask.EndBC = j.EndBC
+                    #     zytask.PlanStartTime = j.StartTime
+                    #     zytask.PlanEndTime = j.EndTime
+                    #     zytask.TaskStatus = ""
+                    #     zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
+                    #     db_session.add(zytask)
                 db_session.commit()
     except Exception as ee:
         db_session.rollback()
@@ -222,7 +222,7 @@ def checkPlanManager():
                 Description = i.get("Describtion")
                 ID = i.get("ID")
                 oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
-                oclassplan.PlanStatus = PlanStatus
+                oclassplan.PlanStatus = Global.PlanStatus.WaitRealse.value
                 oclassplan.Description = Description
                 db_session.commit()
                 insertAuditTrace("审核计划", "批次号是：" + oclassplan.BatchID +"的" +oclassplan.BrandName + "在"+
@@ -277,7 +277,7 @@ def createZYPlanZYtask():
                         if (returnmsg == False):
                             return json.dumps({"code": "500", "message": "下发失败！"})
                         oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
-                        oclassplan.PlanStatus = Global.PlanStatus.Realse.value
+                        oclassplan.PlanStatus = Global.PlanStatus.PreRUN.value
                         db_session.commit()
                         insertAuditTrace("下发计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandName + "在" +
                                          datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行下发计划操作", "PlanManager",
@@ -651,3 +651,65 @@ def taskSaveEqpCheckReview():
             logger.error(e)
             insertSyslog("error", "任务审核复核报错Error：" + str(e), current_user.Name)
             return json.dumps("任务审核复核报错", cls=AlchemyEncoder, ensure_ascii=False)
+
+@batch_plan.route('/taskSaveEqpCheck', methods=['GET', 'POST'])
+def taskSaveEqpCheck():
+    '''
+    设备审核（选择设备）
+    :return:
+    '''
+    if request.method == 'POST':
+        data = request.values
+        try:
+            ZYPlanStatus = data.get("ZYPlanStatus")
+            ocalss = db_session.query(ZYPlan).filter(ZYPlan.ID == data.get("ID")).first()
+            ebps = db_session.query(EquipmentBatchRunTime).filter(
+                EquipmentBatchRunTime.BrandCode == ocalss.BrandCode,
+                EquipmentBatchRunTime.BatchID == ocalss.BatchID, EquipmentBatchRunTime.PUCode == i.PUCode).all()
+            iTaskSeq = 0
+            for j in ebps:
+                iTaskSeq = iTaskSeq + 1
+                bReturn, strTaskNo = getTaskNo()
+                if bReturn == False:
+                    return False
+                zytask = ZYTask()
+                zytask.PlanDate = j.StartTime
+                zytask.TaskID = strTaskNo
+                zytask.BatchID = ocalss.BatchID
+                zytask.PlanSeq = iTaskSeq
+                # if i.PUName == "备料" or i.PUName == "投料":  # 备料段为满足前端展示需要，虚拟了一个设备出来，所以下发要排除
+                #     zytask.PUCode = ""
+                #     zytask.PUName = ""
+                # else:
+                #     zytask.PUCode = i.PUCode
+                #     zytask.PUName = i.PUName
+                zytask.PUCode = i.PUCode
+                zytask.PUName = i.PUName
+                zytask.PlanType = Global.PLANTYPE.SCHEDULE.value
+                zytask.BrandCode = ocalss.BrandCode
+                zytask.BrandName = ocalss.BrandName
+                zytask.PlanQuantity = ocalss.PlanQuantity
+                zytask.Unit = ocalss.Unit
+                zytask.EnterTime = ""
+                zytask.EQPCode = j.EQPCode
+                zytask.EQPName = j.EQPName
+                zytask.StartBC = j.StartBC
+                zytask.EndBC = j.EndBC
+                zytask.PlanStartTime = j.StartTime
+                zytask.PlanEndTime = j.EndTime
+                zytask.TaskStatus = ""
+                zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
+                db_session.add(zytask)
+            ocalss.ZYPlanStatus = ZYPlanStatus
+            db_session.commit()
+            insertAuditTrace("任务审核复核（选择设备）", "批次号是：" + ocalss.BatchID + "的" + ocalss.BrandName + "在" +ocalss.PUName+"段的"+
+                             datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行计划审核操作", "PlanManager",
+                             current_user.Name, "")
+            return json.dumps({"code": "200", "message": "任务选择设备成功！", "data": "OK"})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "任务审核复核报错Error：" + str(e), current_user.Name)
+            return json.dumps("任务审核复核报错", cls=AlchemyEncoder, ensure_ascii=False)
+

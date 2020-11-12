@@ -17,12 +17,11 @@ class PlanStatus(Enum):
     NEW = "新增"
     Confirm = "待审核"
     UnCheck = "审核未通过"
-    Configured = "待配置"
     WaitRealse = "待下发"
     Realse = "已下发"
     Recall = "撤回"
-    FSWMS = "已发送投料计划"
-    UNFSMWMS = "未已发送物料明细"
+    PreRUN = "待执行"
+    PreMaterial = "待备料"
     FSMWMS = "物料发送中"
     FSMWMSed = "已发送投料计划"
     RUN = "执行"
@@ -30,13 +29,11 @@ class PlanStatus(Enum):
 
 #计划ZYPlan
 class ZYPlanStatus(Enum):
-    Produced = "待生产"
-    EquipmentCheck = "设备已审核"
-    EquipmentReview = "设备已复核"
-    READY = "生产前准备"
-    Produncting = "计划进行"
-    Clear = "清场"
-    Finshed = "已完成"
+    Produced = "待确认"
+    EquipmentCheck = "待审核"
+    EquipmentReview = "待复核"
+    Produncting = "执行"
+    Finshed = "完成"
 #任务ZYTask
 class TASKSTATUS(Enum):
     Confirm = "已选设备"#任务选择设备
