@@ -38,17 +38,7 @@
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
-              <el-table-column prop="PlanStatus" label="计划状态">
-                <template slot-scope="scope">
-                    <b class="color-red cursor-pointer" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</b>
-                    <b class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</b>
-                    <b class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</b>
-                    <b class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</b>
-                    <b class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</b>
-                    <b class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</b>
-                    <b class="color-brown" v-if="scope.row.PlanStatus === '已发送投料计划'">{{ scope.row.PlanStatus }}</b>
-                </template>
-              </el-table-column>
+              <el-table-column prop="PlanStatus" label="计划状态"></el-table-column>
             </el-table>
             <div class="paginationClass">
               <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
@@ -93,7 +83,7 @@
         var that = this
         var PlanStatus = ""
         if(this.sendPlanPlanStatus === "待发送"){
-          PlanStatus = "已下发"
+          PlanStatus = "物料发送完成"
         }else if(this.sendPlanPlanStatus === "已发送"){
           PlanStatus = "已发送投料计划"
         }
