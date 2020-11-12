@@ -261,8 +261,8 @@ def checkPlanManagerSingle():
             insertSyslog("error", "审核计划报错Error：" + str(e), current_user.Name)
             return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
 
-@batch_plan.route('/PlanManagerXiafa', methods=['POST', 'GET'])
-def PlanManagerXiafa():
+@batch_plan.route('/PlanManagerRealse', methods=['POST', 'GET'])
+def PlanManagerRealse():
     '''计划下发'''
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
@@ -319,15 +319,6 @@ def createZYPlanZYtask():
                                          datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "生产确认计划操作", "PlanManager",
                                          current_user.Name, "")
                     return json.dumps({"code": "200", "message": "生产确认成功！！"})
-                elif PlanStatus == "撤回":
-                    ID = data.get("ID")
-                    oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
-                    oclassplan.PlanStatus = Global.PlanStatus.Recall.value
-                    db_session.commit()
-                    insertAuditTrace("撤回计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandName + "在" +
-                                     datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行撤回计划操作", "PlanManager",
-                                     current_user.Name, "")
-                    return json.dumps({"code": "200", "message": "成功！！"})
                 else:
                     return json.dumps({"code": "200", "message": "批次计划状态不正确！"})
         except Exception as e:
