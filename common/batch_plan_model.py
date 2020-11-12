@@ -1057,6 +1057,9 @@ class ProductEquipment(Base):
     # 描述:
     Description = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
+    # 设备编号:
+    Number = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
 # 批记录操作步骤（SOP）
 class EletronicBatchDataStore(Base):
     __tablename__ = 'EletronicBatchDataStore'
