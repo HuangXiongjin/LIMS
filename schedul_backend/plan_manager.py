@@ -261,28 +261,25 @@ def checkPlanManagerSingle():
             insertSyslog("error", "审核计划报错Error：" + str(e), current_user.Name)
             return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
 
-@batch_plan.route('/createZYPlanZYtask', methods=['POST', 'GET'])
-def createZYPlanZYtask():
-    '''下发计划'''
+@batch_plan.route('/PlanManagerXiafa', methods=['POST', 'GET'])
+def PlanManagerXiafa():
+    '''计划下发'''
     if request.method == 'POST':
         data = request.values  # 返回请求中的参数和form
         try:
             jsonstr = json.dumps(data.to_dict())
             if len(jsonstr) > 10:
                 PlanStatus = data.get("PlanStatus")
-                if PlanStatus == "已下发":
+                if PlanStatus == "待执行":
                     IDs = json.loads(data.get("IDs"))
                     for ID in IDs:
-                        returnmsg = makeZYPlanZYTask(ID)
-                        if (returnmsg == False):
-                            return json.dumps({"code": "500", "message": "下发失败！"})
-                        oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
-                        oclassplan.PlanStatus = Global.PlanStatus.PreRUN.value
+                        oclass = db_session.query(PlanManager).filter(PlanManager.ID == ID).first()
+                        oclass.PlanStatus = PlanStatus
                         db_session.commit()
-                        insertAuditTrace("下发计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandName + "在" +
-                                         datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行下发计划操作", "PlanManager",
+                        insertAuditTrace("计划下发", "批次号是：" + oclass.BatchID + "的" + oclass.BrandName + "在" +
+                                         datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "计划下发操作", "PlanManager",
                                          current_user.Name, "")
-                    return json.dumps({"code": "200", "message": "下发成功！！"})
+                    return json.dumps({"code": "200", "message": "生产确认成功！！"})
                 elif PlanStatus == "撤回":
                     ID = data.get("ID")
                     oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
@@ -297,7 +294,46 @@ def createZYPlanZYtask():
         except Exception as e:
             print(e)
             logger.error(e)
-            insertSyslog("error", "下发计划生成ZY计划、任务报错Error：" + str(e), current_user.Name)
+            insertSyslog("error", "生产确认报错Error：" + str(e), current_user.Name)
+            return 'NO'
+
+@batch_plan.route('/createZYPlanZYtask', methods=['POST', 'GET'])
+def createZYPlanZYtask():
+    '''生产确认'''
+    if request.method == 'POST':
+        data = request.values  # 返回请求中的参数和form
+        try:
+            jsonstr = json.dumps(data.to_dict())
+            if len(jsonstr) > 10:
+                PlanStatus = data.get("PlanStatus")
+                if PlanStatus == "待备料":
+                    IDs = json.loads(data.get("IDs"))
+                    for ID in IDs:
+                        returnmsg = makeZYPlanZYTask(ID)
+                        if (returnmsg == False):
+                            return json.dumps({"code": "500", "message": "生产确认失败！"})
+                        oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
+                        oclassplan.PlanStatus = Global.PlanStatus.PreMaterial.value
+                        db_session.commit()
+                        insertAuditTrace("生产确认计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandName + "在" +
+                                         datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "生产确认计划操作", "PlanManager",
+                                         current_user.Name, "")
+                    return json.dumps({"code": "200", "message": "生产确认成功！！"})
+                elif PlanStatus == "撤回":
+                    ID = data.get("ID")
+                    oclassplan = db_session.query(PlanManager).filter_by(ID=ID).first()
+                    oclassplan.PlanStatus = Global.PlanStatus.Recall.value
+                    db_session.commit()
+                    insertAuditTrace("撤回计划", "批次号是：" + oclassplan.BatchID + "的" + oclassplan.BrandName + "在" +
+                                     datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "进行撤回计划操作", "PlanManager",
+                                     current_user.Name, "")
+                    return json.dumps({"code": "200", "message": "成功！！"})
+                else:
+                    return json.dumps({"code": "200", "message": "批次计划状态不正确！"})
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "生产确认报错Error：" + str(e), current_user.Name)
             return 'NO'
 
 
