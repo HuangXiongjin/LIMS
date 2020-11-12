@@ -18,20 +18,22 @@
                   highlight-current-row
                   size='small'
                   border
-                  ref="batchmultipleTable"
-                  @select='getAllbatchrow'
+                  ref="batchmultipleTable" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager"
                   style="width: 100%">
                   <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                   <el-table-column prop="PlanStatus" label="计划状态">
                     <template slot-scope="scope">
                      <b class="color-red cursor-pointer" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</b>
-                    <b class="color-orange" v-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</b>
-                    <b class="color-purple" v-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</b>
-                    <b class="color-red" v-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</b>
-                    <b class="color-lightgreen" v-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</b>
-                    <b class="color-darkblue" v-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</b>
-                    <b class="color-brown" v-if="scope.row.PlanStatus === '已发送投料计划'">{{ scope.row.PlanStatus }}</b>
+                     <b class="color-orange" v-else-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</b>
+                    <b class="color-red" v-else-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</b>
+                    <b class="color-lightgreen" v-else-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</b>
+                    <b class="color-purple" v-else-if="scope.row.PlanStatus === '待执行'">{{ scope.row.PlanStatus }}</b>
+                    <b class="color-orange" v-else-if="scope.row.PlanStatus === '待备料'">{{ scope.row.PlanStatus }}</b>
+                    <b class="color-orange" v-else-if="scope.row.PlanStatus === '物料发送中'">{{ scope.row.PlanStatus }}</b>
+                    <b class="color-success" v-else-if="scope.row.PlanStatus === '物料发送完成'">{{ scope.row.PlanStatus }}</b>
+                    <b class="color-brown" v-else-if="scope.row.PlanStatus === '已发送投料计划'">{{ scope.row.PlanStatus }}</b>
+                    <b class="" v-else>{{ scope.row.PlanStatus }}</b>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" fixed="right" width='100'>
@@ -174,63 +176,64 @@ var moment=require('moment')
         this.batchTableData.offset = offset
         this.getPlanManager()
       },
-      getAllbatchrow(e,row){ //审核计划批次点击
-        this.checkedRow=e
-        this.$refs.batchmultipleTable.setCurrentRow(row)
+      handleSelectionChangePlanManager(row){ //审核计划批次点击
+        this.checkedRow=row
+      },
+      handleRowClickPlanManager(row){
+        this.$refs.batchmultipleTable.toggleRowSelection(row)
       },
       shMultiplebatch(){ //点击多批次下发
         this.datalist=[]
         var flag=true
-        if(this.checkedRow.length===0){
-            this.$message({
-               type:'info',
-               message:'请先勾选要下发的批次'
-             })
-             return;
+        if(this.checkedRow.length==0){
+          this.$message({
+             type:'info',
+             message:'请先勾选要下发的批次'
+           })
         }else{
           this.checkedRow.forEach((item) => {
-          if(item.PlanStatus==='待审核'&& item.BatchID!==""){
-            this.datalist.push(item)
-          }else{
-            flag=false
-            this.$message({
-               type:'info',
-               message:'当前所选批次不是待审核状态或者无批次号，请重新选择'
-             })
-             return;
-          }
-        })
-        if(flag){
-        this.datalist=this.datalist.map((item) => {
-          return {
-            PlanStatus:'待配置',
-            Description:'',
-            ID:item.ID
+            if(item.PlanStatus==='待审核'&& item.BatchID!==""){
+              this.datalist.push(item)
+            }else{
+              flag=false
+              this.$message({
+                 type:'info',
+                 message:'当前所选批次不是待审核状态或者无批次号，请重新选择'
+               })
+               return;
+            }
+          })
+          if(flag){
+            this.datalist=this.datalist.map((item) => {
+              return {
+                PlanStatus:'待配置',
+                Description:'',
+                ID:item.ID
                 }
-        })
-        var params={
-          datalist:JSON.stringify(this.datalist)
-        }
-        this.$confirm('是否通过多批次审核, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.axios.post('/api/checkPlanManager',this.qs.stringify(params)).then((res) => {
-           if(res.data.code==='200'){
-             this.$message({
-               type:'success',
-               message:'多批次审核成功'
+            })
+            var params={
+              datalist:JSON.stringify(this.datalist)
+            }
+            this.$confirm('是否通过多批次审核, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.axios.post('/api/checkPlanManager',this.qs.stringify(params)).then((res) => {
+               if(res.data.code==='200'){
+                 this.$message({
+                   type:'success',
+                   message:'多批次审核成功'
+                 })
+                 this.getPlanManager()
+               }
              })
-             this.getPlanManager()
-           }
-         })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });          
-        });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            });
+          });
         }}
       },
      

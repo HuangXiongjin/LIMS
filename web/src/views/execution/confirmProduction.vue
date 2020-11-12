@@ -12,16 +12,27 @@
         <el-row class="marginBottom">
           <el-col :span="24">
             <div v-for="(item, index) in ZYPlanTableData.data" :key="index" style="display: inline-block;margin-right:18px;vertical-align: top;">
-              <div style="display: inline-block; text-align: center;">
-                <div class="container-col text-size-14 bg-white" :class="{'bg-gray':item.ZYPlanStatus === '待生产','bg-lightgreen':item.ZYPlanStatus === '设备已审核','bg-darkblue':item.ZYPlanStatus === '设备已复核','bg-success':item.ZYPlanStatus === '已完成'}">{{ item.PUName }}</div>
-                <div class="text-center" style="display: inherit;" v-show="item.PUName != '备料'">
+              <div style="display: inline-block; text-align: center;" v-if="item.PUName == '备料'">
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':PlanManagerTableData.PlanStatus === '待备料','bg-darkblue':PlanManagerTableData.PlanStatus === '物料发送中','bg-success':PlanManagerTableData.PlanStatus === '物料发送完成'}">
+                  {{ item.PUName }}
+                </div>
+              </div>
+              <div style="display: inline-block; text-align: center;" v-else>
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':item.ZYPlanStatus === '待确认','bg-lightgreen':item.ZYPlanStatus === '待审核','bg-orange':item.ZYPlanStatus === '待复核','bg-darkblue':item.ZYPlanStatus === '执行','bg-success':item.ZYPlanStatus === '已完成'}">
+                  {{ item.PUName }}
+                </div>
+                <div class="text-center" style="display: inherit;">
                   <p class="connectLine marginRight"></p>
                   <p class="marginRight">
-                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '设备已审核' || item.ZYPlanStatus === '设备已复核' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '设备已审核' || item.ZYPlanStatus === '设备已复核' ? 'dark':'plain'" @click="PUPlan(item,'审核')">审核</el-tag>
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '待审核' || item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '待审核' || item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'dark':'plain'" @click="PUPlan(item,'设备确认')">设备确认</el-tag>
                   </p>
                   <p class="connectLine marginRight"></p>
                   <p class="marginRight">
-                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '设备已复核' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '设备已复核' ? 'dark':'plain'" @click="PUPlan(item,'复核')">复核</el-tag>
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'dark':'plain'" @click="PUPlan(item,'审核')">审核</el-tag>
+                  </p>
+                  <p class="connectLine marginRight"></p>
+                  <p class="marginRight">
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '执行' ? 'dark':'plain'" @click="PUPlan(item,'复核')">复核</el-tag>
                   </p>
                 </div>
               </div>
@@ -48,7 +59,7 @@
            @current-change="handleCurrentChangePlanManager">
           </el-pagination>
         </div>
-        <el-dialog :title="ZYPlanPUData.PUName+ '设备' + PUDialogType" :visible.sync="PUDialogVisible" width="80%" :append-to-body="true">
+        <el-dialog title="设备确认" :visible.sync="EQConfirmDialogVisible" width="80%" :append-to-body="true">
           <el-col :span="24">
             <el-form :inline="true">
               <el-form-item label="当前状态："><label class="marginRight color-darkblue">{{ ZYPlanPUData.ZYPlanStatus }}</label></el-form-item>
@@ -62,6 +73,11 @@
           <p class="text-size-18 marginBottom">
             <span class="marginRight">工艺计划使用设备</span>
           </p>
+          <el-form :inline="true">
+            <el-form-item>
+              <el-button type="primary" size="mini" @click="EQDialogVisible = true">添加设备</el-button>
+            </el-form-item>
+          </el-form>
           <el-table :data="ZYTaskTableData" border size="small">
             <el-table-column prop="TaskID" label="任务单号"></el-table-column>
             <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
@@ -71,16 +87,35 @@
             <el-table-column prop="BrandName" label="品名名称"></el-table-column>
             <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
             <el-table-column prop="Unit" label="单位"></el-table-column>
-            <el-table-column prop="PlanStartTime" label="计划开始时间"></el-table-column>
-            <el-table-column prop="PlanEndTime" label="计划结束时间"></el-table-column>
             <el-table-column prop="ActBeginTime" label="实际开始时间"></el-table-column>
             <el-table-column prop="ActEndTime" label="实际结束时间"></el-table-column>
-            <el-table-column label="操作" fixed="right" width="150">
+            <el-table-column label="操作" fixed="right" width="200">
               <template slot-scope="scope">
-                <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="mini" @click="handleEditEq(scope.$index, scope.row)">编辑</el-button>
+                <el-button size="mini" @click="handleDeleteEq(scope.$index, scope.row)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
+          <!--修改使用的设备-->
+          <el-dialog title="选择设备" :visible.sync="EQDialogVisible" width="40%" :append-to-body="true">
+            <el-table border :data="ProductEquipmentData" size='small' @selection-change="handleEQSelectionChange">
+              <el-table-column type="selection"></el-table-column>
+              <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
+              <el-table-column prop="Number" label="设备编号"></el-table-column>
+              <el-table-column prop="EQPName" label="设备名称"></el-table-column>
+              <el-table-column prop="Desc" label="描述"></el-table-column>
+            </el-table>
+            <span slot="footer" class="dialog-footer">
+              <el-button @click="EQDialogVisible = false">取消</el-button>
+              <el-button type="primary" @click="saveEQ">保存</el-button>
+            </span>
+          </el-dialog>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="EQConfirmDialogVisible = false">关闭</el-button>
+            <el-button type="primary" @click="AuditPass">设备确认</el-button>
+          </span>
+        </el-dialog>
+        <el-dialog title="审核" :visible.sync="checkDialogVisible" width="80%" :append-to-body="true">
           <p class="text-size-18 marginBottom marginTop">
             <span class="marginRight">批次物料对应提取设备</span>
           </p>
@@ -102,20 +137,6 @@
               </template>
             </el-table-column>
           </el-table>
-          <!--修改使用的设备-->
-          <el-dialog title="更换设备" :visible.sync="EQDialogVisible" width="40%" :append-to-body="true">
-            <el-form>
-              <el-form-item label="选择设备">
-                <el-select v-model="EQPCode" placeholder="请选择" @change="selectEQPCode">
-                  <el-option v-for="(item,index) in ProductEquipmentData" :key="index" :label="item.EQPCode +'-'+ item.EQPName" :value="item.EQPCode"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-              <el-button @click="EQDialogVisible = false">取消</el-button>
-              <el-button type="primary" @click="saveEQ">保存</el-button>
-            </span>
-          </el-dialog>
           <!--选择物料桶投入的设备-->
           <el-dialog title="选择已分配的设备" :visible.sync="EQMaterialDialogVisible" width="40%" :append-to-body="true">
             <el-form>
@@ -131,9 +152,15 @@
             </span>
           </el-dialog>
           <span slot="footer" class="dialog-footer">
-            <el-button @click="PUDialogVisible = false">关闭</el-button>
-            <el-button type="primary" @click="AuditPass" v-if="PUDialogType === '审核'">审核确认</el-button>
-            <el-button type="primary" @click="CheckPass" v-if="PUDialogType === '复核'">复核确认</el-button>
+            <el-button @click="checkDialogVisible = false">关闭</el-button>
+            <el-button type="primary" @click="AuditPass">审核确认</el-button>
+          </span>
+        </el-dialog>
+        <el-dialog title="复核" :visible.sync="confirmDialogVisible" width="80%" :append-to-body="true">
+
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="confirmDialogVisible = false">关闭</el-button>
+            <el-button type="primary" @click="CheckPass">复核确认</el-button>
           </span>
         </el-dialog>
       </div>
@@ -156,12 +183,14 @@
         ZYPlanTableData:{
           data:[]
         },
-        PUDialogVisible:false,
-        PUDialogType:"",
-        EQDialogVisible:false,
+        EQConfirmDialogVisible:false,  //确认设备弹框
+        EQDialogVisible:false, //选设备弹框
+        checkDialogVisible:false, //审核弹框
+        confirmDialogVisible:false, //复核弹框
         ZYPlanPUData:{},
         ZYTaskTableData:[],
         ProductEquipmentData:[],  //工艺下所有设备
+        ProductEquipmentSelection:[],  //选中设备
         EQPCode:"",
         EQPName:"",
         EQPID:"",
@@ -223,7 +252,7 @@
         this.$refs.multipleTablePlanManager.toggleRowSelection(row)
         this.getZYPlanTableData()
       },
-      getZYPlanTableData(){
+      getZYPlanTableData(){  //获取批计划下的工艺 ZYPlan
         var that = this
         var params = {
           tableName: "ZYPlan",
@@ -251,14 +280,19 @@
         })
       },
       PUPlan(item,type){
-        this.PUDialogVisible = true
-        this.PUDialogType = type
         this.ZYPlanPUData = item
-        this.getProductEquipment(this.ZYPlanPUData.PUName)
-        this.getZYTaskTable()
-        this.getMaterialTableData()
+        if(type === "设备确认"){
+          this.EQConfirmDialogVisible = true
+          this.getProductEquipment(this.ZYPlanPUData.PUName)
+          this.getZYTaskTable()
+        }else if(type === "审核"){
+          this.checkDialogVisible = true
+          this.getMaterialTableData()
+        }else if(type === "复核"){
+          this.confirmDialogVisible = true
+        }
       },
-      getZYTaskTable(){
+      getZYTaskTable(){  //获取工艺下选择的设备
         let that = this
         var params = {
           tableName:"ZYTask",
@@ -271,7 +305,6 @@
         }).then(res => {
           if(res.data.code === "200"){
             that.ZYTaskTableData = res.data.data.rows
-            console.log(that.ZYTaskTableData)
           }else{
             that.$message({
               type: 'info',
@@ -280,8 +313,35 @@
           }
         })
       },
-      //查询物料明细
-      getMaterialTableData(){
+      getProductEquipment(PUName){  //查询工艺下所有设备
+        let that = this
+        var params = {
+          tableName:"ProductEquipment",
+          PUName:PUName,
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.ProductEquipmentData = res.data.data.rows
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
+      handleEQSelectionChange(row){ //
+        this.ProductEquipmentSelection = row
+      },
+      handleEditEq(index,item){
+
+      },
+      handleDeleteEq(index,item){
+
+      },
+      getMaterialTableData(){  //查询物料明细
         var that = this
         var params = {
           tableName: "BatchMaterialInfo",
@@ -301,25 +361,6 @@
           }
         })
       },
-      getProductEquipment(PUName){
-        let that = this
-        var params = {
-          tableName:"ProductEquipment",
-          PUName:PUName,
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res => {
-          if(res.data.code === "200"){
-            that.ProductEquipmentData = res.data.data.rows
-          }else{
-            that.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        })
-      },
       selectEQPCode(){
         this.ProductEquipmentData.forEach(item =>{
           if(this.EQPCode === item.EQPCode){
@@ -327,19 +368,20 @@
           }
         })
       },
-      handleEdit(index,row){
-        this.EQDialogVisible = true
-        this.EQPID = row.ID
-      },
-      saveEQ(){
+      saveEQ(){  //保存添加多条设备
         let that = this
+        var EqpList = []
+        this.ProductEquipmentSelection.forEach(item =>{
+          EqpList.push({
+            EQPCode:item.EQPCode,
+            EQPName:item.EQPName
+          })
+        })
         var params = {
-          tableName:"ZYTask",
-          ID:this.EQPID,
-          EQPCode:this.EQPCode,
-          EQPName:this.EQPName,
+          ID:this.ZYPlanPUData.ID,
+          EqpList:JSON.stringify(EqpList),
         }
-        this.axios.put("/api/CUID",this.qs.stringify(params)).then(res => {
+        this.axios.post("/api/taskSaveEqpCheck",this.qs.stringify(params)).then(res => {
           if(res.data.code === "200"){
             this.$message({
               type:'success',

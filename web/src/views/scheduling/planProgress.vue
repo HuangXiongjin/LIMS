@@ -13,33 +13,44 @@
           <el-col :span="24">
             <div style="display:inline-block;margin-right:18px;">
               <div style="display: inline-block; text-align: center;">
-                <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待配置' || PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">审核计划</div>
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-success': PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '待执行' || PlanManagerTableData.PlanStatus === '待备料' || PlanManagerTableData.PlanStatus === '物料发送中' || PlanManagerTableData.PlanStatus === '发送物料完成' || PlanManagerTableData.PlanStatus === '已发送投料计划'}">审核计划</div>
               </div>
               <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
             </div>
             <div style="display:inline-block;margin-right:18px;">
               <div style="display: inline-block; text-align: center;">
-                <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '已下发' || PlanManagerTableData.PlanStatus === '已发送投料计划' || PlanManagerTableData.PlanStatus === '已发送物料明细'}">下发计划</div>
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待执行' || PlanManagerTableData.PlanStatus === '待备料' || PlanManagerTableData.PlanStatus === '物料发送中' || PlanManagerTableData.PlanStatus === '发送物料完成' || PlanManagerTableData.PlanStatus === '已发送投料计划'}">下发计划</div>
               </div>
               <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
             </div>
-            <div style="display:inline-block;">
+            <div style="display:inline-block;margin-right:18px;">
               <div style="display: inline-block; text-align: center;">
-                <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '已发送物料明细'}">发送投料计划</div>
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待备料' || PlanManagerTableData.PlanStatus === '物料发送中' || PlanManagerTableData.PlanStatus === '发送物料完成' || PlanManagerTableData.PlanStatus === '已发送投料计划'}">执行计划</div>
               </div>
             </div>
             <div v-for="(item, index) in ProcessSectionData" :key="index" style="display: inline-block;margin-right:18px;vertical-align: top;" @click="PUPlan(item)">
               <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;margin-right:10px;"></i>
-              <div style="display: inline-block; text-align: center;">
-                <div class="container-col text-size-14 bg-white" :class="{'bg-gray':item.ZYPlanStatus === '待生产','bg-lightgreen':item.ZYPlanStatus === '设备已审核','bg-darkblue':item.ZYPlanStatus === '设备已复核','bg-success':item.ZYPlanStatus === '已完成'}">{{ item.PUName }}</div>
-                <div class="text-center" style="display: inherit;" v-show="item.PUName != '备料'">
+              <div style="display: inline-block; text-align: center;" v-if="item.PUName == '备料'">
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':PlanManagerTableData.PlanStatus === '待备料','bg-darkblue':PlanManagerTableData.PlanStatus === '物料发送中','bg-success':PlanManagerTableData.PlanStatus === '物料发送完成'}">
+                  {{ item.PUName }}
+                </div>
+              </div>
+              <div style="display: inline-block; text-align: center;" v-else>
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':item.ZYPlanStatus === '待确认','bg-lightgreen':item.ZYPlanStatus === '待审核','bg-orange':item.ZYPlanStatus === '待复核','bg-darkblue':item.ZYPlanStatus === '执行','bg-success':item.ZYPlanStatus === '已完成'}">
+                  {{ item.PUName }}
+                </div>
+                <div class="text-center" style="display: inherit;">
                   <p class="connectLine marginRight"></p>
                   <p class="marginRight">
-                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '设备已审核' || item.ZYPlanStatus === '设备已复核' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '设备已审核' || item.ZYPlanStatus === '设备已复核' ? 'dark':'plain'">审核</el-tag>
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '待审核' || item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '待审核' || item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'dark':'plain'">设备确认</el-tag>
                   </p>
                   <p class="connectLine marginRight"></p>
                   <p class="marginRight">
-                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '设备已复核' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '设备已复核' ? 'dark':'plain'">复核</el-tag>
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'dark':'plain'">审核</el-tag>
+                  </p>
+                  <p class="connectLine marginRight"></p>
+                  <p class="marginRight">
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '执行' ? 'dark':'plain'">复核</el-tag>
                   </p>
                 </div>
               </div>
@@ -71,13 +82,15 @@
           <el-table-column prop="Unit" label="单位"></el-table-column>
           <el-table-column prop="PlanStatus" label="计划状态">
             <template slot-scope="scope">
-              <b class="color-red cursor-pointer" v-if="scope.row.PlanStatus === '审核未通过'" @click="seeDescription(scope.$index, scope.row)">{{ scope.row.PlanStatus }}</b>
+              <b class="color-red cursor-pointer" v-if="scope.row.PlanStatus === '审核未通过'">{{ scope.row.PlanStatus }}</b>
               <b class="color-orange" v-else-if="scope.row.PlanStatus === '待审核'">{{ scope.row.PlanStatus }}</b>
-              <b class="color-purple" v-else-if="scope.row.PlanStatus === '待配置'">{{ scope.row.PlanStatus }}</b>
               <b class="color-red" v-else-if="scope.row.PlanStatus === '撤回'">{{ scope.row.PlanStatus }}</b>
               <b class="color-lightgreen" v-else-if="scope.row.PlanStatus === '待下发'">{{ scope.row.PlanStatus }}</b>
-              <b class="color-darkblue" v-else-if="scope.row.PlanStatus === '已下发'">{{ scope.row.PlanStatus }}</b>
-              <b class="color-brown" v-else-if="scope.row.PlanStatus === '已发送投料计划'">{{ scope.row.PlanStatus }}</b>
+              <b class="color-purple" v-else-if="scope.row.PlanStatus === '待执行'">{{ scope.row.PlanStatus }}</b>
+              <b class="" v-else-if="scope.row.PlanStatus === '待备料'">{{ scope.row.PlanStatus }}</b>
+              <b class="color-orange" v-else-if="scope.row.PlanStatus === '物料发送中'">{{ scope.row.PlanStatus }}</b>
+              <b class="color-brown" v-else-if="scope.row.PlanStatus === '物料发送完成'">{{ scope.row.PlanStatus }}</b>
+              <b class="color-success" v-else-if="scope.row.PlanStatus === '已发送投料计划'">{{ scope.row.PlanStatus }}</b>
               <b class="" v-else>{{ scope.row.PlanStatus }}</b>
             </template>
           </el-table-column>
@@ -148,15 +161,16 @@
           multipleSelection: [],
           PlanStatus:"",
           searchPlanStatus:"",
-          searchDate:moment().format("YYYY-MM-DD"),
+          searchDate:"",
           searchFormData:[
             {label:"全部",value:""},
             {label:"待审核",value:"待审核"},
-            {label:"待配置",value:"待配置"},
             {label:"待下发",value:"待下发"},
-            {label:"已下发",value:"已下发"},
-            {label:"已发送投料计划",value:"已发送投料计划"},
+            {label:"待执行",value:"待执行"},
+            {label:"待备料",value:"待备料"},
+            {label:"物料发送中",value:"物料发送中"},
             {label:"发送物料完成",value:"发送物料完成"},
+            {label:"已发送投料计划",value:"已发送投料计划"},
             {label:"已完成",value:"已完成"},
           ]
         },
