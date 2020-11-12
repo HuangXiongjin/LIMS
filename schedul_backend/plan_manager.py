@@ -86,6 +86,7 @@ def makeZYPlanZYTask(id):
                     zyplan.INFStatus = Global.TASKSTATUS.NEW.value
                     zyplan.WMSStatus = Global.TASKSTATUS.NEW.value
                     db_session.add(zyplan)
+                    db_session.commit()
 
                     # ebps = db_session.query(EquipmentBatchRunTime).filter(EquipmentBatchRunTime.BrandCode == ocalss.BrandCode,
                     #                 EquipmentBatchRunTime.BatchID == ocalss.BatchID, EquipmentBatchRunTime.PUCode == i.PUCode).all()
@@ -121,7 +122,6 @@ def makeZYPlanZYTask(id):
                     #     zytask.TaskStatus = ""
                     #     zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
                     #     db_session.add(zytask)
-                db_session.commit()
     except Exception as ee:
         db_session.rollback()
         print(ee)
