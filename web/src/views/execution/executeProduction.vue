@@ -9,6 +9,12 @@
           <el-form-item>
             <el-button type="primary" size="small" @click="execute">确定执行</el-button>
           </el-form-item>
+          <el-form-item class="floatRight">
+            <el-radio-group v-model="PlanPlanStatus" size="small" @change="getPlanManagerTableData">
+              <el-radio-button label="待执行"></el-radio-button>
+              <el-radio-button label="待备料"></el-radio-button>
+            </el-radio-group>
+          </el-form-item>
         </el-form>
         <el-table :data="PlanManagerTableData.data" highlight-current-row border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
           <el-table-column type="selection"></el-table-column>
@@ -61,6 +67,7 @@
           total: 0,
           multipleSelection: [],
         },
+        PlanPlanStatus:"待执行",
       }
     },
     mounted(){
@@ -72,7 +79,7 @@
         var that = this
         var params = {
           tableName: "PlanManager",
-          PlanStatus:"待执行",
+          PlanStatus:this.PlanPlanStatus,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }
@@ -105,7 +112,34 @@
         this.$refs.multipleTablePlanManager.toggleRowSelection(row)
       },
       execute(){
-
+        var datalist = []
+        this.PlanManagerTableData.multipleSelection.forEach(item =>{
+          datalist.push(item.ID)
+        })
+        var params={
+          PlanStatus:'待备料',
+          IDs:JSON.stringify(datalist)
+        }
+        this.$confirm('是否下发勾选的批次, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
+           if(res.data.code==='200'){
+             this.$message({
+               type:'success',
+               message:'执行成功'
+             })
+            this.getPlanManagerTableData()
+           }
+         })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
       },
     }
   }

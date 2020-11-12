@@ -35,7 +35,7 @@
                     <template slot-scope="scope">
                       <el-button
                         size="mini"
-                        type="primary"
+                        type="danger"
                         @click="chPlan(scope.$index, scope.row)">撤回</el-button>
                     </template>
                   </el-table-column>
@@ -61,7 +61,6 @@
                   @row-click='yxfClick'
                   @select='yxfSelect'
                   style="width: 100%">
-                  <el-table-column type="selection" width="55"></el-table-column>
                   <el-table-column v-for="item in eqlistableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                   <el-table-column prop="PlanStatus" label="计划状态">
                     <template slot-scope="scope">
@@ -106,7 +105,6 @@ export default {
             total: 0,
         },
         checkedRow:[],
-        datalist:[],
         eqlistableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'SchedulePlanCode',label:'调度编号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'计划产量'},{prop:'Unit',label:'单位'}],//选择设备列表
       }
 
@@ -121,45 +119,24 @@ export default {
         this.getYxfBatch()
       },
       distributemulBatch(){ //勾选下发多批次
-        this.datalist=[]
-        var flag=true
-        if(this.checkedRow.length===0){
-            this.$message({
-               type:'info',
-               message:'请先勾选要下发的批次'
-             })
-             return;
-        }else{
-          this.checkedRow.forEach((item) => {
-          if(item.PlanStatus==='待下发'){
-            this.datalist.push(item)
-          }else{
-            flag=false
-            this.$message({
-               type:'info',
-               message:'当前所选批次包含其他状态，请重新选择'
-             })
-             return;
-          }
-        })
-        if(flag){
-        this.datalist=this.datalist.map((item) => {
-          return item.ID
+        var datalist = []
+        this.checkedRow.forEach(item =>{
+          datalist.push(item.ID)
         })
         var params={
-          PlanStatus:'已下发',
-          IDs:JSON.stringify(this.datalist)
+          PlanStatus:'待执行',
+          IDs:JSON.stringify(datalist)
         }
         this.$confirm('是否下发勾选的批次, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
+          this.axios.post('/api/PlanManagerRealse',this.qs.stringify(params)).then((res) => {
            if(res.data.code==='200'){
              this.$message({
                type:'success',
-               message:'勾选批次下发成功'
+               message:'执行成功'
              })
             this.getSelectedEq()
             this.getYxfBatch()
@@ -169,18 +146,16 @@ export default {
           this.$message({
             type: 'info',
             message: '已取消'
-          });          
+          });
         });
-        }}
-        },
-        getAllbatchrow(e,row){
-          this.checkedRow=e
-          this.$refs.eqlistmultipleTable.setCurrentRow(row)
-        },
-        back(){ //返回主流程
-          this.$router.push('/planProgress')
-        },
-        yxfbatchHandleSizeChange(limit){ //已选设备 每页条数切换
+      },
+      getAllbatchrow(e,row){
+        this.checkedRow=e
+      },
+      back(){ //返回主流程
+        this.$router.push('/planProgress')
+      },
+      yxfbatchHandleSizeChange(limit){ //已选设备 每页条数切换
         this.yxfbatchTableData.limit = limit
         this.getYxfBatch()
       },
@@ -207,7 +182,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-        this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
+        this.axios.post('/api/PlanManagerRealse',this.qs.stringify(params)).then((res) => {
           if(res.data.code==='200'){
             this.getSelectedEq()
             this.$message({
@@ -247,7 +222,7 @@ export default {
       getYxfBatch(){
         var params={
           tableName:'PlanManager',
-          PlanStatus:'已下发',
+          PlanStatus:'待执行',
           offset:this.yxfbatchTableData.offset-1,
           limit:this.yxfbatchTableData.limit,
         }

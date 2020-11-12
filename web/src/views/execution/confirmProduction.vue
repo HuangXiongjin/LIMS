@@ -89,9 +89,8 @@
             <el-table-column prop="Unit" label="单位"></el-table-column>
             <el-table-column prop="ActBeginTime" label="实际开始时间"></el-table-column>
             <el-table-column prop="ActEndTime" label="实际结束时间"></el-table-column>
-            <el-table-column label="操作" fixed="right" width="200">
+            <el-table-column label="操作" fixed="right" width="120">
               <template slot-scope="scope">
-                <el-button size="mini" @click="handleEditEq(scope.$index, scope.row)">编辑</el-button>
                 <el-button size="mini" @click="handleDeleteEq(scope.$index, scope.row)">删除</el-button>
               </template>
             </el-table-column>
@@ -120,10 +119,9 @@
             <span class="marginRight">批次物料对应提取设备</span>
           </p>
           <el-table :data="MaterialTableData.data" border size="small">
-            <el-table-column type="selection"></el-table-column>
             <el-table-column prop="BatchID" label="批次号"></el-table-column>
             <el-table-column prop="BrandName" label="品名"></el-table-column>
-            <el-table-column prop="MATName" label="物料名称"></el-table-column>
+            <el-table-column prop="MATName" label="物料名称" width="340"></el-table-column>
             <el-table-column prop="BucketNum" label="桶号"></el-table-column>
             <el-table-column prop="BucketWeight" label="重量"></el-table-column>
             <el-table-column prop="Unit" label="单位"></el-table-column>
@@ -133,13 +131,42 @@
             <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
             <el-table-column label="操作" fixed="right" width="150">
               <template slot-scope="scope">
-                <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)" v-if="PUDialogType === '复核'">编辑</el-button>
+                <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)">设置投料</el-button>
               </template>
             </el-table-column>
           </el-table>
           <!--选择物料桶投入的设备-->
-          <el-dialog title="选择已分配的设备" :visible.sync="EQMaterialDialogVisible" width="40%" :append-to-body="true">
-            <el-form>
+          <el-dialog title="选择已分配的设备" :visible.sync="EQMaterialDialogVisible" width="40%" :append-to-body="true" v-if="EQMaterialDialogVisible">
+            <el-form :model="MaterialTableData.formField" label-width="110px">
+              <el-form-item label="批次号">
+                <el-input v-model="PlanManagerTableData.multipleSelection[0].BatchID" :disabled="true"></el-input>
+              </el-form-item>
+              <el-form-item label="品名">
+                <el-input v-model="PlanManagerTableData.multipleSelection[0].BrandName" :disabled="true"></el-input>
+              </el-form-item>
+              <el-form-item label="物料名称">
+                <el-select v-model="MaterialTableData.formField.MATName" multiple placeholder="请选择" :disabled="true" style="width: 360px;">
+                  <el-option
+                    v-for="item in MATNameOptions"
+                    :key="item.value"
+                    :label="item.MATName"
+                    :value="item.MATName">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="轮次">
+                <el-input v-model="MaterialTableData.formField.TaskTurn"></el-input>
+              </el-form-item>
+              <el-form-item label="桶投入顺序">
+                <draggable :list="MaterialTableData.formField.BucketNum" v-bind="{group:'article', disabled: false,sort: true}"
+                  class="dragArea11" style="border: 1px dashed #B9B9B9;padding: 10px;">
+                  <div v-for="(item, index) in MaterialTableData.formField.BucketNum" :key="index" class="list-complete-item">
+                    <div class="container-col">
+                      <span class="text-size-14">第{{ index +1 }}桶：{{ item }}</span>
+                    </div>
+                  </div>
+                </draggable>
+              </el-form-item>
               <el-form-item label="选择设备">
                 <el-select v-model="MaterialEQPCode" placeholder="请选择" @change="selectMaterialEQPCode">
                   <el-option v-for="(item,index) in ZYTaskTableData" :key="index" :label="item.EQPCode +'-'+ item.EQPName" :value="item.EQPCode"></el-option>
@@ -169,8 +196,10 @@
 </template>
 
 <script>
+  import draggable from 'vuedraggable'
   export default {
     name:"confirmProduction",
+    components:{draggable},
     data() {
       return {
         PlanManagerTableData:{
@@ -191,16 +220,18 @@
         ZYTaskTableData:[],
         ProductEquipmentData:[],  //工艺下所有设备
         ProductEquipmentSelection:[],  //选中设备
-        EQPCode:"",
-        EQPName:"",
-        EQPID:"",
         MaterialTableData:{
-          data:[]
+          data:[],
+          formField:{
+            MATName:[],
+            TaskTurn:"",
+            BucketNum:[]
+          }
         },
         EQMaterialDialogVisible:false,
+        MATNameOptions:[],
         MaterialEQPCode:"",
         MaterialEQPName:"",
-        MaterialID:""
       }
     },
     mounted(){
@@ -332,14 +363,36 @@
           }
         })
       },
-      handleEQSelectionChange(row){ //
+      handleEQSelectionChange(row){
         this.ProductEquipmentSelection = row
       },
-      handleEditEq(index,item){
-
-      },
-      handleDeleteEq(index,item){
-
+      handleDeleteEq(index,item){  //删除工艺下的设备
+        var params = {tableName:"ZYTask"}
+        var mulId = [{id:item.ID}]
+        params.delete_data = JSON.stringify(mulId)
+        this.$confirm('确定删除所选记录？', '提示', {
+          distinguishCancelAndClose:true,
+          type: 'warning'
+        }).then(()  => {
+          this.axios.delete("/api/CUID",{
+            params: params
+          }).then(res =>{
+            if(res.data.code === "200"){
+              this.$message({
+                type: 'success',
+                message: res.data.message
+              });
+            }
+            this.getZYTaskTable()
+          },res =>{
+            console.log("请求错误")
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       getMaterialTableData(){  //查询物料明细
         var that = this
@@ -361,10 +414,23 @@
           }
         })
       },
-      selectEQPCode(){
-        this.ProductEquipmentData.forEach(item =>{
-          if(this.EQPCode === item.EQPCode){
-            this.EQPName = item.EQPName
+      //获取物料BOM
+      getBOMData(){
+        var that = this
+        var params = {
+          tableName: "MaterialBOM",
+          BrandName:this.PlanManagerTableData.multipleSelection[0].BrandName,
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.MATNameOptions = res.data.data.rows
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
           }
         })
       },
@@ -372,8 +438,10 @@
         let that = this
         var EqpList = []
         this.ProductEquipmentSelection.forEach(item =>{
+          console.log(item)
           EqpList.push({
             EQPCode:item.EQPCode,
+            Number:item.Number,
             EQPName:item.EQPName
           })
         })
@@ -437,9 +505,16 @@
           });
         }
       },
-      EditMaterial(index,row){ //物料桶选择设备
+      EditMaterial(index,row){ //物料桶选择设备、轮次、顺序
         this.EQMaterialDialogVisible = true
-        this.MaterialID = row.ID
+        this.getBOMData()
+        this.MaterialTableData.formField = {
+          ID:row.ID,
+          MATName:row.MATName.split(","),
+          BucketNum:row.BucketNum.split(","),
+          TaskTurn:row.TaskTurn,
+          EQPCode:row.EQPCode
+        }
       },
       selectMaterialEQPCode(){ //选择设备后根据编码获取设备名称
         this.ZYTaskTableData.forEach(item =>{
@@ -452,7 +527,10 @@
         let that = this
         var params = {
           tableName:"BatchMaterialInfo",
-          ID:this.MaterialID,
+          ID:this.MaterialTableData.formField.ID,
+          MATName:this.MaterialTableData.formField.MATName.join(','),
+          BucketNum:this.MaterialTableData.formField.BucketNum.join(','),
+          TaskTurn:this.MaterialTableData.formField.TaskTurn,
           EQPCode:this.MaterialEQPCode,
           EQPName:this.MaterialEQPName,
         }

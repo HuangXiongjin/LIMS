@@ -40,7 +40,7 @@
                     <template slot-scope="scope">
                       <el-button
                         size="mini"
-                        type="primary"
+                        type="danger"
                          v-if="scope.row.PlanStatus==='待审核'"
                         @click="checkNopass(scope.$index, scope.row)">不通过</el-button>
                       <el-button
