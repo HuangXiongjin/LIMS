@@ -14,6 +14,7 @@
           <el-table border :data="tableData" size='small' @selection-change="handleSelectionChange">
               <el-table-column type="selection"></el-table-column>
               <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
+              <el-table-column prop="Number" label="设备编号"></el-table-column>
               <el-table-column prop="EQPName" label="设备名称"></el-table-column>
               <el-table-column prop="Desc" label="描述"></el-table-column>
           </el-table>
@@ -22,6 +23,9 @@
               <el-form :model="submitForm" label-width="110px">
                 <el-form-item key="1" label="设备编码">
                    <el-input v-model="submitForm.EQPCode"></el-input>
+                </el-form-item>
+                <el-form-item key="1" label="设备编号">
+                   <el-input v-model="submitForm.Number"></el-input>
                 </el-form-item>
                 <el-form-item key="2" label="设备名称">
                    <el-input v-model="submitForm.EQPName"></el-input>
@@ -56,6 +60,7 @@
         submitForm:{
           EQPCode:'',
           EQPName:'',
+          Number:'',
           Desc:''
         },
         dialogVisible:false,
@@ -99,6 +104,7 @@
             this.dialogVisible=true
             this.submitForm = {
               EQPCode:this.multipleSelection[0].EQPCode,
+              Number:this.multipleSelection[0].Number,
               EQPName:this.multipleSelection[0].EQPName,
               Desc:this.multipleSelection[0].Desc,
             }
@@ -153,6 +159,7 @@
           var params = {
             tableName:"ProductEquipment",
             EQPCode:this.submitForm.EQPCode,
+            Number:this.submitForm.Number,
             EQPName:this.submitForm.EQPName,
             PUCode:this.PUCode,
             PUName:this.PUName,
@@ -182,6 +189,7 @@
             tableName:"ProductEquipment",
             ID:this.multipleSelection[0].ID,
             EQPCode:this.submitForm.EQPCode,
+            Number:this.submitForm.Number,
             EQPName:this.submitForm.EQPName,
             Desc:this.submitForm.Desc,
             PUName:this.PUName,
