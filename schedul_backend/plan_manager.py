@@ -62,7 +62,7 @@ def makeZYPlanZYTask(id):
     try:
         ocalss = db_session.query(PlanManager).filter(PlanManager.ID == id).first()
         if ocalss:
-            if ocalss.PlanStatus == Global.PlanStatus.WaitRealse.value:
+            if ocalss.PlanStatus == Global.PlanStatus.PreRUN.value:
                 proclass = db_session.query(ProductUnit).filter(ProductUnit.BrandCode == ocalss.BrandCode).order_by("Seq").all()
                 for i in proclass:
                     pu = db_session.query(ProcessUnit).filter(ProcessUnit.PUCode == i.PUCode).first()
