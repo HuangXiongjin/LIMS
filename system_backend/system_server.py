@@ -4,7 +4,6 @@ from flask_restful import reqparse, abort, Api, Resource
 from flask_login import login_required
 from flask_login import current_user
 import datetime
-from common.common_cuid import accurateSelect
 from schedul_backend.ERP_Schedul import erp_schedul
 from schedul_backend.plan_manager import batch_plan
 from schedul_backend.interface_manage import interface_manage
