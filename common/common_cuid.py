@@ -193,15 +193,17 @@ def select(data):
         for key in data.keys():
             if key != "offset" and key != "limit" and key != "tableName" and key != "":
                 if searchModes == None or searchModes == "":#模糊查询
-                    if params == "":
-                        params = key + " like '%" + data[key] + "%'"
-                    else:
-                        params = params + " AND " + key + " like '%" + data[key] + "%'"
+                    if key != "searchModes":
+                        if params == "":
+                            params = key + " like '%" + data[key] + "%'"
+                        else:
+                            params = params + " AND " + key + " like '%" + data[key] + "%'"
                 else:#精确查询
-                    if params == "":
-                        params = key + " = '" + data[key] + "'"
-                    else:
-                        params = params + " AND " + key + " = '" + data[key] + "'"
+                    if key != "searchModes":
+                        if params == "":
+                            params = key + " = '" + data[key] + "'"
+                        else:
+                            params = params + " AND " + key + " = '" + data[key] + "'"
         if pages == "":
             if params == "":
                 sql = "select " + columns + " from [LIMS].[dbo].[" + tableName + "] ORDER BY ID DESC"
