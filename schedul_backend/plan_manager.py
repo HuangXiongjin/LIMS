@@ -690,6 +690,10 @@ def taskSaveEqpCheck():
         try:
             EqpList = json.loads(data.get("EqpList"))
             ocalss = db_session.query(ZYPlan).filter(ZYPlan.ID == data.get("ID")).first()
+            zytasks = db_session.query(ZYTask).filter(ZYTask.BatchID == ocalss.BatchID, ZYTask.BrandCode == ocalss.BrandCode, ZYTask.PUCode == ocalss.PUCode).all()
+            for zy in zytasks:
+                db_session.delete(zy)
+                db_session.commit()
             iTaskSeq = 0
             for j in EqpList:
                 iTaskSeq = iTaskSeq + 1
