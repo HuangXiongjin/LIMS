@@ -697,7 +697,7 @@ def taskSaveEqpCheck():
                 if bReturn == False:
                     return False
                 zytask = ZYTask()
-                zytask.PlanDate = j.StartTime
+                zytask.PlanDate = datetime.datetime.now().strftime("%Y-%m-%d")
                 zytask.TaskID = strTaskNo
                 zytask.BatchID = ocalss.BatchID
                 zytask.PlanSeq = iTaskSeq
@@ -711,9 +711,9 @@ def taskSaveEqpCheck():
                 zytask.EnterTime = ""
                 zytask.EQPCode = j.get("EQPCode")
                 zytask.EQPName = j.get("EQPName")
-                zytask.PlanStartTime = j.StartTime
-                zytask.PlanEndTime = j.EndTime
-                zytask.TaskStatus = ""
+                zytask.PlanStartTime = ""
+                zytask.PlanEndTime = ""
+                zytask.TaskStatus = Global.TASKSTATUS.NEW.value
                 zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
                 db_session.add(zytask)
                 db_session.commit()

@@ -4,7 +4,6 @@ from flask_restful import reqparse, abort, Api, Resource
 from flask_login import login_required
 from flask_login import current_user
 import datetime
-from common.common_cuid import accurateSelect
 from system_backend.SystemManagement import auth_lib, user_management, Role_management, system_manage, \
     PermissionAssignment, account_auth
 from system_backend.SystemManagement.account_auth import login_auth
@@ -46,12 +45,7 @@ api = Api(app)
 from common.common_cuid import select, update, delete, insert
 class CUIDList(Resource):
     def get(self):
-        data = request.values
-        searchModes = data.get("searchModes")
-        if searchModes == "精确查询":
-            return accurateSelect(request.values)
-        else:  # 模糊查询
-            return select(request.values)
+        return select(request.values)
 
     def post(self):
         return insert(request.values)
