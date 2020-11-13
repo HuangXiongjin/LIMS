@@ -688,39 +688,70 @@ def taskSaveEqpCheck():
     if request.method == 'POST':
         data = request.values
         try:
-            EqpList = json.loads(data.get("EqpList"))
             ocalss = db_session.query(ZYPlan).filter(ZYPlan.ID == data.get("ID")).first()
             zytasks = db_session.query(ZYTask).filter(ZYTask.BatchID == ocalss.BatchID, ZYTask.BrandCode == ocalss.BrandCode, ZYTask.PUCode == ocalss.PUCode).all()
             for zy in zytasks:
                 db_session.delete(zy)
                 db_session.commit()
             iTaskSeq = 0
-            for j in EqpList:
-                iTaskSeq = iTaskSeq + 1
-                bReturn, strTaskNo = getTaskNo()
-                if bReturn == False:
-                    return False
-                zytask = ZYTask()
-                zytask.PlanDate = datetime.datetime.now().strftime("%Y-%m-%d")
-                zytask.TaskID = strTaskNo
-                zytask.BatchID = ocalss.BatchID
-                zytask.PlanSeq = iTaskSeq
-                zytask.PUCode = ocalss.PUCode
-                zytask.PUName = ocalss.PUName
-                zytask.PlanType = Global.PLANTYPE.SCHEDULE.value
-                zytask.BrandCode = ocalss.BrandCode
-                zytask.BrandName = ocalss.BrandName
-                zytask.PlanQuantity = ocalss.PlanQuantity
-                zytask.Unit = ocalss.Unit
-                zytask.EnterTime = ""
-                zytask.EQPCode = j.get("EQPCode")
-                zytask.EQPName = j.get("EQPName")
-                zytask.PlanStartTime = ""
-                zytask.PlanEndTime = ""
-                zytask.TaskStatus = Global.TASKSTATUS.NEW.value
-                zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
-                db_session.add(zytask)
-                db_session.commit()
+            if "提取" in ocalss.PUName:
+                bms = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.BatchID == ocalss.BatchID,
+                                                           BatchMaterialInfo.BrandCode == ocalss.BrandCode).all()
+                for bm in bms:
+                    iTaskSeq = iTaskSeq + 1
+                    bReturn, strTaskNo = getTaskNo()
+                    if bReturn == False:
+                        return False
+                    zytask = ZYTask()
+                    zytask.PlanDate = datetime.datetime.now().strftime("%Y-%m-%d")
+                    zytask.TaskID = strTaskNo
+                    zytask.BatchID = ocalss.BatchID
+                    zytask.PlanSeq = iTaskSeq
+                    zytask.PUCode = ocalss.PUCode
+                    zytask.PUName = ocalss.PUName
+                    zytask.PlanType = Global.PLANTYPE.SCHEDULE.value
+                    zytask.BrandCode = ocalss.BrandCode
+                    zytask.BrandName = ocalss.BrandName
+                    zytask.PlanQuantity = ocalss.PlanQuantity
+                    zytask.Unit = ocalss.Unit
+                    zytask.EnterTime = ""
+                    zytask.EQPCode = bm.EQPCode
+                    zytask.EQPName = bm.EQPName
+                    zytask.PlanStartTime = ""
+                    zytask.PlanEndTime = ""
+                    zytask.TaskStatus = Global.TASKSTATUS.NEW.value
+                    zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
+                    db_session.add(zytask)
+                    db_session.commit()
+            else:
+                if data.get("EqpList") != None and data.get("EqpList") != "":
+                    EqpList = json.loads(data.get("EqpList"))
+                    for j in EqpList:
+                        iTaskSeq = iTaskSeq + 1
+                        bReturn, strTaskNo = getTaskNo()
+                        if bReturn == False:
+                            return False
+                        zytask = ZYTask()
+                        zytask.PlanDate = datetime.datetime.now().strftime("%Y-%m-%d")
+                        zytask.TaskID = strTaskNo
+                        zytask.BatchID = ocalss.BatchID
+                        zytask.PlanSeq = iTaskSeq
+                        zytask.PUCode = ocalss.PUCode
+                        zytask.PUName = ocalss.PUName
+                        zytask.PlanType = Global.PLANTYPE.SCHEDULE.value
+                        zytask.BrandCode = ocalss.BrandCode
+                        zytask.BrandName = ocalss.BrandName
+                        zytask.PlanQuantity = ocalss.PlanQuantity
+                        zytask.Unit = ocalss.Unit
+                        zytask.EnterTime = ""
+                        zytask.EQPCode = j.get("EQPCode")
+                        zytask.EQPName = j.get("EQPName")
+                        zytask.PlanStartTime = ""
+                        zytask.PlanEndTime = ""
+                        zytask.TaskStatus = Global.TASKSTATUS.NEW.value
+                        zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
+                        db_session.add(zytask)
+                        db_session.commit()
             return json.dumps({"code": "200", "message": "任务选择设备成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
