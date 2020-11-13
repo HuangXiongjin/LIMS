@@ -3,9 +3,9 @@
     <el-col :span="24">
       <div class="page-title">
         <span class="text-size-16 marginRight">选择批计划，查看计划工艺进展</span>
-        <span class="sideState bg-gray"></span><span class="text-size-14">待生产</span>
-        <span class="sideState bg-lightgreen"></span><span class="text-size-14">设备已审核</span>
-        <span class="sideState bg-darkblue"></span><span class="text-size-14">设备已复核</span>
+        <span class="sideState bg-gray"></span><span class="text-size-14">待确认</span>
+        <span class="sideState bg-lightgreen"></span><span class="text-size-14">设备已确认</span>
+        <span class="sideState bg-darkblue"></span><span class="text-size-14">已复核</span>
         <span class="sideState bg-success"></span><span class="text-size-14">已完成</span>
       </div>
       <div class="platformContainer">
@@ -13,19 +13,19 @@
           <el-col :span="24">
             <div style="display:inline-block;margin-right:18px;">
               <div style="display: inline-block; text-align: center;">
-                <div class="container-col text-size-14 bg-gray" :class="{'bg-success': PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '待执行' || PlanManagerTableData.PlanStatus === '待备料' || PlanManagerTableData.PlanStatus === '物料发送中' || PlanManagerTableData.PlanStatus === '发送物料完成' || PlanManagerTableData.PlanStatus === '已发送投料计划'}">审核计划</div>
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-success': PlanManagerTableData.PlanStatus === '待下发' || PlanManagerTableData.PlanStatus === '待执行' || PlanManagerTableData.PlanStatus === '待备料' || PlanManagerTableData.PlanStatus === '物料发送中' || PlanManagerTableData.PlanStatus === '物料发送完成' || PlanManagerTableData.PlanStatus === '已发送投料计划'}">审核计划</div>
               </div>
               <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
             </div>
             <div style="display:inline-block;margin-right:18px;">
               <div style="display: inline-block; text-align: center;">
-                <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待执行' || PlanManagerTableData.PlanStatus === '待备料' || PlanManagerTableData.PlanStatus === '物料发送中' || PlanManagerTableData.PlanStatus === '发送物料完成' || PlanManagerTableData.PlanStatus === '已发送投料计划'}">下发计划</div>
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待执行' || PlanManagerTableData.PlanStatus === '待备料' || PlanManagerTableData.PlanStatus === '物料发送中' || PlanManagerTableData.PlanStatus === '物料发送完成' || PlanManagerTableData.PlanStatus === '已发送投料计划'}">下发计划</div>
               </div>
               <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;"></i>
             </div>
             <div style="display:inline-block;margin-right:18px;">
               <div style="display: inline-block; text-align: center;">
-                <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待备料' || PlanManagerTableData.PlanStatus === '物料发送中' || PlanManagerTableData.PlanStatus === '发送物料完成' || PlanManagerTableData.PlanStatus === '已发送投料计划'}">执行计划</div>
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-success':PlanManagerTableData.PlanStatus === '待备料' || PlanManagerTableData.PlanStatus === '物料发送中' || PlanManagerTableData.PlanStatus === '物料发送完成' || PlanManagerTableData.PlanStatus === '已发送投料计划'}">执行计划</div>
               </div>
             </div>
             <div v-for="(item, index) in ProcessSectionData" :key="index" style="display: inline-block;margin-right:18px;vertical-align: top;" @click="PUPlan(item)">
@@ -36,17 +36,13 @@
                 </div>
               </div>
               <div style="display: inline-block; text-align: center;" v-else>
-                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':item.ZYPlanStatus === '待确认','bg-lightgreen':item.ZYPlanStatus === '待审核','bg-orange':item.ZYPlanStatus === '待复核','bg-darkblue':item.ZYPlanStatus === '执行','bg-success':item.ZYPlanStatus === '已完成'}">
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':item.ZYPlanStatus === '待确认','bg-lightgreen':item.ZYPlanStatus === '待复核','bg-darkblue':item.ZYPlanStatus === '执行','bg-success':item.ZYPlanStatus === '已完成'}">
                   {{ item.PUName }}
                 </div>
                 <div class="text-center" style="display: inherit;">
                   <p class="connectLine marginRight"></p>
                   <p class="marginRight">
-                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '待审核' || item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '待审核' || item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'dark':'plain'">设备确认</el-tag>
-                  </p>
-                  <p class="connectLine marginRight"></p>
-                  <p class="marginRight">
-                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'dark':'plain'">审核</el-tag>
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'dark':'plain'">设备确认</el-tag>
                   </p>
                   <p class="connectLine marginRight"></p>
                   <p class="marginRight">
@@ -106,30 +102,20 @@
           </el-pagination>
         </div>
         <el-dialog title="工艺信息" :visible.sync="PUDialogVisible" width="80%" :append-to-body="true" v-if="PlanManagerTableData.multipleSelection.length > 0">
-          <el-table :data="ZYPlanTableData.data" border size="small" class="marginBottom">
-            <el-table-column prop="PlanNo" label="调度编号"></el-table-column>
-            <el-table-column prop="BatchID" label="批次号"></el-table-column>
-            <el-table-column prop="PUCode" label="工艺段编码"></el-table-column>
-            <el-table-column prop="PUName" label="工艺段名称"></el-table-column>
-            <el-table-column prop="BrandCode" label="品名编码"></el-table-column>
-            <el-table-column prop="BrandName" label="品名名称"></el-table-column>
-            <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
-            <el-table-column prop="Unit" label="单位"></el-table-column>
-            <el-table-column prop="ZYPlanStatus" label="计划状态"></el-table-column>
-          </el-table>
+          <el-col :span="24">
+            <el-form :inline="true">
+              <el-form-item label="当前状态："><label class="marginRight color-darkblue">{{ PUPlanRowData.ZYPlanStatus }}</label></el-form-item>
+              <el-form-item label="调度编号："><label class="marginRight color-darkblue">{{ PUPlanRowData.PlanNo }}</label></el-form-item>
+              <el-form-item label="工艺段名称："><label class="marginRight color-darkblue">{{ PUPlanRowData.PUName }}</label></el-form-item>
+              <el-form-item label="品名名称："><label class="marginRight color-darkblue">{{ PUPlanRowData.BrandName }}</label></el-form-item>
+              <el-form-item label="计划产量："><label class="marginRight color-darkblue">{{ PUPlanRowData.PlanQuantity }}</label></el-form-item>
+              <el-form-item label="单位："><label class="color-darkblue">{{ PUPlanRowData.Unit }}</label></el-form-item>
+            </el-form>
+          </el-col>
           <el-row :gutter="15">
-            <el-col :span="12">
-              <p class="text-size-18 marginBottom">计划使用设备</p>
-              <el-table :data="EquipmentBatchRunTimeTableData.data" border size="small">
-                <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
-                <el-table-column prop="EQPName" label="设备名称"></el-table-column>
-                <el-table-column prop="StartTime" label="计划开始时间"></el-table-column>
-                <el-table-column prop="EndTime" label="计划结束时间"></el-table-column>
-              </el-table>
-            </el-col>
-            <el-col :span="12">
+            <el-col :span="24">
               <p class="text-size-18 marginBottom">实际使用设备</p>
-              <el-table :data="ZYTaskTableData.data" border size="small" v-show="PlanManagerTableData.multipleSelection[0].PlanStatus === '已发送投料计划'">
+              <el-table :data="ZYTaskTableData.data" border size="small">
                 <el-table-column prop="TaskID" label="任务单号"></el-table-column>
                 <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
                 <el-table-column prop="EQPName" label="设备名称"></el-table-column>
@@ -174,17 +160,12 @@
             {label:"已完成",value:"已完成"},
           ]
         },
-        ProcessSectionData:[], //品名的工艺段
+        ProcessSectionData:[], //批次的工艺计划
         PUDialogVisible:false,
-        ZYPlanTableData:{
-          data:[],
-        },
+        PUPlanRowData:{},
         ZYTaskTableData:{
           data:[]
         },
-        EquipmentBatchRunTimeTableData:{
-          data:[]
-        }
       }
     },
     created(){
@@ -268,25 +249,8 @@
       },
       PUPlan(item){
         this.PUDialogVisible = true
+        this.PUPlanRowData = item
         var that = this
-        var params = {
-          tableName: "ZYPlan",
-          BrandCode:item.BrandCode,
-          PUCode:item.PUCode,
-          BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res => {
-          if(res.data.code === "200"){
-            that.ZYPlanTableData.data = res.data.data.rows
-          }else{
-            that.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        })
         var params1 = {
           tableName: "ZYTask",
           BrandCode:item.BrandCode,
@@ -298,24 +262,6 @@
         }).then(res => {
           if(res.data.code === "200"){
             that.ZYTaskTableData.data = res.data.data.rows
-          }else{
-            that.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        })
-        var params2 = {
-          tableName: "EquipmentBatchRunTime",
-          BrandCode:item.BrandCode,
-          PUCode:item.PUCode,
-          BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
-        }
-        this.axios.get("/api/CUID",{
-          params: params2
-        }).then(res => {
-          if(res.data.code === "200"){
-            that.EquipmentBatchRunTimeTableData.data = res.data.data.rows
           }else{
             that.$message({
               type: 'info',

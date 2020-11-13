@@ -6,7 +6,7 @@
         <el-step title="录入物料桶/组"></el-step>
         <el-step title="发送物料明细"></el-step>
       </el-steps>
-      <el-row v-if="steps == 0">
+      <el-row v-show="steps == 0">
         <el-col :span="24">
           <div class="platformContainer">
             <el-form :inline="true">
@@ -43,7 +43,7 @@
           </div>
         </el-col>
       </el-row>
-      <el-row v-if="steps == 1">
+      <el-row v-show="steps == 1">
         <el-col :span="24">
           <div class="platformContainer">
             <el-form :inline="true">
@@ -51,8 +51,7 @@
                 <el-button type="info" size="small" @click="addMaterialForm">录入物料组</el-button>
               </el-form-item>
             </el-form>
-            <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial">
-              <el-table-column prop="SendFlag" label="发送状态"></el-table-column>
+            <el-table :data="MaterialTableData.data" border size="small">
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="MATName" label="物料名称" width="360"></el-table-column>
@@ -60,13 +59,13 @@
               <el-table-column prop="BucketWeight" label="重量"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
               <el-table-column prop="Flag" label="桶/托盘标识"></el-table-column>
-              <el-table-column prop="TaskTurn" label="轮次"></el-table-column>
               <el-table-column prop="Description" label="描述"></el-table-column>
               <el-table-column prop="OperationDate" label="发送时间" width="110"></el-table-column>
+              <el-table-column prop="SendFlag" label="发送状态"></el-table-column>
               <el-table-column label="操作" fixed="right" width="150">
                 <template slot-scope="scope">
-                  <el-button size="mini" v-show="PlanManagerTableData.multipleSelection[0].PlanStatus != '物料发送完成'" @click="EditMaterial(scope.$index, scope.row)">编辑</el-button>
-                  <el-button size="mini" v-show="PlanManagerTableData.multipleSelection[0].PlanStatus != '物料发送完成'" type="danger" @click="DeleteMaterial(scope.$index, scope.row)">删除</el-button>
+                  <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)">编辑</el-button>
+                  <el-button size="mini" type="danger" @click="DeleteMaterial(scope.$index, scope.row)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -107,9 +106,6 @@
                     <el-option label="托盘" value="托盘"></el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item label="描述">
-                  <el-input v-model="MaterialTableData.formField.Description"></el-input>
-                </el-form-item>
               </el-form>
               <span slot="footer" class="dialog-footer">
                 <el-button @click="MaterialTableData.dialogVisible = false">取 消</el-button>
@@ -119,11 +115,17 @@
           </div>
         </el-col>
       </el-row>
-      <el-row v-if="steps == 2">
+      <el-row v-show="steps == 2">
         <el-col :span="24">
           <div class="platformContainer">
+            <el-form :inline="true">
+              <el-form-item>
+                <el-button size="mini" type="success" @click="sendMaterialInfo">发送物料明细</el-button>
+                <el-button size="mini" type="warning" @click="returnMaterialInfo">确认接收退料</el-button>
+              </el-form-item>
+            </el-form>
             <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial" @selection-change="handleMaterialSelectionChange" @row-click="handleMaterialRowClick">
-              <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
+              <el-table-column type="selection"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="MATName" label="物料名称" width="360"></el-table-column>
@@ -133,11 +135,7 @@
               <el-table-column prop="Flag" label="桶/托盘"></el-table-column>
               <el-table-column prop="Description" label="描述"></el-table-column>
               <el-table-column prop="OperationDate" label="发送时间" width="110"></el-table-column>
-              <el-table-column label="操作" fixed="right" width="130">
-                <template slot-scope="scope">
-                  <el-button size="mini" type="success" v-show="PlanManagerTableData.multipleSelection[0].PlanStatus != '物料发送完成'" @click="sendMaterialInfo(scope.$index, scope.row)">发送物料明细</el-button>
-                </template>
-              </el-table-column>
+              <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
             </el-table>
           </div>
         </el-col>
@@ -179,7 +177,6 @@
             BucketWeight:"",
             Unit:"",
             Flag:"",
-            Description:"",
           },
         },
         UnitData:[],
@@ -400,7 +397,7 @@
         }
       },
       EditMaterial(index,row){
-        if(row.SendFlag != "WMS已接收"){
+        if(row.SendFlag != "WMS已接收" && this.PlanManagerTableData.multipleSelection[0].PlanStatus != "物料发送完成"){
           this.MaterialTableData.dialogVisible = true
           this.MaterialTableData.dialogTitle = "编辑"
           this.getBOMData()
@@ -412,20 +409,18 @@
             BucketNum:row.BucketNum.split(","),
             BucketWeight:row.BucketWeight,
             Unit:row.Unit,
-            Description:row.Description,
             Flag:row.Flag,
-            EQPCode:row.EQPCode,
             FeedingSeq:row.FeedingSeq,
           }
         }else{
           this.$message({
             type: 'info',
-            message: '已发送的物料不可修改'
+            message: '已发送完成的计划下或已发送的物料不可修改'
           });
         }
       },
       DeleteMaterial(index,row){
-        if(row.SendFlag != "WMS已接收"){
+        if(row.SendFlag != "WMS已接收" && this.PlanManagerTableData.multipleSelection[0].PlanStatus != "物料发送完成"){
           var params = {tableName:"BatchMaterialInfo"}
           var mulId = []
           mulId.push({
@@ -458,7 +453,7 @@
         }else{
           this.$message({
             type: 'info',
-            message: '已发送的物料不可删除'
+            message: '已发送完成的计划下或已发送的物料不可删除'
           });
         }
       },
@@ -473,7 +468,6 @@
             BucketNum:this.MaterialTableData.formField.BucketNum.join(','),
             BucketWeight:this.MaterialTableData.formField.BucketWeight,
             Unit:this.MaterialTableData.formField.Unit,
-            Description:this.MaterialTableData.formField.Description,
             Flag:this.MaterialTableData.formField.Flag,
             FeedingSeq:this.MaterialTableData.formField.FeedingSeq,
             SendFlag:"待发送",
@@ -508,7 +502,6 @@
             BucketNum:this.MaterialTableData.formField.BucketNum.join(','),
             BucketWeight:this.MaterialTableData.formField.BucketWeight,
             Unit:this.MaterialTableData.formField.Unit,
-            Description:this.MaterialTableData.formField.Description,
             Flag:this.MaterialTableData.formField.Flag,
             FeedingSeq:this.MaterialTableData.formField.FeedingSeq
           }
@@ -534,10 +527,19 @@
         }
       },
       //发送物料明细到WMS
-      sendMaterialInfo(index,row){
-        if(this.PlanManagerTableData.multipleSelection.length == 1){
-          if(row.SendFlag != "投料系统已接收"){
-            var mulId = [{id:row.ID}]
+      sendMaterialInfo(){
+        if(this.MaterialTableData.multipleSelection.length > 0 && this.PlanManagerTableData.multipleSelection[0].PlanStatus != "物料发送完成"){
+          var flag = true
+          var mulId = []
+          this.MaterialTableData.multipleSelection.forEach(item =>{
+            mulId.push({
+              id:item.ID
+            })
+            if(item.SendFlag != "投料系统已接收"){
+              flag = false
+            }
+          })
+          if(flag){
             var params = {}
             params.sendData = JSON.stringify(mulId)
             params.PlanStatus = "物料发送中"
@@ -572,7 +574,7 @@
         }else{
           this.$message({
             type: 'info',
-            message: "请选择批次"
+            message: "请选择未发送完成的批次并且至少选择一组物料进行发送"
           });
         }
       },
@@ -580,16 +582,14 @@
       returnMaterialInfo(){
         if(this.MaterialTableData.multipleSelection.length > 0){
           var isFlag = true
+          var mulId = []
           this.MaterialTableData.multipleSelection.forEach(item =>{
+            mulId.push({id:item.ID})
             if(item.SendFlag != "投料系统已接收"){
               isFlag = false
             }
           })
           if(isFlag){
-            var mulId = []
-            this.MaterialTableData.multipleSelection.forEach(item =>{
-              mulId.push({id:item.ID});
-            })
             var params = {}
             params.sendData = JSON.stringify(mulId)
             this.$confirm('确定接收已选退料吗？', '提示', {
