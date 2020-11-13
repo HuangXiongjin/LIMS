@@ -7,7 +7,7 @@
       <div class="platformContainer">
         <el-form :inline="true">
           <el-form-item label="发送时间">
-            <el-date-picker type="date" v-model="OperationDate" size="mini" format="yyyy-MM-dd" style="width: 140px;" :clearable="false" @change="getMaterialTableData"></el-date-picker>
+            <el-date-picker type="date" v-model="OperationDate" size="mini" format="yyyy-MM-dd" style="width: 140px;" @change="getMaterialTableData"></el-date-picker>
           </el-form-item>
           <el-form-item class="floatRight">
             <el-radio-group v-model="SendFlag" size="small" @change="getMaterialTableData">

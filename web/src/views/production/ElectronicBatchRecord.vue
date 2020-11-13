@@ -7,10 +7,18 @@
     </el-col>
     <el-col :span='24' v-if="currentBatch">
       <div class="platformContainer">
-        <div v-for="(item, index) in ZYPlanData" :key="index" style="display:inline-block;marginRight:18px;cursor:pointer" @click='ClickPU(item)'>
-          <div class="container-col text-size-14 bg-gray" v-if="item.ZYPlanStatus === '待生产'">{{ item.PUName }}</div>
-          <div class="container-col text-size-14 bg-success" v-if="item.ZYPlanStatus === '已完成'">{{ item.PUName }}</div>
-          <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;" v-if="index != ZYPlanData.length -1"></i>
+        <div v-for="(item, index) in ZYPlanData" :key="index" style="display: inline-block;margin-right:18px;vertical-align: top;" @click='ClickPU(item)'>
+          <div style="display: inline-block; text-align: center;" v-if="item.PUName === '备料'">
+            <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':PlanManagerTableData.data[0].PlanStatus === '待备料','bg-darkblue':PlanManagerTableData.data[0].PlanStatus === '物料发送中','bg-success':PlanManagerTableData.data[0].PlanStatus === '物料发送完成'}">
+              {{ item.PUName }}
+            </div>
+          </div>
+          <div style="display: inline-block; text-align: center;" v-else>
+            <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':item.ZYPlanStatus === '待确认','bg-lightgreen':item.ZYPlanStatus === '待复核','bg-darkblue':item.ZYPlanStatus === '执行','bg-success':item.ZYPlanStatus === '已完成'}">
+              {{ item.PUName }}
+            </div>
+          </div>
+          <i class="fa fa-arrow-right" v-if="index != ZYPlanData.length -1" style="vertical-align: top;margin-top: 10px;margin-right:10px;"></i>
         </div>
         <el-table :data="PlanManagerTableData.data" border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
           <el-table-column type="selection"></el-table-column>
@@ -74,7 +82,6 @@
         var that = this
         var params = {
           tableName: "PlanManager",
-          PlanStatus:"已下发",
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }
@@ -241,16 +248,16 @@
 
 <style scoped>
    .container-col{
-    display: inline-block;
-    clear: both;
-    overflow: hidden;
-    border:1px solid #999;
-    border-radius: 4px;
-    padding: 0 15px;
-    margin-bottom: 15px;
-    margin-right: 10px;
-    height: 40px;
-    line-height: 40px;
-    color: #000;
-  }
+      clear: both;
+      overflow: hidden;
+      border:1px solid #999;
+      border-radius: 4px;
+      padding: 0 15px;
+      margin-bottom: 15px;
+      margin-right: 10px;
+      height: 40px;
+      line-height: 40px;
+      color: #000;
+      cursor: pointer;
+    }
 </style>
