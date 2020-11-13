@@ -365,6 +365,7 @@
         var params = {
           tableName: "BatchMaterialInfo",
           BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
+          BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
           searchModes:"精确查询"
         }
         this.axios.get("/api/CUID",{
