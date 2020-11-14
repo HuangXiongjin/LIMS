@@ -9,24 +9,18 @@ app.config['SQLALCHEMY_DATABASE_URI'] = CONNECT_DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
-# app.register_blueprint(work_order, url_prefix='/work')
-
-
-def create_app():
+def main():
     CORS(app, supports_credentials=True)
     from lims_backend.test import t1
 
     app.register_blueprint(t1, url_prefix='/work')
+    app.run(port=10002)
     return app
 
 
 @app.route('/')
 def hello_world():
     return 'This is lims_backend!'
-
-
-def main():
-    app.run(port=10002)
 
 
 if __name__ == '__main__':
