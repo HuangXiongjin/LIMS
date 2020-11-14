@@ -142,28 +142,24 @@ headers = {
     'Connection': 'keep-alive',
     'content-type': 'application/json'
     }
+
 @interface_manage.route('/WMS_SendPlan', methods=['GET', 'POST'])
 def WMS_SendPlan():
-    '''发送投料任务到WMS'''
+    '''发送投料任务和桶对应提取罐信息到投料系统'''
     if request.method == 'POST':
         data = request.values
         try:
             jsonstr = json.dumps(data.to_dict())
             if len(jsonstr) > 10:
-                jsonnumber = re.findall(r"\d+\.?\d*", jsonstr)
                 dic = []
-                for key in jsonnumber:
-                    id = int(key)
-                    plan = db_session.query(PlanManager).filter(PlanManager.ID == id).first()
-                    oclass = db_session.query(ZYTask).filter(ZYTask.BatchID == plan.BatchID,
-                                                             ZYTask.BrandCode == plan.BrandCode,
-                                                             ZYTask.PUName.like("%提取%")).all()
-                    for oc in oclass:
-                        dic.append({"PlanNo": plan.ID, "BrandCode": oc.BrandCode,
-                                    "BrandName": oc.BrandName, "BatchID": oc.BatchID,
-                                    "Weight": oc.PlanQuantity, "Unit": oc.Unit, "EQPCode": oc.EQPCode, "EQPName":oc.EQPName})
-                    plan.PlanStatus = Global.PlanStatus.FSWMS.value
-                    db_session.commit()
+                PlanID = "440"#data.get("PlanID")
+                pmoc = db_session.query(PlanManager).filter(PlanManager.ID == PlanID).first()
+                zypl = db_session.query(ZYPlan).filter(ZYPlan.BatchID == pmoc.BatchID,
+                                                        ZYPlan.BrandCode == pmoc.BrandCode,
+                                                        ZYPlan.PUName.like("%提取%")).first()
+                dic.append({"PlanNo": zypl.ID, "BrandCode": pmoc.BrandCode,
+                            "BrandName": pmoc.BrandName, "BatchID": pmoc.BatchID,
+                            "Weight": pmoc.PlanQuantity, "Unit": pmoc.Unit})
                 url = Global.WMSurl + "api/WbeApi/RecvTransInfon"
                 dir = {}
                 dir["zyplan_list"] = dic
@@ -174,6 +170,31 @@ def WMS_SendPlan():
                 if responjson.get("code") != "0":
                     db_session.rollback()
                     return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！" + responjson.get("msg")})
+                oclass = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.BrandCode == pmoc.BrandCode, BatchMaterialInfo.BatchID == pmoc.BatchID).all()
+                dic = []
+                for oc in oclass:
+                    dic.append(
+                        {"PlanNo":zypl.ID, "BatchMaterialInfoID": oc.ID, "BrandCode": pmoc.BrandCode, "BrandName": pmoc.BrandName,
+                         "BatchID": oc.BatchID, "FlagCode": oc.BucketNum,
+                         "Weight": oc.BucketWeight, "Unit": oc.Unit, "Flag": oc.Flag,
+                         "FeedingSeq": oc.FeedingSeq,
+                         "EQPCode": oc.EQPCode, "EQPName": oc.EQPName, "TYPE": "投料"})
+                    oc.SendFlag = "投料系统已接收"
+                    oc.OperationDate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    db_session.commit()
+                if len(dic) > 0:
+                    url = Global.WMSurl + "api/WbeApi/RecvContanerInfon"
+                    dir = {}
+                    dir["batchmaterial_list"] = dic
+                    dir = json.dumps(dir)
+                    resp = requests.post(url, json=dir, headers=headers)
+                    responjson = json.loads(resp.content)
+                    responjson = eval(responjson)
+                    if responjson.get("code") != "0":
+                        db_session.rollback()
+                        return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！" + responjson.get("msg")})
+                pmoc.PlanStatus = data.get("PlanStatus")
+                db_session.commit()
                 return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
             db_session.rollback()
@@ -194,8 +215,8 @@ def WMS_SendMatils():
                 for key in jsonnumber:
                     id = int(key)
                     oclass = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.ID == id).first()
-                    # zypla = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID, ZYPlan.BrandCode == oclass.BrandCode, ZYPlan.PUName.like("%提取%")).first()
-                    dic.append({"BatchMaterialInfoID": oclass.ID, "BrandCode": pmoc.BrandCode, "BrandName": pmoc.BrandName,
+                    zypla = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID, ZYPlan.BrandCode == oclass.BrandCode, ZYPlan.PUName.like("%提取%")).first()
+                    dic.append({"PlanNo":zypla.ID, "BatchMaterialInfoID": oclass.ID, "BrandCode": pmoc.BrandCode, "BrandName": pmoc.BrandName,
                                 "BatchID": oclass.BatchID, "FlagCode": oclass.BucketNum,
                                 "Weight": oclass.BucketWeight, "Unit": oclass.Unit, "Flag": oclass.Flag, "FeedingSeq": oclass.FeedingSeq,
                                 "EQPCode": oclass.EQPCode, "EQPName":oclass.EQPName, "TYPE":"备料"})
@@ -236,8 +257,8 @@ def WMS_SendTouLMatils():
                 for key in jsonnumber:
                     id = int(key)
                     oclass = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.ID == id).first()
-                    # zypla = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID, ZYPlan.BrandCode == oclass.BrandCode, ZYPlan.PUName.like("%提取%")).first()
-                    dic.append({"BatchMaterialInfoID": oclass.ID, "BrandCode": pmoc.BrandCode, "BrandName": pmoc.BrandName,
+                    zypla = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID, ZYPlan.BrandCode == oclass.BrandCode, ZYPlan.PUName.like("%提取%")).first()
+                    dic.append({"PlanNo":zypla.ID, "BatchMaterialInfoID": oclass.ID, "BrandCode": pmoc.BrandCode, "BrandName": pmoc.BrandName,
                                 "BatchID": oclass.BatchID, "FlagCode": oclass.BucketNum,
                                 "Weight": oclass.BucketWeight, "Unit": oclass.Unit, "Flag": oclass.Flag, "FeedingSeq": oclass.FeedingSeq,
                                 "EQPCode": oclass.EQPCode, "EQPName":oclass.EQPName, "TYPE":"投料"})
