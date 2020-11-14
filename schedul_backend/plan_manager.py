@@ -723,6 +723,8 @@ def taskSaveEqpCheck():
                     zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
                     db_session.add(zytask)
                     db_session.commit()
+                ocalss.ZYPlanStatus = Global.ZYPlanStatus.Produncting.value
+                db_session.commit()
             else:
                 if data.get("EqpList") != None and data.get("EqpList") != "":
                     EqpList = json.loads(data.get("EqpList"))
