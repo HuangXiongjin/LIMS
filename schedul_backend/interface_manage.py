@@ -152,7 +152,7 @@ def WMS_SendPlan():
             jsonstr = json.dumps(data.to_dict())
             if len(jsonstr) > 10:
                 dic = []
-                PlanID = "440"#data.get("PlanID")
+                PlanID = data.get("PlanID")
                 pmoc = db_session.query(PlanManager).filter(PlanManager.ID == PlanID).first()
                 zypl = db_session.query(ZYPlan).filter(ZYPlan.BatchID == pmoc.BatchID,
                                                         ZYPlan.BrandCode == pmoc.BrandCode,
