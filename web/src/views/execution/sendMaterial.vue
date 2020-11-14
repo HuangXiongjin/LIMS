@@ -535,7 +535,7 @@
             mulId.push({
               id:item.ID
             })
-            if(item.SendFlag != "投料系统已接收"){
+            if(item.SendFlag === "投料系统已接收"){
               flag = false
             }
           })
@@ -548,8 +548,15 @@
               distinguishCancelAndClose:true,
               type: 'warning'
             }).then(()  => {
+              const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+              });
               this.axios.post("/api/WMS_SendMatils",this.qs.stringify(params)).then(res =>{
                 if(res.data.code === "200"){
+                  loading.close();
                   this.$message({
                     type: 'success',
                     message: res.data.message
@@ -558,6 +565,7 @@
                 this.getMaterialTableData()
               },res =>{
                 console.log("请求错误")
+                loading.close();
               })
             }).catch(() => {
               this.$message({
