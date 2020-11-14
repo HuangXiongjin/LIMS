@@ -13,7 +13,7 @@
           <el-col :span="24">
             <div v-for="(item, index) in ZYPlanTableData.data" :key="index" style="display: inline-block;margin-right:18px;vertical-align: top;">
               <div style="display: inline-block; text-align: center;" v-if="item.PUName === '备料'">
-                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':PlanManagerTableData.PlanStatus === '待备料','bg-darkblue':PlanManagerTableData.PlanStatus === '物料发送中','bg-success':PlanManagerTableData.PlanStatus === '物料发送完成'}">
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':PlanManagerTableData.multipleSelection[0].PlanStatus === '待备料','bg-darkblue':PlanManagerTableData.multipleSelection[0].PlanStatus === '物料发送中','bg-success':PlanManagerTableData.multipleSelection[0].PlanStatus === '物料发送完成'}">
                   {{ item.PUName }}
                 </div>
               </div>
@@ -705,9 +705,9 @@
             var params = {
               tableName: "ZYPlan",
               ID: this.ZYPlanPUData.ID,
-              ZYPlanStatus: "待复核"
+              ZYPlanStatus: "执行"
             }
-            this.axios.post("/api/CUID",this.qs.stringify(params)).then(res => {
+            this.axios.put("/api/CUID",this.qs.stringify(params)).then(res => {
               if(res.data.code === "200"){
                 this.$message({
                   type:'success',
