@@ -222,7 +222,7 @@
           </el-table>
           <span slot="footer" class="dialog-footer">
             <el-button @click="confirmTQDialogVisible = false">关闭</el-button>
-            <el-button type="primary" @click="CheckPass">复核确认</el-button>
+            <el-button type="primary" @click="CheckTQPass">复核确认</el-button>
           </span>
         </el-dialog>
         <!--非提取复核弹框-->
@@ -550,17 +550,19 @@
           type: 'warning'
         }).then(()  => {
           var params = {
-            ID:this.ZYPlanPUData.ID,
+            tableName: "ZYPlan",
+            ID: this.ZYPlanPUData.ID,
+            ZYPlanStatus: "待复核"
           }
-          this.axios.post("/api/taskSaveEqpCheck",this.qs.stringify(params)).then(res => {
-            if(res.data.code === "200"){
+          this.axios.put("/api/CUID", this.qs.stringify(params)).then(res => {
+            if (res.data.code === "200") {
               this.$message({
-                type:'success',
-                message:res.data.message
+                type: 'success',
+                message: res.data.message
               })
               this.EQTQDialogVisible = false
               this.getZYPlanTableData()
-            }else{
+            } else {
               that.$message({
                 type: 'info',
                 message: res.data.message
@@ -653,27 +655,67 @@
           }
         })
       },
+      //提取复核 生成task
+      CheckTQPass(){
+        let that = this
+        if(this.ZYPlanPUData.ZYPlanStatus === "待复核") {
+          this.$confirm('是否确定当前设备以及物料投放信息进行复核？确认后无法再复核', '提示', {
+            distinguishCancelAndClose:true,
+            type: 'warning'
+          }).then(()  => {
+            var params = {
+              ID:this.ZYPlanPUData.ID,
+            }
+            this.axios.post("/api/taskSaveEqpCheck",this.qs.stringify(params)).then(res => {
+              if(res.data.code === "200"){
+                this.$message({
+                  type:'success',
+                  message:res.data.message
+                })
+                this.confirmTQDialogVisible = false
+                this.getZYPlanTableData()
+              }else{
+                that.$message({
+                  type: 'info',
+                  message: res.data.message
+                });
+              }
+            })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消操作'
+            });
+          });
+        }else{
+          this.$message({
+            type: 'info',
+            message: "当前工序状态不能做复核操作"
+          });
+        }
+      },
+      //非提取复核
       CheckPass(){
         let that = this
         if(this.ZYPlanPUData.ZYPlanStatus === "待复核") {
-          this.$confirm('是否确定当前设备，并按照当前物料桶的投放的设备进行复核？确认后无法再复核', '提示', {
+          this.$confirm('是否确定当前设备进行复核？确认后无法再复核', '提示', {
             distinguishCancelAndClose:true,
             type: 'warning'
           }).then(()  => {
             var params = {
               tableName: "ZYPlan",
               ID: this.ZYPlanPUData.ID,
-              ZYPlanStatus: "执行"
+              ZYPlanStatus: "待复核"
             }
-            this.axios.put("/api/CUID", this.qs.stringify(params)).then(res => {
-              if (res.data.code === "200") {
+            this.axios.post("/api/CUID",this.qs.stringify(params)).then(res => {
+              if(res.data.code === "200"){
                 this.$message({
-                  type: 'success',
-                  message: res.data.message
+                  type:'success',
+                  message:res.data.message
                 })
                 this.confirmDialogVisible = false
                 this.getZYPlanTableData()
-              } else {
+              }else{
                 that.$message({
                   type: 'info',
                   message: res.data.message

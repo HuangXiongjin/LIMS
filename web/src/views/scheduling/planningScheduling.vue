@@ -16,7 +16,6 @@
       <el-button type="primary" v-show="steps != 0" @click="LastStep">上一步</el-button>
       <el-button type="primary" v-show="steps != 2" @click="NextStep">下一步</el-button>
     </el-col>
-    <el-col ><el-button type='info' @click="getAnotherPort">获取数据</el-button></el-col>
   </el-row>
 </template>
 
@@ -60,11 +59,6 @@ import DistributionPlan from './DistributionPlan.vue'
               this.$refs.child3.getSelectedEq()
               this.$refs.child3.getYxfBatch()
           }
-        },
-        getAnotherPort(){
-          this.axios.get('/lims/work/index').then((res) => {
-            console.log(res)
-          })
         }
     }
   }

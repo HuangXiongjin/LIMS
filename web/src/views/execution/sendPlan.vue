@@ -131,16 +131,22 @@
       //发送投料计划到WMS
       sendPlan(){
         if(this.PlanManagerTableData.multipleSelection.length == 1){
-          var mulId = []
-          mulId.push({id:this.PlanManagerTableData.multipleSelection[0].ID});
-          var params = {}
-          params.sendData = JSON.stringify(mulId)
+          var params = {
+            PlanID:this.PlanManagerTableData.multipleSelection[0].ID
+          }
           this.$confirm('确定发送此批的投料计划到WMS吗？', '提示', {
             distinguishCancelAndClose:true,
             type: 'warning'
           }).then(()  => {
+            const loading = this.$loading({
+              lock: true,
+              text: 'Loading',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.axios.post("/api/WMS_SendPlan",this.qs.stringify(params)).then(res =>{
               if(res.data.code === "200"){
+                loading.close();
                 this.$message({
                   type: 'success',
                   message: res.data.message
@@ -149,6 +155,7 @@
               this.getPlanManagerTableData()
             },res =>{
               console.log("请求错误")
+              loading.close();
             })
           }).catch(() => {
             this.$message({
