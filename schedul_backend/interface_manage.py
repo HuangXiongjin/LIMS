@@ -82,14 +82,13 @@ class WMS_Interface(ServiceBase):
                 status = i.get("status")
                 if PlanNo != None:
                     # oclas = db_session.query(PlanManager).filter(PlanManager.ID == PlanNo).first()
-                    zy = db_session.query(ZYPlan).filter(ZYPlan.BatchID == BatchID,
-                                                         ZYPlan.BrandCode == BrandCode,ZYPlan.PUName == "投料").first()
+                    zy = db_session.query(ZYPlan).filter(ZYPlan.ID == PlanNo).first()
                     if zy != None:
                         if status == "Start":
-                            zy.ZYPlanStatus = common.Global.ZYPlanStatus.READY.value
+                            zy.ZYPlanStatus = common.Global.ZYPlanStatus.Feeding.value
                             zy.ActBeginTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                         elif status == "End":
-                            zy.ZYPlanStatus = common.Global.ZYPlanStatus.Clear.value
+                            zy.ZYPlanStatus = common.Global.ZYPlanStatus.FeedingFinish.value
                             zy.ActEndTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     db_session.commit()
                 else:

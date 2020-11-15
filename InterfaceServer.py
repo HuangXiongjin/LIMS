@@ -26,6 +26,6 @@ if __name__ == '__main__':
     logging.info("listening to http://192.168.7.100:5001/")
     logging.info("wsdl is at: http://192.168.7.100:5001/?wsdl")
 
-    server = make_server('127.0.0.1', 5001, wsgi_app)
+    server = make_server('192.168.7.100', 5001, wsgi_app)
     server.serve_forever()
 

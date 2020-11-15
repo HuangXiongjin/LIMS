@@ -32,6 +32,8 @@ class ZYPlanStatus(Enum):
     Produced = "待确认"
     EquipmentCheck = "待审核"
     EquipmentReview = "待复核"
+    Feeding = "开始投料"
+    FeedingFinish = "投料完成"
     Produncting = "执行"
     Finshed = "完成"
 #任务ZYTask

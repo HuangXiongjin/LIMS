@@ -237,7 +237,7 @@ def checkPlanManager():
 @batch_plan.route('/checkPlanManagerSingle', methods=['POST', 'GET'])
 def checkPlanManagerSingle():
     '''
-    审核计划
+    单条审核计划
     :return:
     '''
     if request.method == 'POST':
