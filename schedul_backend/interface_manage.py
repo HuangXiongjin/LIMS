@@ -192,7 +192,7 @@ def WMS_SendPlan():
                     if responjson.get("code") != "0":
                         db_session.rollback()
                         return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！" + responjson.get("msg")})
-                pmoc.PlanStatus = data.get("PlanStatus")
+                pmoc.PlanStatus = Global.PlanStatus.FSMWMSed.value
                 db_session.commit()
                 return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
