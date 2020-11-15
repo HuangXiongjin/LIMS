@@ -98,9 +98,9 @@ export default new Router({
         {path:'/displayEqTime',name:'displayEqTime',meta:{ title:'设备运行时间展示',type:"排产调度系统"},component:displayEqTime},
 
         {path:'/confirmProduction',name:'confirmProduction',meta:{ title:'设备确认',type:"生产执行系统"},component:confirmProduction},
-        {path:'/executeProduction',name:'executeProduction',meta:{ title:'生产确认',type:"生产执行系统"},component:executeProduction},
+        {path:'/executeProduction',name:'executeProduction',meta:{ title:'生产计划确认',type:"生产执行系统"},component:executeProduction},
         {path:'/sendMaterial',name:'sendMaterial',meta:{ title:'发送物料明细',type:"生产执行系统"},component:sendMaterial},
-        {path:'/sendMaterialLog',name:'sendMaterialLog',meta:{ title:'物料明细记录',type:"生产执行系统"},component:sendMaterialLog},
+        {path:'/sendMaterialLog',name:'sendMaterialLog',meta:{ title:'物料运输记录',type:"生产执行系统"},component:sendMaterialLog},
         {path:'/sendPlan',name:'sendPlan',meta:{ title:'发送投料计划',type:"生产执行系统"},component:sendPlan},
 
         {path:'/ProductionMonitoring',name:'ProductionMonitoring',meta:{ title:'生产监控',type:"生产数据管理"},component:ProductionMonitoring},

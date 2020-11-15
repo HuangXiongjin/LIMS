@@ -114,8 +114,8 @@
             {title:"设备运行统计",icon:"el-icon-data-line",url:"/displayEqTime"},
           ]},
           {label: '生产执行系统',icon:"el-icon-document-checked",mainMenu:[
-            {title:'生产确认',icon:"el-icon-folder-checked",url:"/executeProduction"},
-            {title:'物料明细管理',icon:"fa fa-level-up",url:"/sendMaterial"},
+            {title:'生产计划确认',icon:"el-icon-folder-checked",url:"/executeProduction"},
+            {title:'发送物料明细',icon:"fa fa-level-up",url:"/sendMaterial"},
             {title:"物料运输记录",icon:"el-icon-s-grid",url:"/sendMaterialLog"},
             {title:'设备确认',icon:"el-icon-document-checked",url:"/confirmProduction"},
             {title:'发送投料计划',icon:"el-icon-position",url:"/sendPlan"},
