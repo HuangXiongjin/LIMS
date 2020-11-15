@@ -146,13 +146,13 @@
             });
             this.axios.post("/api/WMS_SendPlan",this.qs.stringify(params)).then(res =>{
               if(res.data.code === "200"){
-                loading.close();
                 this.$message({
                   type: 'success',
                   message: res.data.message
                 });
+                this.getPlanManagerTableData()
               }
-              this.getPlanManagerTableData()
+              loading.close();
             },res =>{
               console.log("请求错误")
               loading.close();

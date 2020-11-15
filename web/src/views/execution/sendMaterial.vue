@@ -556,13 +556,13 @@
               });
               this.axios.post("/api/WMS_SendMatils",this.qs.stringify(params)).then(res =>{
                 if(res.data.code === "200"){
-                  loading.close();
                   this.$message({
                     type: 'success',
                     message: res.data.message
                   });
+                  this.getMaterialTableData()
                 }
-                this.getMaterialTableData()
+                loading.close();
               },res =>{
                 console.log("请求错误")
                 loading.close();
