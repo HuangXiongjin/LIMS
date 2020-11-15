@@ -477,6 +477,7 @@
         var params = {
           tableName: "BatchMaterialInfo",
           BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
+          BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
           SendFlag:"投料系统已接收",
           searchModes:"精确查询"
         }
