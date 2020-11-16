@@ -269,8 +269,7 @@ class Permission(Base):
     Description = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
 
     # 创建时间
-    CreateData = Column(DateTime, primary_key=False, autoincrement=False, nullable=True,
-                        default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    CreateData = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 class DepartmentManager(Base):
     '''部门'''

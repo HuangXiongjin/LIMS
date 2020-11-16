@@ -22,7 +22,6 @@ class PlanStatus(Enum):
     Recall = "撤回"
     PreRUN = "待执行"
     PreMaterial = "待备料"
-    FSMWMS = "物料发送中"
     FSMWMSed = "已发送投料计划"
     RUN = "执行"
     FINISH = "已完成"
