@@ -266,6 +266,9 @@
     display: inline-block;
     margin-right: 15px;
   }
+  .black-theme .list-complete-item{
+    color:#000;
+  }
   .list-complete-item.sortable-chosen {
     color: #4AB7BD;
   }

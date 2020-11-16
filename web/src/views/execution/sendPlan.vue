@@ -8,7 +8,7 @@
           </div>
           <div class="platformContainer">
             <el-form :inline="true">
-              <el-form-item>
+              <el-form-item v-has="['发送投料计划']">
                 <el-button type="primary" size="small" icon='el-icon-position' @click="sendPlan">发送投料计划</el-button>
               </el-form-item>
               <el-form-item class="floatRight">
@@ -140,7 +140,7 @@
           }).then(()  => {
             const loading = this.$loading({
               lock: true,
-              text: 'Loading',
+              text: '发送中。。。',
               spinner: 'el-icon-loading',
               background: 'rgba(0, 0, 0, 0.7)'
             });

@@ -37,9 +37,9 @@
           dialogVisible: false,
           dialogTitle:'',
           handleType:[
-            {type:"primary",label:"添加"},
-            {type:"warning",label:"修改"},
-            {type:"danger",label:"删除"},
+            {type:"primary",label:"添加",hasPermissions:['生产建模']},
+            {type:"warning",label:"修改",hasPermissions:['生产建模']},
+            {type:"danger",label:"删除",hasPermissions:['生产建模']},
           ],
         },
       }

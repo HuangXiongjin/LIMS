@@ -84,7 +84,7 @@
             <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
             <el-table-column label="操作" fixed="right" width="150">
               <template slot-scope="scope">
-                <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)">设置投料</el-button>
+                <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)" v-has="['设备确认']">设置投料</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -133,7 +133,7 @@
           </el-dialog>
           <span slot="footer" class="dialog-footer">
             <el-button @click="EQTQDialogVisible = false">关闭</el-button>
-            <el-button type="primary" @click="MaterialEQPass">设备确认</el-button>
+            <el-button type="primary" @click="MaterialEQPass" v-has="['设备确认']">设备确认</el-button>
           </span>
         </el-dialog>
         <!--非提取设备确认-->
@@ -153,7 +153,7 @@
           </p>
           <el-form :inline="true">
             <el-form-item>
-              <el-button type="primary" size="mini" @click="EQDialogVisible = true">一键分配设备</el-button>
+              <el-button type="primary" size="mini" @click="EQDialogVisible = true" v-has="['设备确认']">一键分配设备</el-button>
             </el-form-item>
           </el-form>
           <el-table :data="ZYTaskTableData" border size="small">
@@ -169,7 +169,7 @@
             <el-table-column prop="ActEndTime" label="实际结束时间"></el-table-column>
             <el-table-column label="操作" fixed="right" width="120">
               <template slot-scope="scope">
-                <el-button size="mini" @click="handleDeleteEq(scope.$index, scope.row)">删除</el-button>
+                <el-button size="mini" @click="handleDeleteEq(scope.$index, scope.row)" v-has="['设备确认']">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -189,7 +189,7 @@
           </el-dialog>
           <span slot="footer" class="dialog-footer">
             <el-button @click="EQConfirmDialogVisible = false">关闭</el-button>
-            <el-button type="primary" @click="EQConfirm">设备确认</el-button>
+            <el-button type="primary" @click="EQConfirm" v-has="['设备确认']">设备确认</el-button>
           </span>
         </el-dialog>
         <!--提取复核弹框-->
@@ -222,7 +222,7 @@
           </el-table>
           <span slot="footer" class="dialog-footer">
             <el-button @click="confirmTQDialogVisible = false">关闭</el-button>
-            <el-button type="primary" @click="CheckTQPass">复核确认</el-button>
+            <el-button type="primary" @click="CheckTQPass" v-has="['设备复核']">复核确认</el-button>
           </span>
         </el-dialog>
         <!--非提取复核弹框-->
@@ -254,7 +254,7 @@
           </el-table>
           <span slot="footer" class="dialog-footer">
             <el-button @click="confirmDialogVisible = false">关闭</el-button>
-            <el-button type="primary" @click="CheckPass">复核确认</el-button>
+            <el-button type="primary" @click="CheckPass" v-has="['设备复核']">复核确认</el-button>
           </span>
         </el-dialog>
       </div>

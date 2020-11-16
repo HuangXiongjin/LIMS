@@ -9,7 +9,7 @@
           <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">批次列表</div>
            <div class="marginBottom">
-             <el-button type="success" icon="el-icon-position" size='mini' @click="shMultiplebatch">多批次审核</el-button></div>
+             <el-button type="success" icon="el-icon-position" size='mini' @click="shMultiplebatch" v-has="['计划审核']">多批次审核</el-button></div>
               <el-table
                   v-loading="loading"
                   element-loading-text="拼命加载中"
@@ -42,7 +42,7 @@
                         size="mini"
                         type="danger"
                          v-if="scope.row.PlanStatus==='待审核'"
-                        @click="checkNopass(scope.$index, scope.row)">不通过</el-button>
+                        @click="checkNopass(scope.$index, scope.row)" v-has="['计划审核']">不通过</el-button>
                       <el-button
                         size="mini"
                         v-if="scope.row.PlanStatus==='审核未通过'"

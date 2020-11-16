@@ -11,7 +11,7 @@
           <div class="platformContainer">
             <el-form :inline="true">
               <el-form-item>
-                <el-button type="primary" size="small" @click="sendMaterialFinish">物料明细发送完成</el-button>
+                <el-button type="primary" size="small" @click="sendMaterialFinish" v-has="['发送物料']">物料明细发送完成</el-button>
               </el-form-item>
               <el-form-item class="floatRight">
                 <el-radio-group v-model="sendPlanPlanStatus" size="small" @change="getPlanManagerTableData">
@@ -48,7 +48,7 @@
           <div class="platformContainer">
             <el-form :inline="true">
               <el-form-item>
-                <el-button type="info" size="small" @click="addMaterialForm">录入物料组</el-button>
+                <el-button type="info" size="small" @click="addMaterialForm" v-has="['发送物料']">录入物料组</el-button>
               </el-form-item>
             </el-form>
             <el-table :data="MaterialTableData.data" border size="small">
@@ -64,8 +64,8 @@
               <el-table-column prop="SendFlag" label="发送状态"></el-table-column>
               <el-table-column label="操作" fixed="right" width="150">
                 <template slot-scope="scope">
-                  <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)">编辑</el-button>
-                  <el-button size="mini" type="danger" @click="DeleteMaterial(scope.$index, scope.row)">删除</el-button>
+                  <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)" v-has="['发送物料']">编辑</el-button>
+                  <el-button size="mini" type="danger" @click="DeleteMaterial(scope.$index, scope.row)" v-has="['发送物料']">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -120,8 +120,8 @@
           <div class="platformContainer">
             <el-form :inline="true">
               <el-form-item>
-                <el-button size="mini" type="success" @click="sendMaterialInfo">发送物料明细</el-button>
-                <el-button size="mini" type="warning" @click="returnMaterialInfo">确认接收退料</el-button>
+                <el-button size="mini" type="success" @click="sendMaterialInfo" v-has="['发送物料']">发送物料明细</el-button>
+                <el-button size="mini" type="warning" @click="returnMaterialInfo" v-has="['发送物料']">确认接收退料</el-button>
               </el-form-item>
             </el-form>
             <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial" @selection-change="handleMaterialSelectionChange" @row-click="handleMaterialRowClick">

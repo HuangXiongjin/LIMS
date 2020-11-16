@@ -6,7 +6,7 @@
           <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in Processtab" :key="index" v-bind:effect="item.PUName===PUName?'dark':'plain'" @click="getCurrentprocess(item.PUName,item.PUCode,item.ID)">{{item.PUName}}</el-tag>
       </div>
       <div class='platformContainer marginTop'>
-          <el-form :inline="true">
+          <el-form :inline="true" v-has="['生产建模']">
               <el-form-item v-for='(item,index) in handleType' :key='index'>
                 <el-button :type='item.type' @click='MakeOperation(item.label)' size='small'>{{item.label}}</el-button>
               </el-form-item>

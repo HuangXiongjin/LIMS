@@ -10,7 +10,7 @@
         <div class="platformContainer">
           <tableView class="" :tableData="TableData" @getTableData="getTableData" @privileges="privileges" @teamGroup="teamGroup"></tableView>
         </div>
-        <el-dialog :title="selectPersonnelName" :visible.sync="dialogVisible" width="50%">
+        <el-dialog :title="selectPersonnelName" :visible.sync="dialogVisible" width="50%" :append-to-body="true">
           <el-transfer :titles="['未拥有角色', '已分配角色']" :button-texts="['收回', '分配']" v-model="transferValue" :data="transferData"></el-transfer>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>

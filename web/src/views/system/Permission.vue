@@ -23,8 +23,8 @@
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
             {prop:"PermissionName",label:"权限名字",type:"input",value:""},
-            {prop:"PermissionType",label:"权限类型",type:"input",value:""},
             {prop:"Description",label:"描述",type:"input",value:"",searchProp:false},
+            {prop:"PermissionType",label:"权限类型",type:"input",value:""},
             {prop:"CreateData",label:"创建时间",type:"input",value:"",showField:false,searchProp:false,canSubmit:false},
           ],
           data:[],

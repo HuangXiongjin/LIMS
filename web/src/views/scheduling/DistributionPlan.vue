@@ -6,13 +6,13 @@
              </el-col>
            <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">待下发列表</div>
-           <el-button type="success" icon="el-icon-position" size='mini' @click="distributemulBatch" class="marginBottom">下发</el-button>
+           <el-button type="success" icon="el-icon-position" size='mini' @click="distributemulBatch" class="marginBottom" v-has="['计划下发']">下发</el-button>
               <el-table
                   :data="eqlistTableData.data"
                   highlight-current-row
                   size='small'
                   border
-                  @select='getAllbatchrow'
+                  @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager"
                   ref="eqlistmultipleTable"
                   style="width: 100%">
                   <el-table-column type="selection" width="55"></el-table-column>
@@ -36,7 +36,7 @@
                       <el-button
                         size="mini"
                         type="danger"
-                        @click="chPlan(scope.$index, scope.row)">撤回</el-button>
+                        @click="chPlan(scope.$index, scope.row)" v-has="['计划下发']">撤回</el-button>
                     </template>
                   </el-table-column>
               </el-table>
@@ -149,8 +149,11 @@ export default {
           });
         });
       },
-      getAllbatchrow(e,row){
-        this.checkedRow=e
+      handleSelectionChangePlanManager(row){ //审核计划批次点击
+        this.checkedRow=row
+      },
+      handleRowClickPlanManager(row){
+        this.$refs.eqlistmultipleTable.toggleRowSelection(row)
       },
       back(){ //返回主流程
         this.$router.push('/planProgress')

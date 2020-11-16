@@ -53,8 +53,7 @@
         var that = this
         var params = {
           tableName: this.TableData.tableName,
-          field:"OperationDate",
-          fieldvalue:moment(this.formParameters.searchDate).format("YYYY-MM-DD"),
+          OperationDate:moment(this.formParameters.searchDate).format("YYYY-MM-DD"),
           limit:this.TableData.limit,
           offset:this.TableData.offset - 1
         }

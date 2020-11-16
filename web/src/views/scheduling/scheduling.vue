@@ -28,7 +28,7 @@
           </el-collapse>
           <div class="platformContainer">
             <el-form :inline="true">
-              <el-form-item v-for="(item,index) in planTableData.handleType" :key="index">
+              <el-form-item v-for="(item,index) in planTableData.handleType" :key="index" v-has="['订单管理']">
                 <el-button :type="item.type" size="small" @click="handleForm(item.label)">{{ item.label }}</el-button>
               </el-form-item>
             </el-form>
@@ -142,11 +142,11 @@
                 <p class="marginBottom">共选择<span>{{ selectPlanList.length }}</span>类品种，需生成批数<span>{{ selectPlanBatchTotal }}</span>批</p>
               </el-col>
             </el-row>
-            <el-button type="primary" size="small" @click="planschedul">生成批计划</el-button>
+            <el-button type="primary" size="small" @click="planschedul" v-has="['计划分批']">生成批计划</el-button>
           </div>
           <div class="platformContainer" style="min-height: 550px;">
             <el-form :inline="true">
-              <el-form-item v-for="(item,index) in PlanManagerTableData.handleType" :key="index">
+              <el-form-item v-for="(item,index) in PlanManagerTableData.handleType" :key="index" v-has="['计划分批']">
                 <el-button :type="item.type" size="small" @click="handleFormPlanManager(item.label)">{{ item.label }}</el-button>
               </el-form-item>
               <el-form-item class="floatRight">
@@ -177,7 +177,7 @@
                   <b class="" v-else>{{ scope.row.PlanStatus }}</b>
                 </template>
               </el-table-column>
-              <el-table-column label="操作" fixed="right" width="150">
+              <el-table-column label="操作" fixed="right" width="150" v-has="['计划分批']">
                 <template slot-scope="scope">
                   <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" v-if="scope.row.PlanStatus === '待审核' || scope.row.PlanStatus === '审核未通过'">编辑</el-button>
                   <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)" v-if="scope.row.PlanStatus === '待审核' || scope.row.PlanStatus === '审核未通过'">删除</el-button>

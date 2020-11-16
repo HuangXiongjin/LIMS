@@ -7,7 +7,7 @@
       <div class="platformContainer">
         <el-form :inline="true">
           <el-form-item>
-            <el-button type="primary" size="small" @click="execute">确定执行</el-button>
+            <el-button type="primary" size="small" @click="execute" v-has="['计划执行']">确定执行</el-button>
           </el-form-item>
           <el-form-item class="floatRight">
             <el-radio-group v-model="PlanPlanStatus" size="small" @change="getPlanManagerTableData">

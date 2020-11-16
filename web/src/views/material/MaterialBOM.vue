@@ -15,7 +15,7 @@
         <el-col :span="20">
           <div class="platformContainer">
             <p class="marginBottom">{{ BrandActive }}表格数据</p>
-            <el-form :inline="true">
+            <el-form :inline="true" v-has="['生产建模']">
               <el-form-item v-for="(item,index) in handleType" :key="index">
                 <el-button :type="item.type" size="small" @click="handleForm(item.label)">{{ item.label }}</el-button>
               </el-form-item>
