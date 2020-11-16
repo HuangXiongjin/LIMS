@@ -82,55 +82,12 @@
             <el-table-column prop="EQPName" label="提取设备名称"></el-table-column>
             <el-table-column prop="Description" label="描述"></el-table-column>
             <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
-            <el-table-column label="操作" fixed="right" width="150">
+            <el-table-column label="操作" fixed="right" width="120">
               <template slot-scope="scope">
                 <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)" v-has="['设备确认']">设置投料</el-button>
               </template>
             </el-table-column>
           </el-table>
-          <!--修改物料桶-->
-          <el-dialog title="选择已分配的设备" :visible.sync="EQMaterialDialogVisible" width="40%" :append-to-body="true" v-if="EQMaterialDialogVisible">
-            <el-form :model="MaterialTableData.formField" label-width="110px">
-              <el-form-item label="批次号">
-                <el-input v-model="PlanManagerTableData.multipleSelection[0].BatchID" :disabled="true"></el-input>
-              </el-form-item>
-              <el-form-item label="品名">
-                <el-input v-model="PlanManagerTableData.multipleSelection[0].BrandName" :disabled="true"></el-input>
-              </el-form-item>
-              <el-form-item label="物料名称">
-                <el-select v-model="MaterialTableData.formField.MATName" multiple placeholder="请选择" :disabled="true" style="width: 360px;">
-                  <el-option
-                    v-for="item in MATNameOptions"
-                    :key="item.value"
-                    :label="item.MATName"
-                    :value="item.MATName">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="桶投入顺序">
-                <draggable :list="MaterialTableData.formField.BucketNum" v-bind="{group:'article', disabled: false,sort: true}"
-                  class="dragArea11" style="border: 1px dashed #B9B9B9;padding: 10px;">
-                  <div v-for="(item, index) in MaterialTableData.formField.BucketNum" :key="index" class="list-complete-item">
-                    <div class="container-col">
-                      <span class="text-size-14">第{{ index +1 }}桶：{{ item }}</span>
-                    </div>
-                  </div>
-                </draggable>
-              </el-form-item>
-              <el-form-item label="选择设备">
-                <el-select v-model="MaterialEQPCode" placeholder="请选择" @change="selectMaterialEQPCode">
-                  <el-option v-for="(item,index) in ProductEquipmentData" :key="index" :label="item.Number" :value="item.EQPCode"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="描述">
-                <el-input v-model="MaterialTableData.formField.Description"></el-input>
-              </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-              <el-button @click="EQMaterialDialogVisible = false">取消</el-button>
-              <el-button type="primary" @click="saveMaterialEQ">保存</el-button>
-            </span>
-          </el-dialog>
           <span slot="footer" class="dialog-footer">
             <el-button @click="EQTQDialogVisible = false">关闭</el-button>
             <el-button type="primary" @click="MaterialEQPass" v-has="['设备确认']">设备确认</el-button>
@@ -219,6 +176,11 @@
             <el-table-column prop="EQPCode" label="提取设备编码"></el-table-column>
             <el-table-column prop="EQPName" label="提取设备名称"></el-table-column>
             <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
+            <el-table-column label="操作" fixed="right" width="120">
+              <template slot-scope="scope">
+                <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)" v-has="['设备确认']">设置投料</el-button>
+              </template>
+            </el-table-column>
           </el-table>
           <span slot="footer" class="dialog-footer">
             <el-button @click="confirmTQDialogVisible = false">关闭</el-button>
@@ -240,6 +202,11 @@
           <p class="text-size-18 marginBottom marginTop">
             <span class="marginRight">根据实际情况检查生产使用设备</span>
           </p>
+          <el-form :inline="true">
+            <el-form-item>
+              <el-button type="primary" size="mini" @click="EQDialogVisible = true" v-has="['设备确认']">一键分配设备</el-button>
+            </el-form-item>
+          </el-form>
           <el-table :data="ZYTaskTableData" border size="small">
             <el-table-column prop="TaskID" label="任务单号"></el-table-column>
             <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
@@ -255,6 +222,49 @@
           <span slot="footer" class="dialog-footer">
             <el-button @click="confirmDialogVisible = false">关闭</el-button>
             <el-button type="primary" @click="CheckPass" v-has="['设备复核']">复核确认</el-button>
+          </span>
+        </el-dialog>
+        <!--修改物料桶-->
+        <el-dialog title="选择已分配的设备" :visible.sync="EQMaterialDialogVisible" width="40%" :append-to-body="true" v-if="EQMaterialDialogVisible">
+          <el-form :model="MaterialTableData.formField" label-width="110px">
+            <el-form-item label="批次号">
+              <el-input v-model="PlanManagerTableData.multipleSelection[0].BatchID" :disabled="true"></el-input>
+            </el-form-item>
+            <el-form-item label="品名">
+              <el-input v-model="PlanManagerTableData.multipleSelection[0].BrandName" :disabled="true"></el-input>
+            </el-form-item>
+            <el-form-item label="物料名称">
+              <el-select v-model="MaterialTableData.formField.MATName" multiple placeholder="请选择" :disabled="true" style="width: 360px;">
+                <el-option
+                  v-for="item in MATNameOptions"
+                  :key="item.value"
+                  :label="item.MATName"
+                  :value="item.MATName">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="桶投入顺序">
+              <draggable :list="MaterialTableData.formField.BucketNum" v-bind="{group:'article', disabled: false,sort: true}"
+                class="dragArea11" style="border: 1px dashed #B9B9B9;padding: 10px;">
+                <div v-for="(item, index) in MaterialTableData.formField.BucketNum" :key="index" class="list-complete-item">
+                  <div class="container-col">
+                    <span class="text-size-14">第{{ index +1 }}桶：{{ item }}</span>
+                  </div>
+                </div>
+              </draggable>
+            </el-form-item>
+            <el-form-item label="选择设备">
+              <el-select v-model="MaterialEQPCode" placeholder="请选择" @change="selectMaterialEQPCode">
+                <el-option v-for="(item,index) in ProductEquipmentData" :key="index" :label="item.Number" :value="item.EQPCode"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="描述">
+              <el-input v-model="MaterialTableData.formField.Description"></el-input>
+            </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="EQMaterialDialogVisible = false">取消</el-button>
+            <el-button type="primary" @click="saveMaterialEQ">保存</el-button>
           </span>
         </el-dialog>
       </div>

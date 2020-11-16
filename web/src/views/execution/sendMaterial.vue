@@ -10,9 +10,6 @@
         <el-col :span="24">
           <div class="platformContainer">
             <el-form :inline="true">
-              <el-form-item>
-                <el-button type="primary" size="small" @click="sendMaterialFinish" v-has="['发送物料']">物料明细发送完成</el-button>
-              </el-form-item>
               <el-form-item class="floatRight">
                 <el-radio-group v-model="sendPlanPlanStatus" size="small" @change="getPlanManagerTableData">
                   <el-radio-button label="待发送"></el-radio-button>
@@ -120,8 +117,9 @@
           <div class="platformContainer">
             <el-form :inline="true">
               <el-form-item>
-                <el-button size="mini" type="success" @click="sendMaterialInfo" v-has="['发送物料']">发送物料明细</el-button>
-                <el-button size="mini" type="warning" @click="returnMaterialInfo" v-has="['发送物料']">确认接收退料</el-button>
+                <el-button size="small" type="primary" @click="sendMaterialInfo" v-has="['发送物料']">发送物料明细</el-button>
+                <el-button type="success" size="small" @click="sendMaterialFinish" v-has="['发送物料']">物料明细发送完成</el-button>
+                <el-button size="small" type="warning" @click="returnMaterialInfo" v-has="['发送物料']">确认接收退料</el-button>
               </el-form-item>
             </el-form>
             <el-table :data="MaterialTableData.data" border size="small" ref="multipleTableMaterial" @selection-change="handleMaterialSelectionChange" @row-click="handleMaterialRowClick">

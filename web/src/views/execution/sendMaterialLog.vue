@@ -55,7 +55,7 @@
           offset: 1,
           total: 0,
         },
-        OperationDate:moment().format("YYYY-MM-DD"),
+        OperationDate:moment(),
         SendFlag:"投料系统已接收",
       }
     },
@@ -67,7 +67,7 @@
         var that = this
         var params = {
           tableName: "BatchMaterialInfo",
-          OperationDate:this.OperationDate,
+          OperationDate:moment(this.OperationDate).format("YYYY-MM-DD"),
           SendFlag: this.SendFlag,
           limit:this.MaterialTableData.limit,
           offset:this.MaterialTableData.offset - 1
