@@ -10,33 +10,10 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {
-      '/api': {  //使用"/api"来代替"http://xxx"
-        target: 'http://127.0.0.1:5000', //源地址
-        changeOrigin: true, //请求头
-        pathRewrite: {
-          '^/api': '/' //路径重写
-          }
-      },
-      '/lims': {  //使用"/api"来代替"http://xxx"
-        // target: 'http://192.168.10.219:10002', //联调地址
-        target: 'http://127.0.0.1:10002', //源地址
-        changeOrigin: true, //请求头
-        pathRewrite: {
-          '^/lims': '/' //路径重写
-          }
-      },
-      '/socket': {
-        target: 'ws://127.0.0.1:5002',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/socket': '/'
-          }
-      }
-    },
+    proxyTable: {},
 
     // Various Dev Server settings
-    host: '127.0.0.1', // can be overwritten by process.env.HOST
+    host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
