@@ -1,0 +1,22 @@
+.lightgreen{
+    color:#0A9168;
+}
+.bggreen{
+    background-color:#0A9168;
+}
+.lightbrown{
+    color:#D3D3D3;
+}
+.lightyellow{
+    color:#C9BD8A;
+}
+.container{
+    opacity: 1;
+    border-radius: 16px;
+}
+.textWhite{
+    color: #fff;
+}
+.cursor{
+    cursor: pointer;
+}
