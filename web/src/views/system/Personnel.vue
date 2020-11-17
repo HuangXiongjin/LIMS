@@ -45,7 +45,6 @@
             {prop:"WorkNumber",label:"工号",type:"input",value:""},
             {prop:"Password",label:"密码",type:"input",value:"",showField:false,searchProp:false},
             {prop:"Creater",label:"创建人",type:"input",value:"",searchProp:false,canSubmit:false},
-            {prop:"CreateTime",label:"创建时间",type:"input",value:"",searchProp:false,canSubmit:false},
             {prop:"LastLoginTime",label:"最近登录时间",type:"input",value:"",searchProp:false,canSubmit:false},
           ],
           data:[],

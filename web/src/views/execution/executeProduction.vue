@@ -9,6 +9,17 @@
           <el-form-item>
             <el-button type="primary" size="small" @click="execute" v-has="['计划执行']">确定执行</el-button>
           </el-form-item>
+        </el-form>
+        <el-form :inline="true">
+          <el-form-item label="查询品名">
+            <el-input v-model="BrandName" placeholder="请输入品名" size="small" @change="getPlanManagerTableData"></el-input>
+          </el-form-item>
+          <el-form-item label="查询批号">
+            <el-input v-model="BatchID" placeholder="请输入批次号" size="small" @change="getPlanManagerTableData"></el-input>
+          </el-form-item>
+          <el-form-item label="查询日期">
+            <el-date-picker type="date" v-model="searchDate" size="small" format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width: 160px;" @change="getPlanManagerTableData"></el-date-picker>
+          </el-form-item>
           <el-form-item class="floatRight">
             <el-radio-group v-model="PlanPlanStatus" size="small" @change="getPlanManagerTableData">
               <el-radio-button label="待执行"></el-radio-button>
@@ -67,6 +78,9 @@
           total: 0,
           multipleSelection: [],
         },
+        BrandName:"",
+        BatchID:"",
+        searchDate:"",
         PlanPlanStatus:"待执行",
       }
     },
@@ -80,6 +94,9 @@
         var params = {
           tableName: "PlanManager",
           PlanStatus:this.PlanPlanStatus,
+          SchedulePlanCode:this.searchDate,
+          BatchID:this.BatchID,
+          BrandName:this.BrandName,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }
@@ -112,34 +129,41 @@
         this.$refs.multipleTablePlanManager.toggleRowSelection(row)
       },
       execute(){
-        var datalist = []
-        this.PlanManagerTableData.multipleSelection.forEach(item =>{
-          datalist.push(item.ID)
-        })
-        var params={
-          PlanStatus:'待备料',
-          IDs:JSON.stringify(datalist)
-        }
-        this.$confirm('是否下发勾选的批次, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
-           if(res.data.code==='200'){
-             this.$message({
-               type:'success',
-               message:'执行成功'
-             })
-            this.getPlanManagerTableData()
-           }
-         })
-        }).catch(() => {
+        if(this.PlanManagerTableData.multipleSelection.length > 0){
+          var datalist = []
+          this.PlanManagerTableData.multipleSelection.forEach(item =>{
+            datalist.push(item.ID)
+          })
+          var params={
+            PlanStatus:'待备料',
+            IDs:JSON.stringify(datalist)
+          }
+          this.$confirm('是否下发勾选的批次, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
+             if(res.data.code==='200'){
+               this.$message({
+                 type:'success',
+                 message:'执行成功'
+               })
+              this.getPlanManagerTableData()
+             }
+           })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            });
+          });
+        }else{
           this.$message({
             type: 'info',
-            message: '已取消'
+            message: '请选择要执行的计划'
           });
-        });
+        }
       },
     }
   }

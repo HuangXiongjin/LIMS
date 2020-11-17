@@ -40,9 +40,9 @@
         <el-form :inline="true">
           <el-form-item class="floatRight">
             <el-radio-group v-model="PlanStatus" size="small" @change="getPlanManagerTableData">
-              <el-radio-button label="待备料"></el-radio-button>
+              <el-radio-button label="物料发送中"></el-radio-button>
               <el-radio-button label="物料发送完成"></el-radio-button>
-              <el-radio-button label="已发送投料计划"></el-radio-button>
+              <el-radio-button label="已发送投料"></el-radio-button>
             </el-radio-group>
           </el-form-item>
         </el-form>
@@ -66,7 +66,7 @@
           </el-pagination>
         </div>
         <!--提取设备确认  物料对应设备-->
-        <el-dialog title="设备确认" :visible.sync="EQTQDialogVisible" width="80%" :append-to-body="true">
+        <el-dialog title="设备确认" :visible.sync="EQTQDialogVisible" width="80%" :append-to-body="true" top="5vh">
           <el-col :span="24">
             <el-form :inline="true">
               <el-form-item label="当前状态："><label class="marginRight color-darkblue">{{ ZYPlanPUData.ZYPlanStatus }}</label></el-form-item>
@@ -104,7 +104,7 @@
           </span>
         </el-dialog>
         <!--非提取设备确认-->
-        <el-dialog title="设备确认" :visible.sync="EQConfirmDialogVisible" width="80%" :append-to-body="true">
+        <el-dialog title="设备确认" :visible.sync="EQConfirmDialogVisible" width="80%" :append-to-body="true" top="5vh">
           <el-col :span="24">
             <el-form :inline="true">
               <el-form-item label="当前状态："><label class="marginRight color-darkblue">{{ ZYPlanPUData.ZYPlanStatus }}</label></el-form-item>
@@ -141,7 +141,7 @@
             </el-table-column>
           </el-table>
           <!--选择要使用的设备-->
-          <el-dialog title="选择设备" :visible.sync="EQDialogVisible" width="40%" :append-to-body="true">
+          <el-dialog title="选择设备" :visible.sync="EQDialogVisible" width="40%" :append-to-body="true" top="5vh">
             <el-table border :data="ProductEquipmentData" size='small' @selection-change="handleEQSelectionChange">
               <el-table-column type="selection"></el-table-column>
               <el-table-column prop="EQPCode" label="设备编码"></el-table-column>
@@ -160,7 +160,7 @@
           </span>
         </el-dialog>
         <!--提取复核弹框-->
-        <el-dialog title="复核" :visible.sync="confirmTQDialogVisible" width="80%" :append-to-body="true">
+        <el-dialog title="复核" :visible.sync="confirmTQDialogVisible" width="80%" :append-to-body="true" top="5vh">
           <el-col :span="24">
             <el-form :inline="true">
               <el-form-item label="当前状态："><label class="marginRight color-darkblue">{{ ZYPlanPUData.ZYPlanStatus }}</label></el-form-item>
@@ -198,7 +198,7 @@
           </span>
         </el-dialog>
         <!--非提取复核弹框-->
-        <el-dialog title="复核" :visible.sync="confirmDialogVisible" width="80%" :append-to-body="true">
+        <el-dialog title="复核" :visible.sync="confirmDialogVisible" width="80%" :append-to-body="true" top="5vh">
           <el-col :span="24">
             <el-form :inline="true">
               <el-form-item label="当前状态："><label class="marginRight color-darkblue">{{ ZYPlanPUData.ZYPlanStatus }}</label></el-form-item>
@@ -235,7 +235,7 @@
           </span>
         </el-dialog>
         <!--修改物料桶-->
-        <el-dialog title="选择已分配的设备" :visible.sync="EQMaterialDialogVisible" width="40%" :append-to-body="true" v-if="EQMaterialDialogVisible">
+        <el-dialog title="选择已分配的设备" :visible.sync="EQMaterialDialogVisible" width="40%" :append-to-body="true" v-if="EQMaterialDialogVisible" top="5vh">
           <el-form :model="MaterialTableData.formField" label-width="110px">
             <el-form-item label="批次号">
               <el-input v-model="PlanManagerTableData.multipleSelection[0].BatchID" :disabled="true"></el-input>
@@ -331,9 +331,17 @@
       //选择批计划
       getPlanManagerTableData(){
         var that = this
+        var flag = ""
+        if(this.PlanStatus === "物料发送中"){
+          flag = "物料发送中"
+        }else if(this.PlanStatus === "物料发送完成"){
+          flag = "物料发送完成"
+        }else if(this.PlanStatus === "已发送投料"){
+          flag = "已发送投料计划"
+        }
         var params = {
           tableName: "PlanManager",
-          PlanStatus:this.PlanStatus,
+          PlanStatus:flag,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }

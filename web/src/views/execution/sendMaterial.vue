@@ -66,7 +66,7 @@
                 </template>
               </el-table-column>
             </el-table>
-            <el-dialog :title="MaterialTableData.dialogTitle" :visible.sync="MaterialTableData.dialogVisible" width="40%" :append-to-body="true" v-if="MaterialTableData.dialogVisible">
+            <el-dialog :title="MaterialTableData.dialogTitle" :visible.sync="MaterialTableData.dialogVisible" width="40%" :append-to-body="true" top="5vh" v-if="MaterialTableData.dialogVisible">
               <el-form :model="MaterialTableData.formField" label-width="110px">
                 <el-form-item label="批次号">
                   <el-input v-model="PlanManagerTableData.multipleSelection[0].BatchID" :disabled="true"></el-input>
@@ -457,71 +457,85 @@
       },
       saveMaterial(){
         if(this.MaterialTableData.dialogTitle === "物料明细录入"){
-          var params = {
-            tableName:"BatchMaterialInfo",
-            BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
-            BrandName:this.PlanManagerTableData.multipleSelection[0].BrandName,
-            BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
-            MATName:this.MaterialTableData.formField.MATName.join(','),
-            BucketNum:this.MaterialTableData.formField.BucketNum.join(','),
-            BucketWeight:this.MaterialTableData.formField.BucketWeight,
-            Unit:this.MaterialTableData.formField.Unit,
-            Flag:this.MaterialTableData.formField.Flag,
-            FeedingSeq:this.MaterialTableData.formField.FeedingSeq,
-            SendFlag:"待发送",
-          }
-          this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
-            if(res.data.code === "200"){
-              this.$message({
-                type: 'success',
-                message: res.data.message
-              });
-              this.MaterialTableData.dialogVisible = false
-              this.MaterialTableData.dialogTurnVisible = false
-              this.MaterialTableData.dialogSeqVisible = false
-              this.getMaterialTableData()
-            }else{
-              this.$message({
-                type: 'info',
-                message: res.data.message
-              });
+          if(this.MaterialTableData.formField.MATName.join(',')&&this.MaterialTableData.formField.BucketNum.join(',')&&this.MaterialTableData.formField.BucketWeight&&this.MaterialTableData.formField.Unit&&this.MaterialTableData.formField.Flag){
+            var params = {
+              tableName:"BatchMaterialInfo",
+              BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
+              BrandName:this.PlanManagerTableData.multipleSelection[0].BrandName,
+              BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
+              MATName:this.MaterialTableData.formField.MATName.join(','),
+              BucketNum:this.MaterialTableData.formField.BucketNum.join(','),
+              BucketWeight:this.MaterialTableData.formField.BucketWeight,
+              Unit:this.MaterialTableData.formField.Unit,
+              Flag:this.MaterialTableData.formField.Flag,
+              FeedingSeq:this.MaterialTableData.formField.FeedingSeq,
+              SendFlag:"待发送",
             }
-          },res =>{
-            console.log("请求错误")
-          })
+            this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
+              if(res.data.code === "200"){
+                this.$message({
+                  type: 'success',
+                  message: res.data.message
+                });
+                this.MaterialTableData.dialogVisible = false
+                this.MaterialTableData.dialogTurnVisible = false
+                this.MaterialTableData.dialogSeqVisible = false
+                this.getMaterialTableData()
+              }else{
+                this.$message({
+                  type: 'info',
+                  message: res.data.message
+                });
+              }
+            },res =>{
+              console.log("请求错误")
+            })
+          }else{
+            this.$message({
+              type: 'info',
+              message: "所有物料信息必填"
+            });
+          }
         }else if(this.MaterialTableData.dialogTitle === "编辑"){
-          var params = {
-            tableName:"BatchMaterialInfo",
-            ID:this.MaterialTableData.formField.ID,
-            BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
-            BrandName:this.PlanManagerTableData.multipleSelection[0].BrandName,
-            BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
-            MATName:this.MaterialTableData.formField.MATName.join(','),
-            BucketNum:this.MaterialTableData.formField.BucketNum.join(','),
-            BucketWeight:this.MaterialTableData.formField.BucketWeight,
-            Unit:this.MaterialTableData.formField.Unit,
-            Flag:this.MaterialTableData.formField.Flag,
-            FeedingSeq:this.MaterialTableData.formField.FeedingSeq
-          }
-          this.axios.put("/api/CUID",this.qs.stringify(params)).then(res =>{
-            if(res.data.code === "200"){
-              this.$message({
-                type: 'success',
-                message: res.data.message
-              });
-              this.MaterialTableData.dialogVisible = false
-              this.MaterialTableData.dialogTurnVisible = false
-              this.MaterialTableData.dialogSeqVisible = false
-              this.getMaterialTableData()
-            }else{
-              this.$message({
-                type: 'info',
-                message: res.data.message
-              });
+          if(this.MaterialTableData.formField.MATName.join(',')&&this.MaterialTableData.formField.BucketNum.join(',')&&this.MaterialTableData.formField.BucketWeight&&this.MaterialTableData.formField.Unit&&this.MaterialTableData.formField.Flag){
+            var params = {
+              tableName:"BatchMaterialInfo",
+              ID:this.MaterialTableData.formField.ID,
+              BrandCode:this.PlanManagerTableData.multipleSelection[0].BrandCode,
+              BrandName:this.PlanManagerTableData.multipleSelection[0].BrandName,
+              BatchID:this.PlanManagerTableData.multipleSelection[0].BatchID,
+              MATName:this.MaterialTableData.formField.MATName.join(','),
+              BucketNum:this.MaterialTableData.formField.BucketNum.join(','),
+              BucketWeight:this.MaterialTableData.formField.BucketWeight,
+              Unit:this.MaterialTableData.formField.Unit,
+              Flag:this.MaterialTableData.formField.Flag,
+              FeedingSeq:this.MaterialTableData.formField.FeedingSeq
             }
-          },res =>{
-            console.log("请求错误")
-          })
+            this.axios.put("/api/CUID",this.qs.stringify(params)).then(res =>{
+              if(res.data.code === "200"){
+                this.$message({
+                  type: 'success',
+                  message: res.data.message
+                });
+                this.MaterialTableData.dialogVisible = false
+                this.MaterialTableData.dialogTurnVisible = false
+                this.MaterialTableData.dialogSeqVisible = false
+                this.getMaterialTableData()
+              }else{
+                this.$message({
+                  type: 'info',
+                  message: res.data.message
+                });
+              }
+            },res =>{
+              console.log("请求错误")
+            })
+          }else{
+            this.$message({
+              type: 'info',
+              message: "所有物料信息必填"
+            });
+          }
         }
       },
       //发送物料明细到WMS
