@@ -4,8 +4,9 @@
       <div class="page-title">
         <span class="text-size-16 marginRight">选择批计划，查看计划工艺进展</span>
         <span class="sideState bg-gray"></span><span class="text-size-14">待确认</span>
-        <span class="sideState bg-lightgreen"></span><span class="text-size-14">设备已确认</span>
-        <span class="sideState bg-darkblue"></span><span class="text-size-14">已复核</span>
+        <span class="sideState bg-lightgreen"></span><span class="text-size-14">待复核</span>
+        <span class="sideState bg-brown"></span><span class="text-size-14">开始投料</span>
+        <span class="sideState bg-darkblue"></span><span class="text-size-14">生产中</span>
         <span class="sideState bg-success"></span><span class="text-size-14">已完成</span>
       </div>
       <div class="platformContainer">
@@ -31,22 +32,22 @@
             <div v-for="(item, index) in ProcessSectionData" :key="index" style="display: inline-block;margin-right:18px;vertical-align: top;" @click="PUPlan(item)">
               <i class="fa fa-arrow-right" style="vertical-align: top;margin-top: 10px;margin-right:10px;"></i>
               <div style="display: inline-block; text-align: center;" v-if="item.PUName == '备料'">
-                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':PlanManagerTableData.PlanStatus === '待备料','bg-darkblue':PlanManagerTableData.PlanStatus === '物料发送中','bg-success':PlanManagerTableData.PlanStatus === '物料发送完成'}">
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':PlanManagerTableData.PlanStatus === '待备料','bg-darkblue':PlanManagerTableData.PlanStatus === '物料发送中','bg-success':PlanManagerTableData.PlanStatus === '物料发送完成' || PlanManagerTableData.multipleSelection[0].PlanStatus === '已发送投料计划'}">
                   {{ item.PUName }}
                 </div>
               </div>
               <div style="display: inline-block; text-align: center;" v-else>
-                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':item.ZYPlanStatus === '待确认','bg-lightgreen':item.ZYPlanStatus === '待复核','bg-darkblue':item.ZYPlanStatus === '执行','bg-success':item.ZYPlanStatus === '已完成'}">
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':item.ZYPlanStatus === '待确认','bg-lightgreen':item.ZYPlanStatus === '待复核','bg-brown':item.ZYPlanStatus === '开始投料','bg-darkblue':item.ZYPlanStatus === '执行','bg-success':item.ZYPlanStatus === '已完成'}">
                   {{ item.PUName }}
                 </div>
                 <div class="text-center" style="display: inherit;">
                   <p class="connectLine marginRight"></p>
                   <p class="marginRight">
-                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'dark':'plain'">设备确认</el-tag>
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '开始投料' || item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '开始投料' || item.ZYPlanStatus === '执行' ? 'dark':'plain'">设备确认</el-tag>
                   </p>
                   <p class="connectLine marginRight"></p>
                   <p class="marginRight">
-                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '执行' ? 'dark':'plain'">复核</el-tag>
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '执行' || item.ZYPlanStatus === '开始投料' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '执行' || item.ZYPlanStatus === '开始投料' ? 'dark':'plain'">复核</el-tag>
                   </p>
                 </div>
               </div>

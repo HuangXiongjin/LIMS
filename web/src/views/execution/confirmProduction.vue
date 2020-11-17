@@ -4,31 +4,32 @@
       <div class="page-title">
         <span class="text-size-16 marginRight">确认生产使用设备</span>
         <span class="sideState bg-gray"></span><span class="text-size-14">待确认</span>
-        <span class="sideState bg-lightgreen"></span><span class="text-size-14">设备已确认</span>
-        <span class="sideState bg-darkblue"></span><span class="text-size-14">已复核</span>
+        <span class="sideState bg-lightgreen"></span><span class="text-size-14">待复核</span>
+        <span class="sideState bg-brown"></span><span class="text-size-14">开始投料</span>
+        <span class="sideState bg-darkblue"></span><span class="text-size-14">生产中</span>
         <span class="sideState bg-success"></span><span class="text-size-14">已完成</span>
       </div>
       <div class="platformContainer">
-        <el-row class="marginBottom">
+        <el-row class="marginBottom" v-if="PlanManagerTableData.multipleSelection.length == 1">
           <el-col :span="24">
             <div v-for="(item, index) in ZYPlanTableData.data" :key="index" style="display: inline-block;margin-right:18px;vertical-align: top;">
               <div style="display: inline-block; text-align: center;" v-if="item.PUName === '备料'">
-                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':PlanManagerTableData.multipleSelection[0].PlanStatus === '待备料','bg-darkblue':PlanManagerTableData.multipleSelection[0].PlanStatus === '物料发送中','bg-success':PlanManagerTableData.multipleSelection[0].PlanStatus === '物料发送完成'}">
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':PlanManagerTableData.multipleSelection[0].PlanStatus === '待备料','bg-darkblue':PlanManagerTableData.multipleSelection[0].PlanStatus === '物料发送中','bg-success':PlanManagerTableData.multipleSelection[0].PlanStatus === '物料发送完成' || PlanManagerTableData.multipleSelection[0].PlanStatus === '已发送投料计划' }">
                   {{ item.PUName }}
                 </div>
               </div>
               <div style="display: inline-block; text-align: center;" v-else>
-                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':item.ZYPlanStatus === '待确认','bg-lightgreen':item.ZYPlanStatus === '待复核','bg-darkblue':item.ZYPlanStatus === '执行','bg-success':item.ZYPlanStatus === '已完成'}">
+                <div class="container-col text-size-14 bg-gray" :class="{'bg-gray':item.ZYPlanStatus === '待确认','bg-lightgreen':item.ZYPlanStatus === '待复核','bg-brown':item.ZYPlanStatus === '开始投料','bg-darkblue':item.ZYPlanStatus === '执行','bg-success':item.ZYPlanStatus === '已完成'}">
                   {{ item.PUName }}
                 </div>
                 <div class="text-center" style="display: inherit;">
                   <p class="connectLine marginRight"></p>
                   <p class="marginRight">
-                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '待审核' || item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '待审核' || item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '执行' ? 'dark':'plain'" @click="PUPlan(item,'设备确认')">设备确认</el-tag>
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '开始投料' || item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '待复核' || item.ZYPlanStatus === '开始投料' || item.ZYPlanStatus === '执行' ? 'dark':'plain'" @click="PUPlan(item,'设备确认')">设备确认</el-tag>
                   </p>
                   <p class="connectLine marginRight"></p>
                   <p class="marginRight">
-                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '执行' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '执行' ? 'dark':'plain'" @click="PUPlan(item,'复核')">复核</el-tag>
+                    <el-tag class="cursor-pointer" v-bind:type="item.ZYPlanStatus === '执行' || item.ZYPlanStatus === '开始投料' ? 'success':'info'" v-bind:effect="item.ZYPlanStatus === '执行' || item.ZYPlanStatus === '开始投料' ? 'dark':'plain'" @click="PUPlan(item,'复核')">复核</el-tag>
                   </p>
                 </div>
               </div>
@@ -36,6 +37,15 @@
             </div>
           </el-col>
         </el-row>
+        <el-form :inline="true">
+          <el-form-item class="floatRight">
+            <el-radio-group v-model="PlanStatus" size="small" @change="getPlanManagerTableData">
+              <el-radio-button label="待备料"></el-radio-button>
+              <el-radio-button label="物料发送完成"></el-radio-button>
+              <el-radio-button label="已发送投料计划"></el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
         <el-table :data="PlanManagerTableData.data" highlight-current-row border size="small" ref="multipleTablePlanManager" @select="handleSelectPlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
           <el-table-column type="selection"></el-table-column>
           <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
@@ -279,6 +289,7 @@
     components:{draggable},
     data() {
       return {
+        PlanStatus:"物料发送完成",
         PlanManagerTableData:{
           data:[],
           limit: 5,
@@ -322,7 +333,7 @@
         var that = this
         var params = {
           tableName: "PlanManager",
-          PlanStatus:"物料发送完成",
+          PlanStatus:this.PlanStatus,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }
