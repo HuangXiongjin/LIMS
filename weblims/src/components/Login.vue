@@ -3,7 +3,7 @@
     <div class='container loginbox'>
       <div class="logintop">实验室信息管理系统</div>
       <div class="logininfo">
-          <el-form :model="ruleForm" status-icon ref="ruleForm" :rules="rules" label-width="80px" class="demo-ruleForm">
+          <el-form :model="ruleForm" status-icon ref="ruleForm" :rules="rules" label-width="80px">
             <el-form-item label="登录名称" prop="loginname">
               <el-input v-model="ruleForm.loginname" autocomplete="off"></el-input>
             </el-form-item>
@@ -11,7 +11,7 @@
               <el-input v-model="ruleForm.loginpass" autocomplete="off"></el-input>
             </el-form-item>
           </el-form>
-          <div class="remindme"><el-checkbox v-model="checkedlogin">记住密码</el-checkbox></div>
+          <div class="remindme"><el-checkbox v-model="checkedlogin" @change='remindKey'><span style="color:#333;">记住密码</span></el-checkbox></div>
     </div>
     <div class="subbutton" @click="loginIn">登录</div>
     </div>
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+var moment=require('moment')
 export default {
   name: 'HelloWorld',
   data () {
@@ -37,7 +38,6 @@ export default {
         }
       };
     return {
-      msg: 'Welcome to Your Vue.js App',
       ruleForm:{
         loginpass:'',
         loginname:''
@@ -53,7 +53,29 @@ export default {
        }
     }
   },
+  mounted(){
+    if(localStorage.getItem('Name') && localStorage.getItem('WorkNumber')){
+    this.ruleForm={
+      loginpass:localStorage.getItem('WorkNumber'),
+      loginname:localStorage.getItem('Name')
+    }
+    this.checkedlogin=true
+    }
+  },
   methods: {
+    remindKey(){
+      if(this.checkedlogin){
+        if(this.ruleForm.loginname && this.ruleForm.loginpass){
+            localStorage.setItem('Name',this.ruleForm.loginname)
+            localStorage.setItem('WorkNumber',this.ruleForm.loginpass)
+        }else{
+            
+        }
+      }else{
+          localStorage.removeItem('Name')
+          localStorage.removeItem('WorkNumber')
+      }
+    },
     loginIn() {
       var params={
          WorkNumber:this.ruleForm.loginname,
@@ -66,6 +88,9 @@ export default {
               message: "登录成功",
               type: 'success'
           });
+          sessionStorage.setItem('Name',this.ruleForm.loginname)
+          sessionStorage.setItem('WorkNumber',this.ruleForm.loginpass)
+          sessionStorage.setItem('LastLoginTime',moment(new Date()).format('YYYY-MM-DD HH:mm:ss'))
           this.$router.push('/')
       }else{
         this.$message({
@@ -83,15 +108,15 @@ export default {
 <style scoped>
    .login {
     width:100%;
-    height:800px;
-    background-color:#0A9168;
+    height:900px;
+    background:#0A9168 url('../assets/image/bg.jpg') no-repeat fixed top;
   }
   .loginbox{
     width:400px;
     height:300px;
-    background-color: aquamarine;
+    background-color:rgba(255, 255,255, 0.4);
     opacity: 0.8;
-    position: absolute;
+    position:fixed;
     top:50%;
     left: 50%;
     transform: translate(-50%,-50%)
@@ -101,7 +126,7 @@ export default {
     line-height: 80px;
     font-size: 18px;
     text-align:center;
-    color: rgb(42, 44, 43);
+    color:#333;
   }
   .logininfo{
     width: 80%;

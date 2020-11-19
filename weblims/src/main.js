@@ -13,6 +13,7 @@ Vue.prototype.axios = axios
 import qs from 'qs'
 Vue.prototype.qs=qs
 
+import 'font-awesome/css/font-awesome.min.css'
 import './assets/css/common.css'
 
 new Vue({

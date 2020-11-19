@@ -1,61 +1,54 @@
 <template>
     <el-container>
         <el-aside width="255px" class="bggreen">
-            <div class="project">实验室管理系统</div>
-            <el-menu default-active="1-4-1" class="bggreen menuform" :collapse="isCollapse">
-            <el-submenu index="1">
-                <template slot="title">
-                <i class="el-icon-location"></i>
-                <span slot="title">导航一</span>
-                </template>
-                <el-menu-item index="1-2">选项2</el-menu-item>
-                <el-menu-item index="1-2">选项2</el-menu-item>
-                <el-menu-item index="1-2">选项2</el-menu-item>
-                <el-menu-item index="1-2">选项2</el-menu-item>
-            </el-submenu>
-            <el-menu-item index="2">
-                <i class="el-icon-menu"></i>
-                <span slot="title">导航二</span>
-            </el-menu-item>
-            <el-menu-item index="3">
-                <i class="el-icon-document"></i>
-                <span slot="title">导航三</span>
-            </el-menu-item>
-            <el-menu-item index="4">
-                <i class="el-icon-setting"></i>
-                <span slot="title">导航四</span>
+            <div class="project cursor">实验室管理系统</div>
+            <el-menu class="bggreen menuform" text-color="#fff" active-text-color="#fff">
+            <el-menu-item v-for="(item,index) in mneulist" :key='index' :index='index.toString()' @click="getSonMenuList(item,index)" :class="{'ActiveMenucss':index==ActiveMenu}">
+                <i :class="item.icon" style="color:#fff;"></i>
+                <span slot="title">{{item.name}}</span>
             </el-menu-item>
             </el-menu>
         </el-aside>
         <el-container>
             <el-header class="bggreen">
-                <el-row>
-                    <el-col :span='20'>&nbsp;</el-col>
-                    <el-col :span='4' class="tools">
+                    <el-row>
+                    <el-col :span='20' class="sonMenucss">
+                        <el-menu  class="bggreen" mode="horizontal" active-text-color="#ffd04b" text-color="#fff" @select='getCurrentOpName'>
+                            <el-menu-item  v-for="(item,index) in SonMenuList" :key='index' :index='item.path'>{{item.name}}</el-menu-item>
+                        </el-menu>
+                    </el-col>
+                    <el-col :span='4' class="tools" style="float:right;">
                         <ul>
                             <li>
                                 <el-tooltip class="head-menu-item cursor" effect="dark" content="全屏" placement="bottom">
-                                    <i :class="isFullScreen?'el-icon-aim':'el-icon-full-screen'" @click="getFullCreeen"></i>
+                                    <i :class="isFullScreen?'fa fa-compress':'fa fa-expand'" @click="getFullCreeen"></i>
                                 </el-tooltip>
                             </li>
                             <li>
                                 <el-tooltip class="head-menu-item cursor" effect="dark" content="个人信息" placement="bottom">
-                                    <i class="el-icon-user" @click="getPersonInfo"></i>
+                                    <i class="fa  fa-user" @click="getPersonInfo"></i>
                                 </el-tooltip>
                             </li>
                             <li>
                                 <el-tooltip class="head-menu-item cursor" effect="dark" content="退出登录" placement="bottom">
-                                    <i class="el-icon-timer" @click="loginOut"></i>
+                                    <i class="fa fa-power-off" @click="loginOut"></i>
                                 </el-tooltip>
                             </li>
                         </ul>
                     </el-col>
                 </el-row>
             </el-header>
-            <el-main>Main</el-main>
+            <el-main>
+                <router-view></router-view>
+            </el-main>
         </el-container>
-        <el-dialog title="个人信息" :visible.sync="persondialogTableVisible" width='400px' :modal=false>
-            
+        <el-dialog title="个人信息" :visible.sync="persondialogTableVisible" width='300px' :modal=false>
+             <el-form>
+                <el-form-item label="用户名：">{{ userInfo.Name }}</el-form-item>
+                <el-form-item label="工号：">{{ userInfo.WorkNumber }}</el-form-item>
+                <el-form-item label="最近登录时间：">{{ userInfo.LastLoginTime }}</el-form-item>
+                <el-form-item label="权限：">{{ userInfo.Permissions }}</el-form-item>
+              </el-form>
         </el-dialog>
     </el-container>
 </template>
@@ -67,7 +60,49 @@ export default {
         return {
              isCollapse: false,
              isFullScreen:false,
-             persondialogTableVisible:false
+             persondialogTableVisible:false,
+             userInfo:{
+                 Name:sessionStorage.getItem('Name'),
+                 WorkNumber:sessionStorage.getItem('WorkNumber'),
+                 LastLoginTime:sessionStorage.getItem('LastLoginTime'),
+                 Permissions:'登录'
+             },
+             SonMenuList:[],
+             ActiveMenu:100,
+             mneulist:[
+                 {name:'功能看板',icon:'el-icon-data-analysis',path:'/Board'},
+                 {name:'出入库管理',icon:'el-icon-folder-opened',path:'/OutInBar'},
+                 {name:'样本请验',icon:'el-icon-location',children:[
+                    {name:'申请检验',path:'/ApplyTest'},
+                    {name:'请检审核',path:'/SampleCheck'},
+                    {name:'取样登记',path:'/SampleRegistration'},
+                    {name:'请验清单',path:'/SampleTest'},
+                    {name:'报告复查',path:'/ReportReview'},
+                ]},
+                {name:'样本检验',icon:'el-icon-files',children:[
+                    {name:'样本接收',path:'/ApplyTest'},
+                    {name:'样本分发',path:'/SampleCheck'},
+                    {name:'分配检验',path:'/SampleRegistration'},
+                    {name:'样本销毁',path:'/SampleTest'},
+                    {name:'样本台账',path:'/ReportReview'},
+                ]
+                },
+                 {name:'质检报告',icon:'el-icon-document',children:[
+                    {name:'质检看板',path:'/QualitycheckBoard'},
+                    {name:'检验记录',path:'/QualitycheckRecord'},
+                 ]},
+                 {name:'留样管理',icon:'el-icon-paperclip',children:[
+                     {name:'留样看板',path:'/SampleBoard'},
+                     {name:'留样接收',path:'/SampleReceiving'},
+                 ]},
+                 {name:'销毁管理',icon:'el-icon-delete',children:[
+                     {name:'销毁看板',path:'/DestroyBoard'},
+                     {name:'销毁请求',path:'/DestroyRequest'},
+                     {name:'销毁审核',path:'/DestroyAudit'},
+                     {name:'销毁清单',path:'/Destroylist'},
+                 ]},
+                 {name:'试剂耗材',icon:'el-icon-toilet-paper',path:'/OutInBar'},
+                ]
         }
     },
     methods: {
@@ -85,7 +120,20 @@ export default {
           this.persondialogTableVisible=true
       },
       loginOut(){
+          sessionStorage.clear()
           this.$router.push('/login')
+      },
+      getSonMenuList(obj,index){
+          this.ActiveMenu=index
+          if(obj.hasOwnProperty('children')){
+              this.SonMenuList=obj.children
+          }else{
+             this.$router.push(obj.path)
+             this.SonMenuList=[]
+          }
+      },
+      getCurrentOpName(e){
+          this.$router.push(e)
       }
     },
 }
@@ -120,5 +168,19 @@ export default {
     }
     .head-menu-item{
         font-size:20px;
+        color: #fff;
+    }
+    .ActiveMenucss{
+       background-color:#FFDEAD;
+       border-radius: 30px;
+    }
+    .menuform .el-menu-item:hover{
+        background-color: #00FA9A;
+    }
+    .sonMenucss .el-menu-item:hover{
+        background-color:#00FA9A;
+    }
+    .sonMenucss .el-menu.el-menu--horizontal {
+    border-bottom: solid 0px #e6e6e6;
     }
 </style>
