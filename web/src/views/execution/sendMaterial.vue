@@ -20,6 +20,7 @@
             </el-form>
             <el-table :data="PlanManagerTableData.data" highlight-current-row border size="small" ref="multipleTablePlanManager" @select="handleSelectPlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
               <el-table-column type="selection"></el-table-column>
+              <el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>
               <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
               <el-table-column prop="BrandCode" label="品名编码"></el-table-column>
@@ -31,7 +32,7 @@
               <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
                :total="PlanManagerTableData.total"
                :current-page="PlanManagerTableData.offset"
-               :page-sizes="[5,10,20]"
+               :page-sizes="[10,20,30,40,50]"
                :page-size="PlanManagerTableData.limit"
                @size-change="handleSizeChangePlanManager"
                @current-change="handleCurrentChangePlanManager">
@@ -156,7 +157,7 @@
         sendPlanPlanStatus:"待发送",
         PlanManagerTableData:{
           data:[],
-          limit: 5,
+          limit: 10,
           offset: 1,
           total: 0,
           multipleSelection: [],
@@ -383,19 +384,12 @@
         this.$refs.multipleTableMaterial.toggleRowSelection(row)
       },
       addMaterialForm(){
-        if(this.PlanManagerTableData.multipleSelection.length == 1 && this.PlanManagerTableData.multipleSelection[0].PlanStatus != "物料发送完成"){
-          this.MaterialTableData.dialogVisible = true
-          this.MaterialTableData.dialogTitle = "物料明细录入"
-          this.getBOMData()
-        }else{
-          this.$message({
-            type: 'info',
-            message: "请选择物料未发送完成的批计划"
-          });
-        }
+        this.MaterialTableData.dialogVisible = true
+        this.MaterialTableData.dialogTitle = "物料明细录入"
+        this.getBOMData()
       },
       EditMaterial(index,row){
-        if(row.SendFlag != "WMS已接收" && this.PlanManagerTableData.multipleSelection[0].PlanStatus != "物料发送完成"){
+        if(this.PlanManagerTableData.multipleSelection[0].PlanStatus != "已发送投料计划"){
           this.MaterialTableData.dialogVisible = true
           this.MaterialTableData.dialogTitle = "编辑"
           this.getBOMData()
@@ -418,7 +412,7 @@
         }
       },
       DeleteMaterial(index,row){
-        if(row.SendFlag != "WMS已接收" && this.PlanManagerTableData.multipleSelection[0].PlanStatus != "物料发送完成"){
+        if(row.SendFlag != "WMS已接收"){
           var params = {tableName:"BatchMaterialInfo"}
           var mulId = []
           mulId.push({
@@ -540,61 +534,54 @@
       },
       //发送物料明细到WMS
       sendMaterialInfo(){
-        if(this.MaterialTableData.multipleSelection.length > 0 && this.PlanManagerTableData.multipleSelection[0].PlanStatus != "物料发送完成"){
-          var flag = true
-          var mulId = []
-          this.MaterialTableData.multipleSelection.forEach(item =>{
-            mulId.push({
-              id:item.ID
-            })
-            if(item.SendFlag === "投料系统已接收"){
-              flag = false
-            }
+        var flag = true
+        var mulId = []
+        this.MaterialTableData.multipleSelection.forEach(item =>{
+          mulId.push({
+            id:item.ID
           })
-          if(flag){
-            var params = {}
-            params.sendData = JSON.stringify(mulId)
-            params.PlanStatus = "物料发送中"
-            params.PlanID = this.PlanManagerTableData.multipleSelection[0].ID
-            this.$confirm('确定发送此批的物料明细到WMS吗？', '提示', {
-              distinguishCancelAndClose:true,
-              type: 'warning'
-            }).then(()  => {
-              const loading = this.$loading({
-                lock: true,
-                text: 'Loading',
-                spinner: 'el-icon-loading',
-                background: 'rgba(0, 0, 0, 0.7)'
-              });
-              this.axios.post("/api/WMS_SendMatils",this.qs.stringify(params)).then(res =>{
-                if(res.data.code === "200"){
-                  this.$message({
-                    type: 'success',
-                    message: res.data.message
-                  });
-                  this.getMaterialTableData()
-                }
-                loading.close();
-              },res =>{
-                console.log("请求错误")
-                loading.close();
-              })
-            }).catch(() => {
-              this.$message({
-                type: 'info',
-                message: '已取消发送'
-              });
+          if(item.SendFlag === "投料系统已接收"){
+            flag = false
+          }
+        })
+        if(flag){
+          var params = {}
+          params.sendData = JSON.stringify(mulId)
+          params.PlanStatus = "物料发送中"
+          params.PlanID = this.PlanManagerTableData.multipleSelection[0].ID
+          this.$confirm('确定发送此批的物料明细到WMS吗？', '提示', {
+            distinguishCancelAndClose:true,
+            type: 'warning'
+          }).then(()  => {
+            const loading = this.$loading({
+              lock: true,
+              text: 'Loading',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
             });
-          }else{
+            this.axios.post("/api/WMS_SendMatils",this.qs.stringify(params)).then(res =>{
+              if(res.data.code === "200"){
+                this.$message({
+                  type: 'success',
+                  message: res.data.message
+                });
+                this.getMaterialTableData()
+              }
+              loading.close();
+            },res =>{
+              console.log("请求错误")
+              loading.close();
+            })
+          }).catch(() => {
             this.$message({
               type: 'info',
-              message: "已发送的物料不能再发送"
+              message: '已取消发送'
             });
-          }
+          });
         }else{
           this.$message({
             type: 'info',
-            message: "请选择未发送完成的批次并且至少选择一组物料进行发送"
+            message: "已发送的物料不能再发送"
           });
         }
       },

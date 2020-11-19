@@ -29,9 +29,9 @@
         </el-form>
         <el-table :data="PlanManagerTableData.data" highlight-current-row border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
           <el-table-column type="selection"></el-table-column>
+          <el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>
           <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
           <el-table-column prop="BatchID" label="批次号"></el-table-column>
-          <el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>
           <el-table-column prop="BrandCode" label="品名编码"></el-table-column>
           <el-table-column prop="BrandName" label="品名"></el-table-column>
           <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
@@ -55,7 +55,7 @@
           <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
            :total="PlanManagerTableData.total"
            :current-page="PlanManagerTableData.offset"
-           :page-sizes="[10,20,30,50]"
+           :page-sizes="[10,20,30,40,50]"
            :page-size="PlanManagerTableData.limit"
            @size-change="handleSizeChangePlanManager"
            @current-change="handleCurrentChangePlanManager">

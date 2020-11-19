@@ -188,7 +188,7 @@
               layout:"orthogonal",
               expandAndCollapse:true,
               initialTreeDepth:-1,
-              symbolSize: 8,
+              symbolSize: 10,
               label:{
                 position: 'right',
                 color:"#fff"

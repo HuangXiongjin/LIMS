@@ -32,7 +32,7 @@
           <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
            :total="MaterialTableData.total"
            :current-page="MaterialTableData.offset"
-           :page-sizes="[5,10,20]"
+           :page-sizes="[10,20,30,40,50]"
            :page-size="MaterialTableData.limit"
            @size-change="handleSizeChange"
            @current-change="handleCurrentChange">
@@ -51,7 +51,7 @@
       return {
         MaterialTableData:{
           data:[],
-          limit: 5,
+          limit: 10,
           offset: 1,
           total: 0,
         },

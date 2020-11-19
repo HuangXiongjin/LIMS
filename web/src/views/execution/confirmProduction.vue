@@ -48,6 +48,7 @@
         </el-form>
         <el-table :data="PlanManagerTableData.data" highlight-current-row border size="small" ref="multipleTablePlanManager" @select="handleSelectPlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
           <el-table-column type="selection"></el-table-column>
+          <el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>
           <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
           <el-table-column prop="BatchID" label="批次号"></el-table-column>
           <el-table-column prop="BrandCode" label="品名编码"></el-table-column>
@@ -59,7 +60,7 @@
           <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
            :total="PlanManagerTableData.total"
            :current-page="PlanManagerTableData.offset"
-           :page-sizes="[5,10,20]"
+           :page-sizes="[10,20,30,40,50]"
            :page-size="PlanManagerTableData.limit"
            @size-change="handleSizeChangePlanManager"
            @current-change="handleCurrentChangePlanManager">
@@ -94,7 +95,7 @@
             <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
             <el-table-column label="操作" fixed="right" width="120">
               <template slot-scope="scope">
-                <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)" v-has="['设备确认']">设置投料</el-button>
+                <el-button size="mini" type="primary" @click="EditMaterial(scope.$index, scope.row)" v-has="['设备确认']">设置投料</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -188,7 +189,7 @@
             <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
             <el-table-column label="操作" fixed="right" width="120">
               <template slot-scope="scope">
-                <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)" v-has="['设备确认']">设置投料</el-button>
+                <el-button size="mini" type="primary" @click="EditMaterial(scope.$index, scope.row)" v-has="['设备复核']">修改设备</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -292,7 +293,7 @@
         PlanStatus:"物料发送完成",
         PlanManagerTableData:{
           data:[],
-          limit: 5,
+          limit: 10,
           offset: 1,
           total: 0,
           multipleSelection: [],

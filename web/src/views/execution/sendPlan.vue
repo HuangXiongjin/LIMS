@@ -32,9 +32,9 @@
               element-loading-spinner="el-icon-loading"
               >
               <el-table-column type="selection"></el-table-column>
+              <el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>
               <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
-              <el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>
               <el-table-column prop="BrandCode" label="品名编码"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
@@ -45,7 +45,7 @@
               <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
                :total="PlanManagerTableData.total"
                :current-page="PlanManagerTableData.offset"
-               :page-sizes="[5,10,20]"
+               :page-sizes="[10,20,30,40,50]"
                :page-size="PlanManagerTableData.limit"
                @size-change="handleSizeChangePlanManager"
                @current-change="handleCurrentChangePlanManager">
@@ -66,7 +66,7 @@
         sendPlanPlanStatus:"物料发送完成",
         PlanManagerTableData:{
           data:[],
-          limit: 5,
+          limit: 10,
           offset: 1,
           total: 0,
           multipleSelection: [],
