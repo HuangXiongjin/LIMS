@@ -1,3 +1,7 @@
+*{
+    margin: 0;
+    padding:0;
+}
 .lightgreen{
     color:#0A9168;
 }
@@ -20,3 +24,9 @@
 .cursor{
     cursor: pointer;
 }
+.menuform.el-menu {
+    border-right: 0px;
+}
+.bggreen.el-header{
+    padding: 0
+};
