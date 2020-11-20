@@ -40,7 +40,6 @@
         <el-form :inline="true">
           <el-form-item class="floatRight">
             <el-radio-group v-model="PlanStatus" size="small" @change="getPlanManagerTableData">
-              <el-radio-button label="待备料"></el-radio-button>
               <el-radio-button label="物料发送中"></el-radio-button>
               <el-radio-button label="物料发送完成"></el-radio-button>
               <el-radio-button label="已发送投料"></el-radio-button>
@@ -334,9 +333,7 @@
       getPlanManagerTableData(){
         var that = this
         var flag = ""
-        if(this.PlanStatus === "待备料"){
-          flag = "待备料"
-        }else if(this.PlanStatus === "物料发送中"){
+        if(this.PlanStatus === "物料发送中"){
           flag = "物料发送中"
         }else if(this.PlanStatus === "物料发送完成"){
           flag = "物料发送完成"

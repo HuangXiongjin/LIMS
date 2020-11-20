@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/components/Index'
 import home from '@/views/home'
-import switchSystem from '@/views/switchSystem'
 import Login from '@/components/Login'
 import Organization from '@/views/system/Organization'
 import EnterpriseManagement from '@/views/system/EnterpriseManagement'
@@ -67,7 +66,6 @@ export default new Router({
       redirect:'/home', //index主页默认加载home页面
       children:[
         {path:'/home',name:'home',meta:{ title:'工作台'},component:home},
-        {path:'/switchSystem',name:'switchSystem',meta:{ title:'系统切换',type:"系统管理"},component:switchSystem},
         {path:'/Organization',name:'Organization',meta:{ title:'组织架构',type:"系统管理"},component:Organization},
         {path:'/EnterpriseManagement',name:'EnterpriseManagement',meta:{ title:'企业管理',type:"系统管理"},component:EnterpriseManagement},
         {path:'/FactoryManagement',name:'FactoryManagement',meta:{ title:'工厂管理',type:"系统管理"},component:FactoryManagement},
