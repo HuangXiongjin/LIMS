@@ -143,13 +143,22 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
+            const loading = this.$loading({
+              lock: true,
+              text: 'Loading',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             this.axios.post('/api/createZYPlanZYtask',this.qs.stringify(params)).then((res) => {
              if(res.data.code==='200'){
                this.$message({
                  type:'success',
                  message:'执行成功'
                })
-              this.getPlanManagerTableData()
+               loading.close();
+               this.getPlanManagerTableData()
+             }else{
+               loading.close();
              }
            })
           }).catch(() => {

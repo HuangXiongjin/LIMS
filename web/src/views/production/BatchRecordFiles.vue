@@ -100,10 +100,7 @@
           this.$nextTick(function () {
             $(".elementTable").find("tbody").css("display","inline-table")
             $(".elementTable").find("td").each(function(){
-              if($(this).html() === ""){
-                $(this).html("<p>▬</p>")
-              }
-              $(this).find("p").click(function(){
+              $(this).click(function(){
                 if($(this).hasClass("isInput") || $(this).hasClass("collect")){
                   that.$confirm('此操作将删除已定义的字段, 是否继续?', '提示', {
                     confirmButtonText: '确定',
