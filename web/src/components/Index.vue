@@ -77,7 +77,7 @@
       <!-- 页面主体 -->
       <el-main style="clear: both;">
         <transition name="move" mode="out-in">
-          <!--渲染子页面-->
+         <!--渲染子页面-->
           <router-view :key="$route.fullPath"></router-view>
         </transition>
         <el-collapse-transition>
@@ -237,6 +237,12 @@
         }else{
           this.selfHeight.height = window.innerHeight - 360+'px';
         }
+      },
+      getMainMenu(data){ //从子组件选择的系统获取菜单
+        this.mainMenu = data
+      },
+      getsystemActive(data){ //从子组件选择的系统索引
+        this.systemActive = data
       },
       menuSelect(url,title){  //点击菜单跳转时  添加query参数避免相同路由跳转时报错
         this.$router.push({
