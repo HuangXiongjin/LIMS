@@ -1,4 +1,5 @@
 import os
+import socket
 import sys
 import datetime
 import decimal
@@ -8,6 +9,8 @@ import time
 from flask_sqlalchemy import BaseQuery
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.collections import InstrumentedList
+
+from common.lims_models import db_session, LimsError
 
 
 def get_time_stamp(s):
@@ -38,19 +41,24 @@ def get_root_path():
     return os.path.join(path, 'instruction')
 
 
-def log(e, login_user):
+def log(e, user):
     """
     程序日志记录
+    :param user:
     :param e:捕获异常参数`
     """
-    root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-    file_path = os.path.join(root_path, 'logs\\logs.txt')
-    call_func = sys._getframe().f_back.f_code.co_name
-    # pass
-    user = login_user if login_user is None else 'no login'
-    with open(file_path, 'a') as f:
-        print(f'{datetime.datetime.now()} -- {user} -- {call_func} --- {e}' + "\n\n")
-        f.write(f'{datetime.datetime.now()} -- {user} -- {call_func} --- {e}' + "\n\n")
+    try:
+        root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+        file_path = os.path.join(root_path, 'logs\\logs.txt')
+        call_func = sys._getframe().f_back.f_code.co_name
+        ip = socket.gethostbyname(socket.gethostname())
+        user = user if user is not None else 'no login'
+        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} -- {user} -- {ip} -- {call_func} -- {e}")
+        # db_session.add(LimsError(Time=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), User='user', IP=ip,
+        #                          Func=call_func, Error=e))
+        # db_session.commit()
+    except Exception as e:
+        print(e)
 
 
 class MyEncoder(json.JSONEncoder):
