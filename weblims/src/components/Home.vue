@@ -1,5 +1,6 @@
 <template>
     <el-container>
+      <el-container>
         <el-aside width="255px" class="bggreen">
             <div class="project cursor">实验室管理系统</div>
             <el-menu class="bggreen menuform" text-color="#fff" active-text-color="#fff">
@@ -13,8 +14,8 @@
             <el-header class="bggreen">
                     <el-row>
                     <el-col :span='20' class="sonMenucss">
-                        <el-menu  class="bggreen" mode="horizontal" active-text-color="#ffd04b" text-color="#fff" @select='getCurrentOpName'>
-                            <el-menu-item  v-for="(item,index) in SonMenuList" :key='index' :index='item.path'>{{item.name}}</el-menu-item>
+                        <el-menu  class="bggreen" mode="horizontal" active-text-color="#ffd04b" text-color="#fff">
+                            <el-menu-item  v-for="(item,index) in SonMenuList" :key='index' :index='item.path' @click="getCurrentSonList(item,index)" :class="{'ActiveSonMenucss':index==ActiveSonMenu}">{{item.name}}</el-menu-item>
                         </el-menu>
                     </el-col>
                     <el-col :span='4' class="tools" style="float:right;">
@@ -50,6 +51,8 @@
                 <el-form-item label="权限：">{{ userInfo.Permissions }}</el-form-item>
               </el-form>
         </el-dialog>
+      </el-container>
+      <el-footer style="textAlign:center;height:30px;lineHeight:30px;" class="bggreen">Copyright &copy;温川昆兄科技</el-footer>
     </el-container>
 </template>
 <script>
@@ -69,6 +72,7 @@ export default {
              },
              SonMenuList:[],
              ActiveMenu:100,
+             ActiveSonMenu:0,
              mneulist:[
                  {name:'功能看板',icon:'el-icon-data-analysis',path:'/Board'},
                  {name:'出入库管理',icon:'el-icon-folder-opened',path:'/OutInBar'},
@@ -106,6 +110,11 @@ export default {
         }
     },
     methods: {
+        getCurrentSonList(obj,index){
+            this.ActiveSonMenu=index
+            this.$router.push(obj.path)
+
+        },
          getFullCreeen () {  //全屏
             if (screenfull.isEnabled) {
             screenfull.toggle()
@@ -127,13 +136,11 @@ export default {
           this.ActiveMenu=index
           if(obj.hasOwnProperty('children')){
               this.SonMenuList=obj.children
+              this.getCurrentSonList(obj.children[0],0)
           }else{
              this.$router.push(obj.path)
              this.SonMenuList=[]
           }
-      },
-      getCurrentOpName(e){
-          this.$router.push(e)
       }
     },
 }
@@ -171,14 +178,17 @@ export default {
         color: #fff;
     }
     .ActiveMenucss{
-       background-color:#FFDEAD;
+       background-color:#00FA9A;
        border-radius: 30px;
+    }
+    .ActiveSonMenucss{
+        background-color:#FFDEAD;
     }
     .menuform .el-menu-item:hover{
         background-color: #00FA9A;
     }
     .sonMenucss .el-menu-item:hover{
-        background-color:#00FA9A;
+        background-color:#FFDEAD;
     }
     .sonMenucss .el-menu.el-menu--horizontal {
     border-bottom: solid 0px #e6e6e6;

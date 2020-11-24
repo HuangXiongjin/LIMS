@@ -21,7 +21,7 @@
 <script>
 var moment=require('moment')
 export default {
-  name: 'HelloWorld',
+  name: 'Login',
   data () {
      var validateLoginname = (rule, value, callback) => {
         if (value === '') {
@@ -113,7 +113,7 @@ export default {
   }
   .loginbox{
     width:400px;
-    height:300px;
+    height:275px;
     background-color:rgba(255, 255,255, 0.4);
     opacity: 0.8;
     position:fixed;
@@ -135,7 +135,7 @@ export default {
   .subbutton{
     position: absolute;
     top:275px;
-    left:175px;
+    left:190px;
     border-radius: 25px;
     width: 50px;
     height: 50px;
