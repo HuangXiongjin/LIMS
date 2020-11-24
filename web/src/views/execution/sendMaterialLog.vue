@@ -7,7 +7,7 @@
       <div class="platformContainer">
         <el-form :inline="true">
           <el-form-item label="发送时间">
-            <el-date-picker type="date" v-model="OperationDate" size="mini" format="yyyy-MM-dd" style="width: 140px;" @change="getMaterialTableData"></el-date-picker>
+            <el-date-picker type="date" v-model="OperationDate" size="mini" format="yyyy-MM-dd"  value-format="yyyy-MM-dd" style="width: 140px;" @change="getMaterialTableData"></el-date-picker>
           </el-form-item>
           <el-form-item class="floatRight">
             <el-radio-group v-model="SendFlag" size="small" @change="getMaterialTableData">
@@ -32,7 +32,7 @@
           <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
            :total="MaterialTableData.total"
            :current-page="MaterialTableData.offset"
-           :page-sizes="[5,10,20]"
+           :page-sizes="[10,20,30,40,50]"
            :page-size="MaterialTableData.limit"
            @size-change="handleSizeChange"
            @current-change="handleCurrentChange">
@@ -51,11 +51,11 @@
       return {
         MaterialTableData:{
           data:[],
-          limit: 5,
+          limit: 10,
           offset: 1,
           total: 0,
         },
-        OperationDate:moment().format("YYYY-MM-DD"),
+        OperationDate:"",
         SendFlag:"投料系统已接收",
       }
     },

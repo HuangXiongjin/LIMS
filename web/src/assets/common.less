@@ -89,6 +89,18 @@
     background-color: #168DD7;
     color: #fff;
   }
+  /* 下拉系统导航 */
+  .downSystemNav{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px;
+    background: #fff;
+    clear: both;
+    overflow: hidden;
+    z-index: 1;
+  }
   /* 公用组件样式 */
   .platformContainer{
     width: 100%;
@@ -166,6 +178,15 @@
   .el-table__body tr.current-row>td{
     background-color: #b6d9ff;
   }
+  /* 批记录表格 */
+  .elementTable tr td.isInput{
+    background:#f5debd;
+    max-width: 200px;
+  }
+  .elementTable tr td.collect{
+    background:#ddd;
+    max-width: 200px;
+  }
 }
 
 
@@ -226,6 +247,10 @@
     background: #ffffff;
     color: #1E222B;
   }
+  .menu-ul .el-menu-item:focus{
+    background-color: #168DD7;
+    color: #ffffff;
+  }
   .menu-ul .el-menu-item:hover i{
     color: #1E222B;
   }
@@ -259,17 +284,29 @@
     background-color: #ffffff;
     color: #1E222B;
   }
+  /* 下拉系统导航 */
+  .downSystemNav{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px;
+    background: #1E222B;
+    clear: both;
+    overflow: hidden;
+    z-index: 1;
+  }
   /* 表格 */
   .el-table{
     color: #fff;
   }
-  .el-table__body tr:hover>td{
+  .el-table__body .el-table__row:hover td{
     background-color:#3D4048
   }
-  .el-table__body tr.hover-row>td{
+  .el-table__body .el-table__row.hover-row td{
     background-color:#3D4048
   }
-  .el-table__body tr.current-row>td {
+  .el-table__body .el-table__row.current-row td {
     background-color: #094382;
   }
   .el-table, .el-table__expanded-cell{
@@ -443,6 +480,15 @@
   .el-step__title.is-process{
     color:#fff;
   }
+  /* 批记录表格 */
+  .elementTable tr td.isInput{
+    background:#176284;
+    max-width: 200px;
+  }
+  .elementTable tr td.collect{
+    background:#5a5757;
+    max-width: 200px;
+  }
 }
 /* 主题切换 */
 .themeItem{
@@ -510,14 +556,6 @@
   text-align: left;
   margin-bottom: 0;
   font-size: 14px;
-  max-width: 200px;
-}
-.elementTable tr td p.isInput{
-  color:#9C27B0;
-  max-width: 200px;
-}
-.elementTable tr td p.collect{
-  color:#15CC48;
   max-width: 200px;
 }
 /* 字体大小 */

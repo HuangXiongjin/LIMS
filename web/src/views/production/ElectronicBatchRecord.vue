@@ -158,7 +158,7 @@
               this.getBatchModelField()
               this.$nextTick(function () {
                 $(".elementTable").find("td").each(function(){
-                  if($(this).find("p").hasClass("isInput")){
+                  if($(this).hasClass("isInput")){
                     $(this).attr("contenteditable","true")
                   }
                 })

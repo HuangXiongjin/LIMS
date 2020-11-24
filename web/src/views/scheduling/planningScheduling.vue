@@ -2,9 +2,9 @@
   <el-row>
     <el-col :span="24">
       <el-steps :active="steps" finish-status="success" align-center class="marginBottom">
-        <el-step title="审核计划"></el-step>
+        <el-step title="审核计划" @click.native='steps=0' class="cursor-pointer"></el-step>
         <!-- <el-step title="工艺配置"></el-step> -->
-        <el-step title="下发计划"></el-step>
+        <el-step title="下发计划" @click.native='steps=1'  class="cursor-pointer"></el-step>
       </el-steps>
     </el-col>
     <el-col :span="24" class="marginTop">

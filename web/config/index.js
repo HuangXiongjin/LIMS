@@ -19,6 +19,7 @@ module.exports = {
           }
       },
       '/lims': {  //使用"/api"来代替"http://xxx"
+        // target: 'http://192.168.10.219:10002', //联调地址
         target: 'http://127.0.0.1:10002', //源地址
         changeOrigin: true, //请求头
         pathRewrite: {

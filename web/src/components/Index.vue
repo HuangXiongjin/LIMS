@@ -13,11 +13,6 @@
             </el-tooltip>
           </li>
           <li>
-            <el-tooltip class="head-menu-item" effect="dark" content="切换系统" placement="bottom">
-              <i class="el-icon-menu" @click="switchSystem"></i>
-            </el-tooltip>
-          </li>
-          <li>
             <el-tooltip class="head-menu-item" effect="light" placement="bottom">
               <div slot="content">
                 <ul>
@@ -25,6 +20,11 @@
                 </ul>
               </div>
               <i class="el-icon-brush"></i>
+            </el-tooltip>
+          </li>
+          <li>
+            <el-tooltip class="head-menu-item" effect="dark" content="切换系统" placement="bottom">
+              <i class="el-icon-menu" @click="showSystemNav = !showSystemNav"></i>
             </el-tooltip>
           </li>
           <li>
@@ -78,14 +78,22 @@
       <el-main style="clear: both;">
         <transition name="move" mode="out-in">
          <!--渲染子页面-->
-          <router-view
-            :key="$route.fullPath"
-             @mainMenu="getMainMenu"
-             @systemActive="getsystemActive"
-             :systemActive="systemActive"
-             :systemOptions="systemOptions">
-          </router-view>
-       </transition>
+          <router-view :key="$route.fullPath"></router-view>
+        </transition>
+        <el-collapse-transition>
+          <div v-show="showSystemNav" class="downSystemNav">
+            <el-row :gutter="30">
+              <el-col :span="24">
+                <el-col :span="6" v-for="(item,index) in systemOptions" :key="index">
+                  <div class="platformContainer cursor-pointer" style="text-align: center;" v-bind:class="{'color-lightgreen':index===systemActive}" @click="selectSystem(index,item.label)">
+                    <p class="marginBottom text-size-48"><i :class="item.icon"></i></p>
+                    <p class="text-size-16">{{ item.label }}</p>
+                  </div>
+                </el-col>
+              </el-col>
+            </el-row>
+          </div>
+        </el-collapse-transition>
       </el-main>
     </el-container>
   </el-container>
@@ -160,7 +168,7 @@
             {title:"组织架构",icon:"el-icon-office-building",url:"/Organization"},
             {title:"企业管理",icon:"el-icon-school",url:"/EnterpriseManagement"},
             {title:"工厂管理",icon:"el-icon-office-building",url:"/FactoryManagement"},
-            {title:"角色管理",icon:"el-icon-s-check",url:"/Role"},
+            {title:"角色权限",icon:"el-icon-s-check",url:"/Role"},
             {title:"班组管理",icon:"el-icon-receiving",url:"/TeamGroup"},
             {title:"人员管理",icon:"el-icon-user",url:"/Personnel"},
             {title:"权限维护",icon:"el-icon-lock",url:"/Permission"},
@@ -174,20 +182,12 @@
         dialogUserVisible:false, //是否弹出个人信息
         userInfo:{},
         isFullScreen:false, //是否全屏
-        areaObj:{
-          areaName:""
-        },
         themeValue:"0",
         themeList:[
           {color:"#ffffff",value:"0"},
           {color:"#1E222B",value:"1"},
         ],
-      }
-    },
-    //依赖注入传值
-    provide(){
-      return{
-        newAreaName:this.areaObj
+        showSystemNav:false,
       }
     },
     mounted(){
@@ -249,9 +249,6 @@
           query:moment()
         })
       },
-      switchSystem(){ //点击切换系统页面
-        this.$router.push("/switchSystem")
-      },
       handleCommand(command) {  //判断用户下拉点击
         if(command === "a"){
           this.dialogUserVisible = true
@@ -293,7 +290,21 @@
         }else if(value === "1"){
           $("#app").addClass("black-theme").removeClass("white-theme")
         }
-      }
+      },
+      selectSystem(index,label){
+        this.showSystemNav = false
+        this.systemOptions.forEach((item,i) =>{
+          if(index === i){
+            this.mainMenu = item.mainMenu
+            this.systemActive = index
+            if(item.mainMenu[0].children){
+              this.$router.push(item.mainMenu[0].children[0].url)
+            }else{
+              this.$router.push(item.mainMenu[0].url)
+            }
+          }
+        })
+      },
     }
   }
 </script>

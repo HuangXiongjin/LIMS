@@ -98,7 +98,6 @@
               return;
           }
           this.dialogVisible=true
-          this.submitForm.EQPCode=this.submitForm.EQPName=this.submitForm.Desc=''
         }else if(this.OperationName==='修改'){
            if(this.multipleSelection.length == 1){
             this.dialogVisible=true
@@ -183,7 +182,7 @@
           },res =>{
             console.log("请求错误")
             this.addloading=false
-})
+          })
         }else if(this.OperationName === "修改"){
           var params = {
             tableName:"ProductEquipment",

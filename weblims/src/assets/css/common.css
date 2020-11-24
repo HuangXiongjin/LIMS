@@ -1,0 +1,56 @@
+*{
+    margin: 0;
+    padding:0;
+}
+.lightgreen{
+    color:#0A9168;
+}
+.bggreen{
+    background-color:#0A9168;
+}
+.lightbrown{
+    color:#D3D3D3;
+}
+.lightyellow{
+    color:#C9BD8A;
+}
+.container{
+    opacity: 1;
+    border-radius: 16px;
+    box-shadow: 0px 0px 12px rgba(19, 145, 104, 0.11);
+    background-color: #fff;
+    padding: 15px;
+}
+.textWhite{
+    color: #fff;
+}
+.cursor{
+    cursor: pointer;
+}
+.menuform.el-menu {
+    border-right: 0px;
+}
+.bggreen.el-header{
+    padding: 0
+}
+.mgt14{
+    margin-top: 14px;
+}
+.mgt24{
+    margin-top: 24px;
+}
+.padd15{
+    padding: 15px;
+}
+.fsz20{
+    font-size: 20px;
+}
+.fsz24px{
+    font-size: 24px;
+}
+.txtgreencolor{
+    color: #139168;
+}
+.PuNo .el-select{
+    display: block;
+}

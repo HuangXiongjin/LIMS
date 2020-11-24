@@ -13,8 +13,9 @@
               </el-form-item>
               <el-form-item class="floatRight">
                 <el-radio-group v-model="sendPlanPlanStatus" size="small" @change="getPlanManagerTableData">
-                  <el-radio-button label="待发送"></el-radio-button>
-                  <el-radio-button label="已发送"></el-radio-button>
+                  <el-radio-button label="物料发送中"></el-radio-button>
+                  <el-radio-button label="物料发送完成"></el-radio-button>
+                  <el-radio-button label="已发送投料"></el-radio-button>
                 </el-radio-group>
               </el-form-item>
             </el-form>
@@ -31,9 +32,9 @@
               element-loading-spinner="el-icon-loading"
               >
               <el-table-column type="selection"></el-table-column>
+              <el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>
               <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
               <el-table-column prop="BatchID" label="批次号"></el-table-column>
-              <el-table-column prop="SchedulePlanCode" label="调度编号"></el-table-column>
               <el-table-column prop="BrandCode" label="品名编码"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
@@ -44,7 +45,7 @@
               <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
                :total="PlanManagerTableData.total"
                :current-page="PlanManagerTableData.offset"
-               :page-sizes="[5,10,20]"
+               :page-sizes="[10,20,30,40,50]"
                :page-size="PlanManagerTableData.limit"
                @size-change="handleSizeChangePlanManager"
                @current-change="handleCurrentChangePlanManager">
@@ -62,10 +63,10 @@
     name: "sendWMS",
     data(){
       return{
-        sendPlanPlanStatus:"待发送",
+        sendPlanPlanStatus:"物料发送完成",
         PlanManagerTableData:{
           data:[],
-          limit: 5,
+          limit: 10,
           offset: 1,
           total: 0,
           multipleSelection: [],
@@ -81,15 +82,17 @@
       getPlanManagerTableData(){
         this.loading=true
         var that = this
-        var PlanStatus = ""
-        if(this.sendPlanPlanStatus === "待发送"){
-          PlanStatus = "物料发送完成"
-        }else if(this.sendPlanPlanStatus === "已发送"){
-          PlanStatus = "已发送投料计划"
+        var flag = ""
+        if(this.sendPlanPlanStatus === "物料发送中"){
+          flag = "物料发送中"
+        }else if(this.sendPlanPlanStatus === "物料发送完成"){
+          flag = "物料发送完成"
+        }else if(this.sendPlanPlanStatus === "已发送投料"){
+          flag = "已发送投料计划"
         }
         var params = {
           tableName: "PlanManager",
-          PlanStatus:PlanStatus,
+          PlanStatus:flag,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }
@@ -131,43 +134,50 @@
       //发送投料计划到WMS
       sendPlan(){
         if(this.PlanManagerTableData.multipleSelection.length == 1){
-          var params = {
-            PlanID:this.PlanManagerTableData.multipleSelection[0].ID
-          }
-          this.$confirm('确定发送此批的投料计划到WMS吗？', '提示', {
-            distinguishCancelAndClose:true,
-            type: 'warning'
-          }).then(()  => {
-            const loading = this.$loading({
-              lock: true,
-              text: '发送中。。。',
-              spinner: 'el-icon-loading',
-              background: 'rgba(0, 0, 0, 0.7)'
+          if(this.PlanManagerTableData.multipleSelection[0].PlanStatus != "已发送投料计划"){
+            var params = {
+              PlanID:this.PlanManagerTableData.multipleSelection[0].ID
+            }
+            this.$confirm('确定发送此批的投料计划到WMS吗？', '提示', {
+              distinguishCancelAndClose:true,
+              type: 'warning'
+            }).then(()  => {
+              const loading = this.$loading({
+                lock: true,
+                text: '发送中。。。',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+              });
+              this.axios.post("/api/WMS_SendPlan",this.qs.stringify(params)).then(res =>{
+                if(res.data.code === "200"){
+                  this.$message({
+                    type: 'success',
+                    message: res.data.message
+                  });
+                  this.getPlanManagerTableData()
+                }
+                loading.close();
+              },res =>{
+                console.log("请求错误")
+                loading.close();
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消发送'
+              });
             });
-            this.axios.post("/api/WMS_SendPlan",this.qs.stringify(params)).then(res =>{
-              if(res.data.code === "200"){
-                this.$message({
-                  type: 'success',
-                  message: res.data.message
-                });
-                this.getPlanManagerTableData()
-              }
-              loading.close();
-            },res =>{
-              console.log("请求错误")
-              loading.close();
-            })
-          }).catch(() => {
+          }else{
             this.$message({
               type: 'info',
-              message: '已取消发送'
+              message: "请选择未发送投料的计划"
             });
-          });
+          }
         }else{
           this.$message({
-            type: 'info',
-            message: "请选择一条计划"
-          });
+              type: 'info',
+              message: "请选择计划"
+            });
         }
       },
     }
