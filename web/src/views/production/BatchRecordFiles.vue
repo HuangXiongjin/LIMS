@@ -121,7 +121,7 @@
                       confirmButtonText: '确定',
                       cancelButtonText: '取消',
                     }).then(({ value }) => {
-                      if(value != ""){
+                      if(value){
                         $(this).addClass("isInput")
                         $(this).attr("data-field",value)
                         $(this).attr("title",value)
@@ -142,7 +142,7 @@
                       confirmButtonText: '确定',
                       cancelButtonText: '取消',
                     }).then(({ value }) => {
-                      if(value != ""){
+                      if(value){
                         $(this).addClass("collect")
                         $(this).attr("data-field",value)
                         $(this).attr("title",value)

@@ -412,7 +412,7 @@
       PUPlan(item,type){
         this.ZYPlanPUData = item
         if(type === "设备确认"){
-          if(item.PUName === "提取（醇提）" || item.PUName === "提取（水提）" || item.PUName === "渗漏+醇提" || item.PUName === "浸渍提取"){
+          if(item.PUName === "提取（醇提）" || item.PUName === "提取（水提）" || item.PUName === "渗漉+醇提" || item.PUName === "浸渍提取" || item.PUName === "渗漉"){
             this.EQTQDialogVisible = true
             this.getProductEquipment(this.ZYPlanPUData.PUName)
             this.getMaterialTableData()
@@ -422,7 +422,7 @@
             this.getZYTaskTable()
           }
         }else if(type === "复核"){
-          if(item.PUName === "提取（醇提）" || item.PUName === "提取（水提）" || item.PUName === "渗漏+醇提" || item.PUName === "浸渍提取"){
+          if(item.PUName === "提取（醇提）" || item.PUName === "提取（水提）" || item.PUName === "渗漉+醇提" || item.PUName === "浸渍提取" || item.PUName === "渗漉"){
             this.confirmTQDialogVisible = true
             this.getMaterialTableData()
           }else{
