@@ -5,10 +5,10 @@
       <div class="logininfo">
           <el-form :model="ruleForm" status-icon ref="ruleForm" :rules="rules" label-width="80px">
             <el-form-item label="登录名称" prop="loginname">
-              <el-input v-model="ruleForm.loginname" autocomplete="off"></el-input>
+              <el-input v-model="ruleForm.loginname" autocomplete="off" @change='clearRemind'></el-input>
             </el-form-item>
             <el-form-item label="登录密码" prop="loginpass">
-              <el-input v-model="ruleForm.loginpass" autocomplete="off"></el-input>
+              <el-input v-model="ruleForm.loginpass" autocomplete="off" @change='clearRemind'></el-input>
             </el-form-item>
           </el-form>
           <div class="remindme"><el-checkbox v-model="checkedlogin" @change='remindKey'><span style="color:#333;">记住密码</span></el-checkbox></div>
@@ -54,6 +54,7 @@ export default {
     }
   },
   mounted(){
+    //登录默认勾选
     if(localStorage.getItem('Name') && localStorage.getItem('WorkNumber')){
     this.ruleForm={
       loginpass:localStorage.getItem('WorkNumber'),
@@ -63,20 +64,26 @@ export default {
     }
   },
   methods: {
-    remindKey(){
+    clearRemind(){ //修改密码用户名清除原先勾选
+      this.checkedlogin=false
+    },
+    remindKey(){ //勾选记住密码
       if(this.checkedlogin){
         if(this.ruleForm.loginname && this.ruleForm.loginpass){
             localStorage.setItem('Name',this.ruleForm.loginname)
             localStorage.setItem('WorkNumber',this.ruleForm.loginpass)
         }else{
-            
+            this.$message({
+              type:'info',
+              message:'请输入你的用户名密码'
+            })
         }
       }else{
           localStorage.removeItem('Name')
           localStorage.removeItem('WorkNumber')
       }
     },
-    loginIn() {
+    loginIn() { //登录操作
       var params={
          WorkNumber:this.ruleForm.loginname,
          password:this.ruleForm.loginpass

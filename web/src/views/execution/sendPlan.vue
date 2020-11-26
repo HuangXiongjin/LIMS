@@ -15,7 +15,6 @@
                 <el-radio-group v-model="sendPlanPlanStatus" size="small" @change="getPlanManagerTableData">
                   <el-radio-button label="物料发送中"></el-radio-button>
                   <el-radio-button label="物料发送完成"></el-radio-button>
-                  <el-radio-button label="已发送投料"></el-radio-button>
                 </el-radio-group>
               </el-form-item>
             </el-form>
@@ -87,8 +86,6 @@
           flag = "物料发送中"
         }else if(this.sendPlanPlanStatus === "物料发送完成"){
           flag = "物料发送完成"
-        }else if(this.sendPlanPlanStatus === "已发送投料"){
-          flag = "已发送投料计划"
         }
         var params = {
           tableName: "PlanManager",

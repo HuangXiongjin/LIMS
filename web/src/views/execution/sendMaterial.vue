@@ -534,54 +534,61 @@
       },
       //发送物料明细到WMS
       sendMaterialInfo(){
-        var flag = true
-        var mulId = []
-        this.MaterialTableData.multipleSelection.forEach(item =>{
-          mulId.push({
-            id:item.ID
-          })
-          if(item.SendFlag === "投料系统已接收"){
-            flag = false
-          }
-        })
-        if(flag){
-          var params = {}
-          params.sendData = JSON.stringify(mulId)
-          params.PlanStatus = "物料发送中"
-          params.PlanID = this.PlanManagerTableData.multipleSelection[0].ID
-          this.$confirm('确定发送此批的物料明细到WMS吗？', '提示', {
-            distinguishCancelAndClose:true,
-            type: 'warning'
-          }).then(()  => {
-            const loading = this.$loading({
-              lock: true,
-              text: 'Loading',
-              spinner: 'el-icon-loading',
-              background: 'rgba(0, 0, 0, 0.7)'
-            });
-            this.axios.post("/api/WMS_SendMatils",this.qs.stringify(params)).then(res =>{
-              if(res.data.code === "200"){
-                this.$message({
-                  type: 'success',
-                  message: res.data.message
-                });
-                this.getMaterialTableData()
-              }
-              loading.close();
-            },res =>{
-              console.log("请求错误")
-              loading.close();
+        if(this.MaterialTableData.multipleSelection.length > 0){
+          var flag = true
+          var mulId = []
+          this.MaterialTableData.multipleSelection.forEach(item =>{
+            mulId.push({
+              id:item.ID
             })
-          }).catch(() => {
+            if(item.SendFlag === "投料系统已接收"){
+              flag = false
+            }
+          })
+          if(flag){
+            var params = {}
+            params.sendData = JSON.stringify(mulId)
+            params.PlanStatus = "物料发送中"
+            params.PlanID = this.PlanManagerTableData.multipleSelection[0].ID
+            this.$confirm('确定发送此批的物料明细到WMS吗？', '提示', {
+              distinguishCancelAndClose:true,
+              type: 'warning'
+            }).then(()  => {
+              const loading = this.$loading({
+                lock: true,
+                text: 'Loading',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+              });
+              this.axios.post("/api/WMS_SendMatils",this.qs.stringify(params)).then(res =>{
+                if(res.data.code === "200"){
+                  this.$message({
+                    type: 'success',
+                    message: res.data.message
+                  });
+                  this.getMaterialTableData()
+                }
+                loading.close();
+              },res =>{
+                console.log("请求错误")
+                loading.close();
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消发送'
+              });
+            });
+          }else{
             this.$message({
               type: 'info',
-              message: '已取消发送'
+              message: "已发送的物料不能再发送"
             });
-          });
+          }
         }else{
           this.$message({
             type: 'info',
-            message: "已发送的物料不能再发送"
+            message: "请选择要发送的物料"
           });
         }
       },

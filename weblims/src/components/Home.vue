@@ -1,25 +1,25 @@
 <template>
     <el-container>
       <el-container>
-        <el-aside width="255px" class="bggreen">
+        <el-aside width="240px" class="bggreen">
             <div class="project cursor">实验室管理系统</div>
-            <el-menu class="bggreen menuform" text-color="#fff" active-text-color="#fff">
+            <el-menu class="bggreen menuform" text-color="#d4d4d4" active-text-color="#323232" :style="conheight">
             <el-menu-item v-for="(item,index) in mneulist" :key='index' :index='index.toString()' @click="getSonMenuList(item,index)" :class="{'ActiveMenucss':index==ActiveMenu}">
-                <i :class="item.icon" style="color:#fff;"></i>
+                <i :class="item.icon" style="color:#ccc;"></i>
                 <span slot="title">{{item.name}}</span>
             </el-menu-item>
             </el-menu>
         </el-aside>
         <el-container>
-            <el-header class="bggreen">
+            <el-header class="bgwhite " style="paddingTop:20px;backgroundColor:#0A9168;">
                     <el-row>
                     <el-col :span='20' class="sonMenucss">
-                        <el-menu  class="bggreen" mode="horizontal" active-text-color="#ffd04b" text-color="#fff">
+                        <el-menu  class="bgwhite selfradius" mode="horizontal" active-text-color="#323232" text-color="#d4d4d4">
                             <el-menu-item  v-for="(item,index) in SonMenuList" :key='index' :index='item.path' @click="getCurrentSonList(item,index)" :class="{'ActiveSonMenucss':index==ActiveSonMenu}">{{item.name}}</el-menu-item>
                         </el-menu>
                     </el-col>
                     <el-col :span='4' class="tools" style="float:right;">
-                        <ul>
+                        <ul style="height:100%;">
                             <li>
                                 <el-tooltip class="head-menu-item cursor" effect="dark" content="全屏" placement="bottom">
                                     <i :class="isFullScreen?'fa fa-compress':'fa fa-expand'" @click="getFullCreeen"></i>
@@ -39,7 +39,7 @@
                     </el-col>
                 </el-row>
             </el-header>
-            <el-main>
+            <el-main style="paddingTop:30px;">
                 <router-view></router-view>
             </el-main>
         </el-container>
@@ -52,7 +52,7 @@
               </el-form>
         </el-dialog>
       </el-container>
-      <el-footer style="textAlign:center;height:30px;lineHeight:30px;" class="bggreen">Copyright &copy;温川昆兄科技</el-footer>
+      <el-footer style="textAlign:center;height:30px;lineHeight:30px;fontSize:12px;" class="bggreen">Copyright &copy;温兄昆川科技</el-footer>
     </el-container>
 </template>
 <script>
@@ -73,6 +73,9 @@ export default {
              SonMenuList:[],
              ActiveMenu:100,
              ActiveSonMenu:0,
+             conheight:{
+                height:''
+            },
              mneulist:[
                  {name:'功能看板',icon:'el-icon-data-analysis',path:'/Board'},
                  {name:'出入库管理',icon:'el-icon-folder-opened',path:'/OutInBar'},
@@ -109,7 +112,14 @@ export default {
                 ]
         }
     },
+    created(){
+        window.addEventListener('resize', this.getHeight);
+        this.getHeight()
+    },
     methods: {
+        getHeight(){
+          this.conheight.height=window.innerHeight-210+'px';
+       },
         getCurrentSonList(obj,index){
             this.ActiveSonMenu=index
             this.$router.push(obj.path)
@@ -148,7 +158,7 @@ export default {
 <style scoped>
     .project{
         font-size: 20px;
-        width:168px;
+        width:150px;
         height: 111px;
         line-height: 111px;
         text-align: center;
@@ -157,40 +167,44 @@ export default {
         border-bottom: 1px solid #fff;
     }
     .menuform{
-        height: 800px;
-        padding-left: 28px;
+        padding-left: 10px;
     }
     .tools ul{
         margin: 0;
         padding: 0;
+        overflow: hidden;
+        background-color: #fff;
+        border-radius: 0 25px 0 0;
     }
     .tools ul li{
         list-style: none;
         width:40px;
         text-align: center;
-        height:40px;
-        line-height: 40px;
-        margin: 10px 10px;
+        height:100%;
+        line-height: 100%;
+        margin: 20px 10px;
         float: left;
     }
     .head-menu-item{
         font-size:20px;
-        color: #fff;
+        color: #222;
     }
     .ActiveMenucss{
-       background-color:#00FA9A;
-       border-radius: 30px;
+       background-color:#fff;
+       border-radius: 30px 0 0 30px;
     }
     .ActiveSonMenucss{
-        background-color:#FFDEAD;
+        color: #323232!important;
+        border-radius: 25px 0 0 0;
     }
     .menuform .el-menu-item:hover{
         background-color: #00FA9A;
+        color:#fff!important;
     }
     .sonMenucss .el-menu-item:hover{
-        background-color:#FFDEAD;
+        border-radius: 25px 0 0 0;
     }
     .sonMenucss .el-menu.el-menu--horizontal {
-    border-bottom: solid 0px #e6e6e6;
+        border-bottom: solid 0px #e6e6e6;
     }
 </style>
