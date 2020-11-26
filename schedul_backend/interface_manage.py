@@ -159,15 +159,7 @@ def WMS_SendPlan():
                 if zypl == None:
                     zypl = db_session.query(ZYPlan).filter(ZYPlan.BatchID == pmoc.BatchID,
                                                             ZYPlan.BrandCode == pmoc.BrandCode,
-                                                            ZYPlan.PUName.like("%渗漏+醇提%")).first()
-                    if zypl == None:
-                        zypl = db_session.query(ZYPlan).filter(ZYPlan.BatchID == pmoc.BatchID,
-                                                                ZYPlan.BrandCode == pmoc.BrandCode,
-                                                                ZYPlan.PUName.like("%渗漏+水提%")).first()
-                        if zypl == None:
-                            zypl = db_session.query(ZYPlan).filter(ZYPlan.BatchID == pmoc.BatchID,
-                                                                    ZYPlan.BrandCode == pmoc.BrandCode,
-                                                                    ZYPlan.PUName.like("%渗漏%")).first()
+                                                            ZYPlan.PUName.like("%渗")).first()
                 dic.append({"PlanNo": zypl.ID, "BrandCode": pmoc.BrandCode,
                             "BrandName": pmoc.BrandName, "BatchID": pmoc.BatchID,
                             "Weight": pmoc.PlanQuantity, "Unit": pmoc.Unit})
@@ -226,19 +218,11 @@ def WMS_SendMatils():
                 for key in jsonnumber:
                     id = int(key)
                     oclass = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.ID == id).first()
-                    zypla = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID, ZYPlan.BrandCode == oclass.BrandCode, ZYPlan.PUName.like("%提取%")).first()
+                    zypla = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID, ZYPlan.BrandCode == oclass.BrandCode, ZYPlan.PUName.like("%提%")).first()
                     if zypla == None:
                         zypla = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID,
                                                                 ZYPlan.BrandCode == oclass.BrandCode,
-                                                                ZYPlan.PUName.like("%渗漏+醇提%")).first()
-                        if zypla == None:
-                            zypla = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID,
-                                                                    ZYPlan.BrandCode == oclass.BrandCode,
-                                                                    ZYPlan.PUName.like("%渗漏+水提%")).first()
-                            if zypla == None:
-                                zypla = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID,
-                                                                        ZYPlan.BrandCode == oclass.BrandCode,
-                                                                        ZYPlan.PUName.like("%渗漏%")).first()
+                                                                ZYPlan.PUName.like("%渗")).first()
                     dic.append({"PlanNo":zypla.ID, "BatchMaterialInfoID": oclass.ID, "BrandCode": pmoc.BrandCode, "BrandName": pmoc.BrandName,
                                 "BatchID": oclass.BatchID, "FlagCode": oclass.BucketNum,
                                 "Weight": oclass.BucketWeight, "Unit": oclass.Unit, "Flag": oclass.Flag, "FeedingSeq": oclass.FeedingSeq,

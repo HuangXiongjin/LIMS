@@ -230,7 +230,10 @@ def select(data):
             dir = {}
             column_list = columns.split(",")
             for column in column_list:
-                dir[column[1:-1]] = i[column[1:-1]]
+                if isinstance(i[column[1:-1]], datetime.datetime) == True:
+                    dir[column[1:-1]] = datetime.datetime.strftime(i[column[1:-1]],'%Y-%m-%d %H:%M:%S')
+                else:
+                    dir[column[1:-1]] = i[column[1:-1]]
             dict_list.append(dir)
         return {"code": "200", "message": "请求成功", "data": {"total": recount[0][0], "rows": dict_list}}
     except Exception as e:
