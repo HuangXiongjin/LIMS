@@ -2,7 +2,7 @@
     <el-row :gutter="20">
         <el-col :span='5'>
             <el-col class="container">
-                <div style="height:46px;lineHeight:46px;borderBottom:1px solid #ccc;">样本分类</div>
+                <div class="fontWet titl">样本分类</div>
                 <div style="marginTop:20px;">
                     <el-tree
                     :data="data"
@@ -17,7 +17,7 @@
         </el-col>
         <el-col :span='19'>
             <el-col class="container">
-                <div style="height:46px;lineHeight:46px;borderBottom:1px solid #ccc;">请验单填写</div>
+                <div class="fontWet titl">请验单填写</div>
                 <div style="marginTop:20px;" class="padd15">
                    <el-col :span='24' class="txtgreencolor fsz20">JC20201212</el-col>
                    <el-col :span='24' class='mgt24'>基础数据</el-col>
@@ -158,5 +158,9 @@ export default {
 }
 </script>
 <style scoped>
-
+    .titl{
+        height:46px;
+        line-height:46px;
+        border-bottom:1px solid #ccc;
+    }
 </style>

@@ -21,6 +21,10 @@ import Destroylist from '@/views/Destroy/Destroylist'
 import SampleBoard from '@/views/SampleManagement/SampleBoard'
 import SampleReceiving from '@/views/SampleManagement/SampleReceiving'
 
+import CategoryManage from '@/views/System/CategoryManage'
+import DocumentManage from '@/views/System/DocumentManage'
+import RightDistribute from '@/views/System/RightDistribute'
+import RecordBar from '@/views/System/RecordBar'
 
 
 const originalPush = Router.prototype.push
@@ -65,6 +69,13 @@ const router=new Router({
         //留样
         {path:'/SampleReceiving',component:SampleReceiving},
         {path:'/SampleBoard',component:SampleBoard},
+        
+        //系统管理
+        {path:'/CategoryManage',component:CategoryManage},
+        {path:'/DocumentManage',component:DocumentManage},
+        {path:'/RightDistribute',component:RightDistribute},
+        {path:'/RecordBar',component:RecordBar},
+
       ]
     }
   ]

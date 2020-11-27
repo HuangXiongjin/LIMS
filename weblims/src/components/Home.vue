@@ -109,6 +109,12 @@ export default {
                      {name:'销毁清单',path:'/Destroylist'},
                  ]},
                  {name:'试剂耗材',icon:'el-icon-toilet-paper',path:'/OutInBar'},
+                 {name:'系统管理',icon:'el-icon-setting',children:[
+                     {name:'类目模板',path:'/CategoryManage'},
+                     {name:'文档管理',path:'/DocumentManage'},
+                     {name:'记录模板',path:'/RecordBar'},
+                     {name:'权限分配',path:'/RightDistribute'},
+                 ]},
                 ]
         }
     },
@@ -118,7 +124,7 @@ export default {
     },
     methods: {
         getHeight(){
-          this.conheight.height=window.innerHeight-210+'px';
+          this.conheight.height=window.innerHeight-160+'px';
        },
         getCurrentSonList(obj,index){
             this.ActiveSonMenu=index
@@ -159,15 +165,14 @@ export default {
     .project{
         font-size: 20px;
         width:150px;
-        height: 111px;
-        line-height: 111px;
+        height: 61px;
         text-align: center;
         margin:30px 50px 37px 37px;
         color: #fff;
         border-bottom: 1px solid #fff;
     }
     .menuform{
-        padding-left: 10px;
+        padding-left: 20px;
     }
     .tools ul{
         margin: 0;

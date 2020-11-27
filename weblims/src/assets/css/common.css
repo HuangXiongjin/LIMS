@@ -11,6 +11,9 @@
 .lightbrown{
     color:#D3D3D3;
 }
+.mgr15{
+    margin-right: 15px;
+}
 .lightyellow{
     color:#C9BD8A;
 }
@@ -42,6 +45,9 @@
 .mgt24{
     margin-top: 24px;
 }
+.mgb24{
+    margin-bottom: 24px;
+}
 .padd15{
     padding: 15px;
 }
@@ -59,4 +65,7 @@
 }
 .selfradius{
     border-radius: 25px 0 0 0 ;
+}
+.fontWet{
+    font-weight:700;
 }
