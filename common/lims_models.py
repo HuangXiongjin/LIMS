@@ -6,7 +6,6 @@ from sqlalchemy import create_engine, Column, DateTime, Integer, Unicode
 
 from flask_login import LoginManager
 from database.connect_db import CONNECT_DATABASE
-from tools.handle import get_short_id
 
 login_manager = LoginManager()
 # 创建对象的基类
@@ -33,7 +32,7 @@ class QualityStandard(Base):
     __tablename__ = 'QualityStandard'
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
-    No = Column(Unicode(32), nullable=True, default=get_short_id())
+    No = Column(Unicode(32), nullable=True)
     # 品名
     Product = Column(Unicode(32), nullable=True)
     # 标准来源
@@ -57,7 +56,7 @@ class QualityStandardCenter(Base):
     __tablename__ = 'QualityStandardCenter'
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
-    No = Column(Unicode(32), nullable=True, default=get_short_id())
+    No = Column(Unicode(32), nullable=True)
     # 品名
     Product = Column(Unicode(32), nullable=True)
     # 物料代码
@@ -425,6 +424,21 @@ class LimsError(Base):
     Func = Column(Unicode(32), nullable=True)
     # 错误信息
     Error = Column(Unicode(64), nullable=True)
+
+
+class ClassifyTree(Base):
+    """分类维护表"""
+    __tablename__ = "ClassifyTree"
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    # tag点编号
+    TagCode = Column(Unicode(100), nullable=True)
+    # tag点名称
+    TagName = Column(Unicode(100), nullable=True)
+    # 上级tag点
+    ChildrenTag = Column(Unicode(100), nullable=True)
+    # 父节点
+    ParentTag = Column(Unicode(100), nullable=True)
 
 
 # 生成表单的执行语句
