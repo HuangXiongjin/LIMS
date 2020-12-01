@@ -4,12 +4,12 @@ import xlwt
 from flask import Blueprint, make_response
 from flask_login import current_user
 
-from BSFramwork import AlchemyEncoder
-from system import User
-from tools.handle import MyEncoder, log
+from common.BSFramwork import AlchemyEncoder
+# from system import User
+# from tools.handle import MyEncoder, log
 from common.lims_models import db_session, ClassifyTree
 # from database.connect_db import conn
-from common.batch_plan_model import PlanManager
+# from common.batch_plan_model import PlanManager
 
 system_interface = Blueprint('system_interface', __name__)
 
