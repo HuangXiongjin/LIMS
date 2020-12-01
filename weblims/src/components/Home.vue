@@ -70,28 +70,38 @@ export default {
                  LastLoginTime:sessionStorage.getItem('LastLoginTime'),
                  Permissions:'登录'
              },
-             SonMenuList:[],
+             SonMenuList:[{name:'',path:'/'}],
              ActiveMenu:100,
              ActiveSonMenu:0,
              conheight:{
                 height:''
             },
              mneulist:[
-                 {name:'功能看板',icon:'el-icon-data-analysis',path:'/Board'},
-                 {name:'出入库管理',icon:'el-icon-folder-opened',path:'/OutInBar'},
+                 {name:'功能看板',icon:'el-icon-data-analysis',children:[
+                    {name:'系统首页',path:'/Board'},
+                    {name:'统计分析',path:'/StatisticalAnalysis'},
+                    {name:'进度看板',path:'/ProgressBoard'},
+                    {name:'批次进度',path:'/BatchProgress'},
+                 ]},
+                 {name:'出入库管理',icon:'el-icon-folder-opened',children:[
+                    {name:'动态管理',path:'/DynamicManagement'},
+                    {name:'入库管理',path:'/InWarehouse'},
+                    {name:'出库管理',path:'/OutWarehouse'},
+                    {name:'申请审核',path:'/ApplicationReview'},
+
+                 ]},
                  {name:'样本请验',icon:'el-icon-location',children:[
                     {name:'申请检验',path:'/ApplyTest'},
                     {name:'请检审核',path:'/SampleCheck'},
-                    {name:'取样登记',path:'/SampleRegistration'},
+                    {name:'登记发送',path:'/SampleRegistration'},
                     {name:'请验清单',path:'/SampleTest'},
                     {name:'报告复查',path:'/ReportReview'},
                 ]},
                 {name:'样本检验',icon:'el-icon-files',children:[
-                    {name:'样本接收',path:'/ApplyTest'},
-                    {name:'样本分发',path:'/SampleCheck'},
-                    {name:'分配检验',path:'/SampleRegistration'},
-                    {name:'样本销毁',path:'/SampleTest'},
-                    {name:'样本台账',path:'/ReportReview'},
+                    {name:'样本接收',path:'/ReceivingSample'},
+                    {name:'样本及记录分发',path:'/SampleRD'},
+                    {name:'检验接收',path:'/ReceivingResult'},
+                    {name:'样本台账',path:'/SampleAccount'},
                 ]
                 },
                  {name:'质检报告',icon:'el-icon-document',children:[
@@ -108,7 +118,10 @@ export default {
                      {name:'销毁审核',path:'/DestroyAudit'},
                      {name:'销毁清单',path:'/Destroylist'},
                  ]},
-                 {name:'试剂耗材',icon:'el-icon-toilet-paper',path:'/OutInBar'},
+                 {name:'试剂耗材',icon:'el-icon-toilet-paper',children:[
+                     {name:'试剂管理',path:'/ReagentManagement'},
+
+                 ]},
                  {name:'系统管理',icon:'el-icon-setting',children:[
                      {name:'类目模板',path:'/CategoryManage'},
                      {name:'文档管理',path:'/DocumentManage'},
