@@ -5,12 +5,33 @@ import datetime
 import decimal
 import json
 import time
+import uuid
 
 from flask_sqlalchemy import BaseQuery
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.collections import InstrumentedList
 
 from common.lims_models import db_session, LimsError
+
+
+array = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
+         "w", "x", "y", "z",
+         "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
+         "W", "X", "Y", "Z"
+         ]
+
+
+def get_short_id():
+    """生成8位数不重复id"""
+    id = str(uuid.uuid4()).replace("-", '')
+    buffer = []
+    for i in range(0, 8):
+        start = i * 4
+        end = i * 4 + 4
+        val = int(id[start:end], 16)
+        buffer.append(array[val % 62])
+    return "".join(buffer)
 
 
 def get_time_stamp(s):

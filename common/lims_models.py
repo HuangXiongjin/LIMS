@@ -6,6 +6,7 @@ from sqlalchemy import create_engine, Column, DateTime, Integer, Unicode
 
 from flask_login import LoginManager
 from database.connect_db import CONNECT_DATABASE
+from tools.handle import get_short_id
 
 login_manager = LoginManager()
 # 创建对象的基类
@@ -13,6 +14,78 @@ engine = create_engine(CONNECT_DATABASE)
 Session = sessionmaker(bind=engine)
 db_session = Session()
 Base = declarative_base(engine)
+
+#
+# class ProjectModel(Base):
+#     """项目维护表"""
+#     __tablename__ = 'ProjectModel'
+#     Id = Column(Integer, autoincrement=True, primary_key=True)
+#     # 品名唯一标识
+#     No = Column(Unicode(32), nullable=True, default=get_short_id())
+#     # 品名
+#     Product = Column(Unicode(32), nullable=True)
+#     # 项目
+#     Project = Column(Unicode(64), nullable=True)
+
+
+class QualityStandard(Base):
+    """质量标准明细"""
+    __tablename__ = 'QualityStandard'
+    Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 品名唯一标识
+    No = Column(Unicode(32), nullable=True, default=get_short_id())
+    # 品名
+    Product = Column(Unicode(32), nullable=True)
+    # 标准来源
+    # Source = Column(Unicode(64), nullable=True)
+    # 项目
+    Project = Column(Unicode(64), nullable=True)
+    # 性状
+    Character = Column(Unicode(16), nullable=True)
+    # 鉴别
+    Discern = Column(Unicode(128), nullable=True)
+    # 检查
+    Inspect = Column(Unicode(16), nullable=True)
+    # 含量测定
+    Content = Column(Unicode(64), nullable=True)
+    # 微生物限度
+    Microbe = Column(Unicode(16), nullable=True)
+
+
+class QualityStandardCenter(Base):
+    """质量标准中间表"""
+    __tablename__ = 'QualityStandardCenter'
+    Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 品名唯一标识
+    No = Column(Unicode(32), nullable=True, default=get_short_id())
+    # 品名
+    Product = Column(Unicode(32), nullable=True)
+    # 物料代码
+    Code = Column(Unicode(16), nullable=True)
+    # 物料类型
+    Type = Column(Unicode(16), nullable=True)
+    # 标准来源
+    Source = Column(Unicode(64), nullable=True)
+    # 单位
+    Unit = Column(Unicode(16), nullable=True)
+    # 录入时间
+    IntoTime = Column(Unicode(16), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    # 录入人
+    IntoUser = Column(Unicode(8), nullable=True)
+    # 上次修改时间
+    AlterTime = Column(Unicode(16), nullable=True)
+    # 修改人
+    AlterUser = Column(Unicode(8), nullable=True)
+    # # 项目关联ID
+    # Project = Column(Unicode(64), nullable=True)
+    # # 性状关联ID
+    # Character = Column(Unicode(16), nullable=True)
+    # # 检查关联ID
+    # Inspect = Column(Unicode(16), nullable=True)
+    # # 含量测定关联ID
+    # Content = Column(Unicode(64), nullable=True)
+    # # 微生物限度ID
+    # MicrobeID = Column(Unicode(16), nullable=True)
 
 
 class WorkerRecord(Base):
@@ -30,9 +103,9 @@ class WorkerRecord(Base):
     # 批号
     SampleNumber = Column(Unicode(32), nullable=True)
     # 检测开始时间
-    CheckStartTime = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%m:%s'))
+    CheckStartTime = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 检测完成时间
-    CheckEndTime = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%m:%s'))
+    CheckEndTime = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 备注
     Comment = Column(Unicode(32), nullable=True)
 
@@ -55,6 +128,8 @@ class CheckForm(Base):
     Number = Column(Unicode(32), nullable=True)
     # 数量
     Amount = Column(Unicode(16), nullable=True)
+    # 单位
+    Unit = Column(Unicode(8), nullable=True)
     # 请验工序
     CheckProcedure = Column(Unicode(32), nullable=True)
     # 请验部门
@@ -189,11 +264,15 @@ class ProductSaveSurvey(Base):
     Comment = Column(Unicode(32), nullable=True)
 
 
+# class Instrument(Base):
+#     """仪器表"""
+#     __tablename__ = 'Instrument'
+
 class KeepPlan(Base):
     """仪器保养计划表"""
     __tablename__ = 'KeepPlan'
 
-    id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 工单号
     No = Column(Unicode(128), nullable=True, default=datetime.now().strftime('%Y%m%d%H%M%S'))
     # 仪器编码
@@ -222,7 +301,7 @@ class KeepTask(Base):
     """保养任务表"""
     __tablename__ = 'KeepTask'
 
-    id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 工单号
     No = Column(Unicode(128), nullable=True, default=datetime.now().strftime('%Y%m%d%H%M%S'))
     # 仪器编码
@@ -253,7 +332,7 @@ class KeepRecord(Base):
     """保养记录表"""
     __tablename__ = 'KeepRecord'
 
-    id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 工单号
     No = Column(Unicode(128), nullable=True, default=datetime.now().strftime('%Y%m%d%H%M%S'))
     # 仪器编码
@@ -286,7 +365,7 @@ class Repair(Base):
     """维修申请表"""
     __tablename__ = 'Repair'
 
-    id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 工单号
     No = Column(Unicode(128), nullable=True, default=datetime.now().strftime('%Y%m%d%H%M%S'))
     # 仪器编码
@@ -309,7 +388,7 @@ class RepairTask(Base):
     """维修任务表"""
     __tablename__ = 'RepairTask'
 
-    id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 工单号
     No = Column(Unicode(128), nullable=True)
     # 仪器编码
