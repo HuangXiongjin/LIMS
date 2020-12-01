@@ -27,7 +27,7 @@ def classify_tree():
         children2 = []
         children1 = {"label": item, "children": children2}
         query_data = db_session.query(ClassifyTree).filter_by(ChildrenTag=item).all()
-        parent_tag2 = set(item.ParentTag for item in query_data)
+        # parent_tag2 = set(item.ParentTag for item in query_data)
         for data in query_data:
             rank2_data = {"id": data.TagCode, "label": data.TagName, "ParentTagCode": "1"}
             children2.append(rank2_data)
@@ -56,4 +56,3 @@ def classify_tree():
         # children.append(children1)
     tree = [{"label": '希尔安药业', "children": children}]
     return json.dumps({'code': '20001', 'message': '成功', 'data': tree}, cls=AlchemyEncoder, ensure_ascii=False)
-    pass
