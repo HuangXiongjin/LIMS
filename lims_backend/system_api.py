@@ -94,8 +94,8 @@ def quality_standard():
     if request.method == 'GET':
         code = request.values.get('Code')
         tag = db_session.query(ClassifyTree).filter_by(TagCode=code).first()
-        data = db_session.query(QualityStandard).filter_by(Type=tag.TagName).all()
-        return json.dumps({'code': '1000', 'message': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
+        data = db_session.query(QualityStandardCenter).filter_by(Type=tag.TagName).all()
+        return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'POST':
         data = QualityStandardCenter()
         data.Product = request.values.get('Product')
@@ -113,4 +113,4 @@ def quality_standard():
             data.AlterUser = request.values.get('AlterUser')
         db_session.add(data)
         db_session.commit()
-        return json.dumps({'code': '20001', 'message': '添加成功'}, cls=MyEncoder, ensure_ascii=False)
+        return json.dumps({'code': '1000', 'msg': '添加成功'}, cls=MyEncoder, ensure_ascii=False)
