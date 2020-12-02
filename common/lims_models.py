@@ -34,21 +34,21 @@ class QualityStandard(Base):
     # 品名唯一标识
     No = Column(Unicode(32), nullable=True)
     # 品名
-    Product = Column(Unicode(32), nullable=True)
+    Product = Column(Unicode(64), nullable=True)
     # 标准来源
     # Source = Column(Unicode(64), nullable=True)
     # 项目
-    Project = Column(Unicode(64), nullable=True)
+    Project = Column(Unicode(1024), nullable=True)
     # 性状
-    Character = Column(Unicode(16), nullable=True)
+    Character = Column(Unicode(1024), nullable=True)
     # 鉴别
-    Discern = Column(Unicode(128), nullable=True)
+    Discern = Column(Unicode(1024), nullable=True)
     # 检查
-    Inspect = Column(Unicode(16), nullable=True)
+    Inspect = Column(Unicode(1024), nullable=True)
     # 含量测定
-    Content = Column(Unicode(64), nullable=True)
+    Content = Column(Unicode(1024), nullable=True)
     # 微生物限度
-    Microbe = Column(Unicode(16), nullable=True)
+    Microbe = Column(Unicode(1024), nullable=True)
 
 
 class QualityStandardCenter(Base):
@@ -56,25 +56,25 @@ class QualityStandardCenter(Base):
     __tablename__ = 'QualityStandardCenter'
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
-    No = Column(Unicode(32), nullable=True)
+    No = Column(Unicode(64), nullable=True)
     # 品名
-    Product = Column(Unicode(32), nullable=True)
+    Product = Column(Unicode(182), nullable=True)
     # 物料代码
-    Code = Column(Unicode(16), nullable=True)
+    Code = Column(Unicode(64), nullable=True)
     # 物料类型
-    Type = Column(Unicode(16), nullable=True)
+    Type = Column(Unicode(64), nullable=True)
     # 标准来源
-    Source = Column(Unicode(64), nullable=True)
+    Source = Column(Unicode(256), nullable=True)
     # 单位
-    Unit = Column(Unicode(16), nullable=True)
+    Unit = Column(Unicode(32), nullable=True)
     # 录入时间
-    IntoTime = Column(Unicode(16), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    IntoTime = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 录入人
-    IntoUser = Column(Unicode(8), nullable=True)
+    IntoUser = Column(Unicode(32), nullable=True)
     # 上次修改时间
-    AlterTime = Column(Unicode(16), nullable=True)
+    AlterTime = Column(Unicode(32), nullable=True)
     # 修改人
-    AlterUser = Column(Unicode(8), nullable=True)
+    AlterUser = Column(Unicode(32), nullable=True)
     # # 项目关联ID
     # Project = Column(Unicode(64), nullable=True)
     # # 性状关联ID

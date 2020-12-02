@@ -7,7 +7,7 @@ from flask_login import current_user
 
 from common.BSFramwork import AlchemyEncoder
 # from system import User
-from tools.handle import MyEncoder, log
+from tools.handle import MyEncoder, log, get_short_id
 from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard
 
 # from database.connect_db import conn
@@ -89,21 +89,24 @@ def classify_tree():
         return json.dumps({'code': '1000', 'msg': '删除成功'}, cls=MyEncoder, ensure_ascii=False)
 
 
-@system_interface.route('/QualityStandard', methods=['GET', 'POST'])
+@system_interface.route('/QualityStandardCenter', methods=['GET', 'POST'])
 def quality_standard():
     if request.method == 'GET':
         code = request.values.get('Code')
-        data = db_session.query(QualityStandard).filter_by(Type=code).all()
+        tag = db_session.query(ClassifyTree).filter_by(TagCode=code).first()
+        data = db_session.query(QualityStandard).filter_by(Type=tag.TagName).all()
         return json.dumps({'code': '1000', 'message': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'POST':
         data = QualityStandardCenter()
         data.Product = request.values.get('Product')
-        data.Type = request.values.get('ID')
+        data.Type = request.values.get('Type')
         data.Code = request.values.get('Code')
         data.Source = request.values.get('Source')
         data.Unit = request.values.get('Unit')
-        data.IntoUser = current_user.Name
+        data.No = get_short_id()
         if request.values.get('Action') == 'add':
+            data.No = get_short_id()
+            data.IntoUser = request.values.get('IntoUser')
             data.IntoTime = request.values.get('IntoTime')
         if request.values.get('Action') == 'update':
             data.AlterTime = request.values.get('AlterTime')
