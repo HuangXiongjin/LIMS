@@ -1,58 +1,113 @@
 import json
+from datetime import datetime
 
 import xlwt
-from flask import Blueprint, make_response
+from flask import Blueprint, make_response, request
 from flask_login import current_user
 
 from common.BSFramwork import AlchemyEncoder
 # from system import User
-# from tools.handle import MyEncoder, log
-from common.lims_models import db_session, ClassifyTree
+from tools.handle import MyEncoder, log
+from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard
+
 # from database.connect_db import conn
 # from common.batch_plan_model import PlanManager
 
 system_interface = Blueprint('system_interface', __name__)
 
 
-@system_interface.route('/ClassifyTree', methods=['GET'])
+@system_interface.route('/ClassifyTree', methods=['GET', 'POST', 'PATCH', 'DELETE'])
 def classify_tree():
-    """分类树形"""
-    # factory = db_session.query(AreaMaintain).first()
-    sql = "select ChildrenTag from ClassifyTree"
-    parent_tags = db_session.execute(sql).fetchall()
-    tags_list = set(str(item[0]) for item in parent_tags)
-    children = []
-    for item in tags_list:
-        # 通过一级节点获取所有对应节点下的值
-        children2 = []
-        children1 = {"label": item, "children": children2}
-        query_data = db_session.query(ClassifyTree).filter_by(ChildrenTag=item).all()
-        # parent_tag2 = set(item.ParentTag for item in query_data)
-        for data in query_data:
-            rank2_data = {"id": data.TagCode, "label": data.TagName, "ParentTagCode": "1"}
-            children2.append(rank2_data)
-        children.append(children1)
-        # for result in parent_tag2:
-        #     # children4 = []
-        #     # 通过一级节点获取所有对应的二级节点
-        #     if result:
-        #         # 二级节点不为空
-        #         children3 = []
-        #         rank2_data = {"label": result, "children": children3}
-        #         # children4.append(rank2_data)
-        #         # last_data = db_session.query(Tags).filter_by(ParentTag=result).all()
-        #         parent_tag_sql = 'select '
-        #         # for data in last_data:
-        #         #     # 循环获取最后节点的数据
-        #         #
-        #         #     rank3_data = {"id": data.TagCode, "label": data.TagName, "ParentTagCode": "1"}
-        #         #     children3.append(rank3_data)
-        #         # children2.append(rank2_data)
-        #         # rank3 = {"label": result.ParentTag, "children": [{"id": result.TagCode, "label": result.TagName}]}
-        #     else:
-        #         for data in query_data:
-        #             rank2_data = {"id": data.TagCode, "label": data.TagName, "ParentTagCode": "1"}
-        #             children2.append(rank2_data)
-        # children.append(children1)
-    tree = [{"label": '希尔安药业', "children": children}]
-    return json.dumps({'code': '20001', 'message': '成功', 'data': tree}, cls=AlchemyEncoder, ensure_ascii=False)
+    """分类树操作"""
+    if request.method == 'GET':
+        # factory = db_session.query(AreaMaintain).first()
+        sql = "select ChildrenTag from ClassifyTree"
+        parent_tags = db_session.execute(sql).fetchall()
+        tags_list = set(str(item[0]) for item in parent_tags)
+        children = []
+        for item in tags_list:
+            # 通过一级节点获取所有对应节点下的值
+            children2 = []
+            children1 = {"label": item, "children": children2}
+            query_data = db_session.query(ClassifyTree).filter_by(ChildrenTag=item).all()
+            # parent_tag2 = set(item.ParentTag for item in query_data)
+            for data in query_data:
+                rank2_data = {"id": data.TagCode, "label": data.TagName, "ParentTagCode": "1"}
+                children2.append(rank2_data)
+            children.append(children1)
+            # for result in parent_tag2:
+            #     # children4 = []
+            #     # 通过一级节点获取所有对应的二级节点
+            #     if result:
+            #         # 二级节点不为空
+            #         children3 = []
+            #         rank2_data = {"label": result, "children": children3}
+            #         # children4.append(rank2_data)
+            #         # last_data = db_session.query(Tags).filter_by(ParentTag=result).all()
+            #         parent_tag_sql = 'select '
+            #         # for data in last_data:
+            #         #     # 循环获取最后节点的数据
+            #         #
+            #         #     rank3_data = {"id": data.TagCode, "label": data.TagName, "ParentTagCode": "1"}
+            #         #     children3.append(rank3_data)
+            #         # children2.append(rank2_data)
+            #         # rank3 = {"label": result.ParentTag, "children": [{"id": result.TagCode, "label": result.TagName}]}
+            #     else:
+            #         for data in query_data:
+            #             rank2_data = {"id": data.TagCode, "label": data.TagName, "ParentTagCode": "1"}
+            #             children2.append(rank2_data)
+            # children.append(children1)
+        tree = [{"label": '希尔安药业', "children": children}]
+        return json.dumps({'code': '1000', 'msg': '成功', 'data': tree}, cls=MyEncoder, ensure_ascii=False)
+    if request.method == 'POST':
+        parent_name = request.values.get('ParentName')
+        children_name = request.values.get('ChildrenName')
+        code = datetime.now().strftime('%H%M%S%Y%m%d')
+        db_session.add(ClassifyTree(TagCode=code, TagName=children_name, ChildrenTag=parent_name))
+        db_session.commit()
+        return json.dumps({'code': '1000', 'msg': '添加成功'}, cls=MyEncoder, ensure_ascii=False)
+    if request.method == 'PATCH':
+        code = request.values.get('Code')
+        parent_name = request.values.get('ParentName')
+        children_name = request.values.get('ChildrenName')
+        # sql = f'update from QualityStandardCenter set Type={code} where '
+        # db_session.execute(sql)
+        data = db_session.query(ClassifyTree).filter_by(TagCode=code).first()
+        data.TagName = children_name
+        data.ChildrenTag = parent_name
+        db_session.add(data)
+        db_session.commit()
+        return json.dumps({'code': '1000', 'msg': '修改成功'}, cls=MyEncoder, ensure_ascii=False)
+    if request.method == 'DELETE':
+        code = request.values.get('Code')
+        children_name = '"' + request.values.get('ChildrenName') + '"'
+        data = db_session.query(ClassifyTree).filter_by(TagCode=code).first()
+        db_session.delete(data)
+        db_session.commit()
+        sql = f'delete from QualityStandardCenter where Type={children_name}'
+        db_session.execute(sql)
+        return json.dumps({'code': '1000', 'msg': '删除成功'}, cls=MyEncoder, ensure_ascii=False)
+
+
+@system_interface.route('/QualityStandard', methods=['GET', 'POST'])
+def quality_standard():
+    if request.method == 'GET':
+        code = request.values.get('Code')
+        data = db_session.query(QualityStandard).filter_by(Type=code).all()
+        return json.dumps({'code': '1000', 'message': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
+    if request.method == 'POST':
+        data = QualityStandardCenter()
+        data.Product = request.values.get('Product')
+        data.Type = request.values.get('ID')
+        data.Code = request.values.get('Code')
+        data.Source = request.values.get('Source')
+        data.Unit = request.values.get('Unit')
+        data.IntoUser = current_user.Name
+        if request.values.get('Action') == 'add':
+            data.IntoTime = request.values.get('IntoTime')
+        if request.values.get('Action') == 'update':
+            data.AlterTime = request.values.get('AlterTime')
+            data.AlterUser = request.values.get('AlterUser')
+        db_session.add(data)
+        db_session.commit()
+        return json.dumps({'code': '20001', 'message': '添加成功'}, cls=MyEncoder, ensure_ascii=False)
