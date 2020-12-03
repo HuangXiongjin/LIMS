@@ -129,49 +129,54 @@ def product():
         items = request.json.get('Id')
         for item in items:
             data = db_session.query(QualityStandardCenter).get(int(item))
+            quality_standard = db_session.query(QualityStandard).filter_by(No=data.No).all()
+            for i in quality_standard:
+                db_session.delete(i)
+                db_session.commit()
             db_session.delete(data)
+            db_session.commit()
     return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
 
 
-# @system_interface.route('/QualityStandard', methods=['GET', 'POST'])
-# def quality_standard():
-#     """品名下质检的维护"""
-#     if request.method == 'GET':
-#         # 获取当前节点下的品名
-#         no = request.values.get('No')
-#         results = db_session.query(QualityStandard).filter_by(No=no).all()
-#         return json.dumps({'code': '1000', 'msg': '成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
-#     if request.method == 'POST':
-#         # 当前品名下的质检维护
-#         data = QualityStandard()
-#         data.No = request.values.get('No')
-#         data.Product = request.values.get('Product')
-#         data.Project = request.values.get('Project')
-#         data.Character = request.values.get('Character')
-#         data.Discern = request.values.get('Discern')
-#         data.Inspect = request.values.get('Inspect')
-#         data.Content = request.values.get('Content')
-#         data.Microbe = request.values.get('Microbe')
-#         db_session.add(data)
-#         db_session.commit()
-#     if request.method == 'PATCH':
-#         Id = request.values.get('Id')
-#         data = db_session.query(QualityStandard).filter_by(Id=Id).first()
-#         data.Product = request.values.get('Product')
-#         data.Project = request.values.get('Project')
-#         data.Character = request.values.get('Character')
-#         data.Discern = request.values.get('Discern')
-#         data.Inspect = request.values.get('Inspect')
-#         data.Content = request.values.get('Content')
-#         data.Microbe = request.values.get('Microbe')
-#         if request.values.get('Action') == 'add':
-#             data.No = get_short_id()
-#             data.IntoUser = request.values.get('IntoUser')
-#             data.IntoTime = request.values.get('IntoTime')
-#         if request.values.get('Action') == 'update':
-#             data.AlterTime = request.values.get('AlterTime')
-#             data.AlterUser = request.values.get('AlterUser')
-#         db_session.add(data)
-#         db_session.commit()
-#         return json.dumps({'code': '1000', 'msg': '添加成功'}, cls=MyEncoder, ensure_ascii=False)
-#
+@system_interface.route('/QualityStandard', methods=['GET', 'POST'])
+def quality_standard():
+    """品名下质检的维护"""
+    if request.method == 'GET':
+        # 获取当前节点下的品名
+        no = request.values.get('No')
+        results = db_session.query(QualityStandard).filter_by(No=no).all()
+        return json.dumps({'code': '1000', 'msg': '成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
+    if request.method == 'POST':
+        # 当前品名下的质检维护
+        data = QualityStandard()
+        data.No = request.values.get('No')
+        data.Product = request.values.get('Product')
+        data.Project = request.values.get('Project')
+        data.Character = request.values.get('Character')
+        data.Discern = request.values.get('Discern')
+        data.Inspect = request.values.get('Inspect')
+        data.Content = request.values.get('Content')
+        data.Microbe = request.values.get('Microbe')
+        db_session.add(data)
+        db_session.commit()
+        return json.dumps({'code': '1000', 'msg': '添加成功'}, cls=MyEncoder, ensure_ascii=False)
+    if request.method == 'PATCH':
+        Id = request.values.get('Id')
+        data = db_session.query(QualityStandard).filter_by(Id=Id).first()
+        data.Product = request.values.get('Product')
+        data.Project = request.values.get('Project')
+        data.Character = request.values.get('Character')
+        data.Discern = request.values.get('Discern')
+        data.Inspect = request.values.get('Inspect')
+        data.Content = request.values.get('Content')
+        data.Microbe = request.values.get('Microbe')
+        db_session.add(data)
+        db_session.commit()
+        return json.dumps({'code': '1000', 'msg': '修改成功'}, cls=MyEncoder, ensure_ascii=False)
+    if request.method == 'DELETE':
+        Id = request.values.get('Id')
+        data = db_session.query(QualityStandard).filter_by(Id=Id).first()
+        db_session.delete(data)
+        db_session.commit()
+        return json.dumps({'code': '1000', 'msg': '删除成功'}, cls=MyEncoder, ensure_ascii=False)
+
