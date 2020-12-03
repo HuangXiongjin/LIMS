@@ -1,11 +1,8 @@
 import json
 from datetime import datetime
 
-import xlwt
-from flask import Blueprint, make_response, request
-from flask_login import current_user
+from flask import Blueprint, request
 
-from common.BSFramwork import AlchemyEncoder
 # from system import User
 from tools.handle import MyEncoder, log, get_short_id
 from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard
@@ -70,8 +67,11 @@ def classify_tree():
         code = request.values.get('Code')
         parent_name = request.values.get('ParentName')
         children_name = request.values.get('ChildrenName')
-        # sql = f'update from QualityStandardCenter set Type={code} where '
-        # db_session.execute(sql)
+        new_type_name = '"' + request.values.get('ChildrenName') + '"'
+        old_data = db_session.query(ClassifyTree).filter_by(TagCode=code).first()
+        type_name = '"' + old_data.TagName + '"'
+        sql = f'update QualityStandardCenter set Type={new_type_name} where Type={type_name}'
+        db_session.execute(sql)
         data = db_session.query(ClassifyTree).filter_by(TagCode=code).first()
         data.TagName = children_name
         data.ChildrenTag = parent_name
@@ -80,7 +80,7 @@ def classify_tree():
         return json.dumps({'code': '1000', 'msg': '修改成功'}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'DELETE':
         code = request.values.get('Code')
-        children_name = '"' + request.values.get('ChildrenName') + '"'
+        children_name = "'" + request.values.get('ChildrenName') + "'"
         data = db_session.query(ClassifyTree).filter_by(TagCode=code).first()
         db_session.delete(data)
         db_session.commit()
@@ -90,13 +90,16 @@ def classify_tree():
 
 
 @system_interface.route('/QualityStandardCenter', methods=['GET', 'POST'])
-def quality_standard():
+def product():
+    """节点下品名的维护"""
     if request.method == 'GET':
+        # 获取当前节点下的品名
         code = request.values.get('Code')
         tag = db_session.query(ClassifyTree).filter_by(TagCode=code).first()
         data = db_session.query(QualityStandardCenter).filter_by(Type=tag.TagName).all()
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'POST':
+        # 当前节点下品名的增加-修改
         data = QualityStandardCenter()
         data.Product = request.values.get('Product')
         data.Type = request.values.get('Type')
@@ -114,3 +117,33 @@ def quality_standard():
         db_session.add(data)
         db_session.commit()
         return json.dumps({'code': '1000', 'msg': '添加成功'}, cls=MyEncoder, ensure_ascii=False)
+
+
+@system_interface.route('/QualityStandard', methods=['GET', 'POST'])
+def quality_standard():
+    """品名下质检的维护"""
+    if request.method == 'GET':
+        # 获取当前节点下的品名
+        no = request.values.get('No')
+        results = db_session.query(QualityStandard).filter_by(No=no).all()
+        return json.dumps({'code': '1000', 'msg': '成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
+    if request.method == 'POST':
+        # 当前品名下的质检维护
+        data = QualityStandardCenter()
+        data.Product = request.values.get('Product')
+        data.Type = request.values.get('Type')
+        data.Code = request.values.get('Code')
+        data.Source = request.values.get('Source')
+        data.Unit = request.values.get('Unit')
+        data.No = get_short_id()
+        if request.values.get('Action') == 'add':
+            data.No = get_short_id()
+            data.IntoUser = request.values.get('IntoUser')
+            data.IntoTime = request.values.get('IntoTime')
+        if request.values.get('Action') == 'update':
+            data.AlterTime = request.values.get('AlterTime')
+            data.AlterUser = request.values.get('AlterUser')
+        db_session.add(data)
+        db_session.commit()
+        return json.dumps({'code': '1000', 'msg': '添加成功'}, cls=MyEncoder, ensure_ascii=False)
+
