@@ -89,7 +89,7 @@ def classify_tree():
         return json.dumps({'code': '1000', 'msg': '删除成功'}, cls=MyEncoder, ensure_ascii=False)
 
 
-@system_interface.route('/QualityStandard', methods=['GET', 'POST'])
+@system_interface.route('/QualityStandardCenter', methods=['GET', 'POST'])
 def product():
     """节点下品名的维护"""
     if request.method == 'GET':
