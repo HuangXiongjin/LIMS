@@ -68,13 +68,13 @@ class QualityStandardCenter(Base):
     # 单位
     Unit = Column(Unicode(32), nullable=True)
     # 录入时间
-    IntoTime = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    IntoTime = Column(Unicode(32), default='')
     # 录入人
-    IntoUser = Column(Unicode(32), nullable=True)
+    IntoUser = Column(Unicode(32), nullable=True, default='')
     # 上次修改时间
-    AlterTime = Column(Unicode(32), nullable=True)
+    AlterTime = Column(Unicode(32), nullable=True, default='')
     # 修改人
-    AlterUser = Column(Unicode(32), nullable=True)
+    AlterUser = Column(Unicode(32), nullable=True, default='')
     # # 项目关联ID
     # Project = Column(Unicode(64), nullable=True)
     # # 性状关联ID
@@ -104,7 +104,7 @@ class WorkerRecord(Base):
     # 检测开始时间
     CheckStartTime = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 检测完成时间
-    CheckEndTime = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    CheckEndTime = Column(Unicode(32), default='')
     # 备注
     Comment = Column(Unicode(32), nullable=True)
 
@@ -136,7 +136,7 @@ class CheckForm(Base):
     # 请验时间
     CheckDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d'))
     # 请验人
-    CheckUser = Column(Unicode(16), nullable=True)
+    CheckUser = Column(Unicode(16), nullable=True, default='')
     # 请验单类型（标准请验，小样请验）
     Type = Column(Unicode(16), nullable=True)
     # 小样请验单审核状态（待审核，未通过，已通过）
@@ -152,11 +152,11 @@ class ConclusionRecord(Base):
     # 检验编号
     CheckNumber = Column(Unicode(32), nullable=True)
     # 请验单日期
-    TestDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d'))
+    TestDate = Column(Unicode(32), default='')
     # 实际送样时间
-    ActualTime = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d'))
+    ActualTime = Column(Unicode(32), default='')
     # 检验日期
-    CheckDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d'))
+    CheckDate = Column(Unicode(32), default='')
     # 产品名称
     Name = Column(Unicode(32), nullable=True)
     # 产品批号
