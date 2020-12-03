@@ -28,7 +28,7 @@ Base = declarative_base(engine)
 
 
 class QualityStandard(Base):
-    """质量标准明细"""
+    """质量标准检测项维护表"""
     __tablename__ = 'QualityStandard'
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
@@ -52,7 +52,7 @@ class QualityStandard(Base):
 
 
 class QualityStandardCenter(Base):
-    """质量标准中间表"""
+    """质量标准样品表"""
     __tablename__ = 'QualityStandardCenter'
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识

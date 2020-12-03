@@ -89,7 +89,7 @@ def classify_tree():
         return json.dumps({'code': '1000', 'msg': '删除成功'}, cls=MyEncoder, ensure_ascii=False)
 
 
-@system_interface.route('/QualityStandardCenter', methods=['GET', 'POST'])
+@system_interface.route('/QualityStandardCenter', methods=['GET', 'POST', 'DELETE'])
 def product():
     """节点下品名的维护"""
     if request.method == 'GET':
@@ -125,6 +125,12 @@ def product():
             db_session.add(data)
             db_session.commit()
         return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
+    if request.method == 'DELETE':
+        items = request.values.get('Id')
+        for item in items:
+            data = db_session.query(QualityStandardCenter).get(int(item))
+            db_session.delete(data)
+    return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
 
 
 # @system_interface.route('/QualityStandard', methods=['GET', 'POST'])
