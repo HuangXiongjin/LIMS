@@ -187,37 +187,20 @@ def tree():
     if request.method == 'GET':
         sql = "select ChildrenTag from ClassifyTree"
         parent_tags = db_session.execute(sql).fetchall()
+        # 获取一级节点的名称
         tags_list = set(str(item[0]) for item in parent_tags)
         children = []
         for item in tags_list:
-            # 通过一级节点获取所有对应节点下的值
-            children2 = []
-            children1 = {"label": item, "children": children2}
+            # 通过一级节点获取所有对应二级子节点下的名称
+            tree2_children2 = []
+            tree1_children1 = {"label": item, "children": tree2_children2}
             query_data = db_session.query(ClassifyTree).filter_by(ChildrenTag=item).all()
-            parent_tag2 = set(item.TagName for item in query_data)
-            for data in query_data:
-                rank2_data = {"id": data.TagCode, "label": data.TagName, "ParentTagCode": "1"}
-                children2.append(rank2_data)
-            children.append(children1)
-            for result in parent_tag2:
-                children4 = []
-                # 通过一级节点获取所有对应的二级节点
-                if result:
-                    # 二级节点不为空
-                    children3 = []
-                    rank2_data = {"label": result, "children": children3}
-                    children4.append(rank2_data)
-                    last_data = db_session.query(QualityStandardCenter).filter_by(Type=result).all()
-                    for data in last_data:
-                        # 循环获取最后节点的数据
-                        rank3_data = {"id": data.Id, "label": data.Product, "ParentTagCode": "1"}
-                        children3.append(rank3_data)
-                    children2.append(rank2_data)
-                    rank3 = {"label": result, "children": [{"id": result.TagCode, "label": result.TagName}]}
-                else:
-                    for data in query_data:
-                        rank2_data = {"id": data.TagCode, "label": data.TagName, "ParentTagCode": "1"}
-                        children2.append(rank2_data)
-            children.append(children1)
-        tree = [{"label": '希尔安药业', "children": children}]
-        return json.dumps({'code': '1000', 'msg': '成功', 'data': tree}, cls=MyEncoder, ensure_ascii=False)
+            parent_tag2 = [(item.TagCode, item.TagName) for item in query_data]
+            for data in parent_tag2:
+                tree3_data = db_session.query(QualityStandardCenter).filter_by(Type=data[1]).all()
+                tree3_set_data = [(item.No, item.Product) for item in tree3_data]
+                tree3 = [{"id": i[0], "label": i[1]} for i in tree3_set_data]
+                rank2_data = {"id": data[0], "label": data[1], "children": tree3}
+                tree2_children2.append(rank2_data)
+            children.append(tree1_children1)
+        return json.dumps({'code': '1000', 'msg': '成功', 'data': children}, cls=MyEncoder, ensure_ascii=False)
