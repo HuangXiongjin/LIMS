@@ -67,9 +67,9 @@ def classify_tree():
         code = request.values.get('Code')
         parent_name = request.values.get('ParentName')
         children_name = request.values.get('ChildrenName')
-        new_type_name = '"' + request.values.get('ChildrenName') + '"'
+        new_type_name = "'" + request.values.get('ChildrenName') + "'"
         old_data = db_session.query(ClassifyTree).filter_by(TagCode=code).first()
-        type_name = '"' + old_data.TagName + '"'
+        type_name = "'" + old_data.TagName + "'"
         sql = f'update QualityStandardCenter set Type={new_type_name} where Type={type_name}'
         db_session.execute(sql)
         data = db_session.query(ClassifyTree).filter_by(TagCode=code).first()
