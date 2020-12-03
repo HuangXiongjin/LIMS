@@ -126,7 +126,7 @@ def product():
             db_session.commit()
         return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'DELETE':
-        items = request.values.get('Id')
+        items = request.json.get('Id')
         for item in items:
             data = db_session.query(QualityStandardCenter).get(int(item))
             db_session.delete(data)
