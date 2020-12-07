@@ -25,17 +25,17 @@ def check_form():
             {'编号': No, '项目': project, '性状': character, '鉴别': discern, '检查': inspect, '含量测定': content, '微生物限度': microbe}]
         for result in results:
             if result.Project is not None:
-                project.append(result.Project)
+                project.append({'id': result.Id, 'value': result.Project})
             if result.Character is not None:
-                character.append(result.Character)
+                character.append({'id': result.Id, 'value': result.Character})
             if result.Discern is not None:
-                discern.append(result.Discern)
+                discern.append({'id': result.Id, 'value': result.Discern})
             if result.Inspect is not None:
-                inspect.append(result.Inspect)
+                inspect.append({'id': result.Id, 'value': result.Inspect})
             if result.Content is not None:
-                content.append(result.Content)
+                content.append({'id': result.Id, 'value': result.Content})
             if result.Microbe is not None:
-                microbe.append(result.Microbe)
+                microbe.append({'id': result.Id, 'value': result.Microbe})
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, ensure_ascii=False)
     except Exception as e:
         log(e)
