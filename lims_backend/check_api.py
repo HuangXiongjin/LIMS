@@ -9,7 +9,7 @@ from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, 
 check = Blueprint('check', __name__)
 
 
-@check.route('/CheckForm', methods=['GET'])
+@check.route('/ProductQualityStandard', methods=['GET'])
 def check_form():
     """样品请检"""
     try:
