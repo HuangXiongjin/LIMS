@@ -155,9 +155,31 @@ def quality_standard():
     try:
         if request.method == 'GET':
             # 获取当前节点下的品名
-            no = request.values.get('No')
-            results = db_session.query(QualityStandard).filter_by(No=no).all()
-            return json.dumps({'code': '1000', 'msg': '成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
+            No = request.values.get('No')
+            results = db_session.query(QualityStandard).filter_by(No=No).all()
+            project = []
+            character = []
+            discern = []
+            inspect = []
+            content = []
+            microbe = []
+            data = [
+                {'编号': No, '项目': project, '性状': character, '鉴别': discern, '检查': inspect, '含量测定': content,
+                 '微生物限度': microbe}]
+            for result in results:
+                if result.Project is not None:
+                    project.append(result.Project)
+                if result.Character is not None:
+                    character.append(result.Character)
+                if result.Discern is not None:
+                    discern.append(result.Discern)
+                if result.Inspect is not None:
+                    inspect.append(result.Inspect)
+                if result.Content is not None:
+                    content.append(result.Content)
+                if result.Microbe is not None:
+                    microbe.append(result.Microbe)
+            return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'POST':
             # 当前品名下的质检维护
             data = QualityStandard()
