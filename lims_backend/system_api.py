@@ -18,16 +18,18 @@ def classify_tree():
     """分类树操作"""
     if request.method == 'GET':
         # factory = db_session.query(AreaMaintain).first()
-        sql = "select ChildrenTag from ClassifyTree"
+        sql = "select ID,ChildrenTag from ClassifyTree"
         parent_tags = db_session.execute(sql).fetchall()
-        tags_list = set(str(item[0]) for item in parent_tags)
+        tags_list = set(item[1] for item in parent_tags)
         children = []
+        i = 1
         for item in tags_list:
             # 通过一级节点获取所有对应节点下的值
             children2 = []
-            children1 = {"label": item, "children": children2}
+            children1 = {"id": i, "label": item, "children": children2}
             query_data = db_session.query(ClassifyTree).filter_by(ChildrenTag=item).all()
             # parent_tag2 = set(item.ParentTag for item in query_data)
+            i += 1
             for data in query_data:
                 rank2_data = {"id": data.TagCode, "label": data.TagName, "ParentTagCode": "1"}
                 children2.append(rank2_data)
