@@ -56,6 +56,16 @@
               </el-form-item>
             </el-form>
             <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
+            <el-dialog title="采集值" :visible.sync="collectDialogVisible" width="30%">
+              <el-table :data="CollectTableData.data" border size="small" ref="multipleTableCollect" @selection-change="handleSelectionChangeCollect" @row-click="handleRowClickCollect">
+                <el-table-column type="selection"></el-table-column>
+                <el-table-column prop="collectName" label="字段描述"></el-table-column>
+                <el-table-column prop="collectKey" label="采集字段"></el-table-column>
+              </el-table>
+              <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="saveCollectData">保 存</el-button>
+              </span>
+            </el-dialog>
           </div>
         </el-col>
       </el-row>
@@ -84,8 +94,19 @@
         filebyte:'',
         fileID:'',
         dialogTableVisible:false,
-        ButtonVisible:false,
-        handleCellRadio:"录入数据字段",
+        ButtonVisible:false, //是否显示配置按钮
+        handleCellRadio:"录入数据字段", //添加的数据类型
+        collectDialogVisible:false, //显示采集列表的弹框
+        CollectTableData:{
+          data:[
+            {collectName:"第一次煎煮第一个小时时间",collectKey:"time1_1"},
+            {collectName:"第一次煎煮第一个小时参数",collectKey:"value1_1"},
+            {collectName:"第一次煎煮第二个小时时间",collectKey:"time1_2"},
+            {collectName:"第一次煎煮第二个小时参数",collectKey:"value1_2"},
+          ],
+          multipleSelection:[]
+        },
+        cellDom:"",
       }
     },
     created(){
@@ -138,26 +159,8 @@
                       });
                     });
                   }else if(that.handleCellRadio === "采集数据字段"){
-                    that.$prompt('请输入单元格所需采集数据的字段', '提示', {
-                      confirmButtonText: '确定',
-                      cancelButtonText: '取消',
-                    }).then(({ value }) => {
-                      if(value){
-                        $(this).addClass("collect")
-                        $(this).attr("data-field",value)
-                        $(this).attr("title",value)
-                      }else{
-                        that.$message({
-                          type: 'info',
-                          message: '不能为空'
-                        });
-                      }
-                    }).catch(() => {
-                      that.$message({
-                        type: 'info',
-                        message: '取消输入'
-                      });
-                    });
+                    that.collectDialogVisible = true
+                    that.cellDom = $(this)
                   }
                 }
               })
@@ -365,6 +368,26 @@
              this.showPGL(this.PUName,this.PUCode,this.ActiveIndex)
           }
         })
+      },
+      handleSelectionChangeCollect(row){ //选择采集数据
+        this.CollectTableData.multipleSelection = row
+      },
+      handleRowClickCollect(row){
+        this.$refs.multipleTableCollect.clearSelection()
+        this.$refs.multipleTableCollect.toggleRowSelection(row)
+      },
+      saveCollectData(){
+        if(this.CollectTableData.multipleSelection.length == 1){
+          this.cellDom.addClass("collect")
+          this.cellDom.attr("data-field",this.CollectTableData.multipleSelection[0].collectKey)
+          this.cellDom.attr("title",this.CollectTableData.multipleSelection[0].collectKey)
+          this.collectDialogVisible = false
+        }else{
+          this.$message({
+            message: "请选择一条采集字段！",
+            type: 'info'
+          });
+        }
       }
     }
   }
