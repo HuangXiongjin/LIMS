@@ -62,7 +62,7 @@ def get_root_path():
     return os.path.join(path, 'instruction')
 
 
-def log(e, user):
+def log(e):
     """
     程序日志记录
     :param user:
@@ -73,8 +73,8 @@ def log(e, user):
         file_path = os.path.join(root_path, 'logs\\logs.txt')
         call_func = sys._getframe().f_back.f_code.co_name
         ip = socket.gethostbyname(socket.gethostname())
-        user = user if user is not None else 'no login'
-        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} -- {user} -- {ip} -- {call_func} -- {e}")
+        # user = user if user is not None else 'no login'
+        print(f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} -- {ip} -- {call_func} -- {e}")
         # db_session.add(LimsError(Time=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), User='user', IP=ip,
         #                          Func=call_func, Error=e))
         # db_session.commit()
