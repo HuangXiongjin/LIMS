@@ -3,12 +3,8 @@ from datetime import datetime
 
 from flask import Blueprint, request
 
-# from system import User
 from tools.handle import MyEncoder, log, get_short_id
 from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard
-
-# from database.connect_db import conn
-# from common.batch_plan_model import PlanManager
 
 system_interface = Blueprint('system_interface', __name__)
 
@@ -92,6 +88,7 @@ def classify_tree():
             return json.dumps({'code': '1000', 'msg': '删除成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)})
 
 
 @system_interface.route('/QualityStandardCenter', methods=['GET', 'POST', 'DELETE'])
@@ -149,9 +146,10 @@ def product():
         return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)})
 
 
-@system_interface.route('/QualityStandard', methods=['GET', 'POST'])
+@system_interface.route('/QualityStandard', methods=['GET', 'POST', 'PATCH', 'DELETE'])
 def quality_standard():
     """品名下质检的维护"""
     try:
@@ -195,6 +193,7 @@ def quality_standard():
             return json.dumps({'code': '1000', 'msg': '删除成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)})
 
 
 @system_interface.route('/Tree', methods=['GET'])
@@ -223,3 +222,4 @@ def tree():
             return json.dumps({'code': '1000', 'msg': '成功', 'data': children}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)})
