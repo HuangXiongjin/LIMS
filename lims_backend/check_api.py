@@ -38,7 +38,7 @@ def check_form():
         json_data = json.loads(check_project)
         for result in json_data:
             print(result)
-            if result == '项目':
+            if result == 'xiangmu':
                 data = []
                 for item in json_data[result]:
                     c = CheckProject()
@@ -48,7 +48,7 @@ def check_form():
                     data.append(c)
                 db_session.add_all(data)
                 db_session.commit()
-            if result == '性状':
+            if result == 'xingzhuang':
                 data = []
                 for item in json_data[result]:
                     c = CheckProject()
@@ -58,7 +58,7 @@ def check_form():
                     data.append(c)
                 db_session.add_all(data)
                 db_session.commit()
-            if result == '鉴别':
+            if result == 'jianbie':
                 data = []
                 for item in json_data[result]:
                     c = CheckProject()
@@ -68,7 +68,7 @@ def check_form():
                     data.append(c)
                 db_session.add_all(data)
                 db_session.commit()
-            if result == '检查':
+            if result == 'jiancha':
                 data = []
                 for item in json_data[result]:
                     c = CheckProject()
@@ -78,7 +78,7 @@ def check_form():
                     data.append(c)
                 db_session.add_all(data)
                 db_session.commit()
-            if result == '含量测定':
+            if result == 'hanliangceding':
                 data = []
                 for item in json_data[result]:
                     c = CheckProject()
@@ -88,7 +88,7 @@ def check_form():
                     data.append(c)
                 db_session.add_all(data)
                 db_session.commit()
-            if result == '微生物限定':
+            if result == 'weishengwu':
                 data = []
                 for item in json_data[result]:
                     c = CheckProject()
