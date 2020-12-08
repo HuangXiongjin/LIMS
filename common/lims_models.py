@@ -14,18 +14,6 @@ Session = sessionmaker(bind=engine)
 db_session = Session()
 Base = declarative_base(engine)
 
-#
-# class ProjectModel(Base):
-#     """项目维护表"""
-#     __tablename__ = 'ProjectModel'
-#     Id = Column(Integer, autoincrement=True, primary_key=True)
-#     # 品名唯一标识
-#     No = Column(Unicode(32), nullable=True, default=get_short_id())
-#     # 品名
-#     Product = Column(Unicode(32), nullable=True)
-#     # 项目
-#     Project = Column(Unicode(64), nullable=True)
-
 
 class QualityStandard(Base):
     """质量标准检测项维护表"""
@@ -75,16 +63,6 @@ class QualityStandardCenter(Base):
     AlterTime = Column(Unicode(32), nullable=True, default='')
     # 修改人
     AlterUser = Column(Unicode(32), nullable=True, default='')
-    # # 项目关联ID
-    # Project = Column(Unicode(64), nullable=True)
-    # # 性状关联ID
-    # Character = Column(Unicode(16), nullable=True)
-    # # 检查关联ID
-    # Inspect = Column(Unicode(16), nullable=True)
-    # # 含量测定关联ID
-    # Content = Column(Unicode(64), nullable=True)
-    # # 微生物限度ID
-    # MicrobeID = Column(Unicode(16), nullable=True)
 
 
 class WorkerRecord(Base):
@@ -131,6 +109,8 @@ class CheckForm(Base):
     Unit = Column(Unicode(8), nullable=True)
     # 请验工序
     CheckProcedure = Column(Unicode(32), nullable=True)
+    # 请验项目标识
+    CheckProjectNO = Column(Unicode(32), nullable=True)
     # 请验部门
     CheckDepartment = Column(Unicode(32), nullable=True)
     # 请验时间
@@ -138,11 +118,35 @@ class CheckForm(Base):
     # 请验人
     CheckUser = Column(Unicode(16), nullable=True, default='')
     # 请验单类型（标准请验，小样请验）
-    Type = Column(Unicode(16), nullable=True)
+    Type = Column(Unicode(16), nullable=True, default='标准请验')
     # 小样请验单审核状态（待审核，未通过，已通过）
     Status = Column(Unicode(16), nullable=True, default='待审核')
     # 备注
     Comment = Column(Unicode(32), nullable=True)
+
+
+class CheckProject(Base):
+    """请验项目明细"""
+    __tablename__ = 'CheckProject'
+    Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 请验项目标识
+    No = Column(Unicode(32), nullable=True)
+    # 品名
+    Product = Column(Unicode(64), nullable=True)
+    # 项目
+    Project = Column(Unicode(1024), nullable=True)
+    # 性状
+    Character = Column(Unicode(1024), nullable=True)
+    # 鉴别
+    Discern = Column(Unicode(1024), nullable=True)
+    # 检查
+    Inspect = Column(Unicode(1024), nullable=True)
+    # 含量测定
+    Content = Column(Unicode(1024), nullable=True)
+    # 微生物限度
+    Microbe = Column(Unicode(1024), nullable=True)
+    # 全局唯一地址
+    Address = Column(Unicode(128), nullable=True)
 
 
 class ConclusionRecord(Base):

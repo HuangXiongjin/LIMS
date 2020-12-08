@@ -1,9 +1,10 @@
 import json
+import os
 from datetime import datetime
 
-from flask import Blueprint, request
+from flask import Blueprint, request, current_app, send_from_directory
 
-from tools.handle import MyEncoder, log, get_short_id
+from tools.handle import MyEncoder, log, get_short_id, generate_filename, get_root_path
 from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard
 
 system_interface = Blueprint('system_interface', __name__)
@@ -245,3 +246,38 @@ def tree():
     except Exception as e:
         log(e)
         return json.dumps({'code': '2000', 'msg': str(e)})
+
+
+@system_interface.route('/Upload', methods=['POST'])
+def upload_file():
+    """上传质检文档"""
+    try:
+        file = request.files.get('file')
+        print(file.content_type)
+        # 生成文件名和文件路径
+        # ext = file.filename.split('.')[-1]
+        # filename = generate_filename()
+        # user = Users.query.get(user_id)
+        # full_filename = filename + '.' + ext
+        # user.avatar = full_filename
+        # db.session.add(user)
+        # db.session.commit()
+        root_path = get_root_path()
+        # filepath = current_app.config['UPLOAD_PATH']
+        # 保存原图
+        file.save(os.path.join(root_path, file))
+        return json.dumps({'code': '1000', 'msg': '上传成功'}, cls=MyEncoder, ensure_ascii=False)
+    except Exception as e:
+        log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)})
+
+
+@system_interface.route('/GetFile', methods=['GET'])
+def get_file():
+    pic_path = request.values.get('Product')
+    # pic_path = '%s.%s' % (filename.split('.')[0], filename.split('.')[-1])
+    print(pic_path)
+    root_path = get_root_path()
+    # filepath = os.path.join(root_path, current_app.config['UPLOAD_PATH'])
+    print(root_path)
+    return send_from_directory(root_path, pic_path)

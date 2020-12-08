@@ -22,6 +22,12 @@ array = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
          ]
 
 
+def generate_filename():
+    """生成时间戳文件名"""
+    filename = str(round(time.time() * 1000))
+    return filename
+
+
 def get_short_id():
     """生成8位数不重复id"""
     id = str(uuid.uuid4()).replace("-", '')
@@ -32,6 +38,11 @@ def get_short_id():
         val = int(id[start:end], 16)
         buffer.append(array[val % 62])
     return "".join(buffer)
+
+
+def get_uuid():
+    """生成唯一全局地址"""
+    return uuid.uuid4().hex
 
 
 def get_time_stamp(s):
@@ -58,8 +69,10 @@ def generate_filename():
 
 # 获取项目跟路径
 def get_root_path():
+
     path = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-    return os.path.join(path, 'instruction')
+    return os.path.join(path, 'files')
+    # return current_app.instance_path.replace('\\instance', '')
 
 
 def log(e):
