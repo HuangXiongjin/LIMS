@@ -275,14 +275,21 @@ def upload_file():
         return json.dumps({'code': '2000', 'msg': str(e)})
 
 
-@system_interface.route('/GetFile', methods=['GET'])
+@system_interface.route('/GetFile', methods=['GET', 'DELETE'])
 def get_file():
-    product_name = request.values.get('Product')
-    # pic_path = '%s.%s' % (filename.split('.')[0], filename.split('.')[-1])
-    print(product_name)
-    # root_path = get_root_path()
-    # filepath = os.path.join(root_path, current_app.config['UPLOAD_PATH'])
-    # print(root_path)
-    data = db_session.query(WordForm).filter_by(Product=product_name).all()
-    return json.dumps({'code': '1000', 'msg': '请求成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
-    # return send_from_directory(root_path, pic_path)
+    if request.method == 'GET':
+        product_name = request.values.get('Product')
+        # pic_path = '%s.%s' % (filename.split('.')[0], filename.split('.')[-1])
+        print(product_name)
+        # root_path = get_root_path()
+        # filepath = os.path.join(root_path, current_app.config['UPLOAD_PATH'])
+        # print(root_path)
+        data = db_session.query(WordForm).filter_by(Product=product_name).all()
+        return json.dumps({'code': '1000', 'msg': '请求成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
+        # return send_from_directory(root_path, pic_path)
+    if request.method == 'DELETE':
+        no = request.values.get('Id')
+        data = db_session.query(WordForm).filter_by(Id=no).first()
+        db_session.delete(data)
+        db_session.commit()
+        return json.dumps({'code': '1000', 'msg': '删除成功'}, cls=MyEncoder, ensure_ascii=False)
