@@ -98,8 +98,8 @@ export default {
          WorkNumber:this.ruleForm.loginname,
          password:this.ruleForm.loginpass
       }
-      this.axios.post('/api/account/userloginauthentication',this.qs.stringify(params)).then((res) => {
-         if(res.data == "OK"){
+      this.axios.post('/lims/account/login',this.qs.stringify(params)).then((res) => {
+         if(res.data.msg== "登录成功"){
            this.$message({
               showClose: true,
               message: "登录成功",
@@ -112,7 +112,7 @@ export default {
       }else{
         this.$message({
               showClose: true,
-              message: res.data,
+              message: res.data.msg,
               type: 'error'
           });
       }

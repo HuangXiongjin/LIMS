@@ -39,8 +39,19 @@
                     :data="batchTableData.data"
                     size='small'
                     highlight-current-row
-                    style="width: 100%">
+                    style="width: 100%"
+                    @selection-change="handleSelectionChange">
+                    <el-table-column type="selection" width="55"></el-table-column>
                     <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label'></el-table-column>
+                    <el-table-column
+                        fixed="right"
+                        label="操作"
+                        width="100">
+                        <template slot-scope="scope">
+                            <el-button @click="handlePass(scope.row)" type="text" size="small" class="bledit">通过</el-button>
+                            <el-button @click.native.prevent="handleBack(scope.row)" type="text" size="small" class="redde">驳回</el-button>
+                        </template>
+                    </el-table-column>
                     </el-table>
                     <div class="paginationClass">
                         <el-pagination background  layout="total, prev, pager, next, jumper"
@@ -51,6 +62,10 @@
                         @current-change="handleCurrentChange">
                         </el-pagination>
                     </div>
+                    <div style="textAlign:right;" class="mgt24">
+                        <el-button type="danger" size='mini'>驳回</el-button>
+                        <el-button type="success" size='mini' @click="mulBatchPass">批量审核通过</el-button>
+                    </div>
                 </div>
                 <div class="mgt24" v-if="currentChoose==='2'">
                     <el-table
@@ -58,6 +73,7 @@
                     size='small'
                     highlight-current-row
                     style="width: 100%">
+                    <el-table-column type="selection" width="55"></el-table-column>
                     <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label'></el-table-column>
                     </el-table>
                     <div class="paginationClass">
@@ -79,7 +95,7 @@ export default {
     data(){
 
         return {
-           msg:'12',
+           checkedRow:[],
            searchObj:{
                category:'',
                registrydate:'',
@@ -94,46 +110,81 @@ export default {
                 }],
             currentChoose:'1',
             batchTableData:{ //物料BOM
-                tableName:"PlanManager",
-                data:[],
+                data:[{Specs:'60g/袋',CheckNumber:'BJJN1234',Name:'巴戟胶囊'},{Specs:'900g/袋',CheckNumber:'GHDGHH',Name:'复方斑蝥片'}],
                 limit: 10,//当前显示多少条
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
-            batchtableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'SchedulePlanCode',label:'调度编号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'计划产量'},{prop:'Unit',label:'单位'}],//批次列表
+            batchtableconfig:[{prop:'Specs',label:"规格"},{prop:'CheckNumber',label:'请验单号'},{prop:'Name',label:'品名'},{prop:'ProductNumber',label:'来料批号'},{prop:'Supplier',label:'供货单位'},{prop:'Number',label:'物料编码'},{prop:'Amount',label:'数量'},{prop:'Unit',label:'单位'},{prop:'CheckDate',label:'请验时间'}],//批次列表
         }
     },
     created(){
-        this.getPlanManager()
     },
     methods: {
+        mulBatchPass(){ //多条数据审核通过
+            if(this.checkedRow.length==0){
+                this.$message({
+                    type:'error',
+                    message:'请选勾选要通过的数据'
+                })
+            }else{
+                this.$confirm('此操作将审核通过该项, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+                }).then(() => {
+                    this.$message({
+                      type: 'success',
+                      message: '审核通过'
+                    });
+                }).catch(() => {
+                    this.$message({
+                      type: 'info',
+                      message: '已取消审核'
+                    });   
+                })
+                }
+        },
+        handleSelectionChange(row){ //批量通过审核
+            this.checkedRow=row
+        },
+        handleBack(row){ //驳回审核
+            console.log(row)
+        },
+        handlePass(row){ //通过审核
+            this.$confirm('此操作将审核通过该项, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+            }).then(() => {
+                var params={
+                CheckNumber:row.CheckNumber,
+                VerifyName:localStorage.getItem('Name')
+            }
+            this.axios.post('https://yapi.baidu.com/mock/18229/CheckVerify',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                    this.$message({
+                      type: 'success',
+                      message: '审核通过!'
+                    });
+                }
+            })
+            }).catch(() => {
+            this.$message({
+                type: 'info',
+                message: '已取消审核'
+            });          
+            });
+        },
         handleSelect(key) {
             this.currentChoose=key
         },
         handleSizeChange(limit){ //每页条数切换
             this.batchTableData.limit = limit
-            this.getPlanManager()
       },
         handleCurrentChange(offset) { // 页码切换
             this.batchTableData.offset = offset
-            this.getPlanManager()
-        },
-        getPlanManager(){ //获取批次列表
-        var params={
-          tableName:'PlanManager',
-          offset:this.batchTableData.offset-1,
-          limit:this.batchTableData.limit
         }
-        this.axios.get('/api/CUID',{params:params}).then(res => {
-           if(res.data.code === "200"){
-            var data = res.data.data
-            this.batchTableData.data = data.rows
-            this.batchTableData.total = data.total
-          }
-          },err=>{
-            console.log("请求错误")
-          })
-      },
     },
 }
 </script>

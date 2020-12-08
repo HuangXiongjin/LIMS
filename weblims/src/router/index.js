@@ -75,7 +75,7 @@ const router=new Router({
         // 样品
         {path:'/SampleRegistration',component:SampleRegistration},
         {path:'/ApplyTest',component:ApplyTest},
-        {path:'/SampleTest',component:SampleTest},
+        {path:'/SampleList',component:SampleTest},
         {path:'/SampleCheck',component:SampleCheck},
         {path:'/ReportReview',component:ReportReview},
         
