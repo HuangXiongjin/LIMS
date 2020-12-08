@@ -70,8 +70,8 @@ def generate_filename():
 # 获取项目跟路径
 def get_root_path():
 
-    path = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-    return os.path.join(path, 'files')
+    # path = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+    return os.path.join("D:\\project\\", 'files')
     # return current_app.instance_path.replace('\\instance', '')
 
 

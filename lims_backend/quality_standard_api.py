@@ -253,6 +253,8 @@ def upload_file():
     """上传质检文档"""
     try:
         file = request.files.get('file')
+        product_name = request.values.get('Product')
+        print(product_name)
         print(file.content_type)
         # 生成文件名和文件路径
         # ext = file.filename.split('.')[-1]
