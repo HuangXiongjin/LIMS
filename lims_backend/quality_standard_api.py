@@ -5,7 +5,7 @@ from datetime import datetime
 from flask import Blueprint, request, current_app, send_from_directory
 
 from tools.handle import MyEncoder, log, get_short_id, generate_filename, get_root_path
-from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard
+from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard, WordForm
 
 system_interface = Blueprint('system_interface', __name__)
 
@@ -254,6 +254,7 @@ def upload_file():
     try:
         file = request.files.get('file')
         product_name = request.values.get('Product')
+        filename = file.filename
         print(product_name)
         print(file.content_type)
         # 生成文件名和文件路径
@@ -261,12 +262,12 @@ def upload_file():
         # filename = generate_filename()
         # user = Users.query.get(user_id)
         # full_filename = filename + '.' + ext
-        # user.avatar = full_filename
-        # db.session.add(user)
-        # db.session.commit()
         root_path = get_root_path()
+        file_path = os.path.join(root_path, file.filename)
+        db_session.add(WordForm(FileName=filename, Product=product_name, FilePath=file_path))
+        db_session.commit()
         # filepath = current_app.config['UPLOAD_PATH']
-        # 保存原图
+        # 保存
         file.save(os.path.join(root_path, file.filename))
         return json.dumps({'code': '1000', 'msg': '上传成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
@@ -276,10 +277,12 @@ def upload_file():
 
 @system_interface.route('/GetFile', methods=['GET'])
 def get_file():
-    pic_path = request.values.get('Product')
+    product_name = request.values.get('Product')
     # pic_path = '%s.%s' % (filename.split('.')[0], filename.split('.')[-1])
-    print(pic_path)
-    root_path = get_root_path()
+    print(product_name)
+    # root_path = get_root_path()
     # filepath = os.path.join(root_path, current_app.config['UPLOAD_PATH'])
-    print(root_path)
-    return send_from_directory(root_path, pic_path)
+    # print(root_path)
+    data = db_session.query(WordForm).filter_by(Product=product_name).all()
+    return json.dumps({'code': '1000', 'msg': '请求成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
+    # return send_from_directory(root_path, pic_path)
