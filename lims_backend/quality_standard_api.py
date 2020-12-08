@@ -265,7 +265,7 @@ def upload_file():
         root_path = get_root_path()
         # filepath = current_app.config['UPLOAD_PATH']
         # 保存原图
-        file.save(os.path.join(root_path, file))
+        file.save(os.path.join(root_path, file.filename))
         return json.dumps({'code': '1000', 'msg': '上传成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
