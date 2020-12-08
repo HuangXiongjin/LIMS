@@ -94,7 +94,7 @@ export default {
                     {name:'申请检验',path:'/ApplyTest'},
                     {name:'请检审核',path:'/SampleCheck'},
                     {name:'登记发送',path:'/SampleRegistration'},
-                    {name:'请验清单',path:'/SampleTest'},
+                    {name:'请验清单',path:'/SampleList'},
                     {name:'报告复查',path:'/ReportReview'},
                 ]},
                 {name:'样本检验',icon:'el-icon-files',children:[

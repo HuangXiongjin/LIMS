@@ -9,21 +9,21 @@
                     node-key="id"
                     default-expand-all
                     :expand-on-click-node="false"
-                    :props="defaultProps">
+                    :props="defaultProps"
+                    @node-click='showTabInfo'>
                     <span class="custom-tree-node" slot-scope="{ node, data }">
                     <span>{{ node.label }}</span>
                         <span class="operations">
-                            <i @click="() => append(node,data)" class="el-icon-plus greenadd fontsz10"></i><!--增加分组-->
-                            <!-- 根节点不需要删除和重命名 -->
-                            <i v-if="data.id !== 0" @click="() => deletes(node,data)" class="el-icon-delete redde fontsz10"></i><!--删除分组-->
-                            <i v-if="data.id !== 0" @click="() => rename(node,data)" class="el-icon-edit bledit fontsz10"></i><!--重命名分组-->
+                            <i v-if="data.hasOwnProperty('children')" @click="() => append(node,data)" class="el-icon-plus greenadd fontsz10"></i><!--增加分组-->
+                            <i v-if="!data.hasOwnProperty('children')" @click="() => deletes(node,data)" class="el-icon-delete redde fontsz10"></i><!--删除分组-->
+                            <i v-if="!data.hasOwnProperty('children')" @click="() => rename(node,data)" class="el-icon-edit bledit fontsz10"></i><!--重命名分组-->
                         </span>
                     </span>
                </el-tree>
                 </div>
             </el-col>
         </el-col>
-        <el-col :span='14' class="container" style="height:600px;position:relative;">
+        <el-col :span='14' class="container">
             <el-col :span='24'>
             <el-row>
                 <el-col :span='5' class="mgr15 boxshadow">
@@ -46,12 +46,14 @@
             </el-row>
             </el-col>
             <el-col :span='24' class="mgt24">
-                <div class="fontWet titl" style="height:40px;lineHeight:30px;borderBottom:1px solid #ccc;">样本分类</div>
+                <div class="fontWet titl" style="height:40px;lineHeight:30px;borderBottom:1px solid #ccc;">{{currentgoods}}</div>
                 <el-table
                     :data="batchTableData.data"
                     size='small'
                     highlight-current-row
-                    style="width: 100%">
+                    style="width: 100%"
+                    @selection-change="handleSelectionChange"
+                    @row-click='getPostedjb'>
                     <el-table-column type="selection" width="55"></el-table-column>
                     <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                     <el-table-column
@@ -60,28 +62,52 @@
                         width="100">
                         <template slot-scope="scope">
                             <el-button @click="handleEdit(scope.row)" type="text" size="small" class="bledit">修改</el-button>
-                            <el-button @click.native.prevent="handleDelete(scope.$index, batchTableData.data)" type="text" size="small" class="redde">删除</el-button>
+                            <el-button @click.native.prevent="handleDelete(scope.row)" type="text" size="small" class="redde">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
                 <div class="paginationClass">
-                    <el-pagination background  layout="total, prev, pager, next, jumper"
+                    <el-pagination background  layout="total,sizes,prev, pager, next, jumper"
                     :total="batchTableData.total"
                     :current-page="batchTableData.offset"
                     :page-size="batchTableData.limit"
+                    :page-sizes="[5,10,]"
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange">
                     </el-pagination>
                 </div>
             </el-col>
-            <el-col :span='24' style="textAlign:right;position:absolute;bottom:10px;right:20px;">
-                <el-button type="danger" size='mini'>删除</el-button>
-                <el-button type="primary" size='mini'>修改</el-button>
+            <el-col :span='24' style="textAlign:right;" class="mgt24">
+                <el-button type="danger" size='mini' @click="delMaterial">删除</el-button>
                 <el-button type="success" size='mini' @click="newMaterial">新增</el-button>
             </el-col>
         </el-col>
         <el-col :span='5'>
-            检验项
+            <el-col class="container" style="height:600px;">
+                <div class="fontWet titl">检验项</div>
+                <div style="marginTop:20px;">
+                    <div class="mgb24">
+                        <div style="textAlign:center;paddingBottom:10px;color:#139168;">鉴别</div>
+                        <div class="container">
+                            <p type="success" v-for="(item,index) in jbarr" :key="index" class="fontsz10 greenadd mgb10">
+                                {{item.value}}<el-button type="danger" icon="el-icon-delete" circle size='mini' class="mgl15" @click="Deljb(item.id)"></el-button>
+                                <el-button type="primary" icon="el-icon-edit" circle size='mini' @click="Editjb(item.id)"></el-button>
+                            </p>
+                            <el-button type="success" size='mini' icon="el-icon-plus" @click="showInputtxt" class="mgt14"></el-button>
+                        </div>
+                    </div>
+                    <div class="mgb24">
+                        <div style="textAlign:center;paddingBottom:10px;color:#139168;">检查</div>
+                        <div class="container">
+                            <el-tag type="warning">水分</el-tag>
+                            <el-tag type="warning">装量差异</el-tag>
+                            <el-tag type="warning">粒度</el-tag>
+                            <el-tag type="warning">微生物限度</el-tag>
+                            
+                        </div>
+                    </div>
+                </div>
+            </el-col>
         </el-col>
         <el-dialog
             title="添加新的节点"
@@ -112,32 +138,38 @@
                 <el-form-item label="品名编码">
                     <el-input v-model="MaterialForm.Code"></el-input>
                 </el-form-item>
-                <el-form-item label="产品类型">
-                    <el-input v-model="MaterialForm.Type"></el-input>
-                </el-form-item>
                 <el-form-item label="产品来源">
                     <el-input v-model="MaterialForm.Source"></el-input>
                 </el-form-item>
                 <el-form-item label="单位">
-                    <el-input v-model="MaterialForm.Uint"></el-input>
-                </el-form-item>
-                <el-form-item label="录入时间">
-                    <el-input v-model="MaterialForm.IntoTime"></el-input>
-                </el-form-item>
-                <el-form-item label="录入人">
-                    <el-input v-model="MaterialForm.IntoUser"></el-input>
-                </el-form-item>
-                <el-form-item label="修改时间">
-                    <el-input v-model="MaterialForm.AlterTime"></el-input>
-                </el-form-item>
-                <el-form-item label="修改人">
-                    <el-input v-model="MaterialForm.AlterUser"></el-input>
+                    <el-input v-model="MaterialForm.Unit"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer" >
                 <el-button @click="materialdialogVisible=false">取 消</el-button>
                 <el-button type="primary" @click="PostMaterialInfo">确 定</el-button>
             </span>
+        </el-dialog>
+        <el-dialog
+            title="添加新的内容"
+            width="25%"
+            :visible.sync="inputVisible"
+            size="tiny"
+        >
+        <el-form ref="addInput">
+            <el-form-item label="节点名称">
+                <el-input 
+                type="textarea"
+                autosize
+                placeholder="请输入内容"
+                v-model="jbinput"
+                ></el-input>
+            </el-form-item>
+         </el-form>
+         <span slot="footer" class="dialog-footer" >
+            <el-button @click="inputVisible=false">取 消</el-button>
+            <el-button type="primary" @click="showInputContent">确 定</el-button>
+         </span>
         </el-dialog>
     </el-row>
 </template>
@@ -146,43 +178,47 @@ var moment=require('moment')
 export default {
     data(){
         return {
+           jbarr:[],
+           jbID:'',
+           inputVisible:false,
+           jbinput:'',//鉴别输入
            addEventdialogVisible: false,
+           jbopt:'',//区分鉴别添加修改操作
+           tabRowNo:'',//tab row 的No
+           Product:'',
            addEventForm:{
             categoryName: '',
             },
-           MaterialForm:{
+           MaterialForm:{ //新增输入框绑定
             Product: '',
             Code:'',
             Type:'',
             Source:'',
-            Uint:'',
+            Unit:'',
             IntoTime:'',
-            IntoUser:'',
+            No:'',
+            IntoUser:localStorage.getItem('Name'),
             AlterTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
             AlterUser:localStorage.getItem('Name'),
             },
            materialdialogVisible:false, //新增物料信息卡片
-           currentNodeData:{},
-           searchObj:{
+           currentNodeData:{},//rename之后的保存
+           currentParent:'',
+           currentgoods:'',//当前点击的物类
+           currentid:'1001', //当前树的id
+           checkedRow:[],//勾选的多条
+           searchObj:{ //查询框绑定值
                category:'',
                registrydate:'',
                goods:'',
            },
            batchTableData:{ //物料BOM
-                tableName:"PlanManager",
-                data:[
-                    {Product:'巴戟胶囊',Code:'BJJN',Uint:'kg',IntoTime:'2020-12-01 15:54:22',IntoUser:'lig',AlterTime:'2020-12-01 15:54:22',AlterUser:'张三'},
-                    {Product:'巴戟胶囊',Code:'BJJN',Uint:'kg',IntoTime:'2020-12-01 15:54:22',IntoUser:'lig',AlterTime:'2020-12-01 15:54:22',AlterUser:'张三'},
-                    {Product:'巴戟胶囊',Code:'BJJN',Uint:'kg',IntoTime:'2020-12-01 15:54:22',IntoUser:'lig',AlterTime:'2020-12-01 15:54:22',AlterUser:'张三'},
-                    {Product:'巴戟胶囊',Code:'BJJN',Uint:'kg',IntoTime:'2020-12-01 15:54:22',IntoUser:'lig',AlterTime:'2020-12-01 15:54:22',AlterUser:'张三'},
-                    {Product:'巴戟胶囊',Code:'BJJN',Uint:'kg',IntoTime:'2020-12-01 15:54:22',IntoUser:'lig',AlterTime:'2020-12-01 15:54:22',AlterUser:'张三'},
-                    {Product:'巴戟胶囊',Code:'BJJN',Uint:'kg',IntoTime:'2020-12-01 15:54:22',IntoUser:'lig',AlterTime:'2020-12-01 15:54:22',AlterUser:'张三'},
-                    ],
-                limit: 10,//当前显示多少条
+                data:[],
+                limit: 5,//当前显示多少条
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
-            batchtableconfig:[{prop:'Product',label:"名称"},{prop:'Code',label:'物料编码'},{prop:'Uint',label:'单位'},{prop:'IntoTime',label:'录入时间',width:'160'},{prop:'IntoUser',label:'录入人'},{prop:'AlterTime',label:'修改时间',width:160},{prop:'AlterUser',label:'修改人'}],//批次列表
+            batchtableconfig:[{prop:'Product',label:"产品品名"},{prop:'Code',label:'产品编码'},{prop:'Source',label:'来源'},{prop:'Type',label:'类型'},{prop:'Unit',label:'单位'},{prop:'IntoTime',label:'录入时间',width:'160'},{prop:'IntoUser',label:'录入人'},{prop:'AlterTime',label:'修改时间',width:'160'},{prop:'AlterUser',label:'修改人'},],//批次列表
             options: [{
                 value: '选项1',
                 label: '物料一'
@@ -190,7 +226,8 @@ export default {
                 value: '选项2',
                 label: '物料二'
                 }],
-           treeDom: [],
+           treeDom: [],//渲染的树
+           Action:'add',
            defaultProps: {
             children: 'children',
             label: 'label'
@@ -199,76 +236,250 @@ export default {
     },
     created(){
         this.getTreeDom()
+        this.refreshTable()
     },
     methods: {
+        Editjb(Id){ //编辑鉴别
+           this.inputVisible=true
+           this.jbopt='修改'
+           this.jbID=Id
+        },
+        Deljb(Id){ //删除鉴别
+           var params={
+               Id:Id
+           }
+           this.axios.delete('/lims/QualityStandard',{params:params}).then((res) => {
+               if(res.data.code=='1000'){
+                this.$message({
+                    type:'success',
+                    message:'删除成功'
+                })
+                this.getPostedjb()
+               }
+           })
+           
+        },
+        showInputtxt(){ //点击右侧加号弹出输入框
+            this.jbopt='添加'
+            this.inputVisible=true
+            this.jbinput=''
+        },
+        getPostedjb(row){ //获取已经上传的鉴别
+           if(row==undefined){
+                this.tabRowNo=this.tabRowNo
+                this.Product=this.Product
+           }else{
+               this.tabRowNo=row.No,
+               this.Product=row.Product
+           }
+            var params={
+                No:this.tabRowNo
+            }
+            this.axios.get('/lims/QualityStandard',{params:params}).then((res) => {
+                this.jbarr=res.data.data[0]['鉴别']
+            })
+        },
+        showInputContent(){ //鉴别添加修改的展示
+            if(this.jbopt==='修改'){
+                var params={
+                Id:this.jbID,
+                Discern:this.jbinput,
+                Product:this.Product
+            }
+            this.axios.patch('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                     this.$message({
+                        type:'success',
+                        message:'修改成功'
+                    })
+                }
+            })
+            }else{
+                var params={
+                Discern:this.jbinput,
+                No:this.tabRowNo,
+                Product:this.Product
+            }
+            this.axios.post('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'添加成功'
+                    })
+                }
+            })
+            }
+            this.getPostedjb()
+            this.inputVisible=false
+        },
+        showTabInfo(obj,data,node){ //点击物料类展示对应的详细信息
+        this.currentgoods = obj.label
+        if(obj.hasOwnProperty('id')){
+            this.currentid=obj.id
+            var params={
+                Code:this.currentid,
+                PerPage:this.batchTableData.limit,
+                Page:this.batchTableData.offset,
+            }
+            this.axios.get('/lims/QualityStandardCenter',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                    this.batchTableData.data=res.data.data
+                    this.batchTableData.total=res.data.total
+                }
+            })
+        }
+        },
+        refreshTable(){ //刷新表格里面的数据
+            var that=this
+            var params1={
+                Code:this.currentid,
+                PerPage:this.batchTableData.limit,
+                Page:this.batchTableData.offset,
+            }
+            that.axios.get('/lims/QualityStandardCenter',{params:params1}).then((res) => {
+                if(res.data.code=='1000'){
+                    that.batchTableData.data=res.data.data
+                    that.batchTableData.total=res.data.total
+                }
+            })
+        },
         getTreeDom(){ //初始化获取树结构
             this.axios.get('/lims/ClassifyTree').then((res) => {
-                if(res.data.code==='20001'){
+                if(res.data.code==='1000'){
                     this.treeDom=res.data.data[0].children
                 }
             })
         },
-        handleEdit(row){
-            console.log(row)
+        handleEdit(row){ //表格编辑按钮
+            this.MaterialForm.Product=row.Product
+            this.MaterialForm.Code=row.Code
+            this.MaterialForm.Source=row.Source
+            this.MaterialForm.Unit=row.Unit
+            this.MaterialForm.No=row.No
+            this.materialdialogVisible=true
+            this.Action='update'
         },
-        handleDelete(index,row){
-            console.log(index)
-            console.log(row)
+        handleDelete(row){ //表格删除按钮
+            var arr=[]
+            arr.push(row.Id)
+            var params={
+                Id:arr
+            }
+            this.axios.delete('/lims/QualityStandardCenter',{data:params}).then((res) => {
+                if(res.data.code=='1000'){
+                       this.$message({
+                        type:'success',
+                        message:'删除数据成功'
+                    })
+                    this.refreshTable()
+                   }
+            })
         },
         PostMaterialInfo(){ //发送录入的详细信息
+            var that=this
             var params={
-                Product:this.MaterialForm.Product,
-                Code:this.MaterialForm.Code,
-                Type:this.MaterialForm.Type,
-                Source:this.MaterialForm.Source,
-                Uint:this.MaterialForm.Uint,
-                IntoTime:this.MaterialForm.IntoTime,
-                IntoUser:this.MaterialForm.IntoUser,
-                AlterTime:this.MaterialForm.AlterTime,
-                AlterUser:this.MaterialForm.AlterUser,
+                ID:that.currentid,
+                Product:that.MaterialForm.Product,
+                Code:that.MaterialForm.Code,
+                Type:that.currentgoods,
+                Source:that.MaterialForm.Source,
+                Unit:that.MaterialForm.Unit,
             }
-            this.batchTableData.data.push(params)
-            this.axios.post('https://yapi.baidu.com/mock/10425/QualityStandard',this.qs.stringify(params)).then((res) => {
-                if(res.data.code==200){
-                     this.$message({
+            if(that.Action=='add'){
+                params.Action='add'
+                params.IntoTime=moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+                params.IntoUser=localStorage.getItem('Name')
+            }else{
+                params.Action='update'
+                params.AlterTime=moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+                params.AlterUser=localStorage.getItem('Name')
+                params.No=that.MaterialForm.No
+            }
+            that.axios.post('/lims/QualityStandardCenter',this.qs.stringify(params)).then((res) => { 
+                if(res.data.code=='1000'){
+                     that.$message({
                         type: 'success',
-                        message: '添加成功'
+                        message: '操作成功'
                         });
+                    //添加成功重新获取新的table
+                     this.refreshTable()
                 }else{
-                   this.$message({
+                   that.$message({
                         type: 'success',
                         message: '添加失败，请重试'
                         }); 
                 }
-                this.materialdialogVisible=false
+                that.materialdialogVisible=false
             })
         },
-        newMaterial(){
+        newMaterial(){ //命名弹出框
             this.materialdialogVisible=true
+            this.MaterialForm={}
+            this.Action='add'
         },
-        append(node,data) {
-            console.log(node)
-            console.log(data)
-            const newChild = { id:new Date().getTime(), label: '新增节点', children: [] };
-            if (!data.children) {
-            this.$set(data, 'children', []);
+        handleSelectionChange(row){ //表格勾选触发
+            this.checkedRow=row
+        },
+        delMaterial(){ //点击按钮删除
+            var dels=[]
+            if(this.checkedRow.length==0){
+                this.$message({
+                    type:'info',
+                    message:'请先勾选表格里要删除的数据'
+                })
+            }else{
+                dels=this.checkedRow.map((item) => {
+                    return item.Id
+                })
+                var params={Id:dels}
+                this.axios.delete('/lims/QualityStandardCenter',{data:params}).then((res) => {
+                   if(res.data.code=='1000'){
+                       this.$message({
+                        type:'success',
+                        message:'删除数据成功'
+                    })
+                    this.refreshTable()
+                   }
+                })
+                
             }
-            data.children.push(newChild);
         },
-        deletes(node,data){
-            const parent = node.parent;
-            const children = parent.data.children || parent.data;
-            const index = children.findIndex(d => d.id === data.id);
+        append(node,data) { //添加节点
+            this.currentParent=data.label
+            var params={
+                    ParentName:this.currentParent,
+                    ChildrenName:'新增节点'
+                }
+                this.axios.post('/lims/ClassifyTree',this.qs.stringify(params)).then((res) => {
+                    if(res.data.code=='1000'){
+                        this.$message({
+                            type:'success',
+                            message:'添加节点成功'
+                        })
+                        this.getTreeDom()
+                    }
+                })
+        },
+        deletes(node,data){ //删除节点
+            this.currentNodeData=data
             this.$confirm('确定要删除该节点吗？', '温馨提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.$message({
-                type: 'success',
-                message: '已删除'
-                });
-                children.splice(index, 1);
+                var params={
+                    Code:this.currentNodeData.id,
+                    ChildrenName:this.currentNodeData.label
+                }
+                this.axios.delete('/lims/ClassifyTree',{params:params}).then((res) => {
+                    if(res.data.code=='1000'){
+                        this.$message({
+                          type: 'success',
+                          message: '已删除'
+                        });
+                        this.getTreeDom()
+                }
+                })
             }).catch(() => {
                 this.$message({
                 type: 'info',
@@ -276,14 +487,34 @@ export default {
                 });
             });
         },
-        rename(node,data){
+        rename(node,data){ //节点重命名
+            this.currentParent=node.parent.data.label
             this.addEventdialogVisible=true
             this.currentNodeData=data
         },
-        editconfirm(){
+        editconfirm(){ //节点命名修改确认
             if(this.addEventForm.categoryName!=''){
                 this.currentNodeData.label=this.addEventForm.categoryName
                 this.addEventdialogVisible=false
+                var params={
+                    ParentName:this.currentParent,
+                    Code:this.currentNodeData.id,
+                    ChildrenName:this.addEventForm.categoryName
+                }
+                this.axios.patch('/lims/ClassifyTree',this.qs.stringify(params)).then((res) => {
+                    if(res.data.code=='1000'){
+                        this.$message({
+                            type: 'success',
+                            message: '修改节点名称成功'
+                            });
+                       this.getTreeDom()
+                    }else{
+                        this.$message({
+                            type:'error',
+                            message:'修改节点失败'
+                        })
+                    }
+                })
             }else{
                 this.$message({
                     type:'error',
@@ -293,9 +524,13 @@ export default {
         },
         handleSizeChange(limit){ //每页条数切换
             this.batchTableData.limit = limit
+            this.refreshTable()
+            
       },
         handleCurrentChange(offset) { // 页码切换
             this.batchTableData.offset = offset
+            this.refreshTable()
+
         },
     },
 }

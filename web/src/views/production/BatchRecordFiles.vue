@@ -37,7 +37,7 @@
               :file-list="fileList">
               <i class="el-icon-upload"></i>
               <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              <div slot="tip" class="el-upload__tip">只能上传.docx 批记录表</div>
+              <div slot="tip" class="el-upload__tip">只能上传.doc,.docx 批记录表</div>
             </el-upload>
             <el-button type="primary" @click="FileHTMLPreview" size='small' v-if='ButtonVisible'>转换并配置接口参数</el-button>
           </div>
