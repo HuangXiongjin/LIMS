@@ -35,26 +35,29 @@ def check_form():
                                  CheckDate=CheckDate, CheckUser=CheckUser, Type=Type, Comment=Comment,
                                  CheckProjectNO=CheckProjectNO, CheckNumber=CheckNumber))
         db_session.commit()
-
         json_data = json.loads(check_project)
         for result in json_data:
             print(result)
             if result == '项目':
+                data = []
                 for item in json_data[result]:
                     c = CheckProject()
                     c.No = CheckNumber
                     c.Product = Name
                     c.Project = item
-                    db_session.add(c)
-                    db_session.commit()
+                    data.append(c)
+                db_session.add_all(data)
+                db_session.commit()
             if result == '性状':
+                data = []
                 for item in json_data[result]:
                     c = CheckProject()
                     c.No = CheckNumber
                     c.Product = Name
                     c.Character = item
-                    db_session.add(c)
-                    db_session.commit()
+                    data.append(c)
+                db_session.add_all(data)
+                db_session.commit()
             if result == '鉴别':
                 data = []
                 for item in json_data[result]:
@@ -66,29 +69,35 @@ def check_form():
                 db_session.add_all(data)
                 db_session.commit()
             if result == '检查':
+                data = []
                 for item in json_data[result]:
                     c = CheckProject()
                     c.No = CheckNumber
                     c.Product = Name
                     c.Inspect = item
-                    db_session.add(c)
-                    db_session.commit()
+                    data.append(c)
+                db_session.add_all(data)
+                db_session.commit()
             if result == '含量测定':
+                data = []
                 for item in json_data[result]:
                     c = CheckProject()
                     c.No = CheckNumber
                     c.Product = Name
                     c.Content = item
-                    db_session.add(c)
-                    db_session.commit()
+                    data.append(c)
+                db_session.add_all(data)
+                db_session.commit()
             if result == '微生物限定':
+                data = []
                 for item in json_data[result]:
                     c = CheckProject()
                     c.No = CheckNumber
                     c.Product = Name
                     c.Microbe = item
-                    db_session.add(c)
-                    db_session.commit()
+                    data.append(c)
+                db_session.add_all(data)
+                db_session.commit()
         # project = []
         # character = []
         # discern = []
