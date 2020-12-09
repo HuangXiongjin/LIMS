@@ -126,6 +126,8 @@ class CheckForm(Base):
     Type = Column(Unicode(16), nullable=True, default='标准请验')
     # 小样请验单审核状态（待审核，未通过，已通过）
     Status = Column(Unicode(16), nullable=True, default='待审核')
+    # 请验单生命周期
+    Life = Column(Unicode(16), nullable=True, default='待审核')
     # 备注
     Comment = Column(Unicode(32), nullable=True)
 

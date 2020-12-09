@@ -157,6 +157,7 @@ def check_verify():
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=item).first()
         data.VerifyUser = VerifyName
         data.CheckDate = DateTime
+        data.Status = '待检验'
         result.append(data)
     db_session.add_all(result)
     db_session.commit()
