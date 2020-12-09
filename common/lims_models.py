@@ -128,6 +128,16 @@ class CheckForm(Base):
     Status = Column(Unicode(16), nullable=True, default='待审核')
     # 请验单生命周期
     Life = Column(Unicode(16), nullable=True, default='待审核')
+    # 取样人
+    SampleUser = Column(Unicode(16), nullable=True, default='')
+    # 送样人
+    SongUser = Column(Unicode(16), nullable=True, default='')
+    # 接收人
+    IntoUser = Column(Unicode(16), nullable=True, default='')
+    # 分发人
+    OutUser = Column(Unicode(16), nullable=True, default='')
+    # 实验室组长
+    LaboratoryUser = Column(Unicode(16), nullable=True, default='')
     # 备注
     Comment = Column(Unicode(32), nullable=True)
 
@@ -155,6 +165,14 @@ class CheckProject(Base):
     # 全局唯一地址
     Address = Column(Unicode(128), nullable=True)
 
+
+# class CheckLife(Base):
+#     """请验生命周期"""
+#     __tablename__ = 'CheckLife'
+#     Id = Column(Integer, autoincrement=True, primary_key=True)
+#     # 请验项目标识
+#     CheckProjectNO = Column(Unicode(32), nullable=True)
+#
 
 class WordForm(Base):
     """文档维护"""

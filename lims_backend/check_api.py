@@ -48,7 +48,9 @@ def check_form():
             db_session.add(CheckForm(Name=Name, Specs=Specs, Supplier=Supplier, ProductNumber=ProductNumber, Number=Number,
                                      Amount=Amount, Unit=Unit, CheckProcedure=CheckProcedure, CheckDepartment=CheckDepartment,
                                      CheckDate=CheckDate, CheckUser=CheckUser, Type=Type, Comment=Comment,
-                                     CheckProjectNO=CheckProjectNO, CheckNumber=CheckNumber, ProductType=ProductType))
+                                     CheckProjectNO=CheckProjectNO, CheckNumber=CheckNumber, ProductType=ProductType,
+                                     Life='待审核')
+                           )
             db_session.commit()
             json_data = json.loads(check_project)
             for result in json_data:
@@ -148,6 +150,7 @@ def check_form():
 
 @check.route('/CheckVerify', methods=['POST'])
 def check_verify():
+    """请验审核"""
     CheckProjectNO = request.values.get('CheckProjectNO')
     VerifyName = request.values.get('VerifyName')
     DateTime = request.values.get('DateTime')
@@ -162,6 +165,45 @@ def check_verify():
     db_session.add_all(result)
     db_session.commit()
     return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
+
+
+@check.route('/Sample', methods=['GET', 'POST'])
+def sample():
+    """取样登记"""
+    if request.method == 'GET':
+        CheckProjectNO = request.values.get('CheckProjectNO')
+        results = db_session.query(CheckProject).filter_by(Address=CheckProjectNO).all()
+        project = []
+        character = []
+        discern = []
+        inspect = []
+        content = []
+        microbe = []
+        data = [
+            {'CheckProjectNO': CheckProjectNO, 'Project': project, 'Character': character, 'Discern': discern, 'Inspect': inspect, 'Content': content,
+             'Microbe': microbe}]
+        for result in results:
+            if result.Project is not None:
+                project.append({'id': result.Id, 'value': result.Project})
+            if result.Character is not None:
+                character.append({'id': result.Id, 'value': result.Character})
+            if result.Discern is not None:
+                discern.append({'id': result.Id, 'value': result.Discern})
+            if result.Inspect is not None:
+                inspect.append({'id': result.Id, 'value': result.Inspect})
+            if result.Content is not None:
+                content.append({'id': result.Id, 'value': result.Content})
+            if result.Microbe is not None:
+                microbe.append({'id': result.Id, 'value': result.Microbe})
+        return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
+    if request.method == 'POST':
+        CheckProjectNO = request.values.get('CheckProjectNO')
+        SampleUser = request.values.get('SampleUser')
+        data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+        data.SampleUser = SampleUser
+        db_session.add(data)
+        db_session.commit()
+        return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
 
 
 @check.route('/AllProduct', methods=['GET'])
