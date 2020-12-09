@@ -165,8 +165,8 @@ def quality_standard():
             content = []
             microbe = []
             data = [
-                {'编号': No, '项目': project, '性状': character, '鉴别': discern, '检查': inspect, '含量测定': content,
-                 '微生物限度': microbe}]
+                {'No': No, 'Project': project, 'Character': character, 'Discern': discern, 'Inspect': inspect, 'Content': content,
+                 'Microbe': microbe}]
             for result in results:
                 if result.Project is not None:
                     project.append({'id': result.Id, 'value': result.Project})
