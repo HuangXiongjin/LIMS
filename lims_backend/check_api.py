@@ -152,10 +152,11 @@ def check_verify():
     VerifyName = request.values.get('VerifyName')
     DateTime = request.values.get('DateTime')
     result = []
-    for item in CheckProjectNO:
+    items = json.loads(CheckProjectNO)
+    for item in items:
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=item).first()
         data.VerifyUser = VerifyName
-        data.DateTime = DateTime
+        data.CheckDate = DateTime
         result.append(data)
     db_session.add_all(result)
     db_session.commit()
