@@ -154,13 +154,12 @@ def check_verify():
     result = []
     for item in CheckProjectNO:
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=item).first()
-        data.VerifyName = VerifyName
+        data.VerifyUser = VerifyName
         data.DateTime = DateTime
         result.append(data)
     db_session.add_all(result)
     db_session.commit()
     return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
-
 
 
 @check.route('/AllProduct', methods=['GET'])
