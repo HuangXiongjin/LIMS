@@ -24,29 +24,8 @@
             </el-col>
         </el-col>
         <el-col :span='14' class="container">
-            <el-col :span='24'>
-            <el-row>
-                <el-col :span='5' class="mgr15 boxshadow">
-                    <el-input
-                        placeholder="类别/品名"
-                        prefix-icon="el-icon-search"
-                        v-model="searchObj.category">
-                    </el-input>
-                </el-col>
-                <el-col :span='5' class="mgr15 boxshadow">
-                    <el-select v-model="searchObj.goods" placeholder="物料类">
-                        <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
-                </el-col>
-            </el-row>
-            </el-col>
             <el-col :span='24' class="mgt24">
-                <div class="fontWet titl" style="height:40px;lineHeight:30px;borderBottom:1px solid #ccc;">{{currentgoods}}</div>
+                <div class="fontWet titl mgb24" style="height:40px;lineHeight:30px;borderBottom:1px solid #ccc;">{{currentgoods}}</div>
                 <el-table
                     :data="batchTableData.data"
                     size='small'
@@ -83,27 +62,57 @@
             </el-col>
         </el-col>
         <el-col :span='5'>
-            <el-col class="container" style="height:600px;">
+            <el-col class="container" style="height:600px;overflow:auto;">
                 <div class="fontWet titl">检验项</div>
                 <div style="marginTop:20px;">
                     <div class="mgb24">
                         <div style="textAlign:center;paddingBottom:10px;color:#139168;">鉴别</div>
                         <div class="container">
                             <p type="success" v-for="(item,index) in jbarr" :key="index" class="fontsz10 greenadd mgb10">
-                                {{item.value}}<el-button type="danger" icon="el-icon-delete" circle size='mini' class="mgl15" @click="Deljb(item.id)"></el-button>
-                                <el-button type="primary" icon="el-icon-edit" circle size='mini' @click="Editjb(item.id)"></el-button>
+                                {{item.value}}&nbsp;&nbsp;&nbsp;&nbsp;<i class="el-icon-delete redde fsz14px cursor" @click="Deljb(item.id)"></i>&nbsp;&nbsp;
+                                <i class="el-icon-edit bledit2 fsz14px cursor" @click="Editjb(item.id)"></i>
                             </p>
-                            <el-button type="success" size='mini' icon="el-icon-plus" @click="showInputtxt" class="mgt14"></el-button>
+                            <el-button type="success" size='mini' icon="el-icon-plus" @click="showInputtxt('鉴别')" class="mgt14"></el-button>
                         </div>
                     </div>
-                    <div class="mgb24">
+                     <div class="mgb24">
                         <div style="textAlign:center;paddingBottom:10px;color:#139168;">检查</div>
                         <div class="container">
-                            <el-tag type="warning">水分</el-tag>
-                            <el-tag type="warning">装量差异</el-tag>
-                            <el-tag type="warning">粒度</el-tag>
-                            <el-tag type="warning">微生物限度</el-tag>
-                            
+                             <p type="success" v-for="(item,index) in jcarr" :key="index" class="fontsz10 greenadd mgb10">
+                                {{item.value}}&nbsp;&nbsp;&nbsp;&nbsp;<i class="el-icon-delete redde fsz14px cursor" @click="Deljb(item.id)"></i>&nbsp;&nbsp;
+                                <i class="el-icon-edit bledit2 fsz14px cursor" @click="Editjb(item.id)"></i>
+                            </p>
+                            <el-button type="success" size='mini' icon="el-icon-plus" @click="showInputtxt('检查')" class="mgt14"></el-button>
+                        </div>
+                    </div>
+                     <div class="mgb24">
+                        <div style="textAlign:center;paddingBottom:10px;color:#139168;">性状</div>
+                        <div class="container">
+                            <p type="success" v-for="(item,index) in xzarr" :key="index" class="fontsz10 greenadd mgb10">
+                                {{item.value}}&nbsp;&nbsp;&nbsp;&nbsp;<i class="el-icon-delete redde fsz14px cursor" @click="Deljb(item.id)"></i>&nbsp;&nbsp;
+                                <i class="el-icon-edit bledit2 fsz14px cursor" @click="Editjb(item.id)"></i>
+                            </p>
+                            <el-button type="success" size='mini' icon="el-icon-plus" @click="showInputtxt('性状')" class="mgt14"></el-button>
+                        </div>
+                    </div>
+                     <div class="mgb24">
+                        <div style="textAlign:center;paddingBottom:10px;color:#139168;">含量测定</div>
+                        <div class="container">
+                            <p type="success" v-for="(item,index) in hlcdarr" :key="index" class="fontsz10 greenadd mgb10">
+                                {{item.value}}&nbsp;&nbsp;&nbsp;&nbsp;<i class="el-icon-delete redde fsz14px cursor" @click="Deljb(item.id)"></i>&nbsp;&nbsp;
+                                <i class="el-icon-edit bledit2 fsz14px cursor" @click="Editjb(item.id)"></i>
+                            </p>
+                            <el-button type="success" size='mini' icon="el-icon-plus" @click="showInputtxt('含量测定')" class="mgt14"></el-button>
+                        </div>
+                    </div>
+                     <div class="mgb24">
+                        <div style="textAlign:center;paddingBottom:10px;color:#139168;">微生物限度</div>
+                        <div class="container">
+                            <p type="success" v-for="(item,index) in wswarr" :key="index" class="fontsz10 greenadd mgb10">
+                                {{item.value}}&nbsp;&nbsp;&nbsp;&nbsp;<i class="el-icon-delete redde fsz14px cursor" @click="Deljb(item.id)"></i>&nbsp;&nbsp;
+                                <i class="el-icon-edit bledit2 fsz14px cursor" @click="Editjb(item.id)"></i>
+                            </p>
+                            <el-button type="success" size='mini' icon="el-icon-plus" @click="showInputtxt('微生物限度')" class="mgt14"></el-button>
                         </div>
                     </div>
                 </div>
@@ -151,7 +160,7 @@
             </span>
         </el-dialog>
         <el-dialog
-            title="添加新的内容"
+            :title="opt"
             width="25%"
             :visible.sync="inputVisible"
             size="tiny"
@@ -179,11 +188,16 @@ export default {
     data(){
         return {
            jbarr:[],
+           jcarr:[],
+           xzarr:[],
+           hlcdarr:[],
+           wswarr:[],
            jbID:'',
            inputVisible:false,
            jbinput:'',//鉴别输入
            addEventdialogVisible: false,
            jbopt:'',//区分鉴别添加修改操作
+           opt:'',//区分鉴别检查性状
            tabRowNo:'',//tab row 的No
            Product:'',
            addEventForm:{
@@ -207,11 +221,6 @@ export default {
            currentgoods:'',//当前点击的物类
            currentid:'1001', //当前树的id
            checkedRow:[],//勾选的多条
-           searchObj:{ //查询框绑定值
-               category:'',
-               registrydate:'',
-               goods:'',
-           },
            batchTableData:{ //物料BOM
                 data:[],
                 limit: 5,//当前显示多少条
@@ -259,10 +268,10 @@ export default {
            })
            
         },
-        showInputtxt(){ //点击右侧加号弹出输入框
+        showInputtxt(opt){ //点击右侧加号弹出输入框
+            this.opt=opt
             this.jbopt='添加'
             this.inputVisible=true
-            this.jbinput=''
         },
         getPostedjb(row){ //获取已经上传的鉴别
            if(row==undefined){
@@ -276,11 +285,17 @@ export default {
                 No:this.tabRowNo
             }
             this.axios.get('/lims/QualityStandard',{params:params}).then((res) => {
-                this.jbarr=res.data.data[0]['鉴别']
+                this.jbarr=res.data.data[0]['Discern']
+                this.jcarr=res.data.data[0]['Inspect']
+                this.xzarr=res.data.data[0]['Character']
+                this.hlcdarr=res.data.data[0]['Content']
+                this.wswarr=res.data.data[0]['Microbe']
+                
             })
         },
         showInputContent(){ //鉴别添加修改的展示
-            if(this.jbopt==='修改'){
+            if(this.opt=='鉴别'){
+                if(this.jbopt==='修改'){
                 var params={
                 Id:this.jbID,
                 Discern:this.jbinput,
@@ -309,6 +324,128 @@ export default {
                 }
             })
             }
+            }else if(this.opt=='检查'){
+                if(this.jbopt==='修改'){
+                var params={
+                Id:this.jbID,
+                Inspect:this.jbinput,
+                Product:this.Product
+            }
+            this.axios.patch('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                     this.$message({
+                        type:'success',
+                        message:'修改成功'
+                    })
+                }
+            })
+            }else{
+                var params={
+                Inspect:this.jbinput,
+                No:this.tabRowNo,
+                Product:this.Product
+            }
+            this.axios.post('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'添加成功'
+                    })
+                }
+            })
+            }
+            }else if(this.opt=='性状'){
+                if(this.jbopt==='修改'){
+                var params={
+                Id:this.jbID,
+                Character:this.jbinput,
+                Product:this.Product
+            }
+            this.axios.patch('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                     this.$message({
+                        type:'success',
+                        message:'修改成功'
+                    })
+                }
+            })
+            }else{
+                var params={
+                Character:this.jbinput,
+                No:this.tabRowNo,
+                Product:this.Product
+            }
+            this.axios.post('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'添加成功'
+                    })
+                }
+            })
+            }
+            }else if(this.opt=='含量测定'){
+                if(this.jbopt==='修改'){
+                var params={
+                Id:this.jbID,
+                Content:this.jbinput,
+                Product:this.Product
+            }
+            this.axios.patch('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                     this.$message({
+                        type:'success',
+                        message:'修改成功'
+                    })
+                }
+            })
+            }else{
+                var params={
+                Content:this.jbinput,
+                No:this.tabRowNo,
+                Product:this.Product
+            }
+            this.axios.post('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'添加成功'
+                    })
+                }
+            })
+            }
+            }else if(this.opt=='微生物限度'){
+                if(this.jbopt==='修改'){
+                var params={
+                Id:this.jbID,
+                Microbe:this.jbinput,
+                Product:this.Product
+            }
+            this.axios.patch('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                     this.$message({
+                        type:'success',
+                        message:'修改成功'
+                    })
+                }
+            })
+            }else{
+                var params={
+                Microbe:this.jbinput,
+                No:this.tabRowNo,
+                Product:this.Product
+            }
+            this.axios.post('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'添加成功'
+                    })
+                }
+            })
+            }
+            }
+            
             this.getPostedjb()
             this.inputVisible=false
         },

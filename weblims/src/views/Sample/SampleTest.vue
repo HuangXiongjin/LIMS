@@ -3,57 +3,57 @@
         <el-col :span='24'>
             <el-row class="container mgt24">
                 <el-col :span='24'>
-                    <el-row>
-                        <el-col :span='3' class="mgr15 boxshadow">
-                            <el-input
-                                placeholder="类别/品名"
-                                prefix-icon="el-icon-search"
-                                v-model="searchObj.category">
-                            </el-input>
-                        </el-col>
-                        <el-col :span='3' class="mgr15 boxshadow">
-                            <el-select v-model="searchObj.goods" placeholder="全部类别">
-                                <el-option
-                                v-for="item in options"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                        <el-col :span='3' class="mgr15 boxshadow">
-                           <el-select v-model="searchObj.goods" placeholder="物料类">
-                                <el-option
-                                v-for="item in options"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                        <el-col :span='3' class="mgr15 boxshadow">
-                            <el-date-picker
-                                v-model="searchObj.registrydate"
-                                type="date"
-                                placeholder="选择日期">
-                            </el-date-picker>
-                        </el-col>
-                    </el-row>
+                   <el-row>
+                    <el-col :span='3' class="mgr15 boxshadow">
+                        <el-select v-model="searchObj.category" placeholder="品名">
+                            <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span='3' class="mgr15 boxshadow">
+                        <el-select v-model="searchObj.state" placeholder="状态">
+                            <el-option
+                            v-for="item in opstate"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span='3' class="mgr15 boxshadow">
+                      <el-date-picker
+                        v-model="searchObj.registrydate"
+                        type="date"
+                        placeholder="选择日期">
+                      </el-date-picker>
+                    </el-col>
+                     <el-col :span='2' class="boxshadow req">
+                        <el-button type='primary' @click="SearchTab">查询</el-button>
+                    </el-col>
+            </el-row>
                 </el-col>
                 <el-col :span='24' class="mgt24">
-                    <div>
-                        <el-menu :default-active="'1'" class="bgwhite" mode="horizontal" @select="handleSelect">
-                            <el-menu-item :index="'1'" style="height:46px;lineHeight:30px;">留样清单</el-menu-item>
-                        </el-menu>
-                        <div class="mgt24" v-if="currentChoose==='1'">
-                            <el-table
+                        <div class="mgt24 boxshadow">
+                          <el-table
                             :data="batchTableData.data"
                             size='small'
                             highlight-current-row
                             style="width: 100%">
                             <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label'></el-table-column>
-                            </el-table>
-                            <div class="paginationClass">
+                            <el-table-column
+                                fixed="right"
+                                label="操作"
+                                width="100">
+                                <template slot-scope="scope">
+                                    <el-button @click="handleClick(scope.row)" type="text" size="small">查看详情</el-button>
+                                </template>
+                            </el-table-column>
+                          </el-table>
+                          <div class="paginationClass">
                                 <el-pagination background  layout="total, prev, pager, next, jumper"
                                 :total="batchTableData.total"
                                 :current-page="batchTableData.offset"
@@ -61,36 +61,46 @@
                                 @size-change="handleSizeChange"
                                 @current-change="handleCurrentChange">
                                 </el-pagination>
-                            </div>
+                          </div>
                         </div>
-                    </div>
                 </el-col>
             </el-row>
         </el-col>
     </el-row>
 </template>
 <script>
+var moment=require('moment')
 export default {
     data(){
-
         return {
-           msg:'12',
-           searchObj:{
-               category:'',
-               registrydate:'',
-               goods:'',
+            searchObj:{
+               category:'丹参',
+               registrydate:moment(new Date()).format('YYYY-MM-DD'),
+               state:'待审核',
            },
             options: [{
                 value: '选项1',
                 label: '物料一'
-                }, {
-                value: '选项2',
-                label: '物料二'
                 }],
-            currentChoose:'1',
+            opstate: [{
+                value: '待审核',
+                label: '待审核'
+                }, {
+                value: '待取样',
+                label: '待取样'
+                },{
+                value: '待检验',
+                label: '待检验'
+                },{
+                value: '检验中',
+                label: '检验中'
+                },{
+                value: '已完成',
+                label: '已完成'
+                }],
             batchTableData:{ //物料BOM
-                data:[{Specs:'60g/袋',CheckNumber:'BJJN1234',Name:'巴戟胶囊'},{Specs:'900g/袋',CheckNumber:'GHDGHH',Name:'复方斑蝥片'}],
-                limit: 10,//当前显示多少条
+                data:[],
+                limit: 5,//当前显示多少条
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
@@ -98,36 +108,60 @@ export default {
         }
     },
     created(){
-        this.getPlanManager()
+        this.getInitTab()
+        this.getSelectOption()
     },
     methods: {
-        handleSelect(key) {
-            this.currentChoose=key
+        handleClick(row){
+            console.log(row)
+        },
+         getSelectOption() { //获取下拉列表选项
+           this.axios.get('/lims/AllProduct').then((res) => {
+               if(res.data.code=='1000'){
+                  this.options=res.data.data.map((item) => {
+                      return {
+                          value:item,
+                          label:item
+                      }
+                  })
+               }
+
+           })
+        },
+        SearchTab(){ //查询相关数据
+            var params={
+                Page:this.batchTableData.offset,
+                PerPage:this.batchTableData.limit,
+                Product:this.searchObj.category,
+                DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
+                Status:this.searchObj.state
+            }
+            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
+                this.batchTableData.data=res.data.data
+                this.batchTableData.total=res.data.total
+            })
+        },
+        getInitTab(){ //初始化获取表格数据
+            var params={
+                Page:this.batchTableData.offset,
+                PerPage:this.batchTableData.limit,
+                Product:this.searchObj.category,
+                DateTime:this.searchObj.registrydate,
+                Status:this.searchObj.state
+            }
+            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
+                this.batchTableData.data=res.data.data
+                this.batchTableData.total=res.data.total
+            })
         },
         handleSizeChange(limit){ //每页条数切换
             this.batchTableData.limit = limit
-            this.getPlanManager()
+            this.SearchTab()
       },
         handleCurrentChange(offset) { // 页码切换
             this.batchTableData.offset = offset
-            this.getPlanManager()
-        },
-        getPlanManager(){ //获取批次列表
-        var params={
-          tableName:'PlanManager',
-          offset:this.batchTableData.offset-1,
-          limit:this.batchTableData.limit
+            this.SearchTab()
         }
-        this.axios.get('/api/CUID',{params:params}).then(res => {
-           if(res.data.code === "200"){
-            var data = res.data.data
-            this.batchTableData.data = data.rows
-            this.batchTableData.total = data.total
-          }
-          },err=>{
-            console.log("请求错误")
-          })
-      },
     },
 }
 </script>

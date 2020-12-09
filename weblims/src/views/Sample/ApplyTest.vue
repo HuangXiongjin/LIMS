@@ -73,30 +73,18 @@
                        <el-form ref="form" :model="projectform" label-width="80px">
                          <el-row :gutter='40'>
                            <el-col :span='10'>
-                            <el-form-item label="请验工序" class="PuNo">
-                                 <el-select v-model="projectform.CheckProcedure" placeholder="请选择请验工序">
-                                    <el-option label="工序一" value="1"></el-option>
-                                    <el-option label="工序二" value="2"></el-option>
-                                 </el-select>
-                            </el-form-item>
-                           </el-col>
-                           <el-col :span='10'>
                             <el-form-item label="请验部门">
                                 <el-input v-model="projectform.CheckDepartment"></el-input>
                             </el-form-item>
                            </el-col>
                            <el-col :span='10'>
-                            <el-form-item label="申请时间">
-                                 <el-date-picker
-                                    v-model="projectform.CheckDate"
-                                    type="date"
-                                    placeholder="选择日期">
-                                </el-date-picker>
+                            <el-form-item label="请验工序">
+                                <el-input v-model="projectform.CheckProcedure"></el-input>
                             </el-form-item>
                            </el-col>
                            <el-col :span='10'>
-                            <el-form-item label="请验人">
-                                <el-input v-model="projectform.CheckUser"></el-input>
+                            <el-form-item label="物料类别">
+                                <el-input v-model="projectform.ProductType"></el-input>
                             </el-form-item>
                            </el-col>
                            <el-col :span='10'>
@@ -104,12 +92,17 @@
                                 <el-input type="textarea" v-model="projectform.Comment"></el-input>
                             </el-form-item>
                            </el-col>
+                            <el-col :span='10'>
+                            <el-form-item label="请验项目" class="PuNo">
+                                <el-button type='primary' @click="selectJbChoice">点击选择请验项目</el-button>
+                            </el-form-item>
+                           </el-col>
                          </el-row>
                        </el-form>
                    </el-col>
                    <el-col :span='24'>
                        <div style="float:right;">
-                        <el-button type="danger">重置</el-button>
+                        <el-button type="danger" @click="ResetRequest">重置</el-button>
                         <el-button type="success" @click="postRequest">提交</el-button>
                         <el-button type="info">加急申请</el-button>
                        </div>
@@ -117,6 +110,39 @@
                 </div>
             </el-col>
         </el-col>
+        <el-dialog title="检验项选择" :visible.sync="jbTableVisible">
+            <el-form :model="projectform" class="jbform" style="overflow:hidden;">
+                <el-form-item label='鉴别' class="mgb10">
+                     <el-select v-model="projectform.CheckProject['Discern']" multiple placeholder="请选择">
+                          <el-option v-for="(item,index) in jbarr" :key="index" :label="item.value" :value="item.value"></el-option>
+                     </el-select>
+                </el-form-item>
+                <el-form-item label='性状' class="mgb10">
+                     <el-select v-model="projectform.CheckProject['Character']" multiple placeholder="请选择">
+                          <el-option v-for="(item,index) in xzarr" :key="index" :label="item.value" :value="item.value"></el-option>
+                     </el-select>
+                </el-form-item>
+                <el-form-item label='检查' class="mgb10">
+                     <el-select v-model="projectform.CheckProject['Inspect']" multiple placeholder="请选择">
+                          <el-option v-for="(item,index) in jcarr" :key="index" :label="item.value" :value="item.value"></el-option>
+                     </el-select>
+                </el-form-item>
+                <el-form-item label='含量测定' class="mgb10">
+                     <el-select v-model="projectform.CheckProject['Content']" multiple placeholder="请选择">
+                          <el-option v-for="(item,index) in hlcdarr" :key="index" :label="item.value" :value="item.value"></el-option>
+                     </el-select>
+                </el-form-item>
+                <el-form-item label='微生物限度' class="mgb10">
+                     <el-select v-model="projectform.CheckProject['Microbe']" multiple placeholder="请选择">
+                          <el-option v-for="(item,index) in wswarr" :key="index" :label="item.value" :value="item.value"></el-option>
+                     </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="jbTableVisible = false">取 消</el-button>
+                <el-button type="primary" @click="jbTableVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
     </el-row>
 </template>
 <script>
@@ -125,21 +151,53 @@ export default {
     data(){
 
         return {
-           msg:'12',
            requestform:{Specs:'',CheckNumber:'',Name:'',ProductNumber:'',Supplier:'',Number:'',Amount:'',Unit:''},
-           projectform:{CheckProcedure:'',CheckDepartment:'',CheckDate:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),CheckUser:localStorage.getItem('Name'),Comment:''},
+           projectform:{
+               CheckProcedure:'',CheckDepartment:'',ProductType:'',
+               CheckProject:{Discern:[],Character:[],Inspect:[],Content:[],Microbe:[]}
+           },
            treeDom:[],
            defaultProps: {
             children: 'children',
             label: 'label'
             },
-            currentgoods:'物料类'
+            currentgoods:'物料类',
+            jbarr:[],
+            jcarr:[],
+            xzarr:[],
+            hlcdarr:[],
+            wswarr:[],
+            jbTableVisible:false
         }
     },
     created(){
         this.getInitTree()
     },
     methods: {
+        ResetRequest(){
+            this.requestform={Specs:'',CheckNumber:'',Name:'',ProductNumber:'',Supplier:'',Number:'',Amount:'',Unit:''}
+            this.projectform={
+               CheckProcedure:'',CheckDepartment:'',
+               Comment:'',
+               ProductType:'',
+               CheckProject:{Discern:[],Character:[],Inspect:[],Content:[],Microbe:[]}
+           }
+        },
+        selectJbChoice(){
+            this.jbTableVisible=true
+        },
+        getJB(Id){
+             var params={
+                No:Id
+            }
+            this.axios.get('/lims/QualityStandard',{params:params}).then((res) => {
+                this.jbarr=res.data.data[0]['Discern']
+                this.jcarr=res.data.data[0]['Inspect']
+                this.xzarr=res.data.data[0]['Character']
+                this.hlcdarr=res.data.data[0]['Content']
+                this.wswarr=res.data.data[0]['Microbe']
+            })
+        },
         getInitTree() { //获取初始树形结构
             this.axios.get('/lims/Tree').then((res) => {
                 if(res.data.code==='1000'){
@@ -148,8 +206,10 @@ export default {
             })
         },
         showTabInfo(obj,data,node){
+            this.projectform.ProductType=data.parent.data.label
             this.currentgoods=obj.label
-            
+            this.requestform.Name=obj.label
+            this.getJB(obj.id)
         },
         postRequest(){
             var params={
@@ -161,13 +221,15 @@ export default {
                 Number:this.requestform.Number,
                 Amount:this.requestform.Amount,
                 Unit:this.requestform.Unit,
+                ProductType:this.projectform.ProductType,
                 CheckProcedure:this.projectform.CheckProcedure,
                 CheckDepartment:this.projectform.CheckDepartment,
-                CheckDate:moment(this.projectform.CheckDate).format('YYYY-MM-DD HH:mm:ss'),
-                CheckUser:this.projectform.CheckUser,
+                CheckDate:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                CheckUser:localStorage.getItem('Name'),
                 Comment:this.projectform.Comment,
+                CheckProject:JSON.stringify(this.projectform.CheckProject),
             }
-            this.axios.post('https://yapi.baidu.com/mock/10425/CheckForm',this.qs.stringify(params)).then(res=>{
+            this.axios.post('/lims/CheckForm',this.qs.stringify(params)).then(res=>{
                 if(res.data.code=='1000'){
                     this.$message({
                         type:'success',
@@ -184,5 +246,8 @@ export default {
         height:46px;
         line-height:46px;
         border-bottom:1px solid #ccc;
+    }
+    .jbform .el-select{
+        width: 100%;
     }
 </style>
