@@ -18,13 +18,18 @@ def check_form():
             page = int(request.values.get('Page'))
             # 每页记录数
             per_page = int(request.values.get('PerPage'))
-            results = db_session.query(CheckForm).order_by(CheckForm.Id.asc()).all()
+            status = request.values.get('Status')
+            start_time = '"' + request.values.get('DateTime') + ' 00:00:00"'
+            end_time = '"' + request.values.get('DateTime') + ' 23:59:59"'
+            ProductType = request.values.get('ProductType')
+            results = db_session.query(CheckForm).filter(CheckForm.Status==status, CheckForm.CheckDate.between(start_time, end_time), CheckForm.ProductType==ProductType).order_by(CheckForm.Id.asc()).all()
             data = results[(page - 1) * per_page:page * per_page]
             return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                               ensure_ascii=False)
         if request.method == 'POST':
             data = request.values
             CheckNumber = data.get('CheckNumber')
+            ProductType = data.get('ProductType')
             Name = data.get('Name')
             Specs = data.get('Specs')
             Supplier = data.get('Supplier')
@@ -43,7 +48,7 @@ def check_form():
             db_session.add(CheckForm(Name=Name, Specs=Specs, Supplier=Supplier, ProductNumber=ProductNumber, Number=Number,
                                      Amount=Amount, Unit=Unit, CheckProcedure=CheckProcedure, CheckDepartment=CheckDepartment,
                                      CheckDate=CheckDate, CheckUser=CheckUser, Type=Type, Comment=Comment,
-                                     CheckProjectNO=CheckProjectNO, CheckNumber=CheckNumber))
+                                     CheckProjectNO=CheckProjectNO, CheckNumber=CheckNumber, ProductType=ProductType))
             db_session.commit()
             json_data = json.loads(check_project)
             for result in json_data:

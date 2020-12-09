@@ -3,7 +3,6 @@ from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, DateTime, Integer, Unicode
-
 from flask_login import LoginManager
 from database.connect_db import CONNECT_DATABASE
 
@@ -93,6 +92,8 @@ class CheckForm(Base):
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 请验单号
     CheckNumber = Column(Unicode(32), nullable=True)
+    # 样品类别
+    ProductType = Column(Unicode(32), nullable=True)
     # 品名
     Name = Column(Unicode(32), nullable=True)
     # 规格
