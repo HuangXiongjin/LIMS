@@ -160,7 +160,7 @@ def check_verify():
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=item).first()
         data.VerifyUser = VerifyName
         data.VerifyDate = DateTime
-        data.Status = '待检验'
+        data.Status = '待取样'
         result.append(data)
     db_session.add_all(result)
     db_session.commit()
@@ -201,6 +201,7 @@ def sample():
         SampleUser = request.values.get('SampleUser')
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
         data.SampleUser = SampleUser
+        data.Status = '待检验'
         db_session.add(data)
         db_session.commit()
         return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
