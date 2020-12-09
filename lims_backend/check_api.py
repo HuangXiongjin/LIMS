@@ -19,10 +19,10 @@ def check_form():
             # 每页记录数
             per_page = int(request.values.get('PerPage'))
             status = request.values.get('Status')
-            start_time = '"' + request.values.get('DateTime') + ' 00:00:00"'
-            end_time = '"' + request.values.get('DateTime') + ' 23:59:59"'
-            ProductType = request.values.get('ProductType')
-            results = db_session.query(CheckForm).filter(CheckForm.Status==status, CheckForm.CheckDate.between(start_time, end_time), CheckForm.ProductType==ProductType).order_by(CheckForm.Id.asc()).all()
+            start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
+            end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
+            Product = request.values.get('Product')
+            results = db_session.query(CheckForm).filter(CheckForm.Name==Product, CheckForm.Status==status, CheckForm.CheckDate.between(start_time, end_time)).order_by(CheckForm.Id.desc()).all()
             data = results[(page - 1) * per_page:page * per_page]
             return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                               ensure_ascii=False)
