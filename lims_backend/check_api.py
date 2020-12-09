@@ -55,7 +55,7 @@ def check_form():
             json_data = json.loads(check_project)
             for result in json_data:
                 print(result)
-                if result == 'xiangmu':
+                if result == 'Project':
                     data = []
                     for item in json_data[result]:
                         c = CheckProject()
@@ -66,7 +66,7 @@ def check_form():
                         data.append(c)
                     db_session.add_all(data)
                     db_session.commit()
-                if result == 'xingzhuang':
+                if result == 'Character':
                     data = []
                     for item in json_data[result]:
                         c = CheckProject()
@@ -77,7 +77,7 @@ def check_form():
                         data.append(c)
                     db_session.add_all(data)
                     db_session.commit()
-                if result == 'jianbie':
+                if result == 'Discern':
                     data = []
                     for item in json_data[result]:
                         c = CheckProject()
@@ -88,7 +88,7 @@ def check_form():
                         data.append(c)
                     db_session.add_all(data)
                     db_session.commit()
-                if result == 'jiancha':
+                if result == 'Inspect':
                     data = []
                     for item in json_data[result]:
                         c = CheckProject()
@@ -99,7 +99,7 @@ def check_form():
                         data.append(c)
                     db_session.add_all(data)
                     db_session.commit()
-                if result == 'hanliangceding':
+                if result == 'Content':
                     data = []
                     for item in json_data[result]:
                         c = CheckProject()
@@ -110,7 +110,7 @@ def check_form():
                         data.append(c)
                     db_session.add_all(data)
                     db_session.commit()
-                if result == 'weishengwu':
+                if result == 'Microbe':
                     data = []
                     for item in json_data[result]:
                         c = CheckProject()
