@@ -144,3 +144,11 @@ def check_form():
     except Exception as e:
         log(e)
         return json.dumps({'code': '2000', 'msg': str(e)})
+
+
+@check.route('/AllProduct', methods=['GET'])
+def get_all_product():
+    """获取全部品名"""
+    data = db_session.query(QualityStandardCenter).all()
+    results = list(set(item.Product for item in data))
+    return json.dumps({'code': '1000', 'msg': '操作成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
