@@ -58,6 +58,7 @@ def check_form():
                     for item in json_data[result]:
                         c = CheckProject()
                         c.No = CheckNumber
+                        c.Address = CheckProjectNO
                         c.Product = Name
                         c.Project = item
                         data.append(c)
@@ -68,6 +69,7 @@ def check_form():
                     for item in json_data[result]:
                         c = CheckProject()
                         c.No = CheckNumber
+                        c.Address = CheckProjectNO
                         c.Product = Name
                         c.Character = item
                         data.append(c)
@@ -78,6 +80,7 @@ def check_form():
                     for item in json_data[result]:
                         c = CheckProject()
                         c.No = CheckNumber
+                        c.Address = CheckProjectNO
                         c.Product = Name
                         c.Discern = item
                         data.append(c)
@@ -88,6 +91,7 @@ def check_form():
                     for item in json_data[result]:
                         c = CheckProject()
                         c.No = CheckNumber
+                        c.Address = CheckProjectNO
                         c.Product = Name
                         c.Inspect = item
                         data.append(c)
@@ -98,6 +102,7 @@ def check_form():
                     for item in json_data[result]:
                         c = CheckProject()
                         c.No = CheckNumber
+                        c.Address = CheckProjectNO
                         c.Product = Name
                         c.Content = item
                         data.append(c)
@@ -108,6 +113,7 @@ def check_form():
                     for item in json_data[result]:
                         c = CheckProject()
                         c.No = CheckNumber
+                        c.Address = CheckProjectNO
                         c.Product = Name
                         c.Microbe = item
                         data.append(c)
