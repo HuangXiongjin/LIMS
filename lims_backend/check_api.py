@@ -146,6 +146,23 @@ def check_form():
         return json.dumps({'code': '2000', 'msg': str(e)})
 
 
+@check.route('/CheckVerify', methods=['POST'])
+def check_verify():
+    CheckProjectNO = request.values.get('CheckProjectNO')
+    VerifyName = request.values.get('VerifyName')
+    DateTime = request.values.get('DateTime')
+    result = []
+    for item in CheckProjectNO:
+        data = db_session.query(CheckForm).filter_by(CheckProjectNO=item).first()
+        data.VerifyName = VerifyName
+        data.DateTime = DateTime
+        result.append(data)
+    db_session.add_all(result)
+    db_session.commit()
+    return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
+
+
+
 @check.route('/AllProduct', methods=['GET'])
 def get_all_product():
     """获取全部品名"""

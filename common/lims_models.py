@@ -118,6 +118,10 @@ class CheckForm(Base):
     CheckDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d'))
     # 请验人
     CheckUser = Column(Unicode(16), nullable=True, default='')
+    # 审核人
+    VerifyUser = Column(Unicode(16), nullable=True, default='')
+    # 审核时间
+    VerifyDate = Column(Unicode(32), nullable=True, default='')
     # 请验单类型（标准请验，小样请验）
     Type = Column(Unicode(16), nullable=True, default='标准请验')
     # 小样请验单审核状态（待审核，未通过，已通过）
