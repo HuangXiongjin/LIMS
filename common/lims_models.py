@@ -166,13 +166,23 @@ class CheckProject(Base):
     Address = Column(Unicode(128), nullable=True)
 
 
-# class CheckLife(Base):
-#     """请验生命周期"""
-#     __tablename__ = 'CheckLife'
-#     Id = Column(Integer, autoincrement=True, primary_key=True)
-#     # 请验项目标识
-#     CheckProjectNO = Column(Unicode(32), nullable=True)
-#
+class Distribute(Base):
+    """样品分发"""
+    __tablename__ = 'Distribute'
+    Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 请验项目标识
+    CheckProjectNO = Column(Unicode(32), nullable=True)
+    # 分发人
+    User = Column(Unicode(16), nullable=True)
+    # 分配数量
+    Number = Column(Unicode(16), nullable=True)
+    # 分配组
+    Group = Column(Unicode(16), nullable=True)
+    # 指派人
+    GroupUser = Column(Unicode(16), nullable=True)
+    # 分发时间
+    Time = Column(Unicode(16), nullable=True)
+
 
 class WordForm(Base):
     """文档维护"""

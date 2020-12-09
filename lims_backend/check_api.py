@@ -213,3 +213,15 @@ def get_all_product():
     data = db_session.query(QualityStandardCenter).all()
     results = list(set(item.Product for item in data))
     return json.dumps({'code': '1000', 'msg': '操作成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
+
+
+@check.route('/Receive', methods=['POST'])
+def receive():
+    CheckProjectNO = request.values.get('CheckProjectNO')
+    SampleUser = request.values.get('SampleUser')
+    ReceiveUser = request.values.get('ReceiveUser')
+    data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+    data.IntoUser = ReceiveUser
+    db_session.add(data)
+    db_session.commit()
+    return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
