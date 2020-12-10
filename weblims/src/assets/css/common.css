@@ -68,6 +68,9 @@
 .fsz24px{
     font-size: 24px;
 }
+.fsz14px{
+    font-size: 14px;
+}
 .txtgreencolor{
     color: #139168;
 }
@@ -98,6 +101,9 @@
 .bledit{
     color:#15B7B1;
 }
+.bledit2{
+    color:#409EFF;
+}
 .fontsz10{
     font-size: 10px;
 }
@@ -122,5 +128,8 @@
     padding: 2px;
 }
 .el-radio-group{
+    width: 100%;
+}
+.req .el-button{
     width: 100%;
 }

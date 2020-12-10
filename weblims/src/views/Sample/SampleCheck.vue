@@ -3,16 +3,19 @@
         <el-col :span='24' class="mgt24">
             <el-row>
                 <el-col :span='3' class="mgr15 boxshadow">
-                    <el-input
-                        placeholder="类别/品名"
-                        prefix-icon="el-icon-search"
-                        v-model="searchObj.category">
-                    </el-input>
-                </el-col>
-                <el-col :span='3' class="mgr15 boxshadow">
-                    <el-select v-model="searchObj.goods" placeholder="物料类">
+                    <el-select v-model="searchObj.category" placeholder="品名">
                         <el-option
                         v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-col>
+                <el-col :span='3' class="mgr15 boxshadow">
+                    <el-select v-model="searchObj.state" placeholder="状态">
+                        <el-option
+                        v-for="item in opstate"
                         :key="item.value"
                         :label="item.label"
                         :value="item.value">
@@ -25,6 +28,9 @@
                         type="date"
                         placeholder="选择日期">
                       </el-date-picker>
+                </el-col>
+                <el-col :span='2' class="boxshadow req">
+                    <el-button type='primary' @click="SearchTab">查询</el-button>
                 </el-col>
             </el-row>
         </el-col>
@@ -63,8 +69,8 @@
                         </el-pagination>
                     </div>
                     <div style="textAlign:right;" class="mgt24">
-                        <el-button type="danger" size='mini'>驳回</el-button>
-                        <el-button type="success" size='mini' @click="mulBatchPass">批量审核通过</el-button>
+                        <el-button type="danger" size='small'>驳回</el-button>
+                        <el-button type="success" size='small' @click="mulBatchPass">批量审核通过</el-button>
                     </div>
                 </div>
                 <div class="mgt24" v-if="currentChoose==='2'">
@@ -91,27 +97,42 @@
     </el-row>
 </template>
 <script>
+var moment =require('moment')
 export default {
     data(){
 
         return {
            checkedRow:[],
            searchObj:{
-               category:'',
-               registrydate:'',
-               goods:'',
+               category:'丹参',
+               registrydate:moment(new Date()).format('YYYY-MM-DD'),
+               state:'待审核',
+
            },
             options: [{
                 value: '选项1',
                 label: '物料一'
+                }],
+            opstate: [{
+                value: '待审核',
+                label: '待审核'
                 }, {
-                value: '选项2',
-                label: '物料二'
+                value: '待取样',
+                label: '待取样'
+                },{
+                value: '待检验',
+                label: '待检验'
+                },{
+                value: '检验中',
+                label: '检验中'
+                },{
+                value: '已完成',
+                label: '已完成'
                 }],
             currentChoose:'1',
             batchTableData:{ //物料BOM
-                data:[{Specs:'60g/袋',CheckNumber:'BJJN1234',Name:'巴戟胶囊'},{Specs:'900g/袋',CheckNumber:'GHDGHH',Name:'复方斑蝥片'}],
-                limit: 10,//当前显示多少条
+                data:[],
+                limit: 5,//当前显示多少条
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
@@ -119,8 +140,36 @@ export default {
         }
     },
     created(){
+        this.getInitTab()
+        this.getSelectOption()
     },
     methods: {
+        getSelectOption() { //获取下拉列表选项
+           this.axios.get('/lims/AllProduct').then((res) => {
+               if(res.data.code=='1000'){
+                  this.options=res.data.data.map((item) => {
+                      return {
+                          value:item,
+                          label:item
+                      }
+                  })
+               }
+
+           })
+        },
+        SearchTab(){
+            var params={
+                Page:this.batchTableData.offset,
+                PerPage:this.batchTableData.limit,
+                Product:this.searchObj.category,
+                DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
+                Status:this.searchObj.state
+            }
+            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
+                this.batchTableData.data=res.data.data
+                this.batchTableData.total=res.data.total
+            })
+        },
         mulBatchPass(){ //多条数据审核通过
             if(this.checkedRow.length==0){
                 this.$message({
@@ -133,10 +182,24 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
                 }).then(() => {
+                  var arr=this.checkedRow.map((item) => {
+                      return item.CheckProjectNO
+                  })
+                  var params={
+                   CheckProjectNO:JSON.stringify(arr),
+                   DateTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                   VerifyName:localStorage.getItem('Name')
+            }
+            this.axios.post('/lims/CheckVerify',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
                     this.$message({
                       type: 'success',
-                      message: '审核通过'
+                      message: '审核通过!'
                     });
+                    this.SearchTab()
+                }
+            })
+                  
                 }).catch(() => {
                     this.$message({
                       type: 'info',
@@ -145,7 +208,7 @@ export default {
                 })
                 }
         },
-        handleSelectionChange(row){ //批量通过审核
+        handleSelectionChange(row){ //选择多条数据
             this.checkedRow=row
         },
         handleBack(row){ //驳回审核
@@ -158,15 +221,17 @@ export default {
             type: 'warning'
             }).then(() => {
                 var params={
-                CheckNumber:row.CheckNumber,
-                VerifyName:localStorage.getItem('Name')
+                   CheckProjectNO:JSON.stringify([row.CheckProjectNO]),
+                   DateTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                   VerifyName:localStorage.getItem('Name')
             }
-            this.axios.post('https://yapi.baidu.com/mock/18229/CheckVerify',this.qs.stringify(params)).then((res) => {
+            this.axios.post('/lims/CheckVerify',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
                     this.$message({
                       type: 'success',
                       message: '审核通过!'
                     });
+                    this.SearchTab()
                 }
             })
             }).catch(() => {
@@ -176,14 +241,29 @@ export default {
             });          
             });
         },
+        getInitTab(){
+            var params={
+                Page:this.batchTableData.offset,
+                PerPage:this.batchTableData.limit,
+                Product:this.searchObj.category,
+                DateTime:this.searchObj.registrydate,
+                Status:this.searchObj.state
+            }
+            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
+                this.batchTableData.data=res.data.data
+                this.batchTableData.total=res.data.total
+            })
+        },
         handleSelect(key) {
             this.currentChoose=key
         },
         handleSizeChange(limit){ //每页条数切换
             this.batchTableData.limit = limit
+            this.getInitTab()
       },
         handleCurrentChange(offset) { // 页码切换
             this.batchTableData.offset = offset
+            this.getInitTab()
         }
     },
 }

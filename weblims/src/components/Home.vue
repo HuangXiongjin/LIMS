@@ -93,7 +93,7 @@ export default {
                  {name:'样本请验',icon:'el-icon-location',children:[
                     {name:'申请检验',path:'/ApplyTest'},
                     {name:'请检审核',path:'/SampleCheck'},
-                    {name:'登记发送',path:'/SampleRegistration'},
+                    {name:'取样登记',path:'/SampleRegistration'},
                     {name:'请验清单',path:'/SampleList'},
                     {name:'报告复查',path:'/ReportReview'},
                 ]},

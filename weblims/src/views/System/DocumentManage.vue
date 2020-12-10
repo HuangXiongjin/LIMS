@@ -22,12 +22,11 @@
                     <el-upload
                         drag
                         accept=".doc,.docx"
-                        action="/lims/Upload?Product='巴戟胶囊'"
+                        :action="uploadUrl"
                         :file-list="fileList"
                         :on-success='SuccessEvent'
                         :on-error='SubmitError'
-                        :on-preview='PreviewFile'
-                        :before-upload='BeforeUpload'
+                        :on-remove='deleteUploaded'
                         multiple>
                         <i class="el-icon-upload"></i>
                         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -68,6 +67,7 @@ export default {
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
+            uploadUrl:'',
             fileList:[],
             batchtableconfig:[{prop:'Product',label:"名称"},{prop:'Code',label:'物料编码'},{prop:'Uint',label:'单位',width:'60'},{prop:'IntoTime',label:'录入时间',width:'160'},{prop:'IntoUser',label:'录入人'},{prop:'AlterTime',label:'修改时间',width:160},{prop:'AlterUser',label:'修改人'},{prop:'StandwardDocument',label:'项目标准文档'}],//批次列表
             treeDom: [],//渲染的树
@@ -81,32 +81,63 @@ export default {
         this.getTreeDom()
     },
     methods: {
-        BeforeUpload(file){//文件上传之前钩子
-            console.log(file)
+        deleteUploaded(file, fileList){ 
+            var params={Id:file.Id}
+            this.$confirm('确定要删除该文件吗？', '温馨提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.axios.delete('/lims/GetFile',{params:params}).then((res) => {
+                   if(res.data.code=='1000'){
+                       this.$message({
+                        type:'success',
+                        message:'删除成功'
+                    })
+                    this.getUploadedFile()
+                   }
+                })
+            }).catch(() => {
+                this.$message({
+                    type:'info',
+                    message:'已取消删除'
+                })
+                this.getUploadedFile()
+            })
         },
         getUploadedFile(){
             var params={
                 Product:this.currentgoods
             }
             this.axios.get('/lims/GetFile',{params:params}).then((res) => {
-                console.log(res)
+                var arr=res.data.data
+                this.fileList=arr.map((item,index) => {
+                    return {
+                        name:item.FileName,
+                        url:item.FilePath,
+                        Id:item.Id
+                    }
+                })
             })
         },
         SubmitError(err, file, fileList){ //文件上传失败
-            console.log(err)
-            console.log(file)
-            console.log(fileList)
-        },
-        PreviewFile(file){
-            console.log(file)
+            this.$message({
+                type:'error',
+                message:'上传失败，请重试'
+            })
         },
         SuccessEvent(response, file, fileList){ //上传成功
-            console.log(response)
-            console.log(file)
-            console.log(fileList)
+            if(response.code=='1000'){
+                this.$message({
+                    type:'success',
+                    message:'上传文件成功'
+                })
+                this.getUploadedFile()
+            }
         },
         showTabInfo(obj,data,node){
             this.currentgoods=obj.label
+            this.uploadUrl="/lims/Upload?Product="+obj.label
             this.getUploadedFile()
            //查询对应名字的数据
         },
