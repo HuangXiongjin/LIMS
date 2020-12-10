@@ -242,6 +242,8 @@ class ProductSave(Base):
     """产品留样单"""
     __tablename__ = 'ProductSave'
     Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 留样标识
+    ProductSaveNo = Column(Unicode(32), nullable=True)
     # 产品名称
     Name = Column(Unicode(32), nullable=True)
     # 规格
@@ -261,9 +263,9 @@ class ProductSave(Base):
     # 经手人
     Handler = Column(Unicode(32), nullable=True)
     # 生产日期
-    ProductionDate = Column(Unicode(32), nullable=True, default=datetime.now().strftime('%Y-%m-%d'))
+    ProductionDate = Column(Unicode(32), nullable=True, default='')
     # 有效日期
-    ValidityDate = Column(Unicode(32), nullable=True, default=datetime.now().strftime('%Y-%m-%d'))
+    ValidityDate = Column(Unicode(32), nullable=True, default='')
     # 备注
     Comment = Column(Unicode(32), nullable=True)
 

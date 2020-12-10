@@ -6,12 +6,14 @@ from lims_backend.check_api import check
 from lims_backend.quality_standard_api import system_interface
 from system_backend.SystemManagement import account_auth
 from system_backend.SystemManagement.account_auth import login_auth
+from tools.MyEncode import MyEncoder
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = CONNECT_DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = '1qaz2wsx3edd45'
 account_auth.login_manager.init_app(app)
+# app.json_decoder = MyEncoder
 
 CORS(app, supports_credentials=True)
 app.register_blueprint(check)
