@@ -19,6 +19,11 @@ def product_distribute():
     Group = request.values.get('Group')
     GroupUser = request.values.get('GroupUser')
     Time = request.values.get('GroupUser')
+    data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+    data.Status = '检验中'
+    data.OutUser = User
+    db_session.add(data)
+    db_session.commit()
     db_session.add(Distribute(CheckProjectNO=CheckProjectNO, User=User, Group=Group, GroupUser=GroupUser,
                               Time=Time))
     db_session.commit()
