@@ -136,6 +136,10 @@ class CheckForm(Base):
     IntoUser = Column(Unicode(16), nullable=True, default='')
     # 分发人
     OutUser = Column(Unicode(16), nullable=True, default='')
+    # 分发量
+    Account = Column(Unicode(16), nullable=True, default='')
+    # 分发动作（J:检验-F:复查-L:留样）
+    Action = Column(Unicode(16), nullable=True, default='')
     # 实验室组长
     LaboratoryUser = Column(Unicode(16), nullable=True, default='')
     # 备注

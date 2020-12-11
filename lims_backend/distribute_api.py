@@ -13,15 +13,23 @@ distribute = Blueprint('distribute', __name__)
 @distribute.route('/Distribute', methods=['POST'])
 def product_distribute():
     """样品分发"""
+    Action = request.values.get('Action')
     CheckProjectNO = request.values.get('CheckProjectNO')
     User = request.values.get('User')
-    # Number = request.values.get('Number')
+    Account = request.values.get('Account')
     Group = request.values.get('Group')
     GroupUser = request.values.get('GroupUser')
     Time = request.values.get('GroupUser')
     data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+    if Action == 'J':
+        data.Action = '检验'
+    elif Action == 'F':
+        data.Action = '复查'
+    elif Action == 'L':
+        data.Action = '留样'
     data.Status = '检验中'
     data.OutUser = User
+    data.Account = Account
     db_session.add(data)
     db_session.commit()
     db_session.add(Distribute(CheckProjectNO=CheckProjectNO, User=User, Group=Group, GroupUser=GroupUser,
