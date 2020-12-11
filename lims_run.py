@@ -3,6 +3,7 @@ from flask_cors import CORS
 
 from database.connect_db import CONNECT_DATABASE
 from lims_backend.check_api import check
+from lims_backend.distribute_api import distribute
 from lims_backend.quality_standard_api import system_interface
 from system_backend.SystemManagement import account_auth
 from system_backend.SystemManagement.account_auth import login_auth
@@ -16,6 +17,7 @@ account_auth.login_manager.init_app(app)
 # app.json_decoder = MyEncoder
 
 CORS(app, supports_credentials=True)
+app.register_blueprint(distribute)
 app.register_blueprint(check)
 app.register_blueprint(system_interface)
 app.register_blueprint(login_auth)
