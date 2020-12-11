@@ -19,7 +19,7 @@ def product_distribute():
     Account = request.values.get('Account')
     Group = request.values.get('Group')
     GroupUser = request.values.get('GroupUser')
-    Time = request.values.get('GroupUser')
+    Time = request.values.get('Time')
     data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
     if Action == 'J':
         data.Action = '检验'
@@ -41,7 +41,7 @@ def product_distribute():
 @distribute.route('/ProductSave', methods=['POST'])
 def product_save():
     """留样单"""
-    db_session.add(ProductSave(Name=request.values.get('Name'), Specs=request.values.get('Specs'),
+    db_session.add(ProductSave(CheckProjectNO=request.values.get('CheckProjectNO'), Name=request.values.get('Name'), Specs=request.values.get('Specs'),
                                PackSpecs=request.values.get('PackSpecs'), ProductNumber=request.values.get('ProductNumber'),
                                TheoreticalYield=request.values.get('TheoreticalYield'), BatchAmount=request.values.get('BatchAmount'),
                                BatchDepartment=request.values.get('BatchDepartment'), BatchName=request.values.get('BatchName'),

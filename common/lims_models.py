@@ -246,6 +246,8 @@ class ProductSave(Base):
     """产品留样单"""
     __tablename__ = 'ProductSave'
     Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 请样标识
+    CheckProjectNO = Column(Unicode(32), nullable=True)
     # 留样标识
     ProductSaveNo = Column(Unicode(32), nullable=True)
     # 产品名称
