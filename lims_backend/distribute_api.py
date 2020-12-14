@@ -17,11 +17,12 @@ def product_distribute():
     CheckProjectNO = request.values.get('CheckProjectNO')
     User = request.values.get('User')
     Account = request.values.get('Account')
-    no = request.values.get('no')
+    # no = request.values.get('no')
     Group = request.values.get('Group')
     GroupUser = request.values.get('GroupUser')
     LaboratoryUser = request.values.get('LaboratoryUser')
     Time = request.values.get('Time')
+    print('1111111111')
     data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
     if Action == 'J':
         data.Action = '检验'
@@ -35,11 +36,14 @@ def product_distribute():
     data.Status = '检验中'
     data.OutUser = User
     data.Account = Account
+    print('2222222222')
     db_session.add(data)
     db_session.commit()
+    print('333333333333')
     db_session.add(Distribute(CheckProjectNO=CheckProjectNO, User=User, Group=Group, GroupUser=GroupUser,
                               Time=Time))
     db_session.commit()
+    print('44444444444444')
     return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
 
 
