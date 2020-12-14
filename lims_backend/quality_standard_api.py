@@ -5,7 +5,7 @@ from datetime import datetime
 from flask import Blueprint, request, current_app, send_from_directory
 
 from tools.handle import MyEncoder, log, get_short_id, generate_filename, get_root_path
-from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard, WordForm
+from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, WordForm, QualityStandard
 
 system_interface = Blueprint('system_interface', __name__)
 
@@ -32,28 +32,6 @@ def classify_tree():
                     rank2_data = {"id": data.TagCode, "label": data.TagName, "ParentTagCode": "1"}
                     children2.append(rank2_data)
                 children.append(children1)
-                # for result in parent_tag2:
-                #     # children4 = []
-                #     # 通过一级节点获取所有对应的二级节点
-                #     if result:
-                #         # 二级节点不为空
-                #         children3 = []
-                #         rank2_data = {"label": result, "children": children3}
-                #         # children4.append(rank2_data)
-                #         # last_data = db_session.query(Tags).filter_by(ParentTag=result).all()
-                #         parent_tag_sql = 'select '
-                #         # for data in last_data:
-                #         #     # 循环获取最后节点的数据
-                #         #
-                #         #     rank3_data = {"id": data.TagCode, "label": data.TagName, "ParentTagCode": "1"}
-                #         #     children3.append(rank3_data)
-                #         # children2.append(rank2_data)
-                #         # rank3 = {"label": result.ParentTag, "children": [{"id": result.TagCode, "label": result.TagName}]}
-                #     else:
-                #         for data in query_data:
-                #             rank2_data = {"id": data.TagCode, "label": data.TagName, "ParentTagCode": "1"}
-                #             children2.append(rank2_data)
-                # children.append(children1)
             tree = [{"label": '希尔安药业', "children": children}]
             return json.dumps({'code': '1000', 'msg': '成功', 'data': tree}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'POST':
@@ -104,35 +82,42 @@ def product():
             # 每页记录数
             per_page = int(request.values.get('PerPage'))
             tag = db_session.query(ClassifyTree).filter_by(TagCode=code).first()
-            results = db_session.query(QualityStandardCenter).order_by(QualityStandardCenter.Id.asc()).filter_by(Type=tag.TagName).all()
+            results = db_session.query(QualityStandardCenter).order_by(QualityStandardCenter.Id.asc()).filter_by(
+                Type=tag.TagName).all()
             data = results[(page - 1) * per_page:page * per_page]
-            return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder, ensure_ascii=False)
+            return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
+                              ensure_ascii=False)
+        data = ''
         if request.method == 'POST':
             # 当前节点下品名的增加-修改
             if request.values.get('Action') == 'add':
                 data = QualityStandardCenter()
                 data.No = get_short_id()
-                data.Product = request.values.get('Product')
-                data.Type = request.values.get('Type')
-                data.Code = request.values.get('Code')
-                data.Source = request.values.get('Source')
-                data.Unit = request.values.get('Unit')
-                data.IntoUser = request.values.get('IntoUser')
-                data.IntoTime = request.values.get('IntoTime')
-                db_session.add(data)
-                db_session.commit()
+            #     data.Product = request.values.get('Product')
+            #     data.Type = request.values.get('Type')
+            #     data.Code = request.values.get('Code')
+            #     data.Source = request.values.get('Source')
+            #     data.Project = request.values.get('Project')
+            #     data.Unit = request.values.get('Unit')
+            #     data.IntoUser = request.values.get('IntoUser')
+            #     data.IntoTime = request.values.get('IntoTime')
+            #     db_session.add(data)
+            #     db_session.commit()
             if request.values.get('Action') == 'update':
-                no = request.values.get('No')
-                data = db_session.query(QualityStandardCenter).filter_by(No=no).first()
-                data.Product = request.values.get('Product')
-                data.Type = request.values.get('Type')
-                data.Code = request.values.get('Code')
-                data.Source = request.values.get('Source')
-                data.Unit = request.values.get('Unit')
-                data.AlterTime = request.values.get('AlterTime')
-                data.AlterUser = request.values.get('AlterUser')
-                db_session.add(data)
-                db_session.commit()
+                No = request.values.get('No')
+                data = db_session.query(QualityStandardCenter).filter_by(No=No).first()
+            data.Product = request.values.get('Product')
+            data.Type = request.values.get('Type')
+            data.Code = request.values.get('Code')
+            data.Source = request.values.get('Source')
+            data.Project = request.values.get('Project')
+            data.Unit = request.values.get('Unit')
+            data.IntoUser = request.values.get('IntoUser')
+            data.IntoTime = request.values.get('IntoTime')
+            data.AlterTime = request.values.get('AlterTime')
+            data.AlterUser = request.values.get('AlterUser')
+            db_session.add(data)
+            db_session.commit()
             return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'DELETE':
             items = request.json.get('Id')
@@ -157,54 +142,44 @@ def quality_standard():
         if request.method == 'GET':
             # 获取当前节点下的品名
             No = request.values.get('No')
-            results = db_session.query(QualityStandard).filter_by(No=No).all()
-            project = []
+            qs_center = db_session.query(QualityStandardCenter).filter_by(No=No).first()
             character = []
             discern = []
             inspect = []
             content = []
             microbe = []
             data = [
-                {'No': No, 'Project': project, 'Character': character, 'Discern': discern, 'Inspect': inspect, 'Content': content,
-                 'Microbe': microbe}]
-            for result in results:
-                if result.Project is not None:
-                    project.append({'id': result.Id, 'value': result.Project})
-                if result.Character is not None:
-                    character.append({'id': result.Id, 'value': result.Character})
-                if result.Discern is not None:
-                    discern.append({'id': result.Id, 'value': result.Discern})
-                if result.Inspect is not None:
-                    inspect.append({'id': result.Id, 'value': result.Inspect})
-                if result.Content is not None:
-                    content.append({'id': result.Id, 'value': result.Content})
-                if result.Microbe is not None:
-                    microbe.append({'id': result.Id, 'value': result.Microbe})
+                {'No': No, 'Project': qs_center.Project, 'Source': qs_center.Source, 'Character': character,
+                 'Discern': discern, 'Inspect': inspect, 'Content': content, 'Microbe': microbe}]
+            character_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product,
+                                                                         Type='Character').all()
+            for result in character_data:
+                character.append({'id': result.Id, 'value': result.Character})
+            discern_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Discern').all()
+            for result in discern_data:
+                discern.append({'id': result.Id, 'value': result.Discern})
+            inspect_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Inspect').all()
+            for result in inspect_data:
+                inspect.append({'id': result.Id, 'value': result.Inspect})
+            content_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Content').all()
+            for result in content_data:
+                content.append({'id': result.Id, 'value': result.Content})
+            microbe_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Microbe').all()
+            for result in microbe_data:
+                microbe.append({'id': result.Id, 'value': result.Microbe})
             return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'POST':
             # 当前品名下的质检维护
-            data = QualityStandard()
-            data.No = request.values.get('No')
-            data.Product = request.values.get('Product')
-            data.Project = request.values.get('Project')
-            data.Character = request.values.get('Character')
-            data.Discern = request.values.get('Discern')
-            data.Inspect = request.values.get('Inspect')
-            data.Content = request.values.get('Content')
-            data.Microbe = request.values.get('Microbe')
-            db_session.add(data)
+            No = request.values.get('No')
+            Product = request.values.get('Product')
+            Type = request.values.get('Type')
+            db_session.add(QualityStandard(No=No, Product=Product, Describe=request.values.get('Character'), Type=Type))
             db_session.commit()
             return json.dumps({'code': '1000', 'msg': '添加成功'}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'PATCH':
             Id = request.values.get('Id')
             data = db_session.query(QualityStandard).filter_by(Id=Id).first()
-            data.Product = request.values.get('Product')
-            data.Project = request.values.get('Project')
-            data.Character = request.values.get('Character')
-            data.Discern = request.values.get('Discern')
-            data.Inspect = request.values.get('Inspect')
-            data.Content = request.values.get('Content')
-            data.Microbe = request.values.get('Microbe')
+            data.Describe = request.values.get('Data')
             db_session.add(data)
             db_session.commit()
             return json.dumps({'code': '1000', 'msg': '修改成功'}, cls=MyEncoder, ensure_ascii=False)

@@ -15,27 +15,19 @@ Base = declarative_base(engine)
 
 
 class QualityStandard(Base):
-    """质量标准检测项维护表"""
+    """质量维护表"""
     __tablename__ = 'QualityStandard'
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
     No = Column(Unicode(32), nullable=True)
     # 品名
     Product = Column(Unicode(64), nullable=True)
-    # 标准来源
-    # Source = Column(Unicode(64), nullable=True)
-    # 项目
-    Project = Column(Unicode(1024), nullable=True)
-    # 性状
-    Character = Column(Unicode(1024), nullable=True)
-    # 鉴别
-    Discern = Column(Unicode(1024), nullable=True)
-    # 检查
-    Inspect = Column(Unicode(1024), nullable=True)
-    # 含量测定
-    Content = Column(Unicode(1024), nullable=True)
-    # 微生物限度
-    Microbe = Column(Unicode(1024), nullable=True)
+    # 维护内容
+    Describe = Column(Unicode(1024), nullable=True)
+    # 质量类型（Character-性状， Discern-鉴别，检查-检查，Content-含量测定，Microbe-微生物限度）
+    Type = Column(Unicode(16), nullable=True)
+    # 法定标准
+    Statutory = Column(Unicode(1024), nullable=True)
 
 
 class QualityStandardCenter(Base):
@@ -44,14 +36,12 @@ class QualityStandardCenter(Base):
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
     No = Column(Unicode(64), nullable=True)
-    # 品名
+    # 物料名称
     Product = Column(Unicode(182), nullable=True)
     # 物料代码
     Code = Column(Unicode(64), nullable=True)
     # 物料类型
     Type = Column(Unicode(64), nullable=True)
-    # 标准来源
-    Source = Column(Unicode(256), nullable=True)
     # 单位
     Unit = Column(Unicode(32), nullable=True)
     # 录入时间
@@ -62,6 +52,10 @@ class QualityStandardCenter(Base):
     AlterTime = Column(Unicode(32), nullable=True, default='')
     # 修改人
     AlterUser = Column(Unicode(32), nullable=True, default='')
+    # 项目(标准要求)
+    Project = Column(Unicode(128), nullable=True)
+    # 标准来源
+    Source = Column(Unicode(512), nullable=True)
 
 
 class WorkerRecord(Base):
@@ -90,6 +84,8 @@ class CheckForm(Base):
     """请验单"""
     __tablename__ = 'CheckForm'
     Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 样本分发接收编号
+    no = Column(Unicode(32), nullable=True)
     # 请验单号
     CheckNumber = Column(Unicode(32), nullable=True)
     # 样品类别
