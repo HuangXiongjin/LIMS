@@ -1,74 +1,57 @@
 <template>
   <el-row :gutter="15">
-    <el-col :span="4">
-       <div class="platformContainer">
-          <p class="marginBottom">选择要设置工序的品名</p>
-          <el-input class="marginBottom" v-model="productName" placeholder="关键字搜索" @change="handleChangeProductName"></el-input>
-          <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in results" :key="index" v-bind:effect="item.BrandName===BrandActive?'dark':'plain'" @click="clickBrandTag(item.BrandName,item.BrandCode)">{{item.BrandName}}</el-tag>
-       </div>
-    </el-col>
-    <el-col :span='20'>
-      <el-row>
-        <el-col :span='24'>
-          <div class="platformContainer">
-            <p>当前选择的品名：{{BrandActive}}</p>
-          </div>
-          <div class="platformContainer" v-if="!dialogTableVisible">
-            <div v-for="(item, index) in inProcessList" :key="index" class="list-complete-item" :data-idd="item.ID" style="display:inline-block;marginRight:18px;cursor:pointer" @click='showPGL(item.PUName,item.PUCode,index)'>
-              <div class="container-col" :class='{"pactive":index===ActiveIndex}'>
-                <span class="text-size-14">{{ item.PUName }}</span>
-              </div>
-            </div>
-          </div>
-          <div class='platformContainer' v-if="!dialogTableVisible && BrandActive">
-            <el-upload
-              class="marginBottom"
-              drag
-              accept=".doc,.docx"
-              action="/api/batchmodelexport"
-              :limit="1"
-              :on-preview="handlePreview"
-              :before-remove="beforeRemove"
-              :before-upload="handleBeforeUpload"
-              :on-remove="handleRemove"
-              :on-exceed="handleExceed"
-              :on-success='submitSuccess'
-              :on-error='submitError'
-              :file-list="fileList">
-              <i class="el-icon-upload"></i>
-              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-              <div slot="tip" class="el-upload__tip">只能上传.doc,.docx 批记录表</div>
-            </el-upload>
-            <el-button type="primary" @click="FileHTMLPreview" size='small' v-if='ButtonVisible'>转换并配置接口参数</el-button>
-          </div>
-          <div class="platformContainer" v-if="dialogTableVisible">
-            <p class="marginBottom">转换后的批记录模板</p>
-            <el-form :inline="true">
-              <el-form-item label="添加数据类型：">
-                 <el-radio-group v-model="handleCellRadio" size="small">
-                  <el-radio-button label="录入数据字段"></el-radio-button>
-                  <el-radio-button label="采集数据字段"></el-radio-button>
-                  <el-radio-button label="点击按钮"></el-radio-button>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" @click="saveEditField" size='small'>保存配置</el-button>
-              </el-form-item>
-            </el-form>
-            <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
-            <el-dialog title="采集值" :visible.sync="collectDialogVisible" width="30%">
-              <el-table :data="CollectTableData.data" border size="small" ref="multipleTableCollect" @selection-change="handleSelectionChangeCollect" @row-click="handleRowClickCollect">
-                <el-table-column type="selection"></el-table-column>
-                <el-table-column prop="collectName" label="字段描述"></el-table-column>
-                <el-table-column prop="collectKey" label="采集字段"></el-table-column>
-              </el-table>
-              <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="saveCollectData">保 存</el-button>
-              </span>
-            </el-dialog>
-          </div>
-        </el-col>
-      </el-row>
+    <el-col :span='24'>
+      <div class="page-title"><span>选择工序维护批记录</span></div>
+      <div>
+          <el-tag class="marginBottom marginRight cursor-pointer" v-for="(item,index) in ProcessList" :key="index" v-bind:effect="item.PUName===PUName?'dark':'plain'" @click="showPGL(item.PUName,item.PUCode)">{{item.PUName}}</el-tag>
+      </div>
+      <div class='platformContainer' v-if="PUName">
+        <el-upload
+          class="marginBottom"
+          drag
+          accept=".doc,.docx"
+          action="/api/batchmodelexport"
+          :limit="1"
+          :on-preview="handlePreview"
+          :before-remove="beforeRemove"
+          :before-upload="handleBeforeUpload"
+          :on-remove="handleRemove"
+          :on-exceed="handleExceed"
+          :on-success='submitSuccess'
+          :on-error='submitError'
+          :file-list="fileList">
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          <div slot="tip" class="el-upload__tip">只能上传.doc,.docx 批记录表</div>
+        </el-upload>
+        <el-button type="primary" @click="FileHTMLPreview" size='small' v-if='ButtonVisible'>转换并配置接口参数</el-button>
+      </div>
+      <div class="platformContainer" v-if="dialogTableVisible">
+        <p class="marginBottom">转换后的批记录模板</p>
+        <el-form :inline="true">
+          <el-form-item label="添加数据类型：">
+             <el-radio-group v-model="handleCellRadio" size="small">
+              <el-radio-button label="录入数据字段"></el-radio-button>
+              <el-radio-button label="采集数据字段"></el-radio-button>
+              <el-radio-button label="点击按钮"></el-radio-button>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="saveEditField" size='small'>保存配置</el-button>
+          </el-form-item>
+        </el-form>
+        <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
+        <el-dialog title="采集值" :visible.sync="collectDialogVisible" width="30%">
+          <el-table :data="CollectTableData.data" border size="small" ref="multipleTableCollect" @selection-change="handleSelectionChangeCollect" @row-click="handleRowClickCollect">
+            <el-table-column type="selection"></el-table-column>
+            <el-table-column prop="collectName" label="字段描述"></el-table-column>
+            <el-table-column prop="collectKey" label="采集字段"></el-table-column>
+          </el-table>
+          <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="saveCollectData">保 存</el-button>
+          </span>
+        </el-dialog>
+      </div>
     </el-col>
   </el-row>
 </template>
@@ -80,15 +63,11 @@
     name: "BatchRecordFiles",
     data(){
       return {
-        productName:'',
         results:[],
-        BrandActive:'',
-        BrandCode:'',
         PUCode:'',
         PUName:'',
-        inProcessList:[],
+        ProcessList:[],
         fileList: [],
-        ActiveIndex:10,
         FileName:'',
         scheduleTableData:[],
         filebyte:'',
@@ -110,9 +89,17 @@
       }
     },
     created(){
-      this.getScheduleTableData()
+      this.getProcessTab()
     },
-    methods:{ 
+    methods:{
+      getProcessTab(){
+        var params={
+          tableName:'ProcessUnit'
+        }
+        this.axios.get('/api/CUID',{params:params}).then(res=>{
+          this.ProcessList=res.data.data.rows
+        })
+      },
       //获取存取的字符
       FileHTMLPreview(){
         let that = this
@@ -202,6 +189,7 @@
           });
         });
       },
+      //点击文件列表中已上传的文件
       handlePreview(file){ //点击文件列表提示是否下载
          this.$confirm('是否下载该文件到本地?', '提示', {
           confirmButtonText: '确定',
@@ -216,14 +204,12 @@
           });
         });        
       },
-      showPGL(PUName,PUCode,e){ //点击工艺按钮 
+      showPGL(PUName,PUCode){ //点击工艺按钮
         //发起请求获取当前工艺pgl
         this.PUName=PUName
         this.PUCode=PUCode
-        this.ActiveIndex=e
         var params={
-          PUCode:this.PUCode,
-          BrandCode:this.BrandCode
+          PUCode:this.PUCode
         }
         this.axios.get('/api/batchmodelselect',{params:params}).then((res) => {
           if(res.data.code==='200'){
@@ -245,68 +231,6 @@
           }
         })
       },
-       getScheduleTableData(){ //获取品名
-        var that = this
-        var params = {
-          tableName: "ProductRule",
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res => {
-          if(res.data.code === "200"){
-            that.scheduleTableData = res.data.data.rows
-            that.results = that.scheduleTableData
-          }else{
-            that.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        })
-      },
-       handleChangeProductName(queryString){
-        if(queryString != ""){
-          this.results = this.scheduleTableData.filter((string) =>{
-            return Object.keys(string).some(function(key) {
-              return String(string[key]).toLowerCase().indexOf(queryString) > -1
-            })
-          })
-        }else{
-          this.results = this.scheduleTableData
-        }
-      },
-      clickBrandTag(BrandName,BrandCode){ //点击左侧品名标签
-        this.BrandActive = BrandName
-        this.BrandCode = BrandCode
-        this.getBrandProcessTableData(BrandName)
-      },
-       getBrandProcessTableData(BrandName){ //查询当前品名绑定的工序
-        var that = this
-        var params = {
-          tableName: "ProductUnit",
-          BrandName:BrandName,
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res => {
-          if(res.data.code === "200"){
-            function compare(property){
-              return function(a,b){
-                var value1 = a[property];
-                var value2 = b[property];
-                return value1 - value2;
-              }
-            }
-            that.inProcessList = res.data.data.rows.sort(compare('Seq'))
-            this.dialogTableVisible = false
-          }else{
-            that.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        })
-      },
       handleExceed(files, fileList) {
           this.$message({
           message: '限制只能上传一条数据',
@@ -316,6 +240,7 @@
       beforeRemove(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
+      //文件上传成功时的钩子
       submitSuccess(response, file, fileList){
         this.$message({
             message: "上传文件成功！",
@@ -328,36 +253,38 @@
           type:'error'
         })
       },
+      //上传文件之前
       handleBeforeUpload(file){
         let that = this
         var FileExt = file.name.replace(/.+\./, "");
         if (['doc', 'docx'].indexOf(FileExt.toLowerCase()) === -1){ 
           this.$message({ type: 'warning', message: '请上传后缀名为[doc,docx]的附件！' });
           return false; 
-          }else{
-            var reader = new FileReader();
-            reader.readAsArrayBuffer(file)
-            reader.onload=function(){
-              Mammoth.convertToHtml({ arrayBuffer: reader.result }).then((res) => {
-               that.filebyte=res.value
-               that.FileName=file.name
-               var params={
-                BrandName:that.BrandActive,
-                BrandCode:that.BrandCode,
-                PUCode:that.PUCode,
-                PUIDName:that.PUName,
-                FileName:that.FileName,
-                Parameter:that.filebyte
+        }else{
+          var reader = new FileReader();
+          reader.readAsArrayBuffer(file)
+          reader.onload=function(loadEvent){
+            Mammoth.convertToHtml({ arrayBuffer: loadEvent.target.result }).then((res) => {
+              console.log(res)
+              that.filebyte=res.value
+              that.FileName=file.name
+              var params={
+               PUCode:that.PUCode,
+               PUIDName:that.PUName,
+               FileName:that.FileName,
+               Parameter:that.filebyte
               }
+              console.log(params)
               that.axios.post('/api/batchmodelinsert',that.qs.stringify(params)).then((res) => {
                 if(res.data.code==='200'){
-                  that.showPGL(that.PUName,that.PUCode,that.ActiveIndex)
+                  that.showPGL(that.PUName,that.PUCode)
                 }
-            })
               })
-            }    
-          }        
+            })
+          }
+        }
       },
+      //文件列表移除文件
       handleRemove(file,fileList){
         var fileID=file.ID
         var params={
