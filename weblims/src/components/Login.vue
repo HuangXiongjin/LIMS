@@ -1,5 +1,5 @@
 <template>
-  <div class="login">
+  <div class="login" :style="conheight">
     <div class='container loginbox'>
       <div class="logintop">实验室信息管理系统</div>
       <div class="logininfo">
@@ -42,6 +42,9 @@ export default {
         loginpass:'',
         loginname:''
       },
+      conheight:{
+        height:''
+      },
       checkedlogin:false,
       rules: {
           loginname: [
@@ -52,6 +55,10 @@ export default {
           ]
        }
     }
+  },
+  created(){
+     window.addEventListener('resize', this.getHeight);
+     this.getHeight()
   },
   mounted(){
     //登录默认勾选
@@ -64,6 +71,9 @@ export default {
     }
   },
   methods: {
+     getHeight(){
+          this.conheight.height=window.innerHeight+'px';
+       },
     clearRemind(){ //修改密码用户名清除原先勾选
       this.checkedlogin=false
     },
@@ -88,8 +98,8 @@ export default {
          WorkNumber:this.ruleForm.loginname,
          password:this.ruleForm.loginpass
       }
-      this.axios.post('/api/account/userloginauthentication',this.qs.stringify(params)).then((res) => {
-         if(res.data == "OK"){
+      this.axios.post('/lims/account/login',this.qs.stringify(params)).then((res) => {
+         if(res.data.msg== "登录成功"){
            this.$message({
               showClose: true,
               message: "登录成功",
@@ -102,7 +112,7 @@ export default {
       }else{
         this.$message({
               showClose: true,
-              message: res.data,
+              message: res.data.msg,
               type: 'error'
           });
       }
@@ -115,7 +125,6 @@ export default {
 <style scoped>
    .login {
     width:100%;
-    height:900px;
     background:#0A9168 url('../assets/image/bg.jpg') no-repeat fixed top;
   }
   .loginbox{

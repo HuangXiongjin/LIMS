@@ -2,13 +2,28 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import login from '@/components/Login'
 import Home from '@/components/Home'
-import Board from '@/views/Board'
+
+import Board from '@/views/Board/Board'
+import StatisticalAnalysis from '@/views/Board/StatisticalAnalysis'
+import ProgressBoard from '@/views/Board/ProgressBoard'
+import BatchProgress from '@/views/Board/BatchProgress'
+
 import SampleRegistration from '@/views/Sample/SampleRegistration'
 import SampleTest from '@/views/Sample/SampleTest'
 import ApplyTest from '@/views/Sample/ApplyTest'
 import SampleCheck from '@/views/Sample/SampleCheck'
 import ReportReview from '@/views/Sample/ReportReview'
-import OutInBar from '@/views/OutIn/OutInBar'
+
+import DynamicManagement from '@/views/OutIn/DynamicManagement'
+import InWarehouse from '@/views/OutIn/InWarehouse'
+import OutWarehouse from '@/views/OutIn/OutWarehouse'
+import ApplicationReview from '@/views/OutIn/ApplicationReview'
+
+
+import ReceivingSample from '@/views/SampleTesting/ReceivingSample'
+import SampleRD from '@/views/SampleTesting/SampleRD'
+import ReceivingResult from '@/views/SampleTesting/ReceivingResult'
+import SampleAccount from '@/views/SampleTesting/SampleAccount'
 
 import QualitycheckBoard from '@/views/QualityCheck/QualitycheckBoard'
 import QualitycheckRecord from '@/views/QualityCheck/QualitycheckRecord'
@@ -18,9 +33,15 @@ import DestroyRequest from '@/views/Destroy/DestroyRequest'
 import DestroyAudit from '@/views/Destroy/DestroyAudit'
 import Destroylist from '@/views/Destroy/Destroylist'
 
+import ReagentManagement from '@/views/Reagent/ReagentManagement'
+
 import SampleBoard from '@/views/SampleManagement/SampleBoard'
 import SampleReceiving from '@/views/SampleManagement/SampleReceiving'
 
+import CategoryManage from '@/views/System/CategoryManage'
+import DocumentManage from '@/views/System/DocumentManage'
+import RightDistribute from '@/views/System/RightDistribute'
+import RecordBar from '@/views/System/RecordBar'
 
 
 const originalPush = Router.prototype.push
@@ -43,14 +64,25 @@ const router=new Router({
       component:Home,
       children:[
         {path:'/Board',component:Board},
+        {path:'/StatisticalAnalysis',component:StatisticalAnalysis},
+        {path:'/ProgressBoard',component:ProgressBoard},
+        {path:'/BatchProgress',component:BatchProgress},
 
-        {path:'/OutInBar',component:OutInBar},
+        {path:'/DynamicManagement',component:DynamicManagement},
+        {path:'/InWarehouse',component:InWarehouse},
+        {path:'/OutWarehouse',component:OutWarehouse},
+        {path:'/ApplicationReview',component:ApplicationReview},
         // 样品
         {path:'/SampleRegistration',component:SampleRegistration},
         {path:'/ApplyTest',component:ApplyTest},
-        {path:'/SampleTest',component:SampleTest},
+        {path:'/SampleList',component:SampleTest},
         {path:'/SampleCheck',component:SampleCheck},
         {path:'/ReportReview',component:ReportReview},
+        
+        {path:'/ReceivingSample',component:ReceivingSample},
+        {path:'/SampleRD',component:SampleRD},
+        {path:'/ReceivingResult',component:ReceivingResult},
+        {path:'/SampleAccount',component:SampleAccount},
         
         // 质检报告
         {path:'/QualitycheckBoard',component:QualitycheckBoard},
@@ -61,28 +93,39 @@ const router=new Router({
         {path:'/DestroyRequest',component:DestroyRequest},
         {path:'/DestroyAudit',component:DestroyAudit},
         {path:'/Destroylist',component:Destroylist},
+        
+        //试剂管理
+        {path:'/ReagentManagement',component:ReagentManagement},
+
 
         //留样
         {path:'/SampleReceiving',component:SampleReceiving},
         {path:'/SampleBoard',component:SampleBoard},
+        
+        //系统管理
+        {path:'/CategoryManage',component:CategoryManage},
+        {path:'/DocumentManage',component:DocumentManage},
+        {path:'/RightDistribute',component:RightDistribute},
+        {path:'/RecordBar',component:RecordBar},
+
       ]
     }
   ]
 })
 
-router.beforeEach((to,from,next)=>{
-  if(to.path==='/login'){
-    next()
-    return;
-  }else{
-    var token=sessionStorage.getItem('WorkNumber')
-    if(!token){
-      next('/login')
-    }else{
-      next()
-    }
+// router.beforeEach((to,from,next)=>{
+//   if(to.path==='/login'){
+//     next()
+//     return;
+//   }else{
+//     var token=sessionStorage.getItem('WorkNumber')
+//     if(!token){
+//       next('/login')
+//     }else{
+//       next()
+//     }
 
-  }
-})
+//   }
+// })
 
 export default router

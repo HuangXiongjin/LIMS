@@ -36,8 +36,8 @@ def load_user(user_id):
 @login_auth.route('/account/login', methods=['GET', 'POST'])
 def login():
     try:
-        if request.method == 'GET':
-            return render_template('./main/login.html')
+        # if request.method == 'GET':
+        #     return render_template('./main/login.html')
         if request.method == 'POST':
             data = request.values
             WorkNumber = data.get('WorkNumber')
@@ -48,6 +48,8 @@ def login():
                 login_user(user)  # login_user(user)调用user_loader()把用户设置到db_session中
                 user.session_id = str(time.time())
                 db_session.commit()
+                return json.dumps({'code': '1000', 'msg': '登录成功'}, cls=AlchemyEncoder, ensure_ascii=False)
+            return json.dumps({'code': '1000', 'msg': '账号或密码错误'}, cls=AlchemyEncoder, ensure_ascii=False)
                 # roles = db_session.query(User.RoleName).filter_by(WorkNumber=WorkNumber).all()
                 # menus = []
                 # for role in roles:
@@ -59,12 +61,12 @@ def login():
                 # session['menus'] = menus
                 # user.Status = "1"
                 # db_session.commit()
-                use = db_session.query(User).filter_by(WorkNumber=WorkNumber).first()
+                # use = db_session.query(User).filter_by(WorkNumber=WorkNumber).first()
                 # return redirect('/')
-                return render_template('./main/heatmap.html')
+                # return render_template('./main/heatmap.html')
             # 认证失败返回登录页面
-            error = '用户名或密码错误'
-            return render_template('./main/login.html', error=error)
+            # error = '用户名或密码错误'
+            # return render_template('./main/login.html', error=error)
     except Exception as e:
         print(e)
         db_session.rollback()

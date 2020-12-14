@@ -1,5 +1,7 @@
 import configparser
 import os
+import pymssql
+import pymysql
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_DIR = os.path.join(BASE_DIR, 'config_db.ini')
@@ -18,3 +20,6 @@ REDIS_TABLENAME = config['REDIS']['REDIS_TABLENAME']
 REDIS_PASSWORD = config['REDIS']['REDIS_PASSWORD']
 
 CONNECT_DATABASE = f"mssql+pymssql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DB_NAME}?charset=utf8"
+# CONNECT_DATABASE = f"mysql+pymysql://{USERNAME}:{PASSWORD}@{HOST}:{PORT}/{DB_NAME}?charset=utf8"
+# conn = pymssql.connect(user='sa', host='127.0.0.1', port='1433', password='1qaz2wsx', charset='utf8')
+# conn = pymssql.connect(user='sa', host='192.168.7.100', port='1433', password='xea@123', charset='utf8')

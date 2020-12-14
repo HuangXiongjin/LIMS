@@ -16,8 +16,6 @@ db_session = Session()
 Base = declarative_base(engine)
 
 
-
-
 # 电子批记录
 class ElectronicBatch(Base):
     '''电子批记录'''
