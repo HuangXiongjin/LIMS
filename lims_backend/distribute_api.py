@@ -26,22 +26,23 @@ def product_distribute():
     data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
     if Action == 'J':
         data.Action = '检验'
+        data.Status = '检验中'
     elif Action == 'F':
         data.Action = '复查'
+        data.Status = '复查'
     elif Action == 'L':
         data.Action = '留样'
+        data.Status = '留样'
     elif Action == '接收':
         data.Action = '接收'
         data.LaboratoryUser = LaboratoryUser
-    data.Status = '检验中'
     data.OutUser = User
     data.Account = Account
     print('2222222222')
     db_session.add(data)
     db_session.commit()
     print('333333333333')
-    db_session.add(Distribute(CheckProjectNO=CheckProjectNO, User=User, Group=Group, GroupUser=GroupUser,
-                              Time=Time))
+    db_session.add(Distribute(CheckProjectNO=CheckProjectNO, User=User, Group=Group, GroupUser=GroupUser, Time=Time))
     db_session.commit()
     print('44444444444444')
     return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
