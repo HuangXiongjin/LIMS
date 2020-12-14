@@ -367,8 +367,7 @@ def batchmodelinsert():
             FileName = data.get("FileName")
             Parameter = data.get("Parameter")
             #删除之前存的
-            oclass = db_session.query(BatchModel).filter(BatchModel.BrandCode == BrandCode,
-                                                         BatchModel.PUCode == PUCode).all()
+            oclass = db_session.query(BatchModel).filter(BatchModel.PUCode == PUCode).all()
             for oc in oclass:
                 db_session.delete(oc)
                 os.remove(oc.FilePath)
@@ -399,8 +398,8 @@ def batchmodelselect():
         data = request.values
         try:
             PUCode = data.get("PUCode")
-            BrandCode = data.get("BrandCode")
-            oclass = db_session.query(BatchModel).filter(BatchModel.BrandCode == BrandCode, BatchModel.PUCode == PUCode).all()
+            # BrandCode = data.get("BrandCode")
+            oclass = db_session.query(BatchModel).filter(BatchModel.PUCode == PUCode).all()
             dir_list = []
             for oc in oclass:
                 dir = {}

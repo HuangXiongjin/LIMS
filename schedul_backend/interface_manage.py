@@ -13,6 +13,8 @@ from common.batch_plan_model import ZYPlan, ZYPlanWMS, StapleProducts, WMSTrayNu
 from database.connect_db import CONNECT_DATABASE
 from common import Global
 import json
+from flask_login import current_user,LoginManager
+from common.common_cuid import logger,insertSyslog
 
 login_manager = LoginManager()
 # 创建对象的基类
@@ -198,10 +200,12 @@ def WMS_SendPlan():
                     db_session.commit()
                 # pmoc.PlanStatus = Global.PlanStatus.FSMWMSed.value
                 # db_session.commit()
+                insertSyslog("调用投料计划发送接口", "发送品名："+pmoc.BrandName+" 批次："+pmoc.BatchID+"的投料计划到投料系统", current_user.Name)
                 return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
             db_session.rollback()
             print("调用WMS_SendPlan接口报错！")
+            insertSyslog("error", "调用WMS_SendPlan接口报错Error" + str(e), current_user.Name)
             return json.dumps("调用WMS_SendPlan接口报错！")
 @interface_manage.route('/WMS_SendMatils', methods=['GET', 'POST'])
 def WMS_SendMatils():
@@ -245,10 +249,12 @@ def WMS_SendMatils():
                     db_session.commit()
                 pmoc.PlanStatus = data.get("PlanStatus")
                 db_session.commit()
+                insertSyslog("投料物料明细发送接口", "发送品名："+pmoc.BrandName+" 批次："+pmoc.BatchID+"的备料明细到投料系统", current_user.Name)
                 return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
             db_session.rollback()
             print("调用WMS_SendPlan接口报错！")
+            insertSyslog("error", "调用WMS_SendPlan接口报错Error" + str(e), current_user.Name)
             return json.dumps("调用WMS_SendPlan接口报错！")
 @interface_manage.route('/WMS_SendReturnMaterialInfo', methods=['GET', 'POST'])
 def WMS_SendReturnMaterialInfo():
@@ -278,9 +284,11 @@ def WMS_SendReturnMaterialInfo():
                 if responjson.get("code") != "0":
                     db_session.rollback()
                     return json.dumps({"code": "500", "message": "调用WMS_SendReturnMaterialInfo接口报错！" + responjson.get("msg")})
+                insertSyslog("调用退料信息发送接口", "发送退料信息到投料系统", current_user.Name)
                 return json.dumps({"code": "200", "message": "OK"})
         except Exception as e:
             db_session.rollback()
             print("调用WMS_SendPlan接口报错！")
+            insertSyslog("error", "调用WMS_SendPlan接口报错Error" + str(e), current_user.Name)
             return json.dumps("调用WMS_SendPlan接口报错！")
 
