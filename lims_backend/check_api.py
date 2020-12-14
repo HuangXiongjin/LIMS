@@ -95,7 +95,7 @@ def sample():
     """取样登记"""
     if request.method == 'GET':
         CheckProjectNO = request.values.get('CheckProjectNO')
-        results = db_session.query(CheckProject).filter_by(No=CheckProjectNO).all()
+        results = db_session.query(CheckProject).filter_by(CheckProjectNO=CheckProjectNO).all()
         project = []
         character = []
         discern = []
@@ -106,18 +106,16 @@ def sample():
             {'CheckProjectNO': CheckProjectNO, 'Project': project, 'Character': character, 'Discern': discern, 'Inspect': inspect, 'Content': content,
              'Microbe': microbe}]
         for result in results:
-            if result.Project is not None:
-                project.append({'id': result.Id, 'value': result.Project})
-            if result.Character is not None:
-                character.append({'id': result.Id, 'value': result.Character})
-            if result.Discern is not None:
-                discern.append({'id': result.Id, 'value': result.Discern})
-            if result.Inspect is not None:
-                inspect.append({'id': result.Id, 'value': result.Inspect})
-            if result.Content is not None:
-                content.append({'id': result.Id, 'value': result.Content})
-            if result.Microbe is not None:
-                microbe.append({'id': result.Id, 'value': result.Microbe})
+            if result.Type == 'Character':
+                character.append({'id': result.Id, 'value': result.Describe})
+            if result.Type == 'Discern':
+                discern.append({'id': result.Id, 'value': result.Describe})
+            if result.Type == 'Inspect':
+                inspect.append({'id': result.Id, 'value': result.Describe})
+            if result.Type == 'Content':
+                content.append({'id': result.Id, 'value': result.Describe})
+            if result.Type == 'Microbe':
+                microbe.append({'id': result.Id, 'value': result.Describe})
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'POST':
         CheckProjectNO = request.values.get('CheckProjectNO')
