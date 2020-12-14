@@ -17,8 +17,10 @@ def product_distribute():
     CheckProjectNO = request.values.get('CheckProjectNO')
     User = request.values.get('User')
     Account = request.values.get('Account')
+    no = request.values.get('no')
     Group = request.values.get('Group')
     GroupUser = request.values.get('GroupUser')
+    LaboratoryUser = request.values.get('LaboratoryUser')
     Time = request.values.get('Time')
     data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
     if Action == 'J':
@@ -27,6 +29,9 @@ def product_distribute():
         data.Action = '复查'
     elif Action == 'L':
         data.Action = '留样'
+    elif Action == '接收':
+        data.Action = '接收'
+        data.LaboratoryUser = LaboratoryUser
     data.Status = '检验中'
     data.OutUser = User
     data.Account = Account
