@@ -155,11 +155,11 @@ def WMS_SendPlan():
                 pmoc = db_session.query(PlanManager).filter(PlanManager.ID == PlanID).first()
                 zypl = db_session.query(ZYPlan).filter(ZYPlan.BatchID == pmoc.BatchID,
                                                         ZYPlan.BrandCode == pmoc.BrandCode,
-                                                        ZYPlan.PUName.like("%提取%")).first()
+                                                        ZYPlan.PUName.like("%提%")).first()
                 if zypl == None:
                     zypl = db_session.query(ZYPlan).filter(ZYPlan.BatchID == pmoc.BatchID,
                                                             ZYPlan.BrandCode == pmoc.BrandCode,
-                                                            ZYPlan.PUName.like("%渗")).first()
+                                                            ZYPlan.PUName.like("%渗%")).first()
                 dic.append({"PlanNo": zypl.ID, "BrandCode": pmoc.BrandCode,
                             "BrandName": pmoc.BrandName, "BatchID": pmoc.BatchID,
                             "Weight": pmoc.PlanQuantity, "Unit": pmoc.Unit})
@@ -222,7 +222,7 @@ def WMS_SendMatils():
                     if zypla == None:
                         zypla = db_session.query(ZYPlan).filter(ZYPlan.BatchID == oclass.BatchID,
                                                                 ZYPlan.BrandCode == oclass.BrandCode,
-                                                                ZYPlan.PUName.like("%渗")).first()
+                                                                ZYPlan.PUName.like("%渗%")).first()
                     dic.append({"PlanNo":zypla.ID, "BatchMaterialInfoID": oclass.ID, "BrandCode": pmoc.BrandCode, "BrandName": pmoc.BrandName,
                                 "BatchID": oclass.BatchID, "FlagCode": oclass.BucketNum,
                                 "Weight": oclass.BucketWeight, "Unit": oclass.Unit, "Flag": oclass.Flag, "FeedingSeq": oclass.FeedingSeq,
