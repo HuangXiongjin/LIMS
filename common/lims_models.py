@@ -85,7 +85,7 @@ class CheckForm(Base):
     __tablename__ = 'CheckForm'
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 样本分发接收编号
-    no = Column(Unicode(32), nullable=True)
+    No = Column(Unicode(32), nullable=True)
     # 请验单号
     CheckNumber = Column(Unicode(32), nullable=True)
     # 样品类别
@@ -146,24 +146,18 @@ class CheckProject(Base):
     """请验项目明细"""
     __tablename__ = 'CheckProject'
     Id = Column(Integer, autoincrement=True, primary_key=True)
-    # 请验项目标识
+    # 品名唯一标识
     No = Column(Unicode(32), nullable=True)
     # 品名
     Product = Column(Unicode(64), nullable=True)
-    # 项目
-    Project = Column(Unicode(1024), nullable=True)
-    # 性状
-    Character = Column(Unicode(1024), nullable=True)
-    # 鉴别
-    Discern = Column(Unicode(1024), nullable=True)
-    # 检查
-    Inspect = Column(Unicode(1024), nullable=True)
-    # 含量测定
-    Content = Column(Unicode(1024), nullable=True)
-    # 微生物限度
-    Microbe = Column(Unicode(1024), nullable=True)
+    # 维护内容
+    Describe = Column(Unicode(1024), nullable=True)
+    # 质量类型（Character-性状， Discern-鉴别，检查-检查，Content-含量测定，Microbe-微生物限度）
+    Type = Column(Unicode(16), nullable=True)
+    # 法定标准
+    Statutory = Column(Unicode(1024), nullable=True)
     # 全局唯一地址
-    Address = Column(Unicode(128), nullable=True)
+    CheckProjectNO = Column(Unicode(128), nullable=True)
 
 
 class Distribute(Base):
