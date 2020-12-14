@@ -154,26 +154,27 @@ def quality_standard():
             character_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product,
                                                                          Type='Character').all()
             for result in character_data:
-                character.append({'id': result.Id, 'value': result.Character})
+                character.append({'id': result.Id, 'value': result.Describe})
             discern_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Discern').all()
             for result in discern_data:
-                discern.append({'id': result.Id, 'value': result.Discern})
+                discern.append({'id': result.Id, 'value': result.Describe})
             inspect_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Inspect').all()
             for result in inspect_data:
-                inspect.append({'id': result.Id, 'value': result.Inspect})
+                inspect.append({'id': result.Id, 'value': result.Describe})
             content_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Content').all()
             for result in content_data:
-                content.append({'id': result.Id, 'value': result.Content})
+                content.append({'id': result.Id, 'value': result.Describe})
             microbe_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Microbe').all()
             for result in microbe_data:
-                microbe.append({'id': result.Id, 'value': result.Microbe})
+                microbe.append({'id': result.Id, 'value': result.Describe})
             return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'POST':
             # 当前品名下的质检维护
             No = request.values.get('No')
             Product = request.values.get('Product')
+            data = request.values.get('Data')
             Type = request.values.get('Type')
-            db_session.add(QualityStandard(No=No, Product=Product, Describe=request.values.get('Character'), Type=Type))
+            db_session.add(QualityStandard(No=No, Product=Product, Describe=data, Type=Type))
             db_session.commit()
             return json.dumps({'code': '1000', 'msg': '添加成功'}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'PATCH':

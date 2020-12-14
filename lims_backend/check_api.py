@@ -54,94 +54,17 @@ def check_form():
             db_session.commit()
             json_data = json.loads(check_project)
             for result in json_data:
-                print(result)
-                if result == 'Project':
-                    data = []
-                    for item in json_data[result]:
-                        c = CheckProject()
-                        c.No = CheckNumber
-                        c.Address = CheckProjectNO
-                        c.Product = Name
-                        c.Project = item
-                        data.append(c)
-                    db_session.add_all(data)
-                    db_session.commit()
-                if result == 'Character':
-                    data = []
-                    for item in json_data[result]:
-                        c = CheckProject()
-                        c.No = CheckNumber
-                        c.Address = CheckProjectNO
-                        c.Product = Name
-                        c.Character = item
-                        data.append(c)
-                    db_session.add_all(data)
-                    db_session.commit()
-                if result == 'Discern':
-                    data = []
-                    for item in json_data[result]:
-                        c = CheckProject()
-                        c.No = CheckNumber
-                        c.Address = CheckProjectNO
-                        c.Product = Name
-                        c.Discern = item
-                        data.append(c)
-                    db_session.add_all(data)
-                    db_session.commit()
-                if result == 'Inspect':
-                    data = []
-                    for item in json_data[result]:
-                        c = CheckProject()
-                        c.No = CheckNumber
-                        c.Address = CheckProjectNO
-                        c.Product = Name
-                        c.Inspect = item
-                        data.append(c)
-                    db_session.add_all(data)
-                    db_session.commit()
-                if result == 'Content':
-                    data = []
-                    for item in json_data[result]:
-                        c = CheckProject()
-                        c.No = CheckNumber
-                        c.Address = CheckProjectNO
-                        c.Product = Name
-                        c.Content = item
-                        data.append(c)
-                    db_session.add_all(data)
-                    db_session.commit()
-                if result == 'Microbe':
-                    data = []
-                    for item in json_data[result]:
-                        c = CheckProject()
-                        c.No = CheckNumber
-                        c.Address = CheckProjectNO
-                        c.Product = Name
-                        c.Microbe = item
-                        data.append(c)
-                    db_session.add_all(data)
-                    db_session.commit()
-            # project = []
-            # character = []
-            # discern = []
-            # inspect = []
-            # content = []
-            # microbe = []
-            # data = [
-            #     {'编号': No, '项目': project, '性状': character, '鉴别': discern, '检查': inspect, '含量测定': content, '微生物限度': microbe}]
-            # for result in results:
-            #     if result.Project is not None:
-            #         project.append({'id': result.Id, 'value': result.Project})
-            #     if result.Character is not None:
-            #         character.append({'id': result.Id, 'value': result.Character})
-            #     if result.Discern is not None:
-            #         discern.append({'id': result.Id, 'value': result.Discern})
-            #     if result.Inspect is not None:
-            #         inspect.append({'id': result.Id, 'value': result.Inspect})
-            #     if result.Content is not None:
-            #         content.append({'id': result.Id, 'value': result.Content})
-            #     if result.Microbe is not None:
-            #         microbe.append({'id': result.Id, 'value': result.Microbe})
+                data = []
+                for item in json_data[result]:
+                    c = CheckProject()
+                    c.No = CheckNumber
+                    c.Product = Name
+                    c.Describe = item
+                    c.Type = result
+                    c.CheckProjectNO = CheckProjectNO
+                    data.append(c)
+                db_session.add_all(data)
+                db_session.commit()
             return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
     except Exception as e:
         log(e)
