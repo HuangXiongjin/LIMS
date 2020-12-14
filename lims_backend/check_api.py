@@ -95,7 +95,7 @@ def sample():
     """取样登记"""
     if request.method == 'GET':
         CheckProjectNO = request.values.get('CheckProjectNO')
-        results = db_session.query(CheckProject).filter_by(Address=CheckProjectNO).all()
+        results = db_session.query(CheckProject).filter_by(No=CheckProjectNO).all()
         project = []
         character = []
         discern = []
