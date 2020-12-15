@@ -542,8 +542,7 @@ def BatchMaterialInfoselect():
                 dir["Description"] = oc.Description
                 dir["SendFlag"] = oc.SendFlag
                 dir_list.append(dir)
-            return json.dumps({"code": "200", "message": "请求成功", "data": {"total": count, "rows": dir_list}},
-                              cls=AlchemyEncoder, ensure_ascii=False)
+            return json.dumps({"code": "200", "message": "请求成功", "data": {"total": count, "rows": dir_list}}, cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             db_session.rollback()
             print(e)
@@ -567,7 +566,7 @@ def allUnitDataMutual():
                     continue
                 val = data.get(key)
                 addUpdateEletronicBatchDataStore(data.get("BrandCode"), data.get("PUCode"), data.get("BatchID"), key, val)
-            return 'OK'
+            return json.dumps({"code": "200", "message": "保存成功"})
         except Exception as e:
             db_session.rollback()
             print(e)
@@ -588,7 +587,7 @@ def allUnitDataMutual():
                                                                            EletronicBatchDataStore.BatchID == BatchID).all()
                 for oclass in oclasss:
                     dic[oclass.Content] = oclass.OperationpValue
-            return json.dumps(dic, cls=AlchemyEncoder, ensure_ascii=False)
+            return json.dumps({"code": "200", "message": "查询成功", "data": dic}, cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             db_session.rollback()
             print(e)
@@ -753,6 +752,8 @@ def taskSaveEqpCheck():
                         zytask.LockStatus = Global.TASKLOCKSTATUS.UNLOCK.value
                         db_session.add(zytask)
                         db_session.commit()
+            insertAuditTrace("设备审核（选择设备）", "品名：" + ocalss.BrandName + " 批次：" + ocalss.BatchID + "设备审核（选择设备）", "PlanManager",
+                             current_user.Name, "")
             return json.dumps({"code": "200", "message": "任务选择设备成功！", "data": "OK"})
         except Exception as e:
             db_session.rollback()
