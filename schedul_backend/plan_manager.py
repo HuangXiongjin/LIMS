@@ -6,7 +6,7 @@ import json
 import datetime
 from flask_login import current_user,LoginManager
 import re
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Column, ForeignKey, Table, Integer, String, and_, or_, desc,extract
 from common.BSFramwork import AlchemyEncoder
 from common.MESLogger import insertAuditTrace
 from common.common_cuid import logger,insertSyslog
@@ -763,4 +763,45 @@ def taskSaveEqpCheck():
             return json.dumps("设备审核（选择设备）报错", cls=AlchemyEncoder, ensure_ascii=False)
 
 
-
+@batch_plan.route('/PlanManagerSelect', methods=['GET', 'POST'])
+def PlanManagerSelect():
+    '''批次计划执行后批次录页面查询'''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            pages = data.get("offset")
+            rowsnumber = data.get("limit")
+            inipage = int(pages) * int(rowsnumber) + 0  # 起始页
+            endpage = int(pages) * int(rowsnumber) + int(rowsnumber)  # 截止页
+            count = db_session.query(PlanManager).filter(or_(PlanManager.PlanStatus =="已完成", PlanManager.PlanStatus =="执行")).count()
+            oclass = db_session.query(PlanManager).filter(or_(PlanManager.PlanStatus =="已完成", PlanManager.PlanStatus =="执行")).all()[
+                     inipage:endpage]
+            dir_list = []
+            for oc in oclass:
+                dir = {}
+                dir["ID"] = oc.ID
+                dir["SchedulePlanCode"] = oc.SchedulePlanCode
+                dir["PlanNum"] = oc.PlanNum
+                dir["BatchID"] = oc.BatchID
+                dir["PlanQuantity"] = oc.PlanQuantity
+                dir["Unit"] = oc.Unit
+                dir["BrandCode"] = oc.BrandCode
+                dir["BrandName"] = oc.BrandName
+                dir["BrandType"] = oc.BrandType
+                dir["PlanStatus"] = oc.PlanStatus
+                dir["PlanBeginTime"] = oc.PlanBeginTime
+                dir["PlanEndTime"] = oc.PlanEndTime
+                dir["ActBeginTime"] = oc.ActBeginTime
+                dir["ActEndTime"] = oc.ActEndTime
+                dir["Type"] = oc.Type
+                dir["Description"] = oc.Description
+                dir["EqpCodes"] = oc.EqpCodes
+                dir["Seq"] = oc.Seq
+                dir_list.append(dir)
+            return json.dumps({"code": "200", "message": "请求成功", "data": {"total": count, "rows": dir_list}}, cls=AlchemyEncoder, ensure_ascii=False)
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "批次计划执行后批次录页面查询报错Error：" + str(e), current_user.Name)
+            return json.dumps({"code": "500", "message": "后端报错"})
