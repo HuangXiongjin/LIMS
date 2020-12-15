@@ -776,26 +776,26 @@ def PlanManagerSelect():
             BatchID = data.get("BatchID")
             BrandName = data.get("BrandName")
             if BatchID == "" and BrandName == "":
-                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行"])).order_by("ID").count()
-                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行"])).order_by("ID").all()[
+                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"])).order_by("ID").count()
+                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"])).order_by("ID").all()[
                          inipage:endpage]
             elif BatchID != "" and BrandName == "":
-                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成", "执行"]), PlanManager.BatchID == BatchID).order_by(
+                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"]), PlanManager.BatchID == BatchID).order_by(
                     "ID").count()
-                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成", "执行"]), PlanManager.BatchID == BatchID).order_by(
+                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"]), PlanManager.BatchID == BatchID).order_by(
                     "ID").all()[
                          inipage:endpage]
             elif BatchID == "" and BrandName != "":
-                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成", "执行"]), PlanManager.BrandName == BrandName).order_by(
+                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"]), PlanManager.BrandName == BrandName).order_by(
                     "ID").count()
-                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成", "执行"]), PlanManager.BrandName == BrandName).order_by(
+                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"]), PlanManager.BrandName == BrandName).order_by(
                     "ID").all()[
                          inipage:endpage]
             else:
-                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成", "执行"]),
+                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"]),
                                                              PlanManager.BrandName == BrandName, PlanManager.BatchID == BatchID).order_by(
                     "ID").count()
-                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成", "执行"]),
+                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"]),
                                                               PlanManager.BrandName == BrandName, PlanManager.BatchID == BatchID).order_by(
                     "ID").all()[
                          inipage:endpage]
