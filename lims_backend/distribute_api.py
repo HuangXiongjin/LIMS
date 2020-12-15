@@ -50,10 +50,10 @@ def get_worker():
 @distribute.route('/Distribute', methods=['POST'])
 def product_distribute():
     """样品分发"""
-    Action = request.values.get('Action')
+    Action = json.loads(request.values.get('Action'))
     CheckProjectNO = request.values.get('CheckProjectNO')
     User = request.values.get('User')
-    Account = request.values.get('Account')
+    Account = json.loads(request.values.get('Account'))
     # no = request.values.get('no')
     Group = request.values.get('Group')
     GroupUser = request.values.get('GroupUser')
@@ -63,20 +63,25 @@ def product_distribute():
     db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=data.Name,
                              ProductType=data.ProductType, OperationTime=Time, Work='样品分发'))
     db_session.commit()
-    if Action == 'J':
-        data.Action = '检验'
-        data.Status = '检验中'
-    elif Action == 'F':
-        data.Action = '复查'
-        data.Status = '复查'
-    elif Action == 'L':
-        data.Action = '留样'
-        data.Status = '留样'
-    elif Action == '接收':
-        data.Action = '接收'
-        data.LaboratoryUser = LaboratoryUser
+    for item in range(0, len(Action)):
+        if Action[item] == 'J':
+            data.Action = '检验'
+            data.Status = '检验中'
+            data.JAccount = Account[item]
+        elif Action[item] == 'F':
+            data.Action = '复查'
+            data.Status = '复查'
+            data.FAccount = Account[item]
+            data.FUser = User
+        elif Action[item] == 'L':
+            data.Action = '留样'
+            data.Status = '留样'
+            data.LAccount = Account[item]
+            data.LUser = User
+        elif Action[item] == '接收':
+            data.Action = '接收'
+            data.LaboratoryUser = LaboratoryUser
     data.OutUser = User
-    data.Account = Account
     db_session.add(data)
     db_session.commit()
     db_session.add(Distribute(CheckProjectNO=CheckProjectNO, User=User, Group=Group, GroupUser=GroupUser, Time=Time))

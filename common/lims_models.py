@@ -206,10 +206,18 @@ class CheckForm(Base):
     SongUser = Column(Unicode(16), nullable=True, default='')
     # 接收人
     IntoUser = Column(Unicode(16), nullable=True, default='')
-    # 分发人
+    # 检测分发人
     OutUser = Column(Unicode(16), nullable=True, default='')
-    # 分发量
-    Account = Column(Unicode(16), nullable=True, default='')
+    # 留样人
+    LUser = Column(Unicode(16), nullable=True, default='')
+    # 留样分发量
+    LAccount = Column(Unicode(16), nullable=True, default='')
+    # 复查分发量
+    FAccount = Column(Unicode(16), nullable=True, default='')
+    # 复查留样人
+    FUser = Column(Unicode(16), nullable=True, default='')
+    # 检测分发量
+    JAccount = Column(Unicode(16), nullable=True, default='')
     # 分发动作（J:检验-F:复查-L:留样）
     Action = Column(Unicode(16), nullable=True, default='')
     # 实验室组长
