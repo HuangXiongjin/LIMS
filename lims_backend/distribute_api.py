@@ -12,6 +12,7 @@ distribute = Blueprint('distribute', __name__)
 
 @distribute.route('/Record', methods=['GET', 'POST'])
 def record():
+    """记录获取"""
     if request.method == 'GET':
         data = db_session.query(Record).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
         return json.dumps({'code': '1000', 'msg': '操作成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
@@ -28,18 +29,31 @@ def record():
 @distribute.route('/Worker', methods=['GET'])
 def get_worker():
     """实验室组员"""
-    if request.method == 'GET':
-        data = db_session.query(Worker).filter_by(Group=request.values.get('Group')).all()
-        return json.dumps({'code': '1000', 'msg': '操作成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
+    try:
+        if request.method == 'GET':
+            groups = json.loads(request.values.get('Group'))
+            print(groups)
+            # groups = request.json
+            result = []
+            for item in groups:
+                data = db_session.query(Worker).filter_by(Group=item).all()
+                for i in data:
+                    result.append({'Id': i.Id, 'Name': i.Name})
+            return json.dumps({'code': '1000', 'msg': '操作成功', 'data': result}, cls=MyEncoder, ensure_ascii=False)
+        # if request.method == 'POST':
+        #     data = request.values
+    except Exception as e:
+        log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)})
 
 
 @distribute.route('/Distribute', methods=['POST'])
 def product_distribute():
     """样品分发"""
-    Action = request.values.get('Action')
+    Action = json.loads(request.values.get('Action'))
     CheckProjectNO = request.values.get('CheckProjectNO')
     User = request.values.get('User')
-    Account = request.values.get('Account')
+    Account = json.loads(request.values.get('Account'))
     # no = request.values.get('no')
     Group = request.values.get('Group')
     GroupUser = request.values.get('GroupUser')
@@ -49,20 +63,25 @@ def product_distribute():
     db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=data.Name,
                              ProductType=data.ProductType, OperationTime=Time, Work='样品分发'))
     db_session.commit()
-    if Action == 'J':
-        data.Action = '检验'
-        data.Status = '检验中'
-    elif Action == 'F':
-        data.Action = '复查'
-        data.Status = '复查'
-    elif Action == 'L':
-        data.Action = '留样'
-        data.Status = '留样'
-    elif Action == '接收':
-        data.Action = '接收'
-        data.LaboratoryUser = LaboratoryUser
+    for item in range(0, len(Action)):
+        if Action[item] == 'J':
+            data.Action = '检验'
+            data.Status = '检验中'
+            data.JAccount = Account[item]
+        elif Action[item] == 'F':
+            data.Action = '复查'
+            data.Status = '复查'
+            data.FAccount = Account[item]
+            data.FUser = User
+        elif Action[item] == 'L':
+            data.Action = '留样'
+            data.Status = '留样'
+            data.LAccount = Account[item]
+            data.LUser = User
+        elif Action[item] == '接收':
+            data.Action = '接收'
+            data.LaboratoryUser = LaboratoryUser
     data.OutUser = User
-    data.Account = Account
     db_session.add(data)
     db_session.commit()
     db_session.add(Distribute(CheckProjectNO=CheckProjectNO, User=User, Group=Group, GroupUser=GroupUser, Time=Time))
