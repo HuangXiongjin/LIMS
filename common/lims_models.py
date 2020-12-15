@@ -14,6 +14,15 @@ db_session = Session()
 Base = declarative_base(engine)
 
 
+# class WorkRecord(Base):
+#     """检测分发指定"""
+#     __tablename__ = 'WorkRecord'
+#     Id = Column(Integer, autoincrement=True, primary_key=True)
+#     # 标识
+#     CheckProjectNO = Column(Unicode(32), nullable=True)
+#
+#
+
 class Record(Base):
     """检验记录"""
     __tablename__ = 'Record'
@@ -186,6 +195,8 @@ class CheckForm(Base):
     Life = Column(Unicode(16), nullable=True, default='待审核')
     # 取样人
     SampleUser = Column(Unicode(16), nullable=True, default='')
+    # 取样日期
+    SampleTime = Column(Unicode(16), nullable=True, default='')
     # 送样人
     SongUser = Column(Unicode(16), nullable=True, default='')
     # 接收人
