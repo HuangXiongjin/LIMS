@@ -14,14 +14,19 @@ db_session = Session()
 Base = declarative_base(engine)
 
 
-# class WorkRecord(Base):
-#     """检测分发指定"""
-#     __tablename__ = 'WorkRecord'
-#     Id = Column(Integer, autoincrement=True, primary_key=True)
-#     # 标识
-#     CheckProjectNO = Column(Unicode(32), nullable=True)
-#
-#
+class WorkRecord(Base):
+    """检测分发指定"""
+    __tablename__ = 'WorkRecord'
+    Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 标识
+    CheckProjectNO = Column(Unicode(32), nullable=True)
+    # 员工编号
+    No = Column(Unicode(16), nullable=True)
+    # 被分发的人
+    Name = Column(Unicode(16), nullable=True)
+    # 被分发的内容
+    Content = Column(Unicode(16), nullable=True)
+
 
 class Record(Base):
     """检验记录"""

@@ -12,6 +12,7 @@ distribute = Blueprint('distribute', __name__)
 
 @distribute.route('/Record', methods=['GET', 'POST'])
 def record():
+    """记录获取"""
     if request.method == 'GET':
         data = db_session.query(Record).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
         return json.dumps({'code': '1000', 'msg': '操作成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
@@ -28,9 +29,22 @@ def record():
 @distribute.route('/Worker', methods=['GET'])
 def get_worker():
     """实验室组员"""
-    if request.method == 'GET':
-        data = db_session.query(Worker).filter_by(Group=request.values.get('Group')).all()
-        return json.dumps({'code': '1000', 'msg': '操作成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
+    try:
+        if request.method == 'GET':
+            groups = json.loads(request.values.get('Group'))
+            print(groups)
+            # groups = request.json
+            result = []
+            for item in groups:
+                data = db_session.query(Worker).filter_by(Group=item).all()
+                for i in data:
+                    result.append({'Id': i.Id, 'Name': i.Name})
+            return json.dumps({'code': '1000', 'msg': '操作成功', 'data': result}, cls=MyEncoder, ensure_ascii=False)
+        # if request.method == 'POST':
+        #     data = request.values
+    except Exception as e:
+        log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)})
 
 
 @distribute.route('/Distribute', methods=['POST'])
