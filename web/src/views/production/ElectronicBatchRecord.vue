@@ -20,6 +20,14 @@
           </div>
           <i class="fa fa-arrow-right" v-if="index != ZYPlanData.length -1" style="vertical-align: top;margin-top: 10px;margin-right:10px;"></i>
         </div>
+        <el-form :inline="true">
+          <el-form-item label="查询品名">
+            <el-input v-model="PlanManagerTableData.BrandName" placeholder="请输入品名" size="small" @change="getPlanManagerTableData"></el-input>
+          </el-form-item>
+          <el-form-item label="查询批号">
+            <el-input v-model="PlanManagerTableData.BatchID" placeholder="请输入批次号" size="small" @change="getPlanManagerTableData"></el-input>
+          </el-form-item>
+        </el-form>
         <el-table :data="PlanManagerTableData.data" border size="small" ref="multipleTablePlanManager" @selection-change="handleSelectionChangePlanManager" @row-click="handleRowClickPlanManager">
           <el-table-column type="selection"></el-table-column>
           <el-table-column prop="PlanNum" label="计划单号"></el-table-column>
@@ -43,7 +51,7 @@
     </el-col>
     <el-col :span='24' v-if="!currentBatch">
       <div>
-        <el-button type="primary" @click="backTab" icon="el-icon-d-arrow-left" size='small'>返回列表</el-button>
+        <el-button @click="backTab" icon="el-icon-d-arrow-left" size='small'>返回列表</el-button>
         <el-button type="primary" @click="saveCellData" icon="el-icon-folder-opened" size='small'>保存</el-button>
         <div class="platformContainer marginTop">
           <table class="elementTable" cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
@@ -64,6 +72,8 @@
           offset: 1,
           total: 0,
           multipleSelection: [],
+          BatchID:"",
+          BrandName:"",
         },
         ZYPlanData:[],
         currentBatch:true,//控制显示表格 boolen
@@ -81,11 +91,12 @@
       getPlanManagerTableData(){
         var that = this
         var params = {
-          tableName: "PlanManager",
+          BatchID:this.PlanManagerTableData.BatchID,
+          BrandName:this.PlanManagerTableData.BrandName,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }
-        this.axios.get("/api/CUID",{
+        this.axios.get("/api/PlanManagerSelect",{
           params: params
         }).then(res => {
           if(res.data.code === "200"){
@@ -190,12 +201,16 @@
         this.axios.get("/api/allUnitDataMutual",{
           params:params
         }).then(res =>{
-          console.log(res.data)
           if(res.data.code === "200"){
             this.$nextTick(function () {
-              $(".elementTable").find(".isInput").each(function(){
-                // $(this).html()
-              })
+              for(let key  in res.data.data){
+                $(".elementTable").find(".isInput").each(function(){
+                  if($(this).attr("data-field") === key){
+                    $(this).find("p").html(res.data.data[key])
+                  }
+                })
+              }
+
             })
           }else{
             this.$message({
@@ -207,6 +222,7 @@
           console.log("请求错误")
         })
       },
+      //保存录入的数据
       saveCellData(){
         let that = this
         this.$confirm('是否保存当前批记录?', '提示', {

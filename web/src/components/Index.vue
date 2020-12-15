@@ -129,7 +129,7 @@
             {title:'发送投料计划',icon:"el-icon-position",url:"/sendPlan"},
           ]},
           {label: '生产数据管理',icon:"el-icon-tickets",mainMenu:[
-            {title:"生产监控",icon:"el-icon-box",url:"/ProductionMonitoring"},
+            {title:"生产监控",icon:"el-icon-view",url:"/ProductionMonitoring"},
             {title:"批生产记录",icon:"el-icon-edit-outline",url:"/ElectronicBatchRecord"},
             {title:"批物料平衡统计",icon:"el-icon-box",url:"/MaterialBalanceStatistics"},
             {title:"生产数据趋势分析",icon:"el-icon-box",url:"/TrendQuery"},
@@ -186,6 +186,7 @@
         themeList:[
           {color:"#ffffff",value:"0"},
           {color:"#1E222B",value:"1"},
+          {color:"#0A9168",value:"2"},
         ],
         showSystemNav:false,
       }
@@ -193,10 +194,13 @@
     mounted(){
       if(localStorage.getItem('theme') === "1"){
         this.themeValue = "1"
-        $("#app").addClass("black-theme").removeClass("white-theme")
+        $("#app").attr('class','black-theme')
+      }else if(localStorage.getItem('theme') === "2"){
+        this.themeValue = "2"
+        $("#app").attr('class','green-theme')
       }else{
         this.themeValue = "0"
-        $("#app").addClass("white-theme").removeClass("black-theme")
+        $("#app").attr('class','white-theme')
       }
     },
     created(){
@@ -286,9 +290,11 @@
         this.themeValue = value
         localStorage.setItem('theme', value);
         if(value === "0"){
-          $("#app").addClass("white-theme").removeClass("black-theme")
+          $("#app").attr('class','white-theme')
         }else if(value === "1"){
-          $("#app").addClass("black-theme").removeClass("white-theme")
+          $("#app").attr('class','black-theme')
+        }else if(value === "2"){
+          $("#app").attr('class','green-theme')
         }
       },
       selectSystem(index,label){
