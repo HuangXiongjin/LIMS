@@ -451,7 +451,6 @@
       },
       getProductEquipment(PUName){  //查询工艺下所有设备
         let that = this
-        console.log(PUName)
         var params = {
           tableName:"ProductEquipment",
           PUName:PUName,

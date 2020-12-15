@@ -153,13 +153,18 @@
         this.axios.get('/api/batchmodelselect',{params:params}).then((res) => {
           if(res.data.code==='200'){
             this.currentBatch=false
-            if(res.data.message.length!==0){
+            if(res.data.message.length!=0){
               this.filebyte=res.data.message[0].Parameter
               this.getBatchModelField()
               this.$nextTick(function () {
                 $(".elementTable").find("td").each(function(){
                   if($(this).hasClass("isInput")){
-                    $(this).attr("contenteditable","true")
+                    if($(this).children().length > 0){
+                      $(this).find("p").attr("contenteditable","true")
+                    }else{
+                      $(this).append("<p></p>")
+                      $(this).find("p").attr("contenteditable","true")
+                    }
                   }
                 })
                 $(".elementTable").find("tbody").css("display","inline-table")
@@ -175,6 +180,7 @@
           }
         })
       },
+      // 获取录入保存的数据
       getBatchModelField(){
         var params = {
           BrandCode:this.BrandCode,
@@ -184,8 +190,8 @@
         this.axios.get("/api/allUnitDataMutual",{
           params:params
         }).then(res =>{
+          console.log(res.data)
           if(res.data.code === "200"){
-            console.log(res.data)
             this.$nextTick(function () {
               $(".elementTable").find(".isInput").each(function(){
                 // $(this).html()
@@ -214,7 +220,7 @@
           }
           this.$nextTick(function () {
             $(".elementTable").find(".isInput").each(function(){
-              params[$(this).attr("data-field")] = $(this).html()
+              params[$(this).attr("data-field")] = $(this).find("p").html()
             })
           })
           this.axios.post("/api/allUnitDataMutual",this.qs.stringify(params)).then(res =>{

@@ -253,6 +253,7 @@
           mammoth.convertToHtml({ arrayBuffer: loadEvent.target.result }).then(function(res){
             that.filebyte=res.value
             that.FileName=file.name
+            that.filebyte = that.filebyte.replace(/□/g,'<input type="checkbox" />')
             var params={
              PUCode:that.PUCode,
              PUIDName:that.PUName,
