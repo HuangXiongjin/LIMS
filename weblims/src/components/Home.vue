@@ -109,8 +109,8 @@ export default {
                     {name:'检验记录',path:'/QualitycheckRecord'},
                  ]},
                  {name:'留样管理',icon:'el-icon-paperclip',children:[
-                     {name:'留样看板',path:'/SampleBoard'},
                      {name:'留样接收',path:'/SampleReceiving'},
+                     {name:'留样看板',path:'/SampleBoard'},
                  ]},
                  {name:'销毁管理',icon:'el-icon-delete',children:[
                      {name:'销毁看板',path:'/DestroyBoard'},

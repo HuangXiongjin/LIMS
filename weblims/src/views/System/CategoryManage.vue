@@ -270,6 +270,7 @@ export default {
         },
         showInputtxt(opt){ //点击右侧加号弹出输入框
             this.opt=opt
+            this.jbinput=''
             this.jbopt='添加'
             this.inputVisible=true
         },
@@ -295,12 +296,12 @@ export default {
         },
         showInputContent(){ //鉴别添加修改的展示
             if(this.opt=='鉴别'){
-                if(this.jbopt==='修改'){
+              if(this.jbopt==='修改'){
                 var params={
-                Id:this.jbID,
-                Discern:this.jbinput,
-                Product:this.Product
-            }
+                    Id:this.jbID,
+                    Data:this.jbinput,
+                    Product:this.Product
+                }
             this.axios.patch('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
                      this.$message({
@@ -310,11 +311,12 @@ export default {
                 }
             })
             }else{
-                var params={
-                Discern:this.jbinput,
-                No:this.tabRowNo,
-                Product:this.Product
-            }
+                 var params={
+                    No:this.tabRowNo,
+                    Data:this.jbinput,
+                    Type:'Discern',
+                    Product:this.Product
+                }
             this.axios.post('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
                     this.$message({
@@ -327,10 +329,10 @@ export default {
             }else if(this.opt=='检查'){
                 if(this.jbopt==='修改'){
                 var params={
-                Id:this.jbID,
-                Inspect:this.jbinput,
-                Product:this.Product
-            }
+                    Id:this.jbID,
+                    Data:this.jbinput,
+                    Product:this.Product
+                }
             this.axios.patch('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
                      this.$message({
@@ -341,10 +343,11 @@ export default {
             })
             }else{
                 var params={
-                Inspect:this.jbinput,
-                No:this.tabRowNo,
-                Product:this.Product
-            }
+                    No:this.tabRowNo,
+                    Data:this.jbinput,
+                    Type:'Inspect',
+                    Product:this.Product
+                }
             this.axios.post('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
                     this.$message({
@@ -358,7 +361,7 @@ export default {
                 if(this.jbopt==='修改'){
                 var params={
                 Id:this.jbID,
-                Character:this.jbinput,
+                Data:this.jbinput,
                 Product:this.Product
             }
             this.axios.patch('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
@@ -370,11 +373,12 @@ export default {
                 }
             })
             }else{
-                var params={
-                Character:this.jbinput,
-                No:this.tabRowNo,
-                Product:this.Product
-            }
+            var params={
+                    No:this.tabRowNo,
+                    Data:this.jbinput,
+                    Type:'Character',
+                    Product:this.Product
+                }
             this.axios.post('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
                     this.$message({
@@ -387,10 +391,10 @@ export default {
             }else if(this.opt=='含量测定'){
                 if(this.jbopt==='修改'){
                 var params={
-                Id:this.jbID,
-                Content:this.jbinput,
-                Product:this.Product
-            }
+                    Id:this.jbID,
+                    Data:this.jbinput,
+                    Product:this.Product
+                }
             this.axios.patch('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
                      this.$message({
@@ -400,11 +404,12 @@ export default {
                 }
             })
             }else{
-                var params={
-                Content:this.jbinput,
-                No:this.tabRowNo,
-                Product:this.Product
-            }
+             var params={
+                    No:this.tabRowNo,
+                    Data:this.jbinput,
+                    Type:'Content',
+                    Product:this.Product
+                }
             this.axios.post('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
                     this.$message({
@@ -418,7 +423,7 @@ export default {
                 if(this.jbopt==='修改'){
                 var params={
                 Id:this.jbID,
-                Microbe:this.jbinput,
+                Data:this.jbinput,
                 Product:this.Product
             }
             this.axios.patch('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
@@ -431,10 +436,11 @@ export default {
             })
             }else{
                 var params={
-                Microbe:this.jbinput,
-                No:this.tabRowNo,
-                Product:this.Product
-            }
+                    No:this.tabRowNo,
+                    Data:this.jbinput,
+                    Type:'Microbe',
+                    Product:this.Product
+                }
             this.axios.post('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
                     this.$message({
@@ -444,8 +450,7 @@ export default {
                 }
             })
             }
-            }
-            
+            }      
             this.getPostedjb()
             this.inputVisible=false
         },

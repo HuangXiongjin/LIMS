@@ -12,7 +12,7 @@
                         highlight-current-row
                         style="width: 100%"
                         @row-click="handletabClick">
-                        <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label'></el-table-column>
+                        <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                     </el-table>
                     <div class="paginationClass">
                         <el-pagination background  layout="total, prev, pager, next, jumper"
@@ -31,24 +31,7 @@
                 <el-col :span='24'>
                     <el-row>
                         <el-col :span='4' class="mgr15 boxshadow">
-                            <el-input
-                                placeholder="类别/品名"
-                                prefix-icon="el-icon-search"
-                                v-model="searchObj.category">
-                            </el-input>
-                        </el-col>
-                        <el-col :span='4' class="mgr15 boxshadow">
-                            <el-select v-model="searchObj.goods" placeholder="物料类">
-                                <el-option
-                                v-for="item in options"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                        <el-col :span='4' class="mgr15 boxshadow">
-                           <el-select v-model="searchObj.goods" placeholder="物料类">
+                           <el-select v-model="searchObj.category" placeholder="物料类">
                                 <el-option
                                 v-for="item in options"
                                 :key="item.value"
@@ -63,6 +46,9 @@
                             type="date"
                             placeholder="选择日期">
                            </el-date-picker>
+                        </el-col>
+                        <el-col :span='3' class="boxshadow req">
+                            <el-button type='primary' @click="SearchTab">查询</el-button>
                         </el-col>
                     </el-row>
                 </el-col>
@@ -113,6 +99,16 @@
                                         <el-input v-model="requestform.Unit"></el-input>
                                     </el-form-item>
                                 </el-col>
+                                <el-col :span='10'>
+                                    <el-form-item label="物料类别">
+                                        <el-input v-model="requestform.ProductType"></el-input>
+                                    </el-form-item>
+                                </el-col>
+                                <el-col :span='10'>
+                                    <el-form-item label="取样人">
+                                        <el-input v-model="requestform.SampleUser"></el-input>
+                                    </el-form-item>
+                                </el-col>
                                 </el-row>
                             </el-form>
                         </el-col>
@@ -121,11 +117,8 @@
                             <el-form ref="form" :model="projectform" label-width="80px">
                                 <el-row :gutter='40'>
                                 <el-col :span='10'>
-                                    <el-form-item label="请验工序" class="PuNo">
-                                        <el-select v-model="projectform.CheckProcedure" placeholder="请选择请验工序">
-                                            <el-option label="工序一" value="1"></el-option>
-                                            <el-option label="工序二" value="2"></el-option>
-                                        </el-select>
+                                    <el-form-item label="请验工序">
+                                        <el-input v-model="projectform.CheckProcedure"></el-input>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span='10'>
@@ -157,63 +150,175 @@
                         </el-col>
                         <el-col :span='24'>
                             <div style="float:right;">
-                                <el-button type="success">确认接收</el-button>
-                                <el-button type="info">去分发</el-button>
+                                <el-button type="primary" @click="LookJbInfo">查看鉴别</el-button>
+                                <el-button type="success" @click="receiveConfirm">确认接收</el-button>
                             </div>
                         </el-col>
                       </div> 
                 </el-col>
             </el-row>
         </el-col>
+        <el-dialog title="检测项详细信息展示" :visible.sync="dialogTableVisible">
+            <el-collapse v-model="activeNames">
+                <el-collapse-item title="性状" name="Character">
+                    <div v-for="(item,index) in Characters" :key='index' class="lightgreen">{{item.value}}</div>
+                </el-collapse-item>
+                <el-collapse-item title="鉴别" name="Discern">
+                    <div v-for="(item,index) in Discerns" :key='index' class="lightgreen">{{item.value}}</div>
+                </el-collapse-item>
+                <el-collapse-item title="检查" name="Inspect">
+                    <div v-for="(item,index) in Inspects" :key='index' class="lightgreen">{{item.value}}</div>
+                </el-collapse-item>
+                <el-collapse-item title="含量测定" name="Content">
+                    <div v-for="(item,index) in Contents" :key='index' class="lightgreen">{{item.value}}</div>
+                </el-collapse-item>
+                <el-collapse-item title="微生物限度" name="Microbe">
+                    <div v-for="(item,index) in Microbes" :key='index' class="lightgreen">{{item.value}}</div>
+                </el-collapse-item>
+            </el-collapse>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogTableVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogTableVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
     </el-row>
 </template>
 <script>
 var moment=require('moment')
 export default {
     data(){
-
         return {
-          searchObj:{
-               category:'',
-               registrydate:'',
-               goods:'',
+           activeNames:['Discern','Character','Inspect','Content','Microbe'],
+           Discerns:[],
+           Inspects:[],
+           Characters:[],
+           Contents:[],
+           Microbes:[],
+           dialogTableVisible:false,
+           searchObj:{
+               category:'巴戟胶囊',
+               registrydate:moment(new Date()).format('YYYY-MM-DD')
            },
-           currentgoods:'',
-           requestform:{Specs:'',CheckNumber:'',Name:'',ProductNumber:'',Supplier:'',Number:'',Amount:'',Unit:''},
-           projectform:{CheckProcedure:'',CheckDepartment:'',CheckDate:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),CheckUser:localStorage.getItem('Name'),Comment:''},
-            options: [{
+           currentgoods:'物料编码',
+           requestform:{Specs:'',CheckNumber:'',Name:'',ProductNumber:'',Supplier:'',Number:'',Amount:'',Unit:'', ProductType:'',SampleUser:''},
+           projectform:{
+               CheckProcedure:'',CheckDepartment:'',
+               Comment:'',
+               CheckProject:{Discern:[],Character:[],Inspect:[],Content:[],Microbe:[]}
+           },
+           options: [{
                 value: '选项1',
                 label: '物料一'
-                }, {
-                value: '选项2',
-                label: '物料二'
                 }],
             batchTableData:{ //物料BOM
-                data:[
-                    {CheckNumber:'BJKFY',Name:'巴戟口服液',CheckDate:moment(new Date()).format('YYYY-MM-DD HH:mm:ss')},
-                    {CheckNumber:'PTTKFY',Name:'葡萄糖口服液',CheckDate:moment(new Date()).format('YYYY-MM-DD HH:mm:ss')},
-                    {CheckNumber:'KFY',Name:'口服液',CheckDate:moment(new Date()).format('YYYY-MM-DD HH:mm:ss')},
-                    ],
-                limit: 10,//当前显示多少条
+                data:[],
+                limit: 3,//当前显示多少条
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
-            batchtableconfig:[{prop:'CheckNumber',label:'请验单号'},{prop:'Name',label:'品名'},{prop:'CheckDate',label:'请验时间'}],//批次列表
+            batchtableconfig:[{prop:'CheckNumber',label:'请验单号'},{prop:'Name',label:'品名'},{prop:'CheckDate',label:'请验时间',width:155}],//批次列表
         }
     },
     created(){
-       
+       this.getSelectOption()
+       this.getInitTab()
     },
     methods: {
+        receiveConfirm(){//领样确认
+            this.$confirm('此操作将确认接收, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+            }).then(() => {
+                var params={
+                CheckProjectNO:this.requestform.CheckProjectNO,
+                SampleUser:this.requestform.SampleUser,
+                ReceiveUser:localStorage.getItem('Name')
+            }
+            this.axios.post('/lims/Receive',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'确认接收'
+                    })
+                    this.SearchTab()
+                }
+            })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消'
+                });          
+                });
+        },
+        LookJbInfo(){
+            this.dialogTableVisible=true
+        },
+         getSelectOption() { //获取下拉列表选项
+           this.axios.get('/lims/AllProduct').then((res) => {
+               if(res.data.code=='1000'){
+                  this.options=res.data.data.map((item) => {
+                      return {
+                          value:item,
+                          label:item
+                      }
+                  })
+               }
+
+           })
+        },
+         SearchTab(){ //查询相关数据
+            var params={
+                Page:this.batchTableData.offset,
+                PerPage:this.batchTableData.limit,
+                Product:this.searchObj.category,
+                DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
+                Status:'待检验'
+            }
+            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
+                this.batchTableData.data=res.data.data
+                this.batchTableData.total=res.data.total
+            })
+        },
+         getInitTab(){ //初始化获取表格数据
+            var params={
+                Page:this.batchTableData.offset,
+                PerPage:this.batchTableData.limit,
+                Product:this.searchObj.category,
+                DateTime:this.searchObj.registrydate,
+                Status:'待检验'
+            }
+            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
+                this.batchTableData.data=res.data.data
+                this.batchTableData.total=res.data.total
+            })
+        },
         handletabClick(row){ //左侧tab点击事件
             this.currentgoods=row.CheckNumber
-            alert('侧边栏点击事件')
+            this.requestform=row
+            this.projectform=row
+            this.getJbInfo(row.CheckProjectNO)
+        },
+        getJbInfo(CheckProjectNO){
+            var params={
+                CheckProjectNO:CheckProjectNO
+            }
+            this.axios.get('/lims/Sample',{params:params}).then((res) => {
+                this.Discerns=res.data.data[0].Discern
+                this.Inspects=res.data.data[0].Inspect
+                this.Characters=res.data.data[0].Character
+                this.Contents=res.data.data[0].Content
+                this.Characters=res.data.data[0].Character
+                this.Microbes=res.data.data[0].Microbe
+            })
         },
         handleSizeChange(limit){ //每页条数切换
             this.batchTableData.limit = limit
+            this.SearchTab()
       },
         handleCurrentChange(offset) { // 页码切换
             this.batchTableData.offset = offset
+            this.SearchTab()
         },
     },
 }
