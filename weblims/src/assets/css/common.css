@@ -62,6 +62,15 @@
 .padd15{
     padding: 15px;
 }
+.padtop50{
+    padding-top: 50px;
+}
+.padt8{
+    padding-top: 6px;
+}
+.padl40{
+    padding-left: 40px;
+}
 .fsz20{
     font-size: 20px;
 }
@@ -132,4 +141,7 @@
 }
 .req .el-button{
     width: 100%;
+}
+.txtcenter{
+    text-align: center;
 }

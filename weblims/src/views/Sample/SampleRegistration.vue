@@ -107,11 +107,8 @@
                             <el-form ref="form" :model="projectform" label-width="80px">
                                 <el-row :gutter='40'>
                                 <el-col :span='10'>
-                                    <el-form-item label="请验工序" class="PuNo">
-                                        <el-select v-model="projectform.CheckProcedure" placeholder="请选择请验工序">
-                                            <el-option label="工序一" value="1"></el-option>
-                                            <el-option label="工序二" value="2"></el-option>
-                                        </el-select>
+                                    <el-form-item label="请验工序">
+                                        <el-input v-model="projectform.CheckProcedure"></el-input>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span='10'>

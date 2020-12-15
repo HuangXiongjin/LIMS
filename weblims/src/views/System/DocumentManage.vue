@@ -26,6 +26,8 @@
                         :file-list="fileList"
                         :on-success='SuccessEvent'
                         :on-error='SubmitError'
+                        :on-preview='handlepreview'
+                        :before-upload="handleBeforeUpload"
                         :on-remove='deleteUploaded'
                         multiple>
                         <i class="el-icon-upload"></i>
@@ -34,14 +36,26 @@
                      </el-upload>
                 </div>
             </el-col>
+            <el-dialog title="表格详细信息" :visible.sync="dialogFormVisible">
+                <table  cellspacing="1" cellpadding="0" border="0" v-html="filebyte"></table>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                </div>
+            </el-dialog>
         </el-col>
     </el-row>
 </template>
 <script>
+import "mammoth/mammoth.browser.js";
+import Mammoth from "mammoth";
 var moment=require('moment')
 export default {
     data(){
         return {
+           dialogFormVisible:false,
+           filebyte:'',
+           FileName:'',
            addEventdialogVisible: false,
            addEventForm:{
             categoryName: '',
@@ -81,6 +95,9 @@ export default {
         this.getTreeDom()
     },
     methods: {
+        handlepreview(){
+            this.dialogFormVisible=true
+        },
         deleteUploaded(file, fileList){ 
             var params={Id:file.Id}
             this.$confirm('确定要删除该文件吗？', '温馨提示', {
@@ -105,6 +122,23 @@ export default {
                 this.getUploadedFile()
             })
         },
+        handleBeforeUpload(file){
+        let that = this
+        var FileExt = file.name.replace(/.+\./, "");
+        if (['doc', 'docx'].indexOf(FileExt.toLowerCase()) === -1){ 
+          this.$message({ type: 'warning', message: '请上传后缀名为[doc,docx]的附件！' });
+          return false; 
+          }else{
+            var reader = new FileReader();
+            reader.readAsArrayBuffer(file)
+            reader.onload=function(){
+              Mammoth.convertToHtml({ arrayBuffer: reader.result }).then((res) => {
+               that.filebyte=res.value
+               that.FileName=file.name
+              })
+            }    
+          }        
+      },
         getUploadedFile(){
             var params={
                 Product:this.currentgoods
