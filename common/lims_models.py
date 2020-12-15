@@ -14,6 +14,66 @@ db_session = Session()
 Base = declarative_base(engine)
 
 
+class Record(Base):
+    """检验记录"""
+    __tablename__ = 'Record'
+    Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 标识
+    CheckProjectNO = Column(Unicode(32), nullable=True)
+    # 品名
+    Product = Column(Unicode(16), nullable=True)
+    # 批号
+    ProductNumber = Column(Unicode(32), nullable=True)
+    # 规格
+    Specs = Column(Unicode(32), nullable=True)
+    # 请验部门
+    CheckDepartment = Column(Unicode(32), nullable=True)
+    # 剂型(片剂、药膏)
+    Type = Column(Unicode(32), nullable=True)
+    # 批数量
+    Number = Column(Unicode(32), nullable=True)
+    # 取样日期
+    SampleTime = Column(Unicode(32), nullable=True, default='')
+    # 检验日期
+    CheckTime = Column(Unicode(32), nullable=True, default='')
+    # 检验依据
+    Basis = Column(Unicode(128), nullable=True, default='')
+
+
+class Worker(Base):
+    """实验室组员"""
+    __tablename__ = 'Worker'
+    Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 员工编号
+    No = Column(Unicode(32), nullable=True)
+    # 姓名
+    Name = Column(Unicode(16), nullable=True)
+    # 组别(产品组-微生物组-物料组)
+    Group = Column(Unicode(16), nullable=True)
+    # 岗位(理化分析-仪器分析-样品管理-微生物分析)
+    Post = Column(Unicode(16), nullable=True)
+
+
+class CheckLife(Base):
+    """请验生命周期"""
+    __tablename__ = 'CheckLife'
+    Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 品名唯一标识
+    No = Column(Unicode(32), nullable=True)
+    # 品名
+    Product = Column(Unicode(16), nullable=True)
+    # 类型
+    ProductType = Column(Unicode(16), nullable=True)
+    # 操作人
+    User = Column(Unicode(16), nullable=True)
+    # 操作（申请-审核-取样-接收-分发-质检中-报告-审核-放行）
+    Status = Column(Unicode(16), nullable=True)
+    # 时间
+    OperationTime = Column(Unicode(32), nullable=True, default='')
+    # 操作内容
+    Work = Column(Unicode(32), nullable=True)
+
+
 class QualityStandard(Base):
     """质量维护表"""
     __tablename__ = 'QualityStandard'
@@ -256,6 +316,8 @@ class ProductSave(Base):
     BatchDepartment = Column(Unicode(32), nullable=True)
     # 留样人
     BatchName = Column(Unicode(32), nullable=True)
+    # 留样日期
+    BatchTime = Column(Unicode(32), nullable=True, default='')
     # 经手人
     Handler = Column(Unicode(32), nullable=True)
     # 生产日期

@@ -4,9 +4,33 @@ from datetime import datetime
 from flask import Blueprint, request
 
 from tools.handle import MyEncoder, log, get_short_id, get_uuid
-from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard, CheckForm, CheckProject
+from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard, CheckForm, \
+    CheckProject, CheckLife
 
 check = Blueprint('check', __name__)
+
+
+@check.route('/Life', methods=['GET', 'POST'])
+def life():
+    if request.method == 'GET':
+        # 当前页码
+        page = int(request.values.get('Page'))
+        # 每页记录数
+        per_page = int(request.values.get('PerPage'))
+        status = request.values.get('Status')
+        ProductType = request.values.get('ProductType')
+        # start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
+        # end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
+        # Product = request.values.get('Product')
+        results = db_session.query(CheckForm).filter(CheckForm.ProductType == ProductType, CheckForm.Status == status
+                                                     ).order_by(CheckForm.Id.desc()).all()
+        data = results[(page - 1) * per_page:page * per_page]
+        return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
+                          ensure_ascii=False)
+    if request.method == 'POST':
+        array_data = json.loads(request.values.get('data'))
+        return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
+                          ensure_ascii=False)
 
 
 @check.route('/CheckForm', methods=['GET', 'POST'])
@@ -22,7 +46,9 @@ def check_form():
             start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
             end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
             Product = request.values.get('Product')
-            results = db_session.query(CheckForm).filter(CheckForm.Name==Product, CheckForm.Status==status, CheckForm.CheckDate.between(start_time, end_time)).order_by(CheckForm.Id.desc()).all()
+            results = db_session.query(CheckForm).filter(CheckForm.Name == Product, CheckForm.Status == status,
+                                                         CheckForm.CheckDate.between(start_time, end_time)).order_by(
+                CheckForm.Id.desc()).all()
             data = results[(page - 1) * per_page:page * per_page]
             return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                               ensure_ascii=False)
@@ -45,12 +71,13 @@ def check_form():
             Type = data.get('Type')
             Comment = data.get('Comment')
             CheckProjectNO = get_uuid()
-            db_session.add(CheckForm(Name=Name, Specs=Specs, Supplier=Supplier, ProductNumber=ProductNumber, Number=Number,
-                                     Amount=Amount, Unit=Unit, CheckProcedure=CheckProcedure, CheckDepartment=CheckDepartment,
-                                     CheckDate=CheckDate, CheckUser=CheckUser, Type=Type, Comment=Comment,
-                                     CheckProjectNO=CheckProjectNO, CheckNumber=CheckNumber, ProductType=ProductType,
-                                     Life='待审核')
-                           )
+            db_session.add(
+                CheckForm(Name=Name, Specs=Specs, Supplier=Supplier, ProductNumber=ProductNumber, Number=Number,
+                          Amount=Amount, Unit=Unit, CheckProcedure=CheckProcedure, CheckDepartment=CheckDepartment,
+                          CheckDate=CheckDate, CheckUser=CheckUser, Type=Type, Comment=Comment,
+                          CheckProjectNO=CheckProjectNO, CheckNumber=CheckNumber, ProductType=ProductType,
+                          Life='待审核')
+                )
             db_session.commit()
             json_data = json.loads(check_project)
             for result in json_data:
@@ -65,6 +92,9 @@ def check_form():
                     data.append(c)
                 db_session.add_all(data)
                 db_session.commit()
+            db_session.add(CheckLife(No=CheckProjectNO, User=CheckUser, Status='申请', ProductType=ProductType,
+                                     Product=Name, OperationTime=CheckDate, Work='提交了请验单'))
+            db_session.commit()
             return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
     except Exception as e:
         log(e)
@@ -81,6 +111,9 @@ def check_verify():
     items = json.loads(CheckProjectNO)
     for item in items:
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=item).first()
+        db_session.add(CheckLife(No=CheckProjectNO, User=VerifyName, Status='审核', Product=data.Name,
+                                 ProductType=data.ProductType, OperationTime=DateTime, Work='请验审核通过'))
+        db_session.commit()
         data.VerifyUser = VerifyName
         data.VerifyDate = DateTime
         data.Status = '待取样'
@@ -103,7 +136,8 @@ def sample():
         content = []
         microbe = []
         data = [
-            {'CheckProjectNO': CheckProjectNO, 'Project': project, 'Character': character, 'Discern': discern, 'Inspect': inspect, 'Content': content,
+            {'CheckProjectNO': CheckProjectNO, 'Project': project, 'Character': character, 'Discern': discern,
+             'Inspect': inspect, 'Content': content,
              'Microbe': microbe}]
         for result in results:
             if result.Type == 'Character':
@@ -120,7 +154,11 @@ def sample():
     if request.method == 'POST':
         CheckProjectNO = request.values.get('CheckProjectNO')
         SampleUser = request.values.get('SampleUser')
+        SampleTime = request.values.get('SampleTime')
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+        db_session.add(CheckLife(No=CheckProjectNO, User=SampleUser, Status='取样', Product=data.Name,
+                                 ProductType=data.ProductType, OperationTime=SampleTime, Work='样品取样'))
+        db_session.commit()
         data.SampleUser = SampleUser
         data.Status = '待检验'
         db_session.add(data)
@@ -139,9 +177,13 @@ def get_all_product():
 @check.route('/Receive', methods=['POST'])
 def receive():
     CheckProjectNO = request.values.get('CheckProjectNO')
-    SampleUser = request.values.get('SampleUser')
+    # SampleUser = request.values.get('SampleUser')
     ReceiveUser = request.values.get('ReceiveUser')
+    ReceiveTime = request.values.get('ReceiveTime')
     data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+    db_session.add(CheckLife(No=CheckProjectNO, User=ReceiveUser, Status='接收', Product=data.Name,
+                             ProductType=data.ProductType, OperationTime=ReceiveTime, Work='样品接收'))
+    db_session.commit()
     data.IntoUser = ReceiveUser
     db_session.add(data)
     db_session.commit()
