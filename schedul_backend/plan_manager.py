@@ -599,7 +599,7 @@ def allUnitDataMutual():
 
 def addUpdateEletronicBatchDataStore(BrandCode, PUCode, BatchID, ke, val):
     try:
-        oc = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.BrandID == BrandCode,
+        oc = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.BrandCode == BrandCode,
                                                               EletronicBatchDataStore.PUCode == PUCode,
                                                               EletronicBatchDataStore.BatchID == BatchID,
                                                               EletronicBatchDataStore.Content == ke).first()
