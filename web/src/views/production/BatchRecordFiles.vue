@@ -58,7 +58,7 @@
 
 <script>
   import "mammoth/mammoth.browser.js";
-  import Mammoth from "mammoth";
+  var mammoth = require("mammoth");
   export default {
     name: "BatchRecordFiles",
     data(){
@@ -242,10 +242,30 @@
       },
       //文件上传成功时的钩子
       submitSuccess(response, file, fileList){
+        let that = this
         this.$message({
             message: "上传文件成功！",
             type: 'success'
         });
+        var reader = new FileReader();
+        reader.readAsArrayBuffer(file.raw)
+        reader.onload=function(loadEvent){
+          mammoth.convertToHtml({ arrayBuffer: loadEvent.target.result }).then(function(res){
+            that.filebyte=res.value
+            that.FileName=file.name
+            var params={
+             PUCode:that.PUCode,
+             PUIDName:that.PUName,
+             FileName:that.FileName,
+             Parameter:that.filebyte
+            }
+            that.axios.post('/api/batchmodelinsert',that.qs.stringify(params)).then((res) => {
+              if(res.data.code==='200'){
+                that.showPGL(that.PUName,that.PUCode)
+              }
+            })
+          }).done()
+        }
       },
       submitError(){
         this.$message({
@@ -255,33 +275,10 @@
       },
       //上传文件之前
       handleBeforeUpload(file){
-        let that = this
         var FileExt = file.name.replace(/.+\./, "");
         if (['doc', 'docx'].indexOf(FileExt.toLowerCase()) === -1){ 
           this.$message({ type: 'warning', message: '请上传后缀名为[doc,docx]的附件！' });
-          return false; 
-        }else{
-          var reader = new FileReader();
-          reader.readAsArrayBuffer(file)
-          reader.onload=function(loadEvent){
-            Mammoth.convertToHtml({ arrayBuffer: loadEvent.target.result }).then((res) => {
-              console.log(res)
-              that.filebyte=res.value
-              that.FileName=file.name
-              var params={
-               PUCode:that.PUCode,
-               PUIDName:that.PUName,
-               FileName:that.FileName,
-               Parameter:that.filebyte
-              }
-              console.log(params)
-              that.axios.post('/api/batchmodelinsert',that.qs.stringify(params)).then((res) => {
-                if(res.data.code==='200'){
-                  that.showPGL(that.PUName,that.PUCode)
-                }
-              })
-            })
-          }
+          return false
         }
       },
       //文件列表移除文件
