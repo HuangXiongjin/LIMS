@@ -208,6 +208,7 @@
         })
       },
       saveCellData(){
+        let that = this
         this.$confirm('是否保存当前批记录?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -222,21 +223,21 @@
             $(".elementTable").find(".isInput").each(function(){
               params[$(this).attr("data-field")] = $(this).find("p").html()
             })
-          })
-          this.axios.post("/api/allUnitDataMutual",this.qs.stringify(params)).then(res =>{
-            if(res.data.code === "200"){
-              this.$message({
-                type: 'success',
-                message: res.data.message
-              });
-            }else{
-              this.$message({
-                type: 'info',
-                message: res.data.message
-              });
-            }
-          },res =>{
-            console.log("请求错误")
+            that.axios.post("/api/allUnitDataMutual",that.qs.stringify(params)).then(res =>{
+              if(res.data.code === "200"){
+                that.$message({
+                  type: 'success',
+                  message: res.data.message
+                });
+              }else{
+                that.$message({
+                  type: 'info',
+                  message: res.data.message
+                });
+              }
+            },res =>{
+              console.log("请求错误")
+            })
           })
         }).catch(() => {
           this.$message({
