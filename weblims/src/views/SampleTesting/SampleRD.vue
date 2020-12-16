@@ -311,7 +311,7 @@
                                     </el-col>
                                     <el-col :span='11'>
                                         <el-form-item label="留样时间：">
-                                            <el-input v-model="LyForm.BatchTime"></el-input>
+                                            <el-date-picker v-model="LyForm.BatchTime" type="date" placeholder="选择日期"></el-date-picker>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
@@ -323,14 +323,14 @@
                                     </el-col>
                                     <el-col :span='11'>
                                         <el-form-item label="生产日期：">
-                                            <el-input v-model="LyForm.ProductionDate"></el-input>
+                                            <el-date-picker v-model="LyForm.ProductionDate" type="date" placeholder="选择日期"></el-date-picker>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>  
                                 <el-row >
                                     <el-col :span='11'>
                                         <el-form-item label="有效日期：">
-                                            <el-input v-model="LyForm.ValidityDate"></el-input>
+                                            <el-date-picker v-model="LyForm.ValidityDate" type="date" placeholder="选择日期"></el-date-picker>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
@@ -566,10 +566,10 @@ export default {
                BatchDepartment:this.LyForm.BatchDepartment,
                BatchName:this.LyForm.BatchName,
                Position:this.LyForm.Position,
-               BatchTime:this.LyForm.BatchTime,
+               BatchTime:moment(this.LyForm.BatchTime).format("YYYY-MM-DD"),
                Handler:this.LyForm.Handler,
-               ProductionDate:this.LyForm.ProductionDate,
-               ValidityDate:this.LyForm.ValidityDate,
+               ProductionDate:moment(this.LyForm.ProductionDate).format("YYYY-MM-DD"),
+               ValidityDate:moment(this.LyForm.ValidityDate).format("YYYY-MM-DD"),
                Comment:this.LyForm.Comment
             }
             if(this.currentChoose=='1'){
