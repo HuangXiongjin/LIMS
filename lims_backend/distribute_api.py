@@ -61,79 +61,81 @@ def get_worker():
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
 
 
-@distribute.route('/Distribute', methods=['POST'])
+@distribute.route('/Distribute', methods=['GET', 'POST'])
 def product_distribute():
     """样品分发"""
     try:
-        Action = json.loads(request.values.get('Action'))
-        CheckProjectNO = request.values.get('CheckProjectNO')
-        User = request.values.get('User')
-        Account = json.loads(request.values.get('Account'))
-        No = json.loads(request.values.get('no'))
-        Group = request.values.get('Group')
-        GroupUser = request.values.get('GroupUser')
-        LaboratoryUser = request.values.get('LaboratoryUser')
-        Time = request.values.get('Time')
-        data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
-        db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=data.Name,
-                                 ProductType=data.ProductType, OperationTime=Time, Work='样品分发'))
-        db_session.commit()
 
-        for item in range(0, len(Action)):
-            if Action[item] == 'J':
-                d = Distribute()
-                d.CheckProjectNO = CheckProjectNO
-                data.Action = '检验'
-                data.Status = '检验中'
-                data.JAccount = Account[item]
-                d.User = User
-                d.Time = Time
-                d.No = No[item]
-                d.Number = Account[item]
-                data.OutUser = User
-                db_session.add_all([data, d])
-                db_session.commit()
-            elif Action[item] == 'F':
-                d = Distribute()
-                d.CheckProjectNO = CheckProjectNO
-                data.Action = '复查'
-                data.Status = '复查'
-                data.FAccount = Account[item]
-                data.FUser = User
-                d.User = User
-                d.Time = Time
-                d.No = No[item]
-                d.Number = Account[item]
-                data.OutUser = User
-                db_session.add_all([data, d])
-                db_session.commit()
-            elif Action[item] == 'L':
-                d = Distribute()
-                d.CheckProjectNO = CheckProjectNO
-                data.Action = '留样'
-                data.Status = '留样'
-                data.LAccount = Account[item]
-                data.LUser = User
-                d.User = User
-                d.Time = Time
-                d.No = No[item]
-                d.Number = Account[item]
-                data.OutUser = User
-                db_session.add_all([data, d])
-                db_session.commit()
-            elif Action[item] == '接收':
-                d = Distribute()
-                d.CheckProjectNO = CheckProjectNO
-                data.Action = '接收'
-                data.LaboratoryUser = LaboratoryUser
-                d.User = User
-                d.Time = Time
-                d.No = No[item]
-                d.Number = Account[item]
-                data.OutUser = User
-                db_session.add_all([data, d])
-                db_session.commit()
-        return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
+        if request.method == 'POST':
+            Action = json.loads(request.values.get('Action'))
+            CheckProjectNO = request.values.get('CheckProjectNO')
+            User = request.values.get('User')
+            Account = json.loads(request.values.get('Account'))
+            No = json.loads(request.values.get('no'))
+            Group = request.values.get('Group')
+            GroupUser = request.values.get('GroupUser')
+            LaboratoryUser = request.values.get('LaboratoryUser')
+            Time = request.values.get('Time')
+            data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+            db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=data.Name,
+                                     ProductType=data.ProductType, OperationTime=Time, Work='样品分发'))
+            db_session.commit()
+
+            for item in range(0, len(Action)):
+                if Action[item] == 'J':
+                    d = Distribute()
+                    d.CheckProjectNO = CheckProjectNO
+                    data.Action = '检验'
+                    data.Status = '检验中'
+                    data.JAccount = Account[item]
+                    d.User = User
+                    d.Time = Time
+                    d.No = No[item]
+                    d.Number = Account[item]
+                    data.OutUser = User
+                    db_session.add_all([data, d])
+                    db_session.commit()
+                elif Action[item] == 'F':
+                    d = Distribute()
+                    d.CheckProjectNO = CheckProjectNO
+                    data.Action = '复查'
+                    data.Status = '复查'
+                    data.FAccount = Account[item]
+                    data.FUser = User
+                    d.User = User
+                    d.Time = Time
+                    d.No = No[item]
+                    d.Number = Account[item]
+                    data.OutUser = User
+                    db_session.add_all([data, d])
+                    db_session.commit()
+                elif Action[item] == 'L':
+                    d = Distribute()
+                    d.CheckProjectNO = CheckProjectNO
+                    data.Action = '留样'
+                    data.Status = '留样'
+                    data.LAccount = Account[item]
+                    data.LUser = User
+                    d.User = User
+                    d.Time = Time
+                    d.No = No[item]
+                    d.Number = Account[item]
+                    data.OutUser = User
+                    db_session.add_all([data, d])
+                    db_session.commit()
+                elif Action[item] == '接收':
+                    d = Distribute()
+                    d.CheckProjectNO = CheckProjectNO
+                    data.Action = '接收'
+                    data.LaboratoryUser = LaboratoryUser
+                    d.User = User
+                    d.Time = Time
+                    d.No = No[item]
+                    d.Number = Account[item]
+                    data.OutUser = User
+                    db_session.add_all([data, d])
+                    db_session.commit()
+            return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
@@ -175,7 +177,7 @@ def test():
             name = request.values.get('Name')
             query_work = db_session.query(WorkerBook).filter_by(Name=name).all()
             check_data = [item.CheckProject for item in query_work]
-        pass
+        return json.dumps({'code': '1000', 'msg': '操作成功', 'data': check_data}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)

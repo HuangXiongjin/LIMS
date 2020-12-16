@@ -154,8 +154,8 @@ class WorkerBook(Base):
     CheckEndTime = Column(Unicode(32), default='')
     # 当前状态(待接收， 检测中， 已完成)
     Status = Column(Unicode(32), nullable=True, default='待接收')
-    # 备注
-    Comment = Column(Unicode(32), nullable=True)
+    # 检测结果是否是否合格(不合格-合格)
+    Result = Column(Unicode(32), nullable=True, default='')
 
 
 class CheckForm(Base):
@@ -221,7 +221,9 @@ class CheckForm(Base):
     # 复查留样人
     FUser = Column(Unicode(16), nullable=True, default='')
     # 检测分发量
-    JAccount = Column(Unicode(16), nullable=True, default='')
+    JAccount = Column(Unicode(32), nullable=True, default='')
+    # 编号
+    Foo = Column(Unicode(32), nullable=True, default='')
     # 分发动作（J:检验-F:复查-L:留样）
     Action = Column(Unicode(16), nullable=True, default='')
     # 实验室组长
