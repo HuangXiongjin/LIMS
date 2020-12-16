@@ -92,7 +92,7 @@
                           </el-col>
                           <el-col :span='24' class="container mgt24" style="backgroundColor:#EAEAEA;">
                               <el-col :span='20'>
-                                  <el-col :span='24' class="lightgreen fsz20"><el-checkbox label="去复查/备用"   @change="isCheck"></el-checkbox></el-col>
+                                  <el-col :span='24' class="lightgreen fsz20"><el-checkbox label="去复查/备用"  :checked='Checkopt' @change="isCheck"></el-checkbox></el-col>
                                   <el-col :span='24' class="mgt24">
                                       <el-row :gutter='10'>
                                           <el-col :span='5'>样品品名</el-col>
@@ -122,7 +122,7 @@
                           </el-col>
                           <el-col :span='24' class="container mgt24" style="backgroundColor:#EAEAEA;">
                               <el-col :span='20'>
-                                  <el-col :span='24' class="lightgreen fsz20"><el-checkbox label="去留样"  @change="isLy"></el-checkbox></el-col>
+                                  <el-col :span='24' class="lightgreen fsz20"><el-checkbox label="去留样" :checked='Lyopt' @change="isLy"></el-checkbox></el-col>
                                   <el-col :span='24' class="mgt24">
                                       <el-row :gutter='10'>
                                           <el-col :span='5'>样品品名</el-col>
@@ -152,7 +152,7 @@
                           </el-col>
                       </el-row> 
                 </el-col>
-                 <el-col class="mgt24" style="textAlign:right;"><el-button :type="(Discernopt || Checkopt || Lyopt)?'primary':'info'" @click="mulDistribute">确认分发</el-button></el-col>
+                 <el-col class="mgt24" style="textAlign:right;" v-if="radio2=='样本分发'"><el-button :type="(Discernopt || Checkopt || Lyopt)?'primary':'info'" @click="mulDistribute">确认分发</el-button></el-col>
             </el-row>
             <el-row v-if="radio2=='记录分发'" class="mgt24">
                  <el-col :span='24' class="container">
@@ -251,8 +251,132 @@
                             </el-col>
                         </div>
                     </div>
+                    <div v-if="currentChoose=='2'">
+                        <div class="mgt24 mgb24">产品留样原始记录</div>
+                        <div style="border:1px solid #ccc;paddingTop:26px;">
+                            <el-form ref="form" :model="RecordForm" label-width="100px">
+                                <el-row>
+                                    <el-col :span='11'>
+                                        <el-form-item label="品名：">
+                                            <el-input v-model="Row.Name" :disabled="true"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span='11'>
+                                        <el-form-item label="批号：">
+                                            <el-input v-model="Row.ProductNumber" :disabled="true"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row >
+                                    <el-col :span='11'>
+                                        <el-form-item label="规格：">
+                                            <el-input v-model="Row.Specs" :disabled="true"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span='11'>
+                                        <el-form-item label="请验部门：">
+                                            <el-input v-model="Row.CheckDepartment" :disabled="true"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row >
+                                    <el-col :span='11'>
+                                        <el-form-item label="剂型：">
+                                            <el-input v-model="RecordForm.Type"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span='11'>
+                                        <el-form-item label="批数量：">
+                                            <el-input v-model="Row.Amount" :disabled="true"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row >
+                                    <el-col :span='11'>
+                                        <el-form-item label="取样时间：">
+                                            <el-input v-model="Row.VerifyDate" :disabled="true"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span='11'>
+                                        <el-form-item label="检验日期：">
+                                            <el-input v-model="RecordForm.CheckTime"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row >
+                                    <el-col :span='22'>
+                                        <el-form-item label="检验依据：">
+                                            <el-input v-model="RecordForm.Basis"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>    
+                            </el-form>
+                        </div>
+                    </div>
+                    <div v-if="currentChoose=='3'">
+                        <div class="mgt24 mgb24">产品复查原始记录</div>
+                        <div style="border:1px solid #ccc;paddingTop:26px;">
+                            <el-form ref="form" :model="RecordForm" label-width="100px">
+                                <el-row>
+                                    <el-col :span='11'>
+                                        <el-form-item label="品名：">
+                                            <el-input v-model="Row.Name" :disabled="true"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span='11'>
+                                        <el-form-item label="批号：">
+                                            <el-input v-model="Row.ProductNumber" :disabled="true"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row >
+                                    <el-col :span='11'>
+                                        <el-form-item label="规格：">
+                                            <el-input v-model="Row.Specs" :disabled="true"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span='11'>
+                                        <el-form-item label="请验部门：">
+                                            <el-input v-model="Row.CheckDepartment" :disabled="true"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row >
+                                    <el-col :span='11'>
+                                        <el-form-item label="剂型：">
+                                            <el-input v-model="RecordForm.Type"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span='11'>
+                                        <el-form-item label="批数量：">
+                                            <el-input v-model="Row.Amount" :disabled="true"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row >
+                                    <el-col :span='11'>
+                                        <el-form-item label="取样时间：">
+                                            <el-input v-model="Row.VerifyDate" :disabled="true"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span='11'>
+                                        <el-form-item label="检验日期：">
+                                            <el-input v-model="RecordForm.CheckTime" :disabled="true"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row >
+                                    <el-col :span='22'>
+                                        <el-form-item label="检验依据：">
+                                            <el-input v-model="RecordForm.Basis"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>    
+                            </el-form>
+                        </div>
+                    </div>
                  </el-col>
-                <el-col class="mgt24" style="textAlign:right;"><el-button type="primary" @click="postSampleRecord">确认分发</el-button></el-col>
+                <el-col class="mgt24" style="textAlign:right;" v-if="radio2=='记录分发'"><el-button type="primary" @click="postSampleRecord" >确认分发</el-button></el-col>
             </el-row>
         </el-col>
     </el-row>
@@ -288,7 +412,7 @@ export default {
                CheckProjectNO:'',
                
            },
-           currentChoose:'1',
+           currentChoose:'2',
            radio2:'样本分发',
            searchObj:{
                category:'玉米淀粉',
@@ -372,7 +496,7 @@ export default {
                         } 
                     }
                 }
-            this.axios.post('http://192.168.137.236:10002/Distribute',this.qs.stringify(params)).then((res) => {
+            this.axios.post('/lims/Distribute',this.qs.stringify(params)).then((res) => {
                if(res.data.code=='1000'){
                    this.$message({
                        type:'success',
@@ -388,7 +512,7 @@ export default {
            })
          
         },
-        postSampleRecord(){
+        postSampleRecord(){ //记录分发
            var params={
                CheckProjectNO:this.distribute.CheckProjectNO,
                Product:this.RecordForm.Product,
@@ -402,7 +526,12 @@ export default {
                Basis:this.RecordForm.Basis,
            } 
            this.axios.post('/lims/Record',this.qs.stringify(params)).then((res) => {
-               console.log(res)
+               if(res.data.code=='1000'){
+                   this.$message({
+                       type:'success',
+                       message:'记录下发成功'
+                   })
+               }
            })
         },
         DistributeSample(act){
@@ -425,7 +554,7 @@ export default {
                 params.no=JSON.stringify([this.distribute.no2]),
                 params.Action=JSON.stringify(['F'])
             }
-           this.axios.post('http://192.168.137.236:10002/Distribute',this.qs.stringify(params)).then((res) => {
+           this.axios.post('/lims/Distribute',this.qs.stringify(params)).then((res) => {
                if(res.data.code=='1000'){
                    this.$message({
                        type:'success',
@@ -462,11 +591,10 @@ export default {
             }
         },
         handleSelect(key) {
-            console.log(key)
             this.currentChoose=key
         },
         selectSampleTab(){
-            console.log(this.radio2)
+            
         },
         LookJbInfo(){
             this.dialogTableVisible=true
@@ -513,6 +641,7 @@ export default {
         handletabClick(row){ //左侧tab点击事件
             this.curSta='确认分发'
             this.Row=row
+            this.RecordForm.CheckTime=moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
             this.distribute.CheckProjectNO=row.CheckProjectNO
             this.getJbInfo(row.CheckProjectNO)
         },
