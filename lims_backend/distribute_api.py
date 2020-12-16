@@ -5,12 +5,12 @@ from flask import Blueprint, request
 
 from tools.handle import MyEncoder, log, get_short_id, get_uuid
 from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard, CheckForm, \
-    CheckProject, Distribute, ProductSave, CheckLife, Worker, Record
+    CheckProject, Distribute, ProductSave, CheckLife, Worker, Record, WorkerBook
 
 distribute = Blueprint('distribute', __name__)
 
 
-@distribute.route('/Record', methods=['GET', 'POST'])
+@distribute.route('/CheckRecord', methods=['GET', 'POST'])
 def record():
     """记录获取"""
     try:
@@ -18,19 +18,20 @@ def record():
             data = db_session.query(Record).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
             return json.dumps({'code': '1000', 'msg': '操作成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'POST':
-            data = request.values
-            db_session.add(Record(CheckProjectNO=data.get('CheckProjectNO'), Product=data.get('Product'), ProductNumber=data.get('ProductNumber'),
-                                  Specs=data.get('Specs'), CheckDepartment=data.get('CheckDepartment'), Type=data.get('Type'),
-                                  Number=data.get('Number'), SampleTime=data.get('SampleTime'), CheckTime=data.get('CheckTime'),
-                                  Basis=data.get('Basis')))
+            CheckProjectNO = request.values.get('CheckProjectNO')
+            data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+            db_session.add(Record(CheckProjectNO=data.get('CheckProjectNO'), Product=data.Product, ProductNumber=data.ProductNumber,
+                                  Specs=data.Specs, CheckDepartment=data.CheckDepartment, Type=request.values.get('Type'),
+                                  Number=data.Amount, SampleTime=data.SampleTime, CheckTime=request.values.get('CheckTime'),
+                                  Basis=request.values.get('Basis')))
             db_session.commit()
             return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
-        return json.dumps({'code': '2000', 'msg': str(e)})
+        return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
 
 
-@distribute.route('/Worker', methods=['GET'])
+@distribute.route('/Worker', methods=['GET', 'POST'])
 def get_worker():
     """实验室组员"""
     try:
@@ -44,11 +45,20 @@ def get_worker():
                 for i in data:
                     result.append({'Id': i.Id, 'Name': i.Name})
             return json.dumps({'code': '1000', 'msg': '操作成功', 'data': result}, cls=MyEncoder, ensure_ascii=False)
-        # if request.method == 'POST':
-        #     data = request.values
+        if request.method == 'POST':
+            CheckProjectNO = request.values.get('CheckProjectNO')
+            # Content = json.loads(request.values.get('Content'))
+            CheckStartTime = request.values.get('CheckStartTime')
+            Content = {"张三": ["性状", "检查1", "鉴别1"], "李四": ["鉴别2"]}
+            for name, works in Content.items():
+                for work in works:
+                    db_session.add(WorkerBook(CheckProjectNO=CheckProjectNO, Name=name, CheckProject=work,
+                                              CheckStartTime=CheckStartTime))
+                    db_session.commit()
+            return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder)
     except Exception as e:
         log(e)
-        return json.dumps({'code': '2000', 'msg': str(e)})
+        return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
 
 
 @distribute.route('/Distribute', methods=['POST'])
@@ -123,10 +133,10 @@ def product_distribute():
                 data.OutUser = User
                 db_session.add_all([data, d])
                 db_session.commit()
-        return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
+        return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
-        return json.dumps({'code': '2000', 'msg': str(e)})
+        return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
 
 
 @distribute.route('/ProductSave', methods=['POST'])
@@ -139,7 +149,7 @@ def product_save():
                                  OperationTime=request.values.get('BatchTime'), Work='样品留样'))
         db_session.commit()
         db_session.add(ProductSave(CheckProjectNO=request.values.get('CheckProjectNO'), Name=request.values.get('Name'),
-                                   Specs=request.values.get('Specs'),
+                                   Specs=request.values.get('Specs'), Position=request.values.get('Position'),
                                    PackSpecs=request.values.get('PackSpecs'),
                                    ProductNumber=request.values.get('ProductNumber'),
                                    TheoreticalYield=request.values.get('TheoreticalYield'),
@@ -151,10 +161,10 @@ def product_save():
                                    ValidityDate=request.values.get('ValidityDate'), Comment=request.values.get('Comment'),
                                    ProductSaveNo=get_uuid(), BatchTime=request.values.get('BatchTime')))
         db_session.commit()
-        return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
+        return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
-        return json.dumps({'code': '2000', 'msg': str(e)})
+        return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
 
 
 @distribute.route('/Check', methods=['GET', 'POST'])
@@ -166,4 +176,4 @@ def test():
         pass
     except Exception as e:
         log(e)
-        return json.dumps({'code': '2000', 'msg': str(e)})
+        return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)

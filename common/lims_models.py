@@ -14,18 +14,18 @@ db_session = Session()
 Base = declarative_base(engine)
 
 
-class WorkRecord(Base):
-    """检测分发指定"""
-    __tablename__ = 'WorkRecord'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
-    # 标识
-    CheckProjectNO = Column(Unicode(32), nullable=True)
-    # 员工编号
-    No = Column(Unicode(16), nullable=True)
-    # 被分发的人
-    Name = Column(Unicode(16), nullable=True)
-    # 被分发的内容
-    Content = Column(Unicode(16), nullable=True)
+# class WorkRecord(Base):
+#     """检测分发指定"""
+#     __tablename__ = 'WorkRecord'
+#     Id = Column(Integer, autoincrement=True, primary_key=True)
+#     # 标识
+#     CheckProjectNO = Column(Unicode(32), nullable=True)
+#     # 员工编号
+#     No = Column(Unicode(16), nullable=True)
+#     # 被分发的人
+#     Name = Column(Unicode(16), nullable=True)
+#     # 被分发的内容
+#     Content = Column(Unicode(16), nullable=True)
 
 
 class Record(Base):
@@ -141,15 +141,19 @@ class WorkerBook(Base):
     # 工号
     WorkNo = Column(Unicode(32), nullable=True)
     # 检验工序
-    CheckProcedure = Column(Unicode(32), nullable=True)
+    CheckProject = Column(Unicode(128), nullable=True)
     # 样品名称
-    SampleName = Column(Unicode(32), nullable=True)
+    # SampleName = Column(Unicode(32), nullable=True)
+    # 请验项目标识
+    CheckProjectNO = Column(Unicode(32), nullable=True)
     # 批号
-    SampleNumber = Column(Unicode(32), nullable=True)
+    # SampleNumber = Column(Unicode(128), nullable=True)
     # 检测开始时间
-    CheckStartTime = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    CheckStartTime = Column(Unicode(32), default='')
     # 检测完成时间
     CheckEndTime = Column(Unicode(32), default='')
+    # 当前状态(待接收， 检测中， 已完成)
+    Status = Column(Unicode(32), nullable=True, default='待接收')
     # 备注
     Comment = Column(Unicode(32), nullable=True)
 
@@ -342,6 +346,8 @@ class ProductSave(Base):
     BatchDepartment = Column(Unicode(32), nullable=True)
     # 留样人
     BatchName = Column(Unicode(32), nullable=True)
+    # 留样位置
+    Position = Column(Unicode(32), nullable=True)
     # 留样日期
     BatchTime = Column(Unicode(32), nullable=True, default='')
     # 经手人
