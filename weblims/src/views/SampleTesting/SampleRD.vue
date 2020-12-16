@@ -152,6 +152,7 @@
                           </el-col>
                       </el-row> 
                 </el-col>
+                 <el-col class="mgt24" style="textAlign:right;"><el-button :type="(Discernopt || Checkopt || Lyopt)?'primary':'info'" @click="mulDistribute">确认分发</el-button></el-col>
             </el-row>
             <el-row v-if="radio2=='记录分发'" class="mgt24">
                  <el-col :span='24' class="container">
@@ -167,78 +168,92 @@
                                 <el-row>
                                     <el-col :span='11'>
                                         <el-form-item label="品名：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="Row.Name" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
                                         <el-form-item label="批号：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="Row.ProductNumber" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
                                     <el-col :span='11'>
                                         <el-form-item label="规格：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="Row.Specs" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
                                         <el-form-item label="请验部门：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="Row.CheckDepartment" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
                                     <el-col :span='11'>
-                                        <el-form-item label="制剂：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                        <el-form-item label="剂型：">
+                                            <el-input v-model="RecordForm.Type"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
                                         <el-form-item label="批数量：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="Row.Amount" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
                                     <el-col :span='11'>
-                                        <el-form-item label="品名：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                        <el-form-item label="取样时间：">
+                                            <el-input v-model="Row.VerifyDate" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
                                         <el-form-item label="检验日期：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="RecordForm.CheckTime"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
                                     <el-col :span='22'>
                                         <el-form-item label="检验依据：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="RecordForm.Basis"></el-input>
                                         </el-form-item>
                                     </el-col>
-                                </el-row>
-                                <el-row >
-                                    <el-col :span='22'>
-                                        <el-form-item label="【性状】：">
-                                            <el-input type="textarea" autosize placeholder="请输入内容" v-model="RecordForm.name"></el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                </el-row>
-                                <el-row >
-                                    <el-col :span='22'>
-                                        <el-form-item label="检验结果：">
-                                            <el-input type="textarea" autosize placeholder="请输入内容" v-model="RecordForm.name"></el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                </el-row>
+                                </el-row>    
                             </el-form>
+                            <el-col class="mgt24">
+                            <el-form >
+                                <el-col :span='22'>
+                                    <el-tag type="info">【鉴别】：</el-tag>
+                                    <p v-for="(item,index) in Discerns" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
+                                    <el-divider></el-divider>
+                                </el-col>
+                                <el-col :span='22'>
+                                    <el-tag type="success">【检查】：</el-tag>
+                                    <p v-for="(item,index) in Inspects" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
+                                    <el-divider></el-divider>
+                                </el-col>
+                                <el-col :span='22'>
+                                    <el-tag type="warning">【性状】：</el-tag>
+                                    <p v-for="(item,index) in Characters" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
+                                    <el-divider></el-divider>
+                                </el-col>
+                                <el-col :span='22'>
+                                    <el-tag type="danger">【含量测定】：</el-tag>
+                                    <p v-for="(item,index) in Contents" :key='index'  class="lightgreen jbcontent fsz10">{{item.value}}</p>
+                                    <el-divider></el-divider>
+                                </el-col>
+                                <el-col :span='22'>
+                                    <el-tag type="info">【微生物限度】：</el-tag>
+                                    <p v-for="(item,index) in Microbes" :key='index'  class="lightgreen jbcontent fsz10">{{item.value}}</p>
+                                </el-col>
+                            </el-form>
+                            </el-col>
                         </div>
                     </div>
                  </el-col>
+                <el-col class="mgt24" style="textAlign:right;"><el-button type="primary" @click="postSampleRecord">确认分发</el-button></el-col>
             </el-row>
-            <el-col class="mgt24" style="textAlign:right;"><el-button :type="(Discernopt || Checkopt || Lyopt)?'primary':'info'">确认分发</el-button></el-col>
         </el-col>
     </el-row>
 </template>
@@ -252,7 +267,15 @@ export default {
            Checkopt:false,
            Lyopt:false,
            RecordForm:{
-               name:''
+               Product:'',
+               ProductNumber:'',
+               Specs:'',
+               CheckDepartment:'',
+               Type:'',
+               Number:'',
+               SampleTime:'',
+               CheckTime:'',
+               Basis:'',
            },
            Row:{},
            distribute:{
@@ -263,6 +286,7 @@ export default {
                no3:'',
                Account3:'',
                CheckProjectNO:'',
+               
            },
            currentChoose:'1',
            radio2:'样本分发',
@@ -280,6 +304,11 @@ export default {
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
+            Discerns:[],
+            Inspects:[],
+            Characters:[],
+            Contents:[],
+            Microbes:[],
             batchtableconfig:[{prop:'CheckNumber',label:'请验单号'},{prop:'Name',label:'品名'},{prop:'CheckDate',label:'请验时间',width:155}],//批次列表
         }
     },
@@ -288,27 +317,115 @@ export default {
        this.getInitTab()
     },
     methods: {
+        mulDistribute(){
+            var params={
+                 Time:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                 CheckProjectNO:this.distribute.CheckProjectNO,
+                 User:localStorage.getItem('Name'),
+                 CheckProjectNO:this.distribute.CheckProjectNO,
+            }
+            if(!this.Discernopt && !this.Checkopt && !this.Lyopt){
+                this.$message({
+                    type:'warning',
+                    message:'请先勾选要分发的内容'
+                })
+            }else if(this.Discernopt){
+                if(this.Checkopt){
+                    if(this.Lyopt){
+                        params.Account=JSON.stringify([this.distribute.Account1,this.distribute.Account2,this.distribute.Account3]),
+                        params.no=JSON.stringify([this.distribute.no1,this.distribute.no2,this.distribute.no3]),
+                        params.Action=JSON.stringify(['J','F','L'])
+                        }else{
+                        params.Account=JSON.stringify([this.distribute.Account1,this.distribute.Account2]),
+                        params.no=JSON.stringify([this.distribute.no1,this.distribute.no2]),
+                        params.Action=JSON.stringify(['J','F'])
+                        }
+                    }else{
+                       if(this.Lyopt){
+                        params.Account=JSON.stringify([this.distribute.Account1,this.distribute.Account3]),
+                        params.no=JSON.stringify([this.distribute.no1,this.distribute.no3]),
+                        params.Action=JSON.stringify(['J','L'])
+                        }else{
+                        params.Account=JSON.stringify([this.distribute.Account1]),
+                        params.no=JSON.stringify([this.distribute.no1]),
+                        params.Action=JSON.stringify(['J'])
+                        } 
+                    }
+                }else{
+                    if(this.Checkopt){
+                    if(this.Lyopt){
+                        params.Account=JSON.stringify([this.distribute.Account2,this.distribute.Account3]),
+                        params.no=JSON.stringify([this.distribute.no2,this.distribute.no3]),
+                        params.Action=JSON.stringify(['F','L'])
+                        }else{
+                        params.Account=JSON.stringify([this.distribute.Account2]),
+                        params.no=JSON.stringify([this.distribute.no2]),
+                        params.Action=JSON.stringify(['F'])
+                        }
+                    }else{
+                       if(this.Lyopt){
+                        params.Account=JSON.stringify([this.distribute.Account3]),
+                        params.no=JSON.stringify([this.distribute.no3]),
+                        params.Action=JSON.stringify(['L'])
+                        }else{
+                         return false;
+                        } 
+                    }
+                }
+            this.axios.post('http://192.168.137.236:10002/Distribute',this.qs.stringify(params)).then((res) => {
+               if(res.data.code=='1000'){
+                   this.$message({
+                       type:'success',
+                       message:'分发成功'
+                   })
+                   this.curSta='已分发'
+               }else{
+                   this.$message({
+                       type:'info',
+                       message:'请重试'
+                   })
+               }
+           })
+         
+        },
+        postSampleRecord(){
+           var params={
+               CheckProjectNO:this.distribute.CheckProjectNO,
+               Product:this.RecordForm.Product,
+               ProductNumber:this.RecordForm.ProductNumber,
+               Specs:this.RecordForm.Specs,
+               CheckDepartment:this.RecordForm.CheckDepartment,
+               Type:this.RecordForm.Type,
+               Number:this.RecordForm.Number,
+               SampleTime:this.RecordForm.SampleTime,
+               CheckTime:this.RecordForm.CheckTime,
+               Basis:this.RecordForm.Basis,
+           } 
+           this.axios.post('/lims/Record',this.qs.stringify(params)).then((res) => {
+               console.log(res)
+           })
+        },
         DistributeSample(act){
             var params={
-                //  Time:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                 Time:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
                  CheckProjectNO:this.distribute.CheckProjectNO,
                  User:localStorage.getItem('Name'),
                  CheckProjectNO:this.distribute.CheckProjectNO,
             }
             if(act=='J'){
-                params.Account=this.distribute.Account1,
-                params.no=this.distribute.no1,
-                params.Action=act
+                params.Account=JSON.stringify([this.distribute.Account1]),
+                params.no=JSON.stringify([this.distribute.no1]),
+                params.Action=JSON.stringify(['J'])
             }else if(act=='L'){
-                params.Account=this.distribute.Account3,
-                params.no=this.distribute.no3,
-                params.Action=act
+                params.Account=JSON.stringify([this.distribute.Account3]),
+                params.no=JSON.stringify([this.distribute.no3]),
+                params.Action=JSON.stringify(['L'])
             }else if(act=='F'){
-                params.Account=this.distribute.Account2,
-                params.no=this.distribute.no2,
-                params.Action=act
+                params.Account=JSON.stringify([this.distribute.Account2]),
+                params.no=JSON.stringify([this.distribute.no2]),
+                params.Action=JSON.stringify(['F'])
             }
-           this.axios.post('/lims/Distribute',this.qs.stringify(params)).then((res) => {
+           this.axios.post('http://192.168.137.236:10002/Distribute',this.qs.stringify(params)).then((res) => {
                if(res.data.code=='1000'){
                    this.$message({
                        type:'success',
@@ -397,6 +514,20 @@ export default {
             this.curSta='确认分发'
             this.Row=row
             this.distribute.CheckProjectNO=row.CheckProjectNO
+            this.getJbInfo(row.CheckProjectNO)
+        },
+        getJbInfo(CheckProjectNO){
+            var params={
+                CheckProjectNO:CheckProjectNO
+            }
+            this.axios.get('/lims/Sample',{params:params}).then((res) => {
+                this.Discerns=res.data.data[0].Discern
+                this.Inspects=res.data.data[0].Inspect
+                this.Characters=res.data.data[0].Character
+                this.Contents=res.data.data[0].Content
+                this.Characters=res.data.data[0].Character
+                this.Microbes=res.data.data[0].Microbe
+            })
         },
         handleSizeChange(limit){ //每页条数切换
             this.batchTableData.limit = limit
@@ -410,5 +541,8 @@ export default {
 }
 </script>
 <style scoped>
-
+     .jbcontent{
+         height:30px;
+         line-height:30px;
+     }
 </style>
