@@ -150,7 +150,7 @@
                                   <el-col class="padtop50 padl40"><el-button type="success" @click="DistributeSample('L')">{{curSta}}</el-button></el-col>
                               </el-col>
                           </el-col>
-                      </el-row> 
+                      </el-row>
                 </el-col>
                  <el-col class="mgt24" style="textAlign:right;"><el-button :type="(Discernopt || Checkopt || Lyopt)?'primary':'info'" @click="mulDistribute">确认分发</el-button></el-col>
             </el-row>
@@ -219,7 +219,7 @@
                                             <el-input v-model="RecordForm.Basis"></el-input>
                                         </el-form-item>
                                     </el-col>
-                                </el-row>    
+                                </el-row>
                             </el-form>
                             <el-col class="mgt24">
                             <el-form >
@@ -286,7 +286,7 @@ export default {
                no3:'',
                Account3:'',
                CheckProjectNO:'',
-               
+
            },
            currentChoose:'1',
            radio2:'样本分发',
@@ -349,7 +349,7 @@ export default {
                         params.Account=JSON.stringify([this.distribute.Account1]),
                         params.no=JSON.stringify([this.distribute.no1]),
                         params.Action=JSON.stringify(['J'])
-                        } 
+                        }
                     }
                 }else{
                     if(this.Checkopt){
@@ -369,10 +369,10 @@ export default {
                         params.Action=JSON.stringify(['L'])
                         }else{
                          return false;
-                        } 
+                        }
                     }
                 }
-            this.axios.post('http://192.168.137.236:10002/Distribute',this.qs.stringify(params)).then((res) => {
+            this.axios.post('/lims/Distribute',this.qs.stringify(params)).then((res) => {
                if(res.data.code=='1000'){
                    this.$message({
                        type:'success',
@@ -386,7 +386,7 @@ export default {
                    })
                }
            })
-         
+
         },
         postSampleRecord(){
            var params={
@@ -400,7 +400,7 @@ export default {
                SampleTime:this.RecordForm.SampleTime,
                CheckTime:this.RecordForm.CheckTime,
                Basis:this.RecordForm.Basis,
-           } 
+           }
            this.axios.post('/lims/Record',this.qs.stringify(params)).then((res) => {
                console.log(res)
            })
@@ -425,7 +425,7 @@ export default {
                 params.no=JSON.stringify([this.distribute.no2]),
                 params.Action=JSON.stringify(['F'])
             }
-           this.axios.post('http://192.168.137.236:10002/Distribute',this.qs.stringify(params)).then((res) => {
+           this.axios.post('/lims/Distribute',this.qs.stringify(params)).then((res) => {
                if(res.data.code=='1000'){
                    this.$message({
                        type:'success',
@@ -442,21 +442,21 @@ export default {
         },
         isDiscern(e){ //是否检验
             if(e){
-                this.Discernopt=true  
+                this.Discernopt=true
             }else{
                 this.Discernopt=false
             }
         },
         isCheck(e){ //是否复查
             if(e){
-                this.Checkopt=true  
+                this.Checkopt=true
             }else{
                 this.Checkopt=false
             }
         },
         isLy(e){ //是否留样
             if(e){
-                this.Lyopt=true  
+                this.Lyopt=true
             }else{
                 this.Lyopt=false
             }

@@ -132,9 +132,9 @@ class QualityStandardCenter(Base):
     Source = Column(Unicode(512), nullable=True)
 
 
-class WorkerRecord(Base):
+class WorkerBook(Base):
     """员工工作台账"""
-    __tablename__ = 'WorkerRecord'
+    __tablename__ = 'WorkerBook'
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 姓名
     Name = Column(Unicode(32), nullable=True)
@@ -251,15 +251,17 @@ class Distribute(Base):
     # 请验项目标识
     CheckProjectNO = Column(Unicode(32), nullable=True)
     # 分发人
-    User = Column(Unicode(16), nullable=True)
+    User = Column(Unicode(32), nullable=True)
+    # 分发编号
+    No = Column(Unicode(32), nullable=True)
     # 分配数量
-    Number = Column(Unicode(16), nullable=True)
+    Number = Column(Unicode(32), nullable=True, default='')
     # 分配组
-    Group = Column(Unicode(16), nullable=True)
+    Group = Column(Unicode(32), nullable=True, default='')
     # 指派人
-    GroupUser = Column(Unicode(16), nullable=True)
+    GroupUser = Column(Unicode(32), nullable=True, default='')
     # 分发时间
-    Time = Column(Unicode(16), nullable=True)
+    Time = Column(Unicode(32), nullable=True, default='')
 
 
 class WordForm(Base):

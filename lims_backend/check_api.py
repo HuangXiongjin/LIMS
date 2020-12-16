@@ -12,25 +12,29 @@ check = Blueprint('check', __name__)
 
 @check.route('/Life', methods=['GET', 'POST'])
 def life():
-    if request.method == 'GET':
-        # 当前页码
-        page = int(request.values.get('Page'))
-        # 每页记录数
-        per_page = int(request.values.get('PerPage'))
-        status = request.values.get('Status')
-        ProductType = request.values.get('ProductType')
-        # start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
-        # end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
-        # Product = request.values.get('Product')
-        results = db_session.query(CheckForm).filter(CheckForm.ProductType == ProductType, CheckForm.Status == status
-                                                     ).order_by(CheckForm.Id.desc()).all()
-        data = results[(page - 1) * per_page:page * per_page]
-        return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
-                          ensure_ascii=False)
-    # if request.method == 'POST':
-    #     array_data = json.loads(request.values.get('data'))
-    #     return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
-    #                       ensure_ascii=False)
+    try:
+        if request.method == 'GET':
+            # 当前页码
+            page = int(request.values.get('Page'))
+            # 每页记录数
+            per_page = int(request.values.get('PerPage'))
+            status = request.values.get('Status')
+            ProductType = request.values.get('ProductType')
+            # start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
+            # end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
+            # Product = request.values.get('Product')
+            results = db_session.query(CheckForm).filter(CheckForm.ProductType == ProductType, CheckForm.Status == status
+                                                         ).order_by(CheckForm.Id.desc()).all()
+            data = results[(page - 1) * per_page:page * per_page]
+            return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
+                              ensure_ascii=False)
+        # if request.method == 'POST':
+        #     array_data = json.loads(request.values.get('data'))
+        #     return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
+        #                       ensure_ascii=False)
+    except Exception as e:
+        log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)})
 
 
 @check.route('/CheckForm', methods=['GET', 'POST'])
@@ -130,65 +134,77 @@ def check_verify():
 @check.route('/Sample', methods=['GET', 'POST'])
 def sample():
     """取样登记"""
-    if request.method == 'GET':
-        CheckProjectNO = request.values.get('CheckProjectNO')
-        results = db_session.query(CheckProject).filter_by(CheckProjectNO=CheckProjectNO).all()
-        project = []
-        character = []
-        discern = []
-        inspect = []
-        content = []
-        microbe = []
-        data = [
-            {'CheckProjectNO': CheckProjectNO, 'Project': project, 'Character': character, 'Discern': discern,
-             'Inspect': inspect, 'Content': content,
-             'Microbe': microbe}]
-        for result in results:
-            if result.Type == 'Character':
-                character.append({'id': result.Id, 'value': result.Describe})
-            if result.Type == 'Discern':
-                discern.append({'id': result.Id, 'value': result.Describe})
-            if result.Type == 'Inspect':
-                inspect.append({'id': result.Id, 'value': result.Describe})
-            if result.Type == 'Content':
-                content.append({'id': result.Id, 'value': result.Describe})
-            if result.Type == 'Microbe':
-                microbe.append({'id': result.Id, 'value': result.Describe})
-        return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
-    if request.method == 'POST':
-        CheckProjectNO = request.values.get('CheckProjectNO')
-        SampleUser = request.values.get('SampleUser')
-        SampleTime = request.values.get('SampleTime')
-        data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
-        db_session.add(CheckLife(No=CheckProjectNO, User=SampleUser, Status='取样', Product=data.Name,
-                                 ProductType=data.ProductType, OperationTime=SampleTime, Work='完成了样品取样'))
-        db_session.commit()
-        data.SampleUser = SampleUser
-        data.Status = '待检验'
-        db_session.add(data)
-        db_session.commit()
-        return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
+    try:
+        if request.method == 'GET':
+            CheckProjectNO = request.values.get('CheckProjectNO')
+            results = db_session.query(CheckProject).filter_by(CheckProjectNO=CheckProjectNO).all()
+            project = []
+            character = []
+            discern = []
+            inspect = []
+            content = []
+            microbe = []
+            data = [
+                {'CheckProjectNO': CheckProjectNO, 'Project': project, 'Character': character, 'Discern': discern,
+                 'Inspect': inspect, 'Content': content,
+                 'Microbe': microbe}]
+            for result in results:
+                if result.Type == 'Character':
+                    character.append({'id': result.Id, 'value': result.Describe})
+                if result.Type == 'Discern':
+                    discern.append({'id': result.Id, 'value': result.Describe})
+                if result.Type == 'Inspect':
+                    inspect.append({'id': result.Id, 'value': result.Describe})
+                if result.Type == 'Content':
+                    content.append({'id': result.Id, 'value': result.Describe})
+                if result.Type == 'Microbe':
+                    microbe.append({'id': result.Id, 'value': result.Describe})
+            return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
+        if request.method == 'POST':
+            CheckProjectNO = request.values.get('CheckProjectNO')
+            SampleUser = request.values.get('SampleUser')
+            SampleTime = request.values.get('SampleTime')
+            data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+            db_session.add(CheckLife(No=CheckProjectNO, User=SampleUser, Status='取样', Product=data.Name,
+                                     ProductType=data.ProductType, OperationTime=SampleTime, Work='完成了样品取样'))
+            db_session.commit()
+            data.SampleUser = SampleUser
+            data.Status = '待检验'
+            db_session.add(data)
+            db_session.commit()
+            return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
+    except Exception as e:
+        log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)})
 
 
 @check.route('/AllProduct', methods=['GET'])
 def get_all_product():
     """获取全部品名"""
-    data = db_session.query(QualityStandardCenter).all()
-    results = list(set(item.Product for item in data))
-    return json.dumps({'code': '1000', 'msg': '操作成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
+    try:
+        data = db_session.query(QualityStandardCenter).all()
+        results = list(set(item.Product for item in data))
+        return json.dumps({'code': '1000', 'msg': '操作成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
+    except Exception as e:
+        log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)})
 
 
 @check.route('/Receive', methods=['POST'])
 def receive():
-    CheckProjectNO = request.values.get('CheckProjectNO')
-    # SampleUser = request.values.get('SampleUser')
-    ReceiveUser = request.values.get('ReceiveUser')
-    ReceiveTime = request.values.get('ReceiveTime')
-    data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
-    db_session.add(CheckLife(No=CheckProjectNO, User=ReceiveUser, Status='接收', Product=data.Name,
-                             ProductType=data.ProductType, OperationTime=ReceiveTime, Work='完成了样品接收'))
-    db_session.commit()
-    data.IntoUser = ReceiveUser
-    db_session.add(data)
-    db_session.commit()
-    return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
+    try:
+        CheckProjectNO = request.values.get('CheckProjectNO')
+        # SampleUser = request.values.get('SampleUser')
+        ReceiveUser = request.values.get('ReceiveUser')
+        ReceiveTime = request.values.get('ReceiveTime')
+        data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+        db_session.add(CheckLife(No=CheckProjectNO, User=ReceiveUser, Status='接收', Product=data.Name,
+                                 ProductType=data.ProductType, OperationTime=ReceiveTime, Work='完成了样品接收'))
+        db_session.commit()
+        data.IntoUser = ReceiveUser
+        db_session.add(data)
+        db_session.commit()
+        return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
+    except Exception as e:
+        log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)})
