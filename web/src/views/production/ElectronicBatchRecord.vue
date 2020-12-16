@@ -170,7 +170,7 @@
               this.$nextTick(function () {
                 $(".elementTable").find("td").each(function(){
                   if($(this).hasClass("isInput")){
-                    if($(this).children().length > 0){
+                    if($(this).children().length > 0){ //判断单元格是否为空的
                       $(this).find("p").attr("contenteditable","true")
                     }else{
                       $(this).append("<p></p>")
@@ -179,6 +179,20 @@
                   }
                 })
                 $(".elementTable").find("tbody").css("display","inline-table")
+                $(".elementTable").find("td input[type=checkbox]").each(function(){ //为复选框添加勾选
+                  if($(this).val() === "0"){
+                    $(this).prop("checked",false)
+                  }else if($(this).val() === "1"){
+                    $(this).prop("checked",true)
+                  }
+                })
+                $(".elementTable").find("td input[type=checkbox]").on("click",function(){
+                  if($(this).val() === "0"){
+                    $(this).val("1")
+                  }else if($(this).val() === "1"){
+                    $(this).val("0")
+                  }
+                })
               })
             }else{
               this.filebyte=''
@@ -202,6 +216,7 @@
           params:params
         }).then(res =>{
           if(res.data.code === "200"){
+            console.log(res.data)
             this.$nextTick(function () {
               for(let key  in res.data.data){
                 $(".elementTable").find(".isInput").each(function(){
@@ -239,6 +254,7 @@
             $(".elementTable").find(".isInput").each(function(){
               params[$(this).attr("data-field")] = $(this).find("p").html()
             })
+            console.log(params)
             that.axios.post("/api/allUnitDataMutual",that.qs.stringify(params)).then(res =>{
               if(res.data.code === "200"){
                 that.$message({
