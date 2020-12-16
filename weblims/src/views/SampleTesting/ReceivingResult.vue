@@ -279,7 +279,10 @@ export default {
        },
         DistributeSample(){ //检验接收记录
             var params={
-                 Group:JSON.stringify(this.RecordForm.group)
+                 Group:JSON.stringify(this.RecordForm.group),
+                 CheckProjectNO:this.distribute.CheckProjectNO,
+                 GroupUser:localStorage.getItem('Name'),
+                 Action:JSON.stringify(['Q'])
             }
            this.axios.post('/lims/Distribute',this.qs.stringify(params)).then((res) => {
                if(res.data.code=='1000'){
