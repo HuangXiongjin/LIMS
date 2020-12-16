@@ -101,6 +101,7 @@ export default {
                     {name:'样本接收',path:'/ReceivingSample'},
                     {name:'样本及记录分发',path:'/SampleRD'},
                     {name:'检验接收',path:'/ReceivingResult'},
+                    {name:'检验分发',path:'/SampleTopeople'},
                     {name:'样本台账',path:'/SampleAccount'},
                 ]
                 },

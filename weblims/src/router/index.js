@@ -23,6 +23,7 @@ import ApplicationReview from '@/views/OutIn/ApplicationReview'
 import ReceivingSample from '@/views/SampleTesting/ReceivingSample'
 import SampleRD from '@/views/SampleTesting/SampleRD'
 import ReceivingResult from '@/views/SampleTesting/ReceivingResult'
+import SampleTopeople from '@/views/SampleTesting/SampleTopeople'
 import SampleAccount from '@/views/SampleTesting/SampleAccount'
 
 import QualitycheckBoard from '@/views/QualityCheck/QualitycheckBoard'
@@ -82,6 +83,7 @@ const router=new Router({
         {path:'/ReceivingSample',component:ReceivingSample},
         {path:'/SampleRD',component:SampleRD},
         {path:'/ReceivingResult',component:ReceivingResult},
+        {path:'/SampleTopeople',component:SampleTopeople},
         {path:'/SampleAccount',component:SampleAccount},
         
         // 质检报告

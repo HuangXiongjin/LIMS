@@ -66,10 +66,10 @@
                                   <el-col :span='24' class="mgt24">
                                       <el-row :gutter='10'>
                                           <el-col :span='5'>样品品名</el-col>
-                                          <el-col :span='4'>类别</el-col>
-                                          <el-col :span='5'>批号(物料代码)</el-col>
                                           <el-col :span='5'>编号</el-col>
+                                          <el-col :span='4'>类别</el-col>
                                           <el-col :span='5'>分配小组</el-col>
+                                          <el-col :span='5'>分配人</el-col>
                                       </el-row>
                                   </el-col>
                                   <el-col :span='24' class="mgt24">
@@ -78,17 +78,10 @@
                                           <el-col :span='4' class="lightgreen padt8">{{Row.ProductType}}</el-col>
                                           <el-col :span='5' class="lightgreen padt8">{{Row.Number}}</el-col>
                                           <el-col :span='5' class="lightgreen padt8">
-                                              xcxcx
+                                             小组1
                                           </el-col>
                                           <el-col :span='5'>
-                                             <el-select v-model="distribute.group" placeholder="物料类">
-                                                <el-option
-                                                v-for="item in Groups"
-                                                :key="item.value"
-                                                :label="item.label"
-                                                :value="item.value">
-                                                </el-option>
-                                            </el-select>
+                                              <el-input placeholder="请输入内容" v-model="distribute.no1" clearable></el-input>
                                           </el-col>
                                       </el-row>
                                   </el-col>
@@ -103,10 +96,10 @@
                                   <el-col :span='24' class="mgt24">
                                       <el-row :gutter='10'>
                                           <el-col :span='5'>样品品名</el-col>
-                                          <el-col :span='4'>类别</el-col>
-                                          <el-col :span='5'>批号(物料代码)</el-col>
                                           <el-col :span='5'>编号</el-col>
+                                          <el-col :span='4'>类别</el-col>
                                           <el-col :span='5'>分配小组</el-col>
+                                          <el-col :span='5'>分配人</el-col>
                                       </el-row>
                                   </el-col>
                                   <el-col :span='24' class="mgt24">
@@ -114,18 +107,11 @@
                                           <el-col :span='5' class="lightgreen padt8">{{Row.Name}}</el-col>
                                           <el-col :span='4' class="lightgreen padt8">{{Row.ProductType}}</el-col>
                                           <el-col :span='5' class="lightgreen padt8">{{Row.Number}}</el-col>
-                                          <el-col :span='5' class="lightgreen padt8">
-                                              xcxcx
+                                          <el-col :span='5'  class="lightgreen padt8">
+                                              小组2
                                           </el-col>
                                           <el-col :span='5'>
-                                             <el-select v-model="distribute.group" placeholder="物料类">
-                                                <el-option
-                                                v-for="item in Groups"
-                                                :key="item.value"
-                                                :label="item.label"
-                                                :value="item.value">
-                                                </el-option>
-                                            </el-select>
+                                              <el-input placeholder="请输入内容" v-model="distribute.no2" clearable></el-input>
                                           </el-col>
                                       </el-row>
                                   </el-col>
@@ -139,11 +125,11 @@
                                   <el-col :span='24' class="lightgreen fsz20"><el-checkbox label="去留样"  @change="isLy"></el-checkbox></el-col>
                                   <el-col :span='24' class="mgt24">
                                       <el-row :gutter='10'>
-                                          <el-col :span='5'>样品品名</el-col>
-                                          <el-col :span='4'>类别</el-col>
-                                          <el-col :span='5'>批号(物料代码)</el-col>
+                                         <el-col :span='5'>样品品名</el-col>
                                           <el-col :span='5'>编号</el-col>
+                                          <el-col :span='4'>类别</el-col>
                                           <el-col :span='5'>分配小组</el-col>
+                                          <el-col :span='5'>分配人</el-col>
                                       </el-row>
                                   </el-col>
                                   <el-col :span='24' class="mgt24">
@@ -152,17 +138,10 @@
                                           <el-col :span='4' class="lightgreen padt8">{{Row.ProductType}}</el-col>
                                           <el-col :span='5' class="lightgreen padt8">{{Row.Number}}</el-col>
                                           <el-col :span='5' class="lightgreen padt8">
-                                              xcxcx
+                                              小组3
                                           </el-col>
                                           <el-col :span='5'>
-                                             <el-select v-model="distribute.group" placeholder="物料类">
-                                                <el-option
-                                                v-for="item in Groups"
-                                                :key="item.value"
-                                                :label="item.label"
-                                                :value="item.value">
-                                                </el-option>
-                                            </el-select>
+                                              <el-input placeholder="请输入内容" v-model="distribute.no3" clearable></el-input>
                                           </el-col>
                                       </el-row>
                                   </el-col>
@@ -290,7 +269,6 @@ export default {
                name:''
            },
            Row:{},
-           Groups:[{label:'小组1',value:1},{label:'小组2',value:2},{label:'小组3',value:3}],
            distribute:{
                no1:'',
                Account1:'',
@@ -299,7 +277,6 @@ export default {
                no3:'',
                Account3:'',
                CheckProjectNO:'',
-               group:'小组1'
            },
            currentChoose:'1',
            radio2:'样本接收',
