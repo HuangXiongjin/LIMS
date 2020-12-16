@@ -20,7 +20,7 @@ def record():
         if request.method == 'POST':
             CheckProjectNO = request.values.get('CheckProjectNO')
             data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
-            db_session.add(Record(CheckProjectNO=data.get('CheckProjectNO'), Product=data.Product, ProductNumber=data.ProductNumber,
+            db_session.add(Record(CheckProjectNO=CheckProjectNO, Product=data.Name, ProductNumber=data.ProductNumber,
                                   Specs=data.Specs, CheckDepartment=data.CheckDepartment, Type=request.values.get('Type'),
                                   Number=data.Amount, SampleTime=data.SampleTime, CheckTime=request.values.get('CheckTime'),
                                   Basis=request.values.get('Basis')))
@@ -172,7 +172,9 @@ def test():
     """人员检测"""
     try:
         if request.method == 'GET':
-            data = db_session.query()
+            name = request.values.get('Name')
+            query_work = db_session.query(WorkerBook).filter_by(Name=name).all()
+            check_data = [item.CheckProject for item in query_work]
         pass
     except Exception as e:
         log(e)
