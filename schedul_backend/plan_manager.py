@@ -604,7 +604,7 @@ def addUpdateEletronicBatchDataStore(BrandCode, PUCode, BatchID, ke, val):
                                                               EletronicBatchDataStore.BatchID == BatchID,
                                                               EletronicBatchDataStore.Content == ke).first()
         if oc == None:
-            db_session.add(EletronicBatchDataStore(BrandCode=BrandCode, BatchID=BatchID, PUCode=PUCode, Content=ke, OperationpValue=val,
+            db_session.add(EletronicBatchDataStore(BrandCode=BrandCode, BatchID=BatchID, PUCode=PUCode, Content=ke, OperationpValue=str(val),
                                                    Operator=current_user.Name))
         else:
             oc.Content = ke

@@ -1074,7 +1074,7 @@ class EletronicBatchDataStore(Base):
     Content = Column(Unicode(60), primary_key=False, autoincrement=False, nullable=True)
 
     # 操作值:
-    OperationpValue = Column(Unicode(20), primary_key=False, autoincrement=False, nullable=True)
+    OperationpValue = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
 
     #操作人:
     Operator = Column(Unicode(32), primary_key = False, autoincrement = False, nullable = True)
