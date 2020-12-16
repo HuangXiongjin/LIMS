@@ -61,40 +61,40 @@
                 <el-col :span='24'>
                       <el-row class="padd15" v-if="radio2=='样本分发'">
                           <el-col :span='24' class="container mgt24" style="backgroundColor:#EAEAEA;">
-                              <el-col :span='20'>
+                              <el-col :span='24'>
                                   <el-col :span='24' class="lightgreen fsz20"><el-checkbox label="去检验" checked></el-checkbox></el-col>
                                   <el-col :span='24' class="mgt24">
                                       <el-row :gutter='10'>
                                           <el-col :span='4'>样品品名</el-col>
-                                          <el-col :span='4'>类别</el-col>
+                                          <el-col :span='3'>类别</el-col>
                                           <el-col :span='4'>批号(物料代码)</el-col>
-                                          <el-col :span='4'>分配样量</el-col>
-                                          <el-col :span='4'>编号</el-col>
-                                          <el-col :span='4'>分配小组</el-col>
+                                          <el-col :span='3'>分配样量</el-col>
+                                          <el-col :span='3'>编号</el-col>
+                                          <el-col :span='7'>分配小组</el-col>
                                       </el-row>
                                   </el-col>
                                   <el-col :span='24' class="mgt24">
-                                       <el-row :gutter='10'>
+                                       <el-row>
                                           <el-col :span='4' class="lightgreen padt8">{{Row.Name}}</el-col>
-                                          <el-col :span='4' class="lightgreen padt8">{{Row.ProductType}}</el-col>
+                                          <el-col :span='3' class="lightgreen padt8">{{Row.ProductType}}</el-col>
                                           <el-col :span='4' class="lightgreen padt8">{{Row.Number}}</el-col>
-                                          <el-col :span='4' class="lightgreen padt8">{{Row.JAccount}}</el-col>
-                                          <el-col :span='4' class="lightgreen padt8">{{Row.Foo}}</el-col>
-                                          <el-col :span='4'>
-                                              <el-select v-model="RecordForm.group" placeholder="请选择">
+                                          <el-col :span='3' class="lightgreen padt8">{{Row.JAccount}}</el-col>
+                                          <el-col :span='3' class="lightgreen padt8">{{Row.Foo}}</el-col>
+                                          <el-col :span='7'>
+                                              <el-select v-model="RecordForm.group" multiple placeholder="请选择" style="width:100%;">
                                                 <el-option
                                                 v-for="item in Groups"
                                                 :key="item.value"
                                                 :label="item.label"
                                                 :value="item.label">
                                                 </el-option>
-                                             </el-select>
+                                            </el-select>
                                           </el-col>
                                       </el-row>
                                   </el-col>
                               </el-col>
-                              <el-col :span='4'>
-                                  <el-col class="padtop50 padl40"><el-button type="success" @click="DistributeSample">{{curSta}}</el-button></el-col>
+                              <el-col :span='24'>
+                                  <el-col class="padtop50 padl40" style="textAlign:right;"><el-button type="success" @click="DistributeSample">{{curSta}}</el-button></el-col>
                               </el-col>
                           </el-col>
                       </el-row>
@@ -210,9 +210,9 @@ export default {
            Checkopt:false,
            Lyopt:false,
            RecordForm:{
-               group:''
+               group:[]
            },
-           Groups:[{label:'小组1',value:1},{label:'小组2',value:2},{label:'小组3',value:3}],
+           Groups:[{label:'产品',value:1},{label:'物料',value:2},{label:'微生物',value:3}],
            LyForm:{
                PackSpecs:'',
                TheoreticalYield:'',
@@ -279,7 +279,7 @@ export default {
        },
         DistributeSample(){ //检验接收记录
             var params={
-                 Group:this.RecordForm.group
+                 Group:JSON.stringify(this.RecordForm.group)
             }
            this.axios.post('/lims/Distribute',this.qs.stringify(params)).then((res) => {
                if(res.data.code=='1000'){
