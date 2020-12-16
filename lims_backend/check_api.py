@@ -80,7 +80,7 @@ def check_form():
                           Amount=Amount, Unit=Unit, CheckProcedure=CheckProcedure, CheckDepartment=CheckDepartment,
                           CheckDate=CheckDate, CheckUser=CheckUser, Type=Type, Comment=Comment,
                           CheckProjectNO=CheckProjectNO, CheckNumber=CheckNumber, ProductType=ProductType,
-                          Life='待审核')
+                          Life='审核')
                 )
             db_session.commit()
             json_data = json.loads(check_project)
@@ -122,6 +122,7 @@ def check_verify():
             data.VerifyUser = VerifyName
             data.VerifyDate = DateTime
             data.Status = '待取样'
+            data.Life = '取样'
             result.append(data)
         db_session.add_all(result)
         db_session.commit()
