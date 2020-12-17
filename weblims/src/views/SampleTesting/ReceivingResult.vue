@@ -212,7 +212,7 @@ export default {
            RecordForm:{
                group:[]
            },
-           Groups:[{label:'产品',value:1},{label:'物料',value:2},{label:'微生物',value:3}],
+           Groups:[{label:"产品组",value:1},{label:"物料组",value:2},{label:"微生物组",value:3}],
            LyForm:{
                PackSpecs:'',
                TheoreticalYield:'',
@@ -273,6 +273,7 @@ export default {
            }
            this.axios.get('/lims/CheckRecord',{params:params}).then((res) => {
                if(res.data.code=='1000'){
+                   console.log(res)
                    this.Recordobj=res.data.data
                }
            })
