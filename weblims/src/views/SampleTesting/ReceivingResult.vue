@@ -51,7 +51,7 @@
                             <el-button type='primary' @click="SearchTab">查询</el-button>
                         </el-col>
                         <el-col :span='6' class="req mgl15" style="paddingTop:3px;">
-                             <el-radio-group v-model="radio2">
+                             <el-radio-group v-model="radio2" @change="HandSelectChange">
                                 <el-radio-button label="样本分发" ></el-radio-button>
                                 <el-radio-button label="记录分发"></el-radio-button>
                              </el-radio-group>
@@ -267,13 +267,15 @@ export default {
        this.getInitTab()
     },
     methods: {
+        HandSelectChange(e){
+            this.radio2=e
+        },
        getRecord(){
            var params={
                CheckProjectNO:this.distribute.CheckProjectNO
            }
            this.axios.get('/lims/CheckRecord',{params:params}).then((res) => {
                if(res.data.code=='1000'){
-                   console.log(res)
                    this.Recordobj=res.data.data
                }
            })
