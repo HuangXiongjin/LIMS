@@ -45,7 +45,7 @@ def get_worker():
                 data = db_session.query(Worker).filter_by(Group=item).all()
                 for i in data:
                     result.append({'Id': i.Id, 'Name': i.Name})
-            return json.dumps({'code': '1000', 'msg': '操作成功', 'data': result}, cls=MyEncoder, ensure_ascii=False)
+            return json.dumps({'code': '1000', 'msg': '操作成功', 'data': result, 'Group': groups}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'POST':
             CheckProjectNO = request.values.get('CheckProjectNO')
             # Content = json.loads(request.values.get('Content'))

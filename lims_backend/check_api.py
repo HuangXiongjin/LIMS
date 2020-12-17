@@ -5,7 +5,7 @@ from flask import Blueprint, request
 
 from tools.handle import MyEncoder, log, get_short_id, get_uuid
 from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard, CheckForm, \
-    CheckProject, CheckLife
+    CheckProject, CheckLife, Distribute
 
 check = Blueprint('check', __name__)
 
