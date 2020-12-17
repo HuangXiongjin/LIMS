@@ -5,7 +5,7 @@ from flask import Blueprint, request
 
 from tools.handle import MyEncoder, log, get_short_id, get_uuid
 from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard, CheckForm, \
-    CheckProject, CheckLife, Distribute
+    CheckProject, CheckLife, Distribute, ReportVerify
 
 check = Blueprint('check', __name__)
 
@@ -99,6 +99,9 @@ def check_form():
             db_session.add(CheckLife(No=CheckProjectNO, User=CheckUser, Status='申请', ProductType=ProductType,
                                      CheckNumber=CheckNumber, Product=Name, OperationTime=CheckDate, Work='提交了请验单'))
             db_session.commit()
+            db_session.add(ReportVerify(CheckProjectNO=CheckProjectNO))
+            db_session.commit()
+
             return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
     except Exception as e:
         log(e)
@@ -169,10 +172,10 @@ def sample():
             db_session.add(CheckLife(No=CheckProjectNO, User=SampleUser, Status='取样', Product=data.Name,
                                      CheckNumber=data.CheckNumber, ProductType=data.ProductType,
                                      OperationTime=SampleTime, Work='完成了样品取样'))
-
             db_session.commit()
             data.SampleUser = SampleUser
             data.Status = '待检验'
+            data.Life = '接收'
             db_session.add(data)
             db_session.commit()
             return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)

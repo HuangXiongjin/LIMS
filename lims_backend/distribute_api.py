@@ -41,7 +41,7 @@ def get_worker():
             # Name = '代晓进'
             data1 = db_session.query(Worker).filter_by(Name=Name).first()
             query_data = db_session.query(Distribute).filter_by(CheckProjectNO=CheckProjectNO).first()
-            print(query_data.Group)
+            # print(query_data.Group)
             groups = query_data.Group
             result = []
             if data1.Group == '产品组主管':
@@ -59,10 +59,19 @@ def get_worker():
             return json.dumps({'code': '1000', 'msg': '操作成功', 'data': result, 'Group': groups}, cls=MyEncoder,
                               ensure_ascii=False)
         if request.method == 'POST':
+            Name = request.values.get('Name')
             CheckProjectNO = request.values.get('CheckProjectNO')
-            # Content = json.loads(request.values.get('Content'))
+            Content = json.loads(request.values.get('Content'))
             CheckStartTime = request.values.get('CheckStartTime')
-            Content = {"张三": ["性状", "检查1", "鉴别1"], "李四": ["鉴别2"]}
+            # Content = {"张三": ["性状", "检查1", "鉴别1"], "李四": ["鉴别2"]}
+            data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+            db_session.add(CheckLife(No=CheckProjectNO, User=Name, Status='质检', Product=data.Name,
+                                     CheckNumber=data.CheckNumber, ProductType=data.ProductType, OperationTime=CheckStartTime,
+                                     Work='完成了样品检测项分发'))
+            db_session.commit()
+            data.Life = '质检'
+            db_session.add_all(data)
+            db_session.commit()
             for name, works in Content.items():
                 for work in works:
                     db_session.add(WorkerBook(CheckProjectNO=CheckProjectNO, Name=name, CheckProject=work,
@@ -93,13 +102,13 @@ def product_distribute():
                                      CheckNumber=data.CheckNumber, ProductType=data.ProductType, OperationTime=Time,
                                      Work='完成了样品分发'))
             db_session.commit()
-
             for item in range(0, len(Action)):
                 if Action[item] == 'J':
                     d = Distribute()
                     d.CheckProjectNO = CheckProjectNO
                     data.Action = '检验'
                     data.Status = '检验中'
+                    data.Life = '分发'
                     data.JAccount = Account[item]
                     # data.JNo = No[item]
                     data.Foo = No[item]
@@ -111,11 +120,6 @@ def product_distribute():
                     data.OutUser = User
                     db_session.add_all([data, d])
                     db_session.commit()
-                    # db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=data.Name,
-                    #                          CheckNumber=data.CheckNumber, ProductType=data.ProductType,
-                    #                          OperationTime=Time,
-                    #                          Work='完成了样品分发'))
-                    # db_session.commit()
                 elif Action[item] == 'F':
                     d = Distribute()
                     d.CheckProjectNO = CheckProjectNO
