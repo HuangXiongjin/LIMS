@@ -74,6 +74,8 @@ class CheckLife(Base):
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
     No = Column(Unicode(32), nullable=True)
+    # 请验单号
+    CheckNumber = Column(Unicode(32), nullable=True)
     # 品名
     Product = Column(Unicode(16), nullable=True)
     # 类型
@@ -153,9 +155,11 @@ class WorkerBook(Base):
     # 检测完成时间
     CheckEndTime = Column(Unicode(32), default='')
     # 当前状态(待接收， 检测中， 已完成)
-    Status = Column(Unicode(32), nullable=True, default='待接收')
+    # Status = Column(Unicode(32), nullable=True, default='待接收')
     # 检测结果是否是否合格(不合格-合格)
     Result = Column(Unicode(32), nullable=True, default='')
+    # 备注
+    Comment = Column(Unicode(128), nullable=True, default='')
 
 
 class CheckForm(Base):
@@ -226,7 +230,7 @@ class CheckForm(Base):
     Foo = Column(Unicode(32), nullable=True, default='')
     # 分发动作（J:检验-F:复查-L:留样）
     Action = Column(Unicode(16), nullable=True, default='')
-    # 实验室组长
+    # 实验室组长分发组
     LaboratoryUser = Column(Unicode(16), nullable=True, default='')
     # 备注
     Comment = Column(Unicode(32), nullable=True)

@@ -33,12 +33,13 @@ def record():
 
 @distribute.route('/Worker', methods=['GET', 'POST'])
 def get_worker():
-    """实验室组员"""
+    """实验室组员检测项分发"""
     try:
         if request.method == 'GET':
-            groups = json.loads(request.values.get('Group'))
-            print(groups)
-            # groups = request.json
+            CheckProjectNO = request.values.get('CheckProjectNO')
+            query_data = db_session.query(Distribute).filter_by(CheckProjectNO=CheckProjectNO).first()
+            print(query_data.Group)
+            groups = json.loads(query_data.Group)
             result = []
             for item in groups:
                 data = db_session.query(Worker).filter_by(Group=item).all()
@@ -65,7 +66,6 @@ def get_worker():
 def product_distribute():
     """样品分发"""
     try:
-
         if request.method == 'POST':
             Action = json.loads(request.values.get('Action', '1'))
             CheckProjectNO = request.values.get('CheckProjectNO')
@@ -78,7 +78,8 @@ def product_distribute():
             Time = request.values.get('Time')
             data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
             db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=data.Name,
-                                     ProductType=data.ProductType, OperationTime=Time, Work='样品分发'))
+                                     CheckNumber=data.CheckNumber, ProductType=data.ProductType, OperationTime=Time,
+                                     Work='完成了样品分发'))
             db_session.commit()
 
             for item in range(0, len(Action)):
@@ -97,6 +98,11 @@ def product_distribute():
                     data.OutUser = User
                     db_session.add_all([data, d])
                     db_session.commit()
+                    # db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=data.Name,
+                    #                          CheckNumber=data.CheckNumber, ProductType=data.ProductType,
+                    #                          OperationTime=Time,
+                    #                          Work='完成了样品分发'))
+                    # db_session.commit()
                 elif Action[item] == 'F':
                     d = Distribute()
                     d.CheckProjectNO = CheckProjectNO
@@ -127,17 +133,21 @@ def product_distribute():
                     data.OutUser = User
                     db_session.add_all([data, d])
                     db_session.commit()
-                elif Action[item] == '接收':
+                elif Action[item] == 'Q':
                     d = Distribute()
                     d.CheckProjectNO = CheckProjectNO
                     data.Action = '接收'
-                    data.LaboratoryUser = LaboratoryUser
+                    data.LaboratoryUser = GroupUser
+                    d.Group = str(Group)
                     d.User = User
                     d.Time = Time
-                    d.No = No[item]
-                    d.Number = Account[item]
                     data.OutUser = User
                     db_session.add_all([data, d])
+                    db_session.commit()
+                    db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=data.Name,
+                                             CheckNumber=data.CheckNumber, ProductType=data.ProductType,
+                                             OperationTime=Time,
+                                             Work='完成了样品接收'))
                     db_session.commit()
             return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
@@ -151,8 +161,8 @@ def product_save():
     try:
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
         db_session.add(CheckLife(No=request.values.get('CheckProjectNO'), User=request.values.get('BatchName'),
-                                 Status='留样', Product=data.Name, ProductType=data.ProductType,
-                                 OperationTime=request.values.get('BatchTime'), Work='样品留样'))
+                                 Status='留样', Product=data.Name, ProductType=data.ProductType, Work='完成了样品留样',
+                                 OperationTime=request.values.get('BatchTime'), CheckNumber=data.CheckNumber))
         db_session.commit()
         db_session.add(ProductSave(CheckProjectNO=request.values.get('CheckProjectNO'), Name=request.values.get('Name'),
                                    Specs=request.values.get('Specs'), Position=request.values.get('Position'),
@@ -175,13 +185,17 @@ def product_save():
 
 @distribute.route('/Check', methods=['GET', 'POST'])
 def test():
-    """人员检测"""
+    """人员检测记录"""
     try:
         if request.method == 'GET':
             name = request.values.get('Name')
-            query_work = db_session.query(WorkerBook).filter_by(Name=name).all()
-            check_data = [item.CheckProject for item in query_work]
-        return json.dumps({'code': '1000', 'msg': '操作成功', 'data': check_data}, cls=MyEncoder, ensure_ascii=False)
+            query_work = db_session.query(WorkerBook).filter_by(Name=name).first()
+            query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO).all()
+            check_data = [{"name": item.Name, "work": item.CheckProject} for item in query_data]
+            return json.dumps({'code': '1000', 'msg': '操作成功', 'data': check_data}, cls=MyEncoder, ensure_ascii=False)
+        if request.method == 'POST':
+            pass
+            return json.dumps({'code': '1000', 'msg': '操作成功', 'data': 'check_data'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)

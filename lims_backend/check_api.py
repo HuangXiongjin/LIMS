@@ -97,7 +97,7 @@ def check_form():
                 db_session.add_all(data)
                 db_session.commit()
             db_session.add(CheckLife(No=CheckProjectNO, User=CheckUser, Status='申请', ProductType=ProductType,
-                                     Product=Name, OperationTime=CheckDate, Work='提交了请验单'))
+                                     CheckNumber=CheckNumber, Product=Name, OperationTime=CheckDate, Work='提交了请验单'))
             db_session.commit()
             return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
     except Exception as e:
@@ -116,8 +116,8 @@ def check_verify():
         items = json.loads(CheckProjectNO)
         for item in items:
             data = db_session.query(CheckForm).filter_by(CheckProjectNO=item).first()
-            db_session.add(CheckLife(No=item, User=VerifyName, Status="审核", Product=data.Name,
-                                     ProductType=data.ProductType, OperationTime=DateTime, Work="通过审核"))
+            db_session.add(CheckLife(No=item, User=VerifyName, Status="审核", Product=data.Name, CheckNumber=data.CheckNumber,
+                                     ProductType=data.ProductType, OperationTime=DateTime, Work="请验申请通过审核"))
             db_session.commit()
             data.VerifyUser = VerifyName
             data.VerifyDate = DateTime
@@ -167,7 +167,9 @@ def sample():
             SampleTime = request.values.get('SampleTime')
             data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
             db_session.add(CheckLife(No=CheckProjectNO, User=SampleUser, Status='取样', Product=data.Name,
-                                     ProductType=data.ProductType, OperationTime=SampleTime, Work='完成了样品取样'))
+                                     CheckNumber=data.CheckNumber, ProductType=data.ProductType,
+                                     OperationTime=SampleTime, Work='完成了样品取样'))
+
             db_session.commit()
             data.SampleUser = SampleUser
             data.Status = '待检验'
