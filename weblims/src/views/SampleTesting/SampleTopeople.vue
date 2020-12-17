@@ -61,44 +61,39 @@
                 <el-col :span='24'>
                       <el-row class="padd15" v-if="radio2=='样本分发'">
                           <el-col :span='24' class="mgt24">
-                              <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                              <el-form :inline="true">
                                 <el-col :span='8'>
                                   <el-form-item label="品名">
-                                    <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+                                    <el-input v-model="Row.Name" placeholder="品名"></el-input>
                                   </el-form-item>
                                </el-col>
                                <el-col :span='8'>
                                  <el-form-item label="类别">
-                                    <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+                                    <el-input v-model="Row.ProductType" placeholder="类别"></el-input>
                                 </el-form-item>
                                </el-col>
                                <el-col :span='8'>
                                  <el-form-item label="分配样量">
-                                    <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+                                    <el-input v-model="Row.JAccount" placeholder="分配样量"></el-input>
                                 </el-form-item>
                                </el-col>
                                <el-col :span='8'>
                                  <el-form-item label="批号">
-                                    <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+                                    <el-input v-model="Row.ProductNumber" placeholder="批号"></el-input>
                                 </el-form-item>
                                </el-col>
                                <el-col :span='8'>
                                  <el-form-item label="编号">
-                                    <el-input v-model="formInline.user" placeholder="审批人"></el-input>
-                                </el-form-item>
-                               </el-col>
-                               <el-col :span='8'>
-                                 <el-form-item label="分配小组">
-                                    <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+                                    <el-input v-model="Row.Foo" placeholder="编号"></el-input>
                                 </el-form-item>
                                </el-col>
                                <el-col :span='10'>
-                                 <el-form-item label="活动区域">
+                                 <!-- <el-form-item label="活动区域">
                                     <el-select v-model="formInline.region" placeholder="活动区域">
                                     <el-option label="区域一" value="shanghai"></el-option>
                                     <el-option label="区域二" value="beijing"></el-option>
                                     </el-select>
-                                </el-form-item>
+                                </el-form-item> -->
                                </el-col>
                               </el-form>
                           </el-col>
@@ -210,10 +205,6 @@ var moment=require('moment')
 export default {
     data(){
         return {
-            formInline: {
-            user: '',
-            region: ''
-            },
            curSta:'确认分发',
            Discernopt:true,
            Checkopt:false,
@@ -276,7 +267,15 @@ export default {
        this.getInitTab()
     },
     methods: {
-       getRecord(){
+       getWorker(){ //获取分组和人员
+           var params={
+               CheckProjectNO:this.distribute.CheckProjectNO
+           }
+           this.axios.get('/lims/Worker',{params:params}).then((res) => {
+               console.log(res)
+           })
+       },
+       getRecord(){ //获取记录项数据
            var params={
                CheckProjectNO:this.distribute.CheckProjectNO
            }
@@ -357,6 +356,7 @@ export default {
             this.distribute.CheckProjectNO=row.CheckProjectNO
             this.getJbInfo(row.CheckProjectNO)
             this.getRecord()
+            this.getWorker()
         },
         getJbInfo(CheckProjectNO){
             var params={

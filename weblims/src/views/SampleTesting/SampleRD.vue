@@ -662,8 +662,11 @@ export default {
         handleSelect(key) {
             this.currentChoose=key
         },
-        selectSampleTab(){
-            
+        selectSampleTab(e){
+            this.radio2=e
+            if(e==='记录分发'){
+                this.currentChoose='1'
+            }
         },
         LookJbInfo(){
             this.dialogTableVisible=true
