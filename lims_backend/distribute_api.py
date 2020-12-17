@@ -37,15 +37,27 @@ def get_worker():
     try:
         if request.method == 'GET':
             CheckProjectNO = request.values.get('CheckProjectNO')
+            Name = request.values.get('Name')
+            # Name = '代晓进'
+            data1 = db_session.query(Worker).filter_by(Name=Name).first()
             query_data = db_session.query(Distribute).filter_by(CheckProjectNO=CheckProjectNO).first()
             print(query_data.Group)
-            groups = json.loads(query_data.Group)
+            groups = query_data.Group
             result = []
-            for item in groups:
-                data = db_session.query(Worker).filter_by(Group=item).all()
+            if data1.Group == '产品组主管':
+                data = db_session.query(Worker).filter_by(Group='产品组').all()
                 for i in data:
                     result.append({'Id': i.Id, 'Name': i.Name})
-            return json.dumps({'code': '1000', 'msg': '操作成功', 'data': result, 'Group': groups}, cls=MyEncoder, ensure_ascii=False)
+            elif data1.Group == '微生物组主管':
+                data = db_session.query(Worker).filter_by(Group='微生物组').all()
+                for i in data:
+                    result.append({'Id': i.Id, 'Name': i.Name})
+            elif data1.Group == '物料组主管':
+                data = db_session.query(Worker).filter_by(Group='物料组').all()
+                for i in data:
+                    result.append({'Id': i.Id, 'Name': i.Name})
+            return json.dumps({'code': '1000', 'msg': '操作成功', 'data': result, 'Group': groups}, cls=MyEncoder,
+                              ensure_ascii=False)
         if request.method == 'POST':
             CheckProjectNO = request.values.get('CheckProjectNO')
             # Content = json.loads(request.values.get('Content'))
