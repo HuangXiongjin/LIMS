@@ -72,7 +72,7 @@ def product_distribute():
             User = request.values.get('User')
             Account = json.loads(request.values.get('Account', '1'))
             No = json.loads(request.values.get('no', '1'))
-            Group = json.loads(request.values.get('Group'))
+            Group = json.loads(request.values.get('Group', '1'))
             GroupUser = request.values.get('GroupUser')
             LaboratoryUser = request.values.get('LaboratoryUser')
             Time = request.values.get('Time')
@@ -89,6 +89,7 @@ def product_distribute():
                     data.Action = '检验'
                     data.Status = '检验中'
                     data.JAccount = Account[item]
+                    # data.JNo = No[item]
                     data.Foo = No[item]
                     d.User = User
                     d.Time = Time
@@ -109,6 +110,7 @@ def product_distribute():
                     data.Action = '复查'
                     data.Status = '复查'
                     data.FAccount = Account[item]
+                    # data.FNo = No[item]
                     data.FUser = User
                     data.Foo = No[item]
                     d.User = User
