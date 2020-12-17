@@ -34,8 +34,6 @@
               <el-radio-button label="品名"></el-radio-button>
               <el-radio-button label="批次号"></el-radio-button>
               <el-radio-button label="录入数据字段"></el-radio-button>
-              <el-radio-button label="采集数据字段"></el-radio-button>
-              <el-radio-button label="点击按钮"></el-radio-button>
             </el-radio-group>
           </el-form-item>
           <el-form-item>
