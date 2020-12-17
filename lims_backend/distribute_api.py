@@ -60,6 +60,7 @@ def get_worker():
                               ensure_ascii=False)
         if request.method == 'POST':
             Name = request.values.get('Name')
+            Worker = request.values.get('Worker')
             CheckProjectNO = request.values.get('CheckProjectNO')
             Content = json.loads(request.values.get('Content'))
             CheckStartTime = request.values.get('CheckStartTime')
@@ -72,11 +73,10 @@ def get_worker():
             data.Life = '质检'
             db_session.add_all(data)
             db_session.commit()
-            for name, works in Content.items():
-                for work in works:
-                    db_session.add(WorkerBook(CheckProjectNO=CheckProjectNO, Name=name, CheckProject=work,
-                                              CheckStartTime=CheckStartTime))
-                    db_session.commit()
+            for work in Content:
+                db_session.add(WorkerBook(CheckProjectNO=CheckProjectNO, Name=Worker, CheckProject=work,
+                                          CheckStartTime=CheckStartTime))
+                db_session.commit()
             return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder)
     except Exception as e:
         log(e)
