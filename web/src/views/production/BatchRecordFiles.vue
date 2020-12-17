@@ -31,6 +31,8 @@
         <el-form :inline="true">
           <el-form-item label="添加数据类型：">
              <el-radio-group v-model="handleCellRadio" size="small">
+              <el-radio-button label="品名"></el-radio-button>
+              <el-radio-button label="批次号"></el-radio-button>
               <el-radio-button label="录入数据字段"></el-radio-button>
               <el-radio-button label="采集数据字段"></el-radio-button>
               <el-radio-button label="点击按钮"></el-radio-button>
@@ -148,6 +150,14 @@
                   }else if(that.handleCellRadio === "采集数据字段"){
                     that.collectDialogVisible = true
                     that.cellDom = $(this)
+                  }else if(that.handleCellRadio === "品名"){
+                    $(this).addClass("collect")
+                    $(this).attr("data-field","ProductName")
+                    $(this).attr("title","品名")
+                  }else if(that.handleCellRadio === "批次号"){
+                    $(this).addClass("collect")
+                    $(this).attr("data-field","BatchNo")
+                    $(this).attr("title","批次号")
                   }
                 }
               })
@@ -301,7 +311,7 @@
         this.$refs.multipleTableCollect.clearSelection()
         this.$refs.multipleTableCollect.toggleRowSelection(row)
       },
-      saveCollectData(){
+      saveCollectData(){  //保存选择的采集值
         if(this.CollectTableData.multipleSelection.length == 1){
           this.cellDom.addClass("collect")
           this.cellDom.attr("data-field",this.CollectTableData.multipleSelection[0].collectKey)

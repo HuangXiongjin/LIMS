@@ -257,8 +257,8 @@
             Description:""
           },
           searchField:{
-            PlanStatus:"",
-            CreateTimeTime:"",
+            PlanStatus:"待分批",
+            CreateTimeTime:moment().format("YYYY-MM-DD"),
           }
         },
         selectPlanList:[],
