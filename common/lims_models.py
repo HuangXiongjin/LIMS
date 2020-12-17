@@ -14,18 +14,20 @@ db_session = Session()
 Base = declarative_base(engine)
 
 
-class WorkRecord(Base):
-    """检测分发指定"""
-    __tablename__ = 'WorkRecord'
+class ReportVerify(Base):
+    """报告审核"""
+    __tablename__ = 'ReportVerify'
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 标识
     CheckProjectNO = Column(Unicode(32), nullable=True)
-    # 员工编号
-    No = Column(Unicode(16), nullable=True)
-    # 被分发的人
-    Name = Column(Unicode(16), nullable=True)
-    # 被分发的内容
-    Content = Column(Unicode(16), nullable=True)
+    # 实验室主管
+    laboratory = Column(Unicode(16), nullable=True, default='N')
+    # QC主任
+    QC = Column(Unicode(16), nullable=True, default='N')
+    # QA主任
+    QA = Column(Unicode(16), nullable=True, default='N')
+    # QA主任
+    QS = Column(Unicode(16), nullable=True, default='N')
 
 
 class Record(Base):
@@ -74,6 +76,8 @@ class CheckLife(Base):
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
     No = Column(Unicode(32), nullable=True)
+    # 请验单号
+    CheckNumber = Column(Unicode(32), nullable=True)
     # 品名
     Product = Column(Unicode(16), nullable=True)
     # 类型
@@ -141,17 +145,25 @@ class WorkerBook(Base):
     # 工号
     WorkNo = Column(Unicode(32), nullable=True)
     # 检验工序
-    CheckProcedure = Column(Unicode(32), nullable=True)
+    CheckProject = Column(Unicode(128), nullable=True)
     # 样品名称
-    SampleName = Column(Unicode(32), nullable=True)
+    # SampleName = Column(Unicode(32), nullable=True)
+    # 请验项目标识
+    CheckProjectNO = Column(Unicode(32), nullable=True)
     # 批号
-    SampleNumber = Column(Unicode(32), nullable=True)
+    # SampleNumber = Column(Unicode(128), nullable=True)
     # 检测开始时间
-    CheckStartTime = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    CheckStartTime = Column(Unicode(32), default='')
     # 检测完成时间
     CheckEndTime = Column(Unicode(32), default='')
+    # 当前状态(待接收， 检测中， 已完成)
+    # Status = Column(Unicode(32), nullable=True, default='待接收')
+    # 检测结果是否是否合格(符合规定-不符合规定)
+    Result = Column(Unicode(32), nullable=True, default='')
     # 备注
-    Comment = Column(Unicode(32), nullable=True)
+    Comment = Column(Unicode(128), nullable=True, default='')
+    # 完成状态
+    Status = Column(Unicode(32), default='N')
 
 
 class CheckForm(Base):
@@ -217,10 +229,12 @@ class CheckForm(Base):
     # 复查留样人
     FUser = Column(Unicode(16), nullable=True, default='')
     # 检测分发量
-    JAccount = Column(Unicode(16), nullable=True, default='')
+    JAccount = Column(Unicode(32), nullable=True, default='')
+    # 编号
+    Foo = Column(Unicode(32), nullable=True, default='')
     # 分发动作（J:检验-F:复查-L:留样）
     Action = Column(Unicode(16), nullable=True, default='')
-    # 实验室组长
+    # 实验室组长分发组
     LaboratoryUser = Column(Unicode(16), nullable=True, default='')
     # 备注
     Comment = Column(Unicode(32), nullable=True)
@@ -301,15 +315,15 @@ class ConclusionRecord(Base):
     # 规格
     Specs = Column(Unicode(32), nullable=True)
     # 大小样
-    BigLevel = Column(Unicode(32), nullable=True)
+    BigLevel = Column(Unicode(32), nullable=True, default='大样')
     # 药膏
-    ointment = Column(Unicode(32), nullable=True)
+    ointment = Column(Unicode(32), nullable=True, default='——')
     # 检验项目
     CheckProject = Column(Unicode(32), nullable=True)
     # 法定标准
-    StatutoryStandards = Column(Unicode(32), nullable=True)
+    StatutoryStandards = Column(Unicode(32), nullable=True, default='')
     # 内验标准
-    InnerStandards = Column(Unicode(32), nullable=True)
+    InnerStandards = Column(Unicode(32), nullable=True, default='')
     # 检验结果
     Comment = Column(Unicode(32), nullable=True)
     # 判定
@@ -342,6 +356,8 @@ class ProductSave(Base):
     BatchDepartment = Column(Unicode(32), nullable=True)
     # 留样人
     BatchName = Column(Unicode(32), nullable=True)
+    # 留样位置
+    Position = Column(Unicode(32), nullable=True)
     # 留样日期
     BatchTime = Column(Unicode(32), nullable=True, default='')
     # 经手人

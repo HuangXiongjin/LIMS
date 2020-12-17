@@ -208,7 +208,7 @@ export default {
                 }],
             batchTableData:{ //物料BOM
                 data:[],
-                limit: 3,//当前显示多少条
+                limit: 5,//当前显示多少条
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },

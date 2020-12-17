@@ -209,7 +209,7 @@
                                     </el-col>
                                     <el-col :span='11'>
                                         <el-form-item label="检验日期：">
-                                            <el-input v-model="RecordForm.CheckTime"></el-input>
+                                            <el-input v-model="RecordForm.CheckTime" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
@@ -254,7 +254,7 @@
                     <div v-if="currentChoose=='2'">
                         <div class="mgt24 mgb24">产品留样原始记录</div>
                         <div style="border:1px solid #ccc;paddingTop:26px;">
-                            <el-form ref="form" :model="RecordForm" label-width="100px">
+                            <el-form ref="form" :model="LyForm" label-width="100px">
                                 <el-row>
                                     <el-col :span='11'>
                                         <el-form-item label="品名：">
@@ -262,7 +262,7 @@
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
-                                        <el-form-item label="批号：">
+                                        <el-form-item label="产品批号：">
                                             <el-input v-model="Row.ProductNumber" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
@@ -274,42 +274,71 @@
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
-                                        <el-form-item label="请验部门：">
-                                            <el-input v-model="Row.CheckDepartment" :disabled="true"></el-input>
+                                        <el-form-item label="包装规格：">
+                                            <el-input v-model="LyForm.PackSpecs"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
                                     <el-col :span='11'>
-                                        <el-form-item label="剂型：">
-                                            <el-input v-model="RecordForm.Type"></el-input>
+                                        <el-form-item label="理论产量：">
+                                            <el-input v-model="LyForm.TheoreticalYield"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
-                                        <el-form-item label="批数量：">
-                                            <el-input v-model="Row.Amount" :disabled="true"></el-input>
+                                        <el-form-item label="留样数量：">
+                                            <el-input v-model="LyForm.BatchAmount"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
                                     <el-col :span='11'>
-                                        <el-form-item label="取样时间：">
-                                            <el-input v-model="Row.VerifyDate" :disabled="true"></el-input>
+                                        <el-form-item label="留样部门：">
+                                            <el-input v-model="LyForm.BatchDepartment"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
-                                        <el-form-item label="检验日期：">
-                                            <el-input v-model="RecordForm.CheckTime"></el-input>
+                                        <el-form-item label="留样人：">
+                                            <el-input v-model="LyForm.BatchName"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
-                                    <el-col :span='22'>
-                                        <el-form-item label="检验依据：">
-                                            <el-input v-model="RecordForm.Basis"></el-input>
+                                    <el-col :span='11'>
+                                        <el-form-item label="留样位置：">
+                                            <el-input v-model="LyForm.Position"></el-input>
                                         </el-form-item>
                                     </el-col>
-                                </el-row>    
+                                    <el-col :span='11'>
+                                        <el-form-item label="留样时间：">
+                                            <el-date-picker v-model="LyForm.BatchTime" type="date" placeholder="选择日期"></el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row >
+                                    <el-col :span='11'>
+                                        <el-form-item label="经手人：">
+                                            <el-input v-model="LyForm.Handler"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span='11'>
+                                        <el-form-item label="生产日期：">
+                                            <el-date-picker v-model="LyForm.ProductionDate" type="date" placeholder="选择日期"></el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>  
+                                <el-row >
+                                    <el-col :span='11'>
+                                        <el-form-item label="有效日期：">
+                                            <el-date-picker v-model="LyForm.ValidityDate" type="date" placeholder="选择日期"></el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span='11'>
+                                        <el-form-item label="备注：">
+                                            <el-input type="textarea" autosize placeholder="请输入内容" v-model="LyForm.Comment"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
                             </el-form>
                         </div>
                     </div>
@@ -391,15 +420,22 @@ export default {
            Checkopt:false,
            Lyopt:false,
            RecordForm:{
-               Product:'',
-               ProductNumber:'',
-               Specs:'',
-               CheckDepartment:'',
                Type:'',
-               Number:'',
-               SampleTime:'',
                CheckTime:'',
                Basis:'',
+           },
+           LyForm:{
+               PackSpecs:'',
+               TheoreticalYield:'',
+               BatchAmount:'',
+               BatchDepartment:'',
+               BatchName:'',
+               Position:'',
+               BatchTime:'',
+               Handler:'',
+               ProductionDate:'',
+               ValidityDate:'',
+               Comment:''
            },
            Row:{},
            distribute:{
@@ -513,26 +549,59 @@ export default {
 
         },
         postSampleRecord(){ //记录分发
-           var params={
+            var params1={
+                CheckProjectNO:this.distribute.CheckProjectNO,
+                Type:this.RecordForm.Type,
+                CheckTime:this.RecordForm.CheckTime,
+                Basis:this.RecordForm.Basis,
+            }
+            var params2={
                CheckProjectNO:this.distribute.CheckProjectNO,
-               Product:this.RecordForm.Product,
-               ProductNumber:this.RecordForm.ProductNumber,
-               Specs:this.RecordForm.Specs,
-               CheckDepartment:this.RecordForm.CheckDepartment,
-               Type:this.RecordForm.Type,
-               Number:this.RecordForm.Number,
-               SampleTime:this.RecordForm.SampleTime,
-               CheckTime:this.RecordForm.CheckTime,
-               Basis:this.RecordForm.Basis,
-           }
-           this.axios.post('/lims/Record',this.qs.stringify(params)).then((res) => {
-               if(res.data.code=='1000'){
-                   this.$message({
-                       type:'success',
-                       message:'记录下发成功'
-                   })
-               }
-           })
+               Product:this.Row.Name,
+               Specs:this.Row.Specs,
+               ProductNumber:this.Row.ProductNumber,
+               PackSpecs:this.LyForm.PackSpecs,
+               TheoreticalYield:this.LyForm.TheoreticalYield,
+               BatchAmount:this.LyForm.BatchAmount,
+               BatchDepartment:this.LyForm.BatchDepartment,
+               BatchName:this.LyForm.BatchName,
+               Position:this.LyForm.Position,
+               BatchTime:moment(this.LyForm.BatchTime).format("YYYY-MM-DD"),
+               Handler:this.LyForm.Handler,
+               ProductionDate:moment(this.LyForm.ProductionDate).format("YYYY-MM-DD"),
+               ValidityDate:moment(this.LyForm.ValidityDate).format("YYYY-MM-DD"),
+               Comment:this.LyForm.Comment
+            }
+            if(this.currentChoose=='1'){
+                this.axios.post('/lims/CheckRecord',this.qs.stringify(params1)).then((res) => {
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'检验记录下发成功'
+                    })
+                }else{
+                    this.$message({
+                        type:'error',
+                        message:'检验记录下发失败'
+                    })
+                }
+            })
+            }else if(this.currentChoose=='2'){
+                this.axios.post('/lims/ProductSave',this.qs.stringify(params2)).then((res) => {
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'留样记录下发成功'
+                    })
+                }else{
+                    this.$message({
+                        type:'error',
+                        message:'留样记录下发失败'
+                    })
+                }
+            })
+            }
+           
         },
         DistributeSample(act){
             var params={
@@ -593,8 +662,11 @@ export default {
         handleSelect(key) {
             this.currentChoose=key
         },
-        selectSampleTab(){
-            
+        selectSampleTab(e){
+            this.radio2=e
+            if(e==='记录分发'){
+                this.currentChoose='1'
+            }
         },
         LookJbInfo(){
             this.dialogTableVisible=true
