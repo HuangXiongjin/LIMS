@@ -84,6 +84,10 @@
                   </el-pagination>
             </div>
         </el-col>
+        <el-col :span='24' class="marginBottom" style="textAlign:right;">
+          <el-button type="primary" v-show="sonstep != 0" @click="sonLastStep">上一步</el-button>
+          <el-button type="primary" v-show="sonstep != 2" @click="sonNextStep">下一步</el-button>
+        </el-col>
        </el-row>
 </template>
 <script>
@@ -113,7 +117,14 @@ export default {
         this.getSelectedEq()
         this.getYxfBatch()
     },
+    props:['sonNext','sonLast','sonstep'],
     methods: {
+      sonNextStep(){
+        this.$emit('sonNext')
+      },
+      sonLastStep(){
+        this.$emit('sonLast')
+      },
       refreshData(){ // 刷新数据
         this.getSelectedEq()
         this.getYxfBatch()

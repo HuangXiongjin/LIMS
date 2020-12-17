@@ -8,8 +8,6 @@
           </el-col>
           <el-col :span='24' class="platformContainer">
            <div style="height:40px;fontSize:16px;fontWeight:700;">批次列表</div>
-           <div class="marginBottom">
-             <el-button type="success" size='mini' @click="shMultiplebatch" v-has="['计划审核']">多批次审核</el-button></div>
               <el-table
                   v-loading="loading"
                   element-loading-text="拼命加载中"
@@ -36,8 +34,13 @@
                     <b class="" v-else>{{ scope.row.PlanStatus }}</b>
                     </template>
                   </el-table-column>
-                  <el-table-column label="操作" fixed="right" width='100'>
+                  <el-table-column label="操作" fixed="right" width='170'>
                     <template slot-scope="scope">
+                      <el-button
+                        size="mini"
+                        type="success"
+                         v-if="scope.row.PlanStatus==='待审核'"
+                        @click="checkpass(scope.$index, scope.row)" v-has="['计划审核']">通过</el-button>
                       <el-button
                         size="mini"
                         type="danger"
@@ -64,6 +67,11 @@
         </el-col>
        </el-row>
     </el-col>
+    <el-col :span='24' class="marginBottom" style="textAlign:right;">
+      <el-button type="success" @click="shMultiplebatch" v-has="['计划审核']">多批次审核</el-button>
+      <el-button type="primary" v-show="sonstep != 2" @click="sonNextStep">下一步</el-button>
+      <el-button type="primary" v-show="sonstep != 0" @click="sonLastStep">上一步</el-button>
+      </el-col>
   </el-row>
 </template>
 
@@ -94,12 +102,19 @@ var moment=require('moment')
         batchtableconfig:[{prop:'PlanNum',label:"计划单号"},{prop:'BatchID',label:'批次号'},{prop:'SchedulePlanCode',label:'调度编号'},{prop:'BrandCode',label:'品名编码'},{prop:'BrandName',label:'品名'},{prop:'BrandType',label:'产品类型'},{prop:'PlanQuantity',label:'计划产量'},{prop:'Unit',label:'单位'}],//批次列表
       }
     },
+    props:['sonNext','sonLast','sonstep'],
     created(){
       this.getPlanManager()
     },
     mounted(){
     },
     methods:{
+      sonNextStep(){
+        this.$emit('sonNext')
+      },
+      sonLastStep(){
+        this.$emit('sonLast')
+      },
       refreshData(){ //刷新数据
         this.getPlanManager()
       },
@@ -114,6 +129,36 @@ var moment=require('moment')
           }
         });
 
+      },
+      checkpass(index,row){
+          var obj={
+             PlanStatus:'待配置',
+             Description:'',
+             ID:row.ID
+          }
+          var params={
+              datalist:JSON.stringify(obj)
+            }
+          this.$confirm('是否通过该批次审核, 是否继续?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              this.axios.post('/api/checkPlanManager',this.qs.stringify(params)).then((res) => {
+               if(res.data.code==='200'){
+                 this.$message({
+                   type:'success',
+                   message:'批次审核成功'
+                 })
+                 this.getPlanManager()
+               }
+             })
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            });
+          });
       },
       checkNopass(index,row){
         var id=row.ID
