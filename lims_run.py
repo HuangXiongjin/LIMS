@@ -7,6 +7,7 @@ from lims_backend.check_api import check
 from lims_backend.distribute_api import distribute
 from lims_backend.quality_standard_api import system_interface
 from lims_backend.report_api import report
+from lims_models import db_session
 from system_backend.SystemManagement import account_auth
 from system_backend.SystemManagement.account_auth import login_auth
 from tools.MyEncode import MyEncoder
@@ -25,23 +26,38 @@ app.register_blueprint(check)
 app.register_blueprint(system_interface)
 app.register_blueprint(login_auth)
 
-api = Api(app)
-from common.common_cuid import select, update, delete, insert
-class CUIDList(Resource):
-    def get(self):
-        return select(request.values)
 
-    def post(self):
-        return insert(request.values)
+class CRUD:
+    # 定义函数完成构造对象数据初始化
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
-    def put(self):
-        return update(request.values)
+    # 定义一个数据添加操作
+    @classmethod
+    def add(self, *args, **kwargs):
+        obj = ()
+        if len(args) > 0 and isinstance(*args, list):
+            for dict in args[0]:
+                obj = self(**dict)
+                db_session.add(obj)
+        else:
+            obj = self(**kwargs)
+            db_session.add(obj)
+        db_session.commit()
+        return obj
 
+    # 定义函数完成数据更新
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+        db_session.commit()
+
+    # 定义函数完成数据删除
     def delete(self):
-        return delete(request.values)
-
-
-api.add_resource(CUIDList, '/CUID')
+        db_session.delete(self)
+        db_session.commit()
 
 
 def main():

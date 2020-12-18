@@ -5,7 +5,7 @@ from flask import Blueprint, request
 
 from tools.handle import MyEncoder, log, get_short_id, get_uuid
 from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard, CheckForm, \
-    CheckProject, Distribute, ProductSave, CheckLife, Worker, Record, WorkerBook
+    CheckProject, Distribute, ProductSave, CheckLife, Worker, Record, WorkerBook, ProductSaveSurvey
 
 distribute = Blueprint('distribute', __name__)
 
@@ -21,8 +21,10 @@ def record():
             CheckProjectNO = request.values.get('CheckProjectNO')
             data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
             db_session.add(Record(CheckProjectNO=CheckProjectNO, Product=data.Name, ProductNumber=data.ProductNumber,
-                                  Specs=data.Specs, CheckDepartment=data.CheckDepartment, Type=request.values.get('Type'),
-                                  Number=data.Amount, SampleTime=data.SampleTime, CheckTime=request.values.get('CheckTime'),
+                                  Specs=data.Specs, CheckDepartment=data.CheckDepartment,
+                                  Type=request.values.get('Type'),
+                                  Number=data.Amount, SampleTime=data.SampleTime,
+                                  CheckTime=request.values.get('CheckTime'),
                                   Basis=request.values.get('Basis')))
             db_session.commit()
             return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
@@ -67,7 +69,8 @@ def get_worker():
             # Content = {"张三": ["性状", "检查1", "鉴别1"], "李四": ["鉴别2"]}
             data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
             db_session.add(CheckLife(No=CheckProjectNO, User=Name, Status='质检', Product=data.Name,
-                                     CheckNumber=data.CheckNumber, ProductType=data.ProductType, OperationTime=CheckStartTime,
+                                     CheckNumber=data.CheckNumber, ProductType=data.ProductType,
+                                     OperationTime=CheckStartTime,
                                      Work='完成了样品检测项分发'))
             db_session.commit()
             data.Life = '质检'
@@ -149,6 +152,8 @@ def product_distribute():
                     CheckForm_data.LUser = User
                     CheckForm_data.LAccount = Account[item]
                     CheckForm_data.Foo = No[item]
+                    pro_save.BatchNumber = No[item]
+                    pro_save.Status = '待接收'
                     d.User = User
                     d.Time = Time
                     d.No = No[item]
@@ -167,10 +172,11 @@ def product_distribute():
                     CheckForm_data.OutUser = User
                     db_session.add_all([CheckForm_data, d])
                     db_session.commit()
-                    db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=CheckForm_data.Name,
-                                             CheckNumber=CheckForm_data.CheckNumber, ProductType=CheckForm_data.ProductType,
-                                             OperationTime=Time,
-                                             Work='完成了样品接收'))
+                    db_session.add(
+                        CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=CheckForm_data.Name,
+                                  CheckNumber=CheckForm_data.CheckNumber, ProductType=CheckForm_data.ProductType,
+                                  OperationTime=Time,
+                                  Work='完成了样品接收'))
                     db_session.commit()
             return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
@@ -196,19 +202,20 @@ def product_save():
             if CheckProjectNO is None:
                 results = db_session.query(ProductSave).filter_by(Name=Product).order_by(ProductSave.Id.desc()).all()
                 data = results[(page - 1) * per_page:page * per_page]
-                return json.dumps({'code': '1000', 'msg': '操作成功', 'data': data, 'total': len(results)}, cls=MyEncoder, ensure_ascii=False)
+                return json.dumps({'code': '1000', 'msg': '操作成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
+                                  ensure_ascii=False)
             else:
                 data = db_session.query(ProductSave).filter_by(
                     CheckProjectNO=request.values.get('CheckProjectNO'), Name=Product).first()
                 return json.dumps({'code': '1000', 'msg': '操作成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'POST':
-
             data = db_session.query(CheckForm).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
             db_session.add(CheckLife(No=request.values.get('CheckProjectNO'), User=request.values.get('BatchName'),
                                      Status='留样', Product=data.Name, ProductType=data.ProductType, Work='完成了样品留样',
                                      OperationTime=request.values.get('BatchTime'), CheckNumber=data.CheckNumber))
             db_session.commit()
-            pro_save = db_session.query(ProductSave).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
+            pro_save = db_session.query(ProductSave).filter_by(
+                CheckProjectNO=request.values.get('CheckProjectNO')).first()
             pro_save.Name = request.values.get('Product')
             pro_save.Specs = request.values.get('Specs')
             pro_save.Position = request.values.get('Position')
@@ -224,6 +231,7 @@ def product_save():
             pro_save.Comment = request.values.get('Comment')
             pro_save.ProductSaveNo = get_uuid()
             pro_save.BatchTime = request.values.get('BatchTime')
+            pro_save.Status = '留样观察中'
             # db_session.add(ProductSave(CheckProjectNO=request.values.get('CheckProjectNO'), Name=request.values.get('Name'),
             #                            Specs=request.values.get('Specs'), Position=request.values.get('Position'),
             #                            PackSpecs=request.values.get('PackSpecs'),
@@ -260,3 +268,55 @@ def test():
     except Exception as e:
         log(e)
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
+
+
+@distribute.route('/ProductSaveSurvey', methods=['POST'])
+def product_save_survey():
+    try:
+        if request.method == 'POST':
+            data = ProductSaveSurvey()
+            data.CheckProjectNO = request.values.get('CheckProjectNO')
+            data.Name = request.values.get('Name')
+            data.Temperature = request.values.get('Temperature')
+            data.RH = request.values.get('RH')
+            data.Position = request.values.get('Position')
+            data.BatchNumber = request.values.get('BatchNumber')
+            data.BatchDate = request.values.get('BatchDate')
+            data.Specs = request.values.get('Specs')
+            data.BatchAmount = request.values.get('BatchAmount')
+            data.Handler = request.values.get('Handler')
+            data.Project = request.values.get('Project')
+            data.SixMonth = request.values.get('SixMonth')
+            data.TwelveMonth = request.values.get('TwelveMonth')
+            data.EighteenMonth = request.values.get('EighteenMonth')
+            data.TwentyFourMonth = request.values.get('TwentyFourMonth')
+            data.ThirtyMonth = request.values.get('ThirtyMonth')
+            data.ThirtySix = request.values.get('ThirtySix')
+            data.FortyEight = request.values.get('FortyEight')
+            data.Conclude = request.values.get('Conclude')
+            data.Comment = request.values.get('Comment')
+            db_session.add(data)
+            db_session.commit()
+            return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
+    except Exception as e:
+        log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
+
+
+@distribute.route('/ProductSaveList', methods=['GET'])
+def save_list():
+    if request.method == 'GET':
+        # 当前页码
+        page = int(request.values.get('Page'))
+        # 每页记录数
+        per_page = int(request.values.get('PerPage'))
+        status = request.values.get('Status')
+        start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
+        end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
+        Product = request.values.get('Product')
+        results = db_session.query(ProductSave).filter(ProductSave.Name == Product, ProductSave.Status == status,
+                                                       ProductSave.BatchTime.between(start_time, end_time)).order_by(
+            CheckForm.Id.desc()).all()
+        data = results[(page - 1) * per_page:page * per_page]
+        return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
+                          ensure_ascii=False)
