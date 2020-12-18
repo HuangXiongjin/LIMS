@@ -7,7 +7,6 @@ from lims_backend.check_api import check
 from lims_backend.distribute_api import distribute
 from lims_backend.quality_standard_api import system_interface
 from lims_backend.report_api import report
-from lims_models import db_session
 from system_backend.SystemManagement import account_auth
 from system_backend.SystemManagement.account_auth import login_auth
 from tools.MyEncode import MyEncoder
