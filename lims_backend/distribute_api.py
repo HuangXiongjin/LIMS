@@ -151,7 +151,7 @@ def product_distribute():
                     d.No = No[item]
                     d.Number = Account[item]
                     CheckForm_data.OutUser = User
-                    db_session.add_all([CheckForm_data, d])
+                    db_session.add_all([CheckForm_data, d, pro_save])
                     db_session.commit()
                 elif Action[item] == 'Q':
                     d = Distribute()
@@ -179,42 +179,53 @@ def product_distribute():
 def product_save():
     """留样单"""
     try:
-        data = db_session.query(CheckForm).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
-        db_session.add(CheckLife(No=request.values.get('CheckProjectNO'), User=request.values.get('BatchName'),
-                                 Status='留样', Product=data.Name, ProductType=data.ProductType, Work='完成了样品留样',
-                                 OperationTime=request.values.get('BatchTime'), CheckNumber=data.CheckNumber))
-        db_session.commit()
-        pro_save = db_session.query(ProductSave).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
-        pro_save.Name = request.values.get('Name')
-        pro_save.Specs = request.values.get('Specs')
-        pro_save.Position = request.values.get('Position')
-        pro_save.PackSpecs = request.values.get('PackSpecs')
-        pro_save.ProductNumber = request.values.get('ProductNumber')
-        pro_save.TheoreticalYield = request.values.get('TheoreticalYield')
-        pro_save.BatchAmount = request.values.get('BatchAmount')
-        pro_save.BatchDepartment = request.values.get('BatchDepartment')
-        pro_save.BatchName = request.values.get('BatchName')
-        pro_save.Handler = request.values.get('Handler')
-        pro_save.ProductionDate = request.values.get('ProductionDate')
-        pro_save.ValidityDate = request.values.get('ValidityDate')
-        pro_save.Comment = request.values.get('Comment')
-        pro_save.ProductSaveNo = get_uuid()
-        pro_save.BatchTime = request.values.get('BatchTime')
-        # db_session.add(ProductSave(CheckProjectNO=request.values.get('CheckProjectNO'), Name=request.values.get('Name'),
-        #                            Specs=request.values.get('Specs'), Position=request.values.get('Position'),
-        #                            PackSpecs=request.values.get('PackSpecs'),
-        #                            ProductNumber=request.values.get('ProductNumber'),
-        #                            TheoreticalYield=request.values.get('TheoreticalYield'),
-        #                            BatchAmount=request.values.get('BatchAmount'),
-        #                            BatchDepartment=request.values.get('BatchDepartment'),
-        #                            BatchName=request.values.get('BatchName'),
-        #                            Handler=request.values.get('Handler'),
-        #                            ProductionDate=request.values.get('ProductionDate'),
-        #                            ValidityDate=request.values.get('ValidityDate'), Comment=request.values.get('Comment'),
-        #                            ProductSaveNo=get_uuid(), BatchTime=request.values.get('BatchTime')))
-        db_session.add(pro_save)
-        db_session.commit()
-        return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
+        if request.method == 'GET':
+            CheckProjectNO = request.values.get('CheckProjectNO')
+            if CheckProjectNO is None:
+                pro_save = db_session.query(ProductSave).all()
+                return json.dumps({'code': '1000', 'msg': '操作成功', 'data': pro_save}, cls=MyEncoder, ensure_ascii=False)
+            else:
+                pro_save = db_session.query(ProductSave).filter_by(
+                    CheckProjectNO=request.values.get('CheckProjectNO')).first()
+                return json.dumps({'code': '1000', 'msg': '操作成功', 'data': pro_save}, cls=MyEncoder, ensure_ascii=False)
+        if request.method == 'POST':
+
+            data = db_session.query(CheckForm).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
+            db_session.add(CheckLife(No=request.values.get('CheckProjectNO'), User=request.values.get('BatchName'),
+                                     Status='留样', Product=data.Name, ProductType=data.ProductType, Work='完成了样品留样',
+                                     OperationTime=request.values.get('BatchTime'), CheckNumber=data.CheckNumber))
+            db_session.commit()
+            pro_save = db_session.query(ProductSave).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
+            pro_save.Name = request.values.get('Product')
+            pro_save.Specs = request.values.get('Specs')
+            pro_save.Position = request.values.get('Position')
+            pro_save.PackSpecs = request.values.get('PackSpecs')
+            pro_save.ProductNumber = request.values.get('ProductNumber')
+            pro_save.TheoreticalYield = request.values.get('TheoreticalYield')
+            pro_save.BatchAmount = request.values.get('BatchAmount')
+            pro_save.BatchDepartment = request.values.get('BatchDepartment')
+            pro_save.BatchName = request.values.get('BatchName')
+            pro_save.Handler = request.values.get('Handler')
+            pro_save.ProductionDate = request.values.get('ProductionDate')
+            pro_save.ValidityDate = request.values.get('ValidityDate')
+            pro_save.Comment = request.values.get('Comment')
+            pro_save.ProductSaveNo = get_uuid()
+            pro_save.BatchTime = request.values.get('BatchTime')
+            # db_session.add(ProductSave(CheckProjectNO=request.values.get('CheckProjectNO'), Name=request.values.get('Name'),
+            #                            Specs=request.values.get('Specs'), Position=request.values.get('Position'),
+            #                            PackSpecs=request.values.get('PackSpecs'),
+            #                            ProductNumber=request.values.get('ProductNumber'),
+            #                            TheoreticalYield=request.values.get('TheoreticalYield'),
+            #                            BatchAmount=request.values.get('BatchAmount'),
+            #                            BatchDepartment=request.values.get('BatchDepartment'),
+            #                            BatchName=request.values.get('BatchName'),
+            #                            Handler=request.values.get('Handler'),
+            #                            ProductionDate=request.values.get('ProductionDate'),
+            #                            ValidityDate=request.values.get('ValidityDate'), Comment=request.values.get('Comment'),
+            #                            ProductSaveNo=get_uuid(), BatchTime=request.values.get('BatchTime')))
+            db_session.add(pro_save)
+            db_session.commit()
+            return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
