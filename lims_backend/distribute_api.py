@@ -60,7 +60,7 @@ def get_worker():
                               ensure_ascii=False)
         if request.method == 'POST':
             Name = request.values.get('Name')
-            Worker = request.values.get('Worker')
+            work_name = request.values.get('Worker')
             CheckProjectNO = request.values.get('CheckProjectNO')
             Content = json.loads(request.values.get('Content'))
             CheckStartTime = request.values.get('CheckStartTime')
@@ -71,10 +71,10 @@ def get_worker():
                                      Work='完成了样品检测项分发'))
             db_session.commit()
             data.Life = '质检'
-            db_session.add_all(data)
+            db_session.add(data)
             db_session.commit()
             for work in Content:
-                db_session.add(WorkerBook(CheckProjectNO=CheckProjectNO, Name=Worker, CheckProject=work,
+                db_session.add(WorkerBook(CheckProjectNO=CheckProjectNO, Name=work_name, CheckProject=work,
                                           CheckStartTime=CheckStartTime))
                 db_session.commit()
             return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder)
@@ -212,7 +212,7 @@ def test():
             check_data = [{"name": item.Name, "work": item.CheckProject} for item in query_data]
             return json.dumps({'code': '1000', 'msg': '操作成功', 'data': check_data}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'POST':
-            pass
+            # pass
             return json.dumps({'code': '1000', 'msg': '操作成功', 'data': 'check_data'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)

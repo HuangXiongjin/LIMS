@@ -273,8 +273,8 @@ export default {
             var params={
                 CheckProjectNO:this.distribute.CheckProjectNO,
                 Worker:this.distribute.worker,
-                Content:this.distribute.jbs,
-                CheckStartTime:moment(new Date()).format('YYYY-MM-DD'),
+                Content:JSON.stringify(this.distribute.jbs),
+                CheckStartTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
                 Name:'代晓进'
             }
             this.axios.post('/lims/Worker',this.qs.stringify(params)).then((res) => {
