@@ -313,8 +313,8 @@ def save_list():
         per_page = int(request.values.get('PerPage'))
         status = request.values.get('Status')
         # start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
-        start_time = "'" + request.values.get('DateTime') + "'"
-        end_time = "'" + request.values.get('DateTime') + "'"
+        start_time = request.values.get('DateTime')
+        end_time = request.values.get('DateTime')
         # end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
         Product = request.values.get('Product')
         results = db_session.query(ProductSave).filter(ProductSave.Name == Product, ProductSave.Status == status,
