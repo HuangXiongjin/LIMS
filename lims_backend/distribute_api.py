@@ -175,7 +175,7 @@ def product_distribute():
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
 
 
-@distribute.route('/ProductSave', methods=['POST'])
+@distribute.route('/ProductSave', methods=['GET', 'POST'])
 def product_save():
     """留样单"""
     try:
