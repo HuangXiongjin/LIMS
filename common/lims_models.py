@@ -276,6 +276,8 @@ class Distribute(Base):
     GroupUser = Column(Unicode(32), nullable=True, default='')
     # 分发时间
     Time = Column(Unicode(32), nullable=True, default='')
+    # 动作状态
+    Status = Column(Unicode(32), nullable=True, default='')
 
 
 class WordForm(Base):

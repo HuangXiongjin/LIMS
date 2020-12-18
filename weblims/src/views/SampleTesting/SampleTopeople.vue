@@ -51,15 +51,19 @@
                             <el-button type='primary' @click="SearchTab">查询</el-button>
                         </el-col>
                         <el-col :span='6' class="req mgl15" style="paddingTop:3px;">
-                             <el-radio-group v-model="radio2">
+                             <el-radio-group v-model="radio2" @change='handSelectChange'>
                                 <el-radio-button label="样本分发" ></el-radio-button>
                                 <el-radio-button label="记录分发"></el-radio-button>
                              </el-radio-group>
                         </el-col>
                     </el-row>
                 </el-col>
-                <el-col :span='24'>
-                      <el-row class="padd15" v-if="radio2=='样本分发'">
+            </el-row>
+            <el-row v-if="radio2=='样本分发'" class="mgt24">
+                <div  class="padd15 container" style="height:600px;">
+                    <el-col :span='24'>
+                      <el-row>
+                          <div class="mgt24 lightgreen">详细信息</div>
                           <el-col :span='24' class="mgt24">
                               <el-form :inline="true">
                                 <el-col :span='8'>
@@ -87,28 +91,50 @@
                                     <el-input v-model="Row.Foo" placeholder="编号"></el-input>
                                 </el-form-item>
                                </el-col>
-                               <el-col :span='10'>
-                                 <!-- <el-form-item label="活动区域">
-                                    <el-select v-model="formInline.region" placeholder="活动区域">
-                                    <el-option label="区域一" value="shanghai"></el-option>
-                                    <el-option label="区域二" value="beijing"></el-option>
-                                    </el-select>
-                                </el-form-item> -->
-                               </el-col>
                               </el-form>
                           </el-col>
                       </el-row>
+                      <el-row :gutter='24' class="mgt24">
+                              <div class="lightgreen padd15">分配操作</div>
+                              <el-col :span='4'>
+                                  <el-select v-model="distribute.worker" placeholder="请选择">
+                                    <el-option
+                                    v-for="item in workers"
+                                    :key="item.Id"
+                                    :label="item.Name"
+                                    :value="item.Name">
+                                    </el-option>
+                                </el-select>
+                              </el-col>
+                              <el-col :span='16'>
+                                  <el-select v-model="distribute.jbs" multiple collapse-tags placeholder="请选择检测项">
+                                    <el-option
+                                    v-for="item in jbarr"
+                                    :key="item.label"
+                                    :label="item.value"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
+                              </el-col>
+                              <el-col :span='4'><el-button type="success" @click="distributeToPeople">确定分发</el-button></el-col>
+                              <el-col :span='24' class="mgt24">
+                                    <el-tag type="warning">已选择检验项：</el-tag>
+                                    <p v-for="(item,index) in distribute.jbs" :key='index' class="lightgreen jbcontent fsz10">{{item}}</p>
+                                    <el-divider></el-divider>
+                              </el-col>
+                          </el-row>
                 </el-col>
+                </div>
             </el-row>
             <el-row v-if="radio2=='记录分发'" class="mgt24">
                  <el-col :span='24' class="container">
-                    <el-menu :default-active="'1'" class="bgwhite mgt24" mode="horizontal" @select="handleSelect">
-                        <el-menu-item :index="'1'" style="height:46px;lineHeight:30px;" v-if="Discernopt">检验记录</el-menu-item>
+                    <el-menu :default-active="'1'" class="bgwhite mgt24" mode="horizontal">
+                        <el-menu-item :index="'1'" style="height:46px;lineHeight:30px;">检验记录</el-menu-item>
                     </el-menu>
                     <div>
                         <div class="mgt24 mgb24">产品检验原始记录</div>
                         <div style="border:1px solid #ccc;paddingTop:26px;">
-                            <el-form ref="form" :model="RecordForm" label-width="100px">
+                            <el-form ref="form" label-width="100px">
                                 <el-row>
                                     <el-col :span='11'>
                                         <el-form-item label="品名：">
@@ -205,41 +231,17 @@ var moment=require('moment')
 export default {
     data(){
         return {
-           curSta:'确认分发',
-           Discernopt:true,
-           Checkopt:false,
-           Lyopt:false,
-           RecordForm:{
-               group:[]
-           },
-           Groups:[{label:"产品组",value:1},{label:"物料组",value:2},{label:"微生物组",value:3}],
-           LyForm:{
-               PackSpecs:'',
-               TheoreticalYield:'',
-               BatchAmount:'',
-               BatchDepartment:'',
-               BatchName:'',
-               Position:'',
-               BatchTime:'',
-               Handler:'',
-               ProductionDate:'',
-               ValidityDate:'',
-               Comment:''
-           },
+           workers:[],
            Row:{},
            distribute:{
-               no1:'',
-               Account1:'',
-               no2:'',
-               Account2:'',
-               no3:'',
-               Account3:'',
                CheckProjectNO:'',
+               worker:'',
+               jbs:[]
 
            },
-           currentChoose:'2',
            radio2:'样本分发',
            Recordobj:{},
+           jbarr:[],
            searchObj:{
                category:'玉米淀粉',
                registrydate:moment(new Date()).format('YYYY-MM-DD')
@@ -267,12 +269,27 @@ export default {
        this.getInitTab()
     },
     methods: {
+        distributeToPeople(){
+            var params={
+                CheckProjectNO:this.distribute.CheckProjectNO,
+                Worker:this.distribute.worker,
+                Content:JSON.stringify(this.distribute.jbs),
+                CheckStartTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                Name:'代晓进'
+            }
+            this.axios.post('/lims/Worker',this.qs.stringify(params)).then((res) => {
+                console.log(res)
+            })
+        },
        getWorker(){ //获取分组和人员
            var params={
-               CheckProjectNO:this.distribute.CheckProjectNO
+               CheckProjectNO:this.distribute.CheckProjectNO,
+               Name:'代晓进'
            }
            this.axios.get('/lims/Worker',{params:params}).then((res) => {
-               console.log(res)
+               if(res.data.code=='1000'){
+                   this.workers=res.data.data
+               }
            })
        },
        getRecord(){ //获取记录项数据
@@ -285,31 +302,6 @@ export default {
                }
            })
        },
-        DistributeSample(){ //检验接收记录
-            var params={
-                 Group:JSON.stringify(this.RecordForm.group),
-                 CheckProjectNO:this.distribute.CheckProjectNO,
-                 GroupUser:localStorage.getItem('Name'),
-                 Action:JSON.stringify(['Q'])
-            }
-           this.axios.post('/lims/Distribute',this.qs.stringify(params)).then((res) => {
-               if(res.data.code=='1000'){
-                   this.$message({
-                       type:'success',
-                       message:'分发成功'
-                   })
-                   this.curSta='已分发'
-               }else{
-                   this.$message({
-                       type:'info',
-                       message:'请重试'
-                   })
-               }
-           })
-        },
-        handleSelect(key) { //区分样品和记录
-            this.currentChoose=key
-        },
          getSelectOption() { //获取下拉列表选项
            this.axios.get('/lims/AllProduct').then((res) => {
                if(res.data.code=='1000'){
@@ -349,10 +341,11 @@ export default {
                 this.batchTableData.total=res.data.total
             })
         },
+        handSelectChange(e){
+            this.radio2=e
+        },
         handletabClick(row){ //左侧tab点击事件
-            this.curSta='确认分发'
             this.Row=row
-            this.RecordForm.CheckTime=moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
             this.distribute.CheckProjectNO=row.CheckProjectNO
             this.getJbInfo(row.CheckProjectNO)
             this.getRecord()
@@ -367,8 +360,11 @@ export default {
                 this.Inspects=res.data.data[0].Inspect
                 this.Characters=res.data.data[0].Character
                 this.Contents=res.data.data[0].Content
-                this.Characters=res.data.data[0].Character
                 this.Microbes=res.data.data[0].Microbe
+                var arr=this.Discerns.concat(this.Inspects,this.Characters,this.Contents,this.Microbes)
+                this.jbarr=arr.map((item, index) => {
+                    return {label:item.id,value:item.value}
+                })
             })
         },
         handleSizeChange(limit){ //每页条数切换

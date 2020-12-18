@@ -60,6 +60,7 @@ def get_worker():
                               ensure_ascii=False)
         if request.method == 'POST':
             Name = request.values.get('Name')
+            work_name = request.values.get('Worker')
             CheckProjectNO = request.values.get('CheckProjectNO')
             Content = json.loads(request.values.get('Content'))
             CheckStartTime = request.values.get('CheckStartTime')
@@ -70,13 +71,12 @@ def get_worker():
                                      Work='完成了样品检测项分发'))
             db_session.commit()
             data.Life = '质检'
-            db_session.add_all(data)
+            db_session.add(data)
             db_session.commit()
-            for name, works in Content.items():
-                for work in works:
-                    db_session.add(WorkerBook(CheckProjectNO=CheckProjectNO, Name=name, CheckProject=work,
-                                              CheckStartTime=CheckStartTime))
-                    db_session.commit()
+            for work in Content:
+                db_session.add(WorkerBook(CheckProjectNO=CheckProjectNO, Name=work_name, CheckProject=work,
+                                          CheckStartTime=CheckStartTime))
+                db_session.commit()
             return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder)
     except Exception as e:
         log(e)
@@ -97,73 +97,78 @@ def product_distribute():
             GroupUser = request.values.get('GroupUser')
             LaboratoryUser = request.values.get('LaboratoryUser')
             Time = request.values.get('Time')
-            data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
-            db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=data.Name,
-                                     CheckNumber=data.CheckNumber, ProductType=data.ProductType, OperationTime=Time,
-                                     Work='完成了样品分发'))
+            CheckForm_data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+            db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=CheckForm_data.Name,
+                                     CheckNumber=CheckForm_data.CheckNumber, ProductType=CheckForm_data.ProductType,
+                                     OperationTime=Time, Work='完成了样品分发'))
             db_session.commit()
             for item in range(0, len(Action)):
                 if Action[item] == 'J':
                     d = Distribute()
                     d.CheckProjectNO = CheckProjectNO
-                    data.Action = '检验'
-                    data.Status = '检验中'
-                    data.Life = '分发'
-                    data.JAccount = Account[item]
+                    d.Status = 'JY'
+                    CheckForm_data.Action = '检验'
+                    CheckForm_data.Status = '检验中'
+                    CheckForm_data.Life = '分发'
+                    CheckForm_data.JAccount = Account[item]
                     # data.JNo = No[item]
-                    data.Foo = No[item]
+                    CheckForm_data.Foo = No[item]
                     d.User = User
                     d.Time = Time
                     d.No = No[item]
                     d.Number = Account[item]
                     d.Group = Group
-                    data.OutUser = User
-                    db_session.add_all([data, d])
+                    CheckForm_data.OutUser = User
+                    db_session.add_all([CheckForm_data, d])
                     db_session.commit()
                 elif Action[item] == 'F':
                     d = Distribute()
                     d.CheckProjectNO = CheckProjectNO
-                    data.Action = '复查'
-                    data.Status = '复查'
-                    data.FAccount = Account[item]
+                    d.Status = 'FC'
+                    CheckForm_data.Action = '复查'
+                    CheckForm_data.Status = '复查'
+                    CheckForm_data.FAccount = Account[item]
                     # data.FNo = No[item]
-                    data.FUser = User
-                    data.Foo = No[item]
+                    CheckForm_data.FUser = User
+                    CheckForm_data.Foo = No[item]
                     d.User = User
                     d.Time = Time
                     d.No = No[item]
                     d.Number = Account[item]
-                    data.OutUser = User
-                    db_session.add_all([data, d])
+                    CheckForm_data.OutUser = User
+                    db_session.add_all([CheckForm_data, d])
                     db_session.commit()
                 elif Action[item] == 'L':
                     d = Distribute()
+                    pro_save = ProductSave()
                     d.CheckProjectNO = CheckProjectNO
-                    data.Action = '留样'
-                    data.Status = '留样'
-                    data.LAccount = Account[item]
-                    data.LUser = User
-                    data.Foo = No[item]
+                    d.Status = 'LY'
+                    pro_save.CheckProjectNO = CheckProjectNO
+                    pro_save.BatchAmount = Account[item]
+                    # CheckForm_data.Action = '留样'
+                    CheckForm_data.LUser = User
+                    CheckForm_data.LAccount = Account[item]
+                    CheckForm_data.Foo = No[item]
                     d.User = User
                     d.Time = Time
                     d.No = No[item]
                     d.Number = Account[item]
-                    data.OutUser = User
-                    db_session.add_all([data, d])
+                    CheckForm_data.OutUser = User
+                    db_session.add_all([CheckForm_data, d, pro_save])
                     db_session.commit()
                 elif Action[item] == 'Q':
                     d = Distribute()
                     d.CheckProjectNO = CheckProjectNO
-                    data.Action = '接收'
-                    data.LaboratoryUser = GroupUser
+                    CheckForm_data.Action = '接收'
+                    CheckForm_data.LaboratoryUser = GroupUser
                     d.Group = str(Group)
                     d.User = User
                     d.Time = Time
-                    data.OutUser = User
-                    db_session.add_all([data, d])
+                    CheckForm_data.OutUser = User
+                    db_session.add_all([CheckForm_data, d])
                     db_session.commit()
-                    db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=data.Name,
-                                             CheckNumber=data.CheckNumber, ProductType=data.ProductType,
+                    db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=CheckForm_data.Name,
+                                             CheckNumber=CheckForm_data.CheckNumber, ProductType=CheckForm_data.ProductType,
                                              OperationTime=Time,
                                              Work='完成了样品接收'))
                     db_session.commit()
@@ -173,29 +178,67 @@ def product_distribute():
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
 
 
-@distribute.route('/ProductSave', methods=['POST'])
+@distribute.route('/ProductSave', methods=['GET', 'POST'])
 def product_save():
     """留样单"""
     try:
-        data = db_session.query(CheckForm).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
-        db_session.add(CheckLife(No=request.values.get('CheckProjectNO'), User=request.values.get('BatchName'),
-                                 Status='留样', Product=data.Name, ProductType=data.ProductType, Work='完成了样品留样',
-                                 OperationTime=request.values.get('BatchTime'), CheckNumber=data.CheckNumber))
-        db_session.commit()
-        db_session.add(ProductSave(CheckProjectNO=request.values.get('CheckProjectNO'), Name=request.values.get('Name'),
-                                   Specs=request.values.get('Specs'), Position=request.values.get('Position'),
-                                   PackSpecs=request.values.get('PackSpecs'),
-                                   ProductNumber=request.values.get('ProductNumber'),
-                                   TheoreticalYield=request.values.get('TheoreticalYield'),
-                                   BatchAmount=request.values.get('BatchAmount'),
-                                   BatchDepartment=request.values.get('BatchDepartment'),
-                                   BatchName=request.values.get('BatchName'),
-                                   Handler=request.values.get('Handler'),
-                                   ProductionDate=request.values.get('ProductionDate'),
-                                   ValidityDate=request.values.get('ValidityDate'), Comment=request.values.get('Comment'),
-                                   ProductSaveNo=get_uuid(), BatchTime=request.values.get('BatchTime')))
-        db_session.commit()
-        return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
+        if request.method == 'GET':
+            # 当前页码
+            page = int(request.values.get('Page'))
+            # 每页记录数
+            per_page = int(request.values.get('PerPage'))
+            status = request.values.get('Status')
+            start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
+            end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
+            Product = request.values.get('Product')
+            CheckProjectNO = request.values.get('CheckProjectNO')
+            # db_session.query(Distribute).filter_by(Status=status, CheckProjectNO=CheckProjectNO).first()
+            if CheckProjectNO is None:
+                results = db_session.query(ProductSave).filter_by(Name=Product).order_by(ProductSave.Id.desc()).all()
+                data = results[(page - 1) * per_page:page * per_page]
+                return json.dumps({'code': '1000', 'msg': '操作成功', 'data': data, 'total': len(results)}, cls=MyEncoder, ensure_ascii=False)
+            else:
+                data = db_session.query(ProductSave).filter_by(
+                    CheckProjectNO=request.values.get('CheckProjectNO'), Name=Product).first()
+                return json.dumps({'code': '1000', 'msg': '操作成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
+        if request.method == 'POST':
+
+            data = db_session.query(CheckForm).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
+            db_session.add(CheckLife(No=request.values.get('CheckProjectNO'), User=request.values.get('BatchName'),
+                                     Status='留样', Product=data.Name, ProductType=data.ProductType, Work='完成了样品留样',
+                                     OperationTime=request.values.get('BatchTime'), CheckNumber=data.CheckNumber))
+            db_session.commit()
+            pro_save = db_session.query(ProductSave).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
+            pro_save.Name = request.values.get('Product')
+            pro_save.Specs = request.values.get('Specs')
+            pro_save.Position = request.values.get('Position')
+            pro_save.PackSpecs = request.values.get('PackSpecs')
+            pro_save.ProductNumber = request.values.get('ProductNumber')
+            pro_save.TheoreticalYield = request.values.get('TheoreticalYield')
+            pro_save.BatchAmount = request.values.get('BatchAmount')
+            pro_save.BatchDepartment = request.values.get('BatchDepartment')
+            pro_save.BatchName = request.values.get('BatchName')
+            pro_save.Handler = request.values.get('Handler')
+            pro_save.ProductionDate = request.values.get('ProductionDate')
+            pro_save.ValidityDate = request.values.get('ValidityDate')
+            pro_save.Comment = request.values.get('Comment')
+            pro_save.ProductSaveNo = get_uuid()
+            pro_save.BatchTime = request.values.get('BatchTime')
+            # db_session.add(ProductSave(CheckProjectNO=request.values.get('CheckProjectNO'), Name=request.values.get('Name'),
+            #                            Specs=request.values.get('Specs'), Position=request.values.get('Position'),
+            #                            PackSpecs=request.values.get('PackSpecs'),
+            #                            ProductNumber=request.values.get('ProductNumber'),
+            #                            TheoreticalYield=request.values.get('TheoreticalYield'),
+            #                            BatchAmount=request.values.get('BatchAmount'),
+            #                            BatchDepartment=request.values.get('BatchDepartment'),
+            #                            BatchName=request.values.get('BatchName'),
+            #                            Handler=request.values.get('Handler'),
+            #                            ProductionDate=request.values.get('ProductionDate'),
+            #                            ValidityDate=request.values.get('ValidityDate'), Comment=request.values.get('Comment'),
+            #                            ProductSaveNo=get_uuid(), BatchTime=request.values.get('BatchTime')))
+            db_session.add(pro_save)
+            db_session.commit()
+            return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
@@ -212,7 +255,7 @@ def test():
             check_data = [{"name": item.Name, "work": item.CheckProject} for item in query_data]
             return json.dumps({'code': '1000', 'msg': '操作成功', 'data': check_data}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'POST':
-            pass
+            # pass
             return json.dumps({'code': '1000', 'msg': '操作成功', 'data': 'check_data'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
