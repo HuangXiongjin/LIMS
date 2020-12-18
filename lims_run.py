@@ -35,7 +35,7 @@ class CRUD:
 
     # 定义一个数据添加操作
     @classmethod
-    def add(self, *args, **kwargs):
+    def insert(self, *args, **kwargs):
         obj = ()
         if len(args) > 0 and isinstance(*args, list):
             for dict in args[0]:
@@ -58,6 +58,9 @@ class CRUD:
     def delete(self):
         db_session.delete(self)
         db_session.commit()
+
+    # def select(self, *args, **kwargs):
+    #     db_session.query(self)
 
 
 def main():
