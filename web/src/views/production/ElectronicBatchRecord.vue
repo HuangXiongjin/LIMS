@@ -173,11 +173,20 @@
               this.$nextTick(function () {
                 $(".elementTable").find("td").each(function(){
                   if($(this).hasClass("isInput")){
-                    if($(this).children().length > 0){ //判断单元格是否为空的
+                    if($(this).children("p").length == 1){ //判断单元格有几个p标签
                       $(this).find("p").attr("contenteditable","true")
-                    }else{
+                    }else if($(this).children("p").length == 0){
                       $(this).append("<p></p>")
                       $(this).find("p").attr("contenteditable","true")
+                    }else{ //多个p标签的值合成一个
+                      var html = ""
+                      $(this).find("p").each(function(){
+                       html += $(this).html()
+                      })
+                      $(this).html("")
+                      $(this).append("<p></p>")
+                      $(this).find("p").attr("contenteditable","true").html(html)
+
                     }
                   }else if($(this).attr("data-field") === "ProductName"){
                     $(this).html(that.BrandName)
