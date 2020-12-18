@@ -1,5 +1,6 @@
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
+from flask_restful import Api, Resource
 
 from database.connect_db import CONNECT_DATABASE
 from lims_backend.check_api import check
@@ -23,6 +24,24 @@ app.register_blueprint(distribute)
 app.register_blueprint(check)
 app.register_blueprint(system_interface)
 app.register_blueprint(login_auth)
+
+api = Api(app)
+from common.common_cuid import select, update, delete, insert
+class CUIDList(Resource):
+    def get(self):
+        return select(request.values)
+
+    def post(self):
+        return insert(request.values)
+
+    def put(self):
+        return update(request.values)
+
+    def delete(self):
+        return delete(request.values)
+
+
+api.add_resource(CUIDList, '/CUID')
 
 
 def main():

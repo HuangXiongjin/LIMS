@@ -97,73 +97,75 @@ def product_distribute():
             GroupUser = request.values.get('GroupUser')
             LaboratoryUser = request.values.get('LaboratoryUser')
             Time = request.values.get('Time')
-            data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
-            db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=data.Name,
-                                     CheckNumber=data.CheckNumber, ProductType=data.ProductType, OperationTime=Time,
-                                     Work='完成了样品分发'))
+            CheckForm_data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+            db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=CheckForm_data.Name,
+                                     CheckNumber=CheckForm_data.CheckNumber, ProductType=CheckForm_data.ProductType,
+                                     OperationTime=Time, Work='完成了样品分发'))
             db_session.commit()
             for item in range(0, len(Action)):
                 if Action[item] == 'J':
                     d = Distribute()
                     d.CheckProjectNO = CheckProjectNO
-                    data.Action = '检验'
-                    data.Status = '检验中'
-                    data.Life = '分发'
-                    data.JAccount = Account[item]
+                    CheckForm_data.Action = '检验'
+                    CheckForm_data.Status = '检验中'
+                    CheckForm_data.Life = '分发'
+                    CheckForm_data.JAccount = Account[item]
                     # data.JNo = No[item]
-                    data.Foo = No[item]
+                    CheckForm_data.Foo = No[item]
                     d.User = User
                     d.Time = Time
                     d.No = No[item]
                     d.Number = Account[item]
                     d.Group = Group
-                    data.OutUser = User
-                    db_session.add_all([data, d])
+                    CheckForm_data.OutUser = User
+                    db_session.add_all([CheckForm_data, d])
                     db_session.commit()
                 elif Action[item] == 'F':
                     d = Distribute()
                     d.CheckProjectNO = CheckProjectNO
-                    data.Action = '复查'
-                    data.Status = '复查'
-                    data.FAccount = Account[item]
+                    CheckForm_data.Action = '复查'
+                    CheckForm_data.Status = '复查'
+                    CheckForm_data.FAccount = Account[item]
                     # data.FNo = No[item]
-                    data.FUser = User
-                    data.Foo = No[item]
+                    CheckForm_data.FUser = User
+                    CheckForm_data.Foo = No[item]
                     d.User = User
                     d.Time = Time
                     d.No = No[item]
                     d.Number = Account[item]
-                    data.OutUser = User
-                    db_session.add_all([data, d])
+                    CheckForm_data.OutUser = User
+                    db_session.add_all([CheckForm_data, d])
                     db_session.commit()
                 elif Action[item] == 'L':
                     d = Distribute()
+                    pro_save = ProductSave()
                     d.CheckProjectNO = CheckProjectNO
-                    data.Action = '留样'
-                    data.Status = '留样'
-                    data.LAccount = Account[item]
-                    data.LUser = User
-                    data.Foo = No[item]
+                    pro_save.CheckProjectNO = CheckProjectNO
+                    pro_save.BatchAmount = Account[item]
+                    # CheckForm_data.Action = '留样'
+                    CheckForm_data.LUser = User
+                    CheckForm_data.LAccount = Account[item]
+                    CheckForm_data.Foo = No[item]
                     d.User = User
                     d.Time = Time
                     d.No = No[item]
                     d.Number = Account[item]
-                    data.OutUser = User
-                    db_session.add_all([data, d])
+                    CheckForm_data.OutUser = User
+                    db_session.add_all([CheckForm_data, d])
                     db_session.commit()
                 elif Action[item] == 'Q':
                     d = Distribute()
                     d.CheckProjectNO = CheckProjectNO
-                    data.Action = '接收'
-                    data.LaboratoryUser = GroupUser
+                    CheckForm_data.Action = '接收'
+                    CheckForm_data.LaboratoryUser = GroupUser
                     d.Group = str(Group)
                     d.User = User
                     d.Time = Time
-                    data.OutUser = User
-                    db_session.add_all([data, d])
+                    CheckForm_data.OutUser = User
+                    db_session.add_all([CheckForm_data, d])
                     db_session.commit()
-                    db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=data.Name,
-                                             CheckNumber=data.CheckNumber, ProductType=data.ProductType,
+                    db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=CheckForm_data.Name,
+                                             CheckNumber=CheckForm_data.CheckNumber, ProductType=CheckForm_data.ProductType,
                                              OperationTime=Time,
                                              Work='完成了样品接收'))
                     db_session.commit()
@@ -182,18 +184,35 @@ def product_save():
                                  Status='留样', Product=data.Name, ProductType=data.ProductType, Work='完成了样品留样',
                                  OperationTime=request.values.get('BatchTime'), CheckNumber=data.CheckNumber))
         db_session.commit()
-        db_session.add(ProductSave(CheckProjectNO=request.values.get('CheckProjectNO'), Name=request.values.get('Name'),
-                                   Specs=request.values.get('Specs'), Position=request.values.get('Position'),
-                                   PackSpecs=request.values.get('PackSpecs'),
-                                   ProductNumber=request.values.get('ProductNumber'),
-                                   TheoreticalYield=request.values.get('TheoreticalYield'),
-                                   BatchAmount=request.values.get('BatchAmount'),
-                                   BatchDepartment=request.values.get('BatchDepartment'),
-                                   BatchName=request.values.get('BatchName'),
-                                   Handler=request.values.get('Handler'),
-                                   ProductionDate=request.values.get('ProductionDate'),
-                                   ValidityDate=request.values.get('ValidityDate'), Comment=request.values.get('Comment'),
-                                   ProductSaveNo=get_uuid(), BatchTime=request.values.get('BatchTime')))
+        pro_save = db_session.query(ProductSave).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
+        pro_save.Name = request.values.get('Name')
+        pro_save.Specs = request.values.get('Specs')
+        pro_save.Position = request.values.get('Position')
+        pro_save.PackSpecs = request.values.get('PackSpecs')
+        pro_save.ProductNumber = request.values.get('ProductNumber')
+        pro_save.TheoreticalYield = request.values.get('TheoreticalYield')
+        pro_save.BatchAmount = request.values.get('BatchAmount')
+        pro_save.BatchDepartment = request.values.get('BatchDepartment')
+        pro_save.BatchName = request.values.get('BatchName')
+        pro_save.Handler = request.values.get('Handler')
+        pro_save.ProductionDate = request.values.get('ProductionDate')
+        pro_save.ValidityDate = request.values.get('ValidityDate')
+        pro_save.Comment = request.values.get('Comment')
+        pro_save.ProductSaveNo = get_uuid()
+        pro_save.BatchTime = request.values.get('BatchTime')
+        # db_session.add(ProductSave(CheckProjectNO=request.values.get('CheckProjectNO'), Name=request.values.get('Name'),
+        #                            Specs=request.values.get('Specs'), Position=request.values.get('Position'),
+        #                            PackSpecs=request.values.get('PackSpecs'),
+        #                            ProductNumber=request.values.get('ProductNumber'),
+        #                            TheoreticalYield=request.values.get('TheoreticalYield'),
+        #                            BatchAmount=request.values.get('BatchAmount'),
+        #                            BatchDepartment=request.values.get('BatchDepartment'),
+        #                            BatchName=request.values.get('BatchName'),
+        #                            Handler=request.values.get('Handler'),
+        #                            ProductionDate=request.values.get('ProductionDate'),
+        #                            ValidityDate=request.values.get('ValidityDate'), Comment=request.values.get('Comment'),
+        #                            ProductSaveNo=get_uuid(), BatchTime=request.values.get('BatchTime')))
+        db_session.add(pro_save)
         db_session.commit()
         return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
