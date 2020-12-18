@@ -362,12 +362,16 @@ class ProductSave(Base):
     Position = Column(Unicode(32), nullable=True)
     # 留样日期
     BatchTime = Column(Unicode(32), nullable=True, default='')
+    # 留样批号
+    BatchNumber = Column(Unicode(32), nullable=True)
     # 经手人
     Handler = Column(Unicode(32), nullable=True)
     # 生产日期
     ProductionDate = Column(Unicode(32), nullable=True, default='')
     # 有效日期
     ValidityDate = Column(Unicode(32), nullable=True, default='')
+    # 当前进度(待接收-留样观察中-申请销毁)
+    Status = Column(Unicode(32), nullable=True, default='待接收')
     # 备注
     Comment = Column(Unicode(32), nullable=True)
 
@@ -377,6 +381,8 @@ class ProductSaveSurvey(Base):
     __tablename__ = 'ProductSaveSurvey'
 
     Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 请验项目标识
+    CheckProjectNO = Column(Unicode(32), nullable=True)
     # 品名
     Name = Column(Unicode(32), nullable=True)
     # 温度
@@ -384,7 +390,7 @@ class ProductSaveSurvey(Base):
     # 相对湿度
     RH = Column(Unicode(32), nullable=True)
     # 留样位置
-    position = Column(Unicode(32), nullable=True)
+    Position = Column(Unicode(32), nullable=True)
     # 留样批号
     BatchNumber = Column(Unicode(32), nullable=True)
     # 留样日期

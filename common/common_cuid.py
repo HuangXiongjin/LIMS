@@ -56,7 +56,6 @@ def insert(data):
             obj = Base.classes.get(tableName)
             ss = obj()
             for key in data:
-
                 if key != "ID" and key != "tableName" and key != "id":
                     if key == "Password":
                         setattr(ss, key, generate_password_hash(data['Password']))
