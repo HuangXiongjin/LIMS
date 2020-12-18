@@ -312,12 +312,14 @@ def save_list():
         # 每页记录数
         per_page = int(request.values.get('PerPage'))
         status = request.values.get('Status')
-        start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
-        end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
+        # start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
+        start_time = "'" + request.values.get('DateTime') + "'"
+        end_time = "'" + request.values.get('DateTime') + "'"
+        # end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
         Product = request.values.get('Product')
         results = db_session.query(ProductSave).filter(ProductSave.Name == Product, ProductSave.Status == status,
                                                        ProductSave.BatchTime.between(start_time, end_time)).order_by(
-            CheckForm.Id.desc()).all()
+            ProductSave.Id.desc()).all()
         data = results[(page - 1) * per_page:page * per_page]
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                           ensure_ascii=False)
