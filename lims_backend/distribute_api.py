@@ -106,6 +106,7 @@ def product_distribute():
                 if Action[item] == 'J':
                     d = Distribute()
                     d.CheckProjectNO = CheckProjectNO
+                    d.Status = 'JY'
                     CheckForm_data.Action = '检验'
                     CheckForm_data.Status = '检验中'
                     CheckForm_data.Life = '分发'
@@ -123,6 +124,7 @@ def product_distribute():
                 elif Action[item] == 'F':
                     d = Distribute()
                     d.CheckProjectNO = CheckProjectNO
+                    d.Status = 'FC'
                     CheckForm_data.Action = '复查'
                     CheckForm_data.Status = '复查'
                     CheckForm_data.FAccount = Account[item]
@@ -140,6 +142,7 @@ def product_distribute():
                     d = Distribute()
                     pro_save = ProductSave()
                     d.CheckProjectNO = CheckProjectNO
+                    d.Status = 'LY'
                     pro_save.CheckProjectNO = CheckProjectNO
                     pro_save.BatchAmount = Account[item]
                     # CheckForm_data.Action = '留样'
@@ -180,14 +183,24 @@ def product_save():
     """留样单"""
     try:
         if request.method == 'GET':
+            # 当前页码
+            page = int(request.values.get('Page'))
+            # 每页记录数
+            per_page = int(request.values.get('PerPage'))
+            status = request.values.get('Status')
+            start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
+            end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
+            Product = request.values.get('Product')
             CheckProjectNO = request.values.get('CheckProjectNO')
+            # db_session.query(Distribute).filter_by(Status=status, CheckProjectNO=CheckProjectNO).first()
             if CheckProjectNO is None:
-                pro_save = db_session.query(ProductSave).all()
-                return json.dumps({'code': '1000', 'msg': '操作成功', 'data': pro_save}, cls=MyEncoder, ensure_ascii=False)
+                results = db_session.query(ProductSave).filter_by(Name=Product).order_by(ProductSave.Id.desc()).all()
+                data = results[(page - 1) * per_page:page * per_page]
+                return json.dumps({'code': '1000', 'msg': '操作成功', 'data': data, 'total': len(results)}, cls=MyEncoder, ensure_ascii=False)
             else:
-                pro_save = db_session.query(ProductSave).filter_by(
-                    CheckProjectNO=request.values.get('CheckProjectNO')).first()
-                return json.dumps({'code': '1000', 'msg': '操作成功', 'data': pro_save}, cls=MyEncoder, ensure_ascii=False)
+                data = db_session.query(ProductSave).filter_by(
+                    CheckProjectNO=request.values.get('CheckProjectNO'), Name=Product).first()
+                return json.dumps({'code': '1000', 'msg': '操作成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'POST':
 
             data = db_session.query(CheckForm).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
