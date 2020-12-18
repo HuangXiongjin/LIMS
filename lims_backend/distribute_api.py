@@ -3,6 +3,7 @@ from datetime import datetime
 
 from flask import Blueprint, request
 
+from lims_run import CRUD
 from tools.handle import MyEncoder, log, get_short_id, get_uuid
 from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard, CheckForm, \
     CheckProject, Distribute, ProductSave, CheckLife, Worker, Record, WorkerBook, ProductSaveSurvey
@@ -320,3 +321,10 @@ def save_list():
         data = results[(page - 1) * per_page:page * per_page]
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                           ensure_ascii=False)
+
+
+# @distribute.route('/CRUD', methods=['GET'])
+# def c():
+#     data = request.values
+#     result = CRUD.select(data)
+#     return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)

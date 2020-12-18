@@ -26,41 +26,42 @@ app.register_blueprint(check)
 app.register_blueprint(system_interface)
 app.register_blueprint(login_auth)
 
-
-class CRUD:
-    # 定义函数完成构造对象数据初始化
-    def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-    # 定义一个数据添加操作
-    @classmethod
-    def insert(self, *args, **kwargs):
-        obj = ()
-        if len(args) > 0 and isinstance(*args, list):
-            for dict in args[0]:
-                obj = self(**dict)
-                db_session.add(obj)
-        else:
-            obj = self(**kwargs)
-            db_session.add(obj)
-        db_session.commit()
-        return obj
-
-    # 定义函数完成数据更新
-    def update(self, **kwargs):
-        for key, value in kwargs.items():
-            if hasattr(self, key):
-                setattr(self, key, value)
-        db_session.commit()
-
-    # 定义函数完成数据删除
-    def delete(self):
-        db_session.delete(self)
-        db_session.commit()
-
-    # def select(self, *args, **kwargs):
-    #     db_session.query(self)
+#
+# class CRUD:
+#     # 定义函数完成构造对象数据初始化
+#     def __init__(self, **kwargs):
+#         for key, value in kwargs.items():
+#             setattr(self, key, value)
+#
+#     # 定义一个数据添加操作
+#     @classmethod
+#     def insert(self, *args, **kwargs):
+#         obj = ()
+#         if len(args) > 0 and isinstance(*args, list):
+#             for dict in args[0]:
+#                 obj = self(**dict)
+#                 db_session.add(obj)
+#         else:
+#             obj = self(**kwargs)
+#             db_session.add(obj)
+#         db_session.commit()
+#         return obj
+#
+#     # 定义函数完成数据更新
+#     def update(self, **kwargs):
+#         for key, value in kwargs.items():
+#             if hasattr(self, key):
+#                 setattr(self, key, value)
+#         db_session.commit()
+#
+#     # 定义函数完成数据删除
+#     def delete(self):
+#         db_session.delete(self)
+#         db_session.commit()
+#
+#     def select(self, *args, **kwargs):
+#         # sql = f'select * from {}'
+#         print('select')
 
 
 def main():
