@@ -130,7 +130,7 @@ def product_distribute():
                     d.CheckProjectNO = CheckProjectNO
                     d.Status = 'FC'
                     CheckForm_data.Action = '复查'
-                    CheckForm_data.Status = '复查'
+                    # CheckForm_data.Status = '复查'
                     CheckForm_data.FAccount = Account[item]
                     # data.FNo = No[item]
                     CheckForm_data.FUser = User
