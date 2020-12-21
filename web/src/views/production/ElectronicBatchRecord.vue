@@ -82,6 +82,7 @@
         BrandName:"",
         PUCode:"",
         BatchID:"",
+        ZYPlanItem:{}
       }
     },
     created(){
@@ -156,6 +157,7 @@
       },
       ClickPU(item){ //点击工艺展示电子批记录
         let that = this
+        this.ZYPlanItem = item
         this.BrandCode = item.BrandCode
         this.BrandName = item.BrandName
         this.PUCode = item.PUCode
@@ -218,18 +220,41 @@
           params:params
         }).then(res =>{
           if(res.data.code === "200"){
-            console.log(res.data.data)
             this.$nextTick(function () {
-              for(let key  in res.data.data){
-                $(".elementTable").find(".isInput").each(function(){
+              for(let key in res.data.data){
+                $(".elementTable").find("td.isInput").each(function(){
                   if($(this).attr("data-field") === key){
-                    $(this).find("p").html(res.data.data[key])
+                      $(this).find("p").html(res.data.data[key])
                   }
                 })
-                $(".elementTable").find(".operator").each(function(){
+                $(".elementTable").find("td.operator").each(function(){
                   if($(this).attr("data-field") === key){
-                    $(this).append("<p></p>")
-                    $(this).find("p").html(res.data.data[key])
+                    if($(this).children("p").length == 0){
+                      $(this).append("<p></p>")
+                      $(this).find("p").html(res.data.data[key])
+                    }else{
+                      $(this).find("p").html(res.data.data[key])
+                    }
+                  }
+                })
+                $(".elementTable").find("td.reviewingOfficer").each(function(){
+                  if($(this).attr("data-field") === key){
+                    if($(this).children("p").length == 0){
+                      $(this).append("<p></p>")
+                      $(this).find("p").html(res.data.data[key])
+                    }else{
+                      $(this).find("p").html(res.data.data[key])
+                    }
+                  }
+                })
+                $(".elementTable").find("td.QAConform").each(function(){
+                  if($(this).attr("data-field") === key){
+                    if($(this).children("p").length == 0){
+                      $(this).append("<p></p>")
+                      $(this).find("p").html(res.data.data[key])
+                    }else{
+                      $(this).find("p").html(res.data.data[key])
+                    }
                   }
                 })
               }
@@ -247,25 +272,36 @@
                   $(this).val("0")
                 }
               })
-              $(".elementTable").find("td.operator").on("click",function(){ //操作确认
-                that.$confirm('您是否要确认操作人?', '提示', {
+              $(".elementTable").find("td.operator,.reviewingOfficer,.QAConform").on("click",function(){ //点击确认
+                that.$confirm('您是否要确认'+ $(this).attr("title") +'?', '提示', {
                   confirmButtonText: '确定',
                   cancelButtonText: '取消',
                   type: 'warning'
                 }).then(() => {
                   var params = {
                     BatchID:that.BatchID,
-                    BrandCode:this.BrandCode,
-                    PUCode:this.PUCode,
+                    BrandCode:that.BrandCode,
+                    PUCode:that.PUCode,
                     key:$(this).attr("data-field")
                   }
+                  const loading = that.$loading({
+                    lock: true,
+                    text: 'Loading',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                  });
                   that.axios.post("/api/batchconfirm",that.qs.stringify(params)).then(res =>{
+                    loading.close();
                     if(res.data.code === "200"){
-                      $(this).append("<p></p>")
-                      $(this).find("p").append(" "+res.data.data)
+                      if($(this).children("p").length == 0){
+                        $(this).append("<p></p>")
+                        $(this).find("p").html(res.data.data)
+                      }else{
+                        $(this).find("p").append(" "+res.data.data)
+                      }
                       that.$message({
                         type: 'success',
-                        message: "操作人确认成功"
+                        message: $(this).attr("title")+"确认成功"
                       });
                     }else{
                       that.$message({
@@ -274,6 +310,7 @@
                       });
                     }
                   },res =>{
+                    loading.close();
                     console.log("请求错误")
                   })
                 }).catch(() => {
