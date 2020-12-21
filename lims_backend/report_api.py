@@ -86,3 +86,25 @@ def check_report():
         log(e)
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
 
+
+@report.route('/CheckLog', methods=['GET', 'POST'])
+def check_log():
+    try:
+        if request.method == 'GET':
+            # 当前页码
+            page = int(request.values.get('Page'))
+            # 每页记录数
+            per_page = int(request.values.get('PerPage'))
+            # status = request.values.get('Status')
+            Product = request.values.get('Product')
+            ProductType = request.values.get('ProductType')
+            # start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
+            # end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
+            results = db_session.query(CheckLife).filter(CheckLife.Product==Product, CheckLife.ProductType == ProductType
+                                                         ).order_by(CheckLife.Id.desc()).all()
+            data = results[(page - 1) * per_page:page * per_page]
+            return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
+                              ensure_ascii=False)
+    except Exception as e:
+        log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)

@@ -86,7 +86,7 @@ class CheckLife(Base):
     User = Column(Unicode(16), nullable=True)
     # 操作（申请-审核-取样-接收-分发-质检中-报告-审核-放行）
     Status = Column(Unicode(16), nullable=True)
-    # 时间
+    # 操作时间
     OperationTime = Column(Unicode(32), nullable=True, default='')
     # 操作内容
     Work = Column(Unicode(32), nullable=True)

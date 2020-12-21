@@ -12,6 +12,7 @@ check = Blueprint('check', __name__)
 
 @check.route('/Life', methods=['GET', 'POST'])
 def life():
+    """功能看板"""
     try:
         if request.method == 'GET':
             # 当前页码
