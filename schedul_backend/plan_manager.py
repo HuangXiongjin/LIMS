@@ -776,26 +776,26 @@ def PlanManagerSelect():
             BatchID = data.get("BatchID")
             BrandName = data.get("BrandName")
             if BatchID == "" and BrandName == "":
-                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"])).order_by("ID").count()
-                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"])).order_by("ID").all()[
+                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划","物料发送完成","物料发送中"])).order_by("ID").count()
+                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划","物料发送完成","物料发送中"])).order_by("ID").all()[
                          inipage:endpage]
             elif BatchID != "" and BrandName == "":
-                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"]), PlanManager.BatchID == BatchID).order_by(
+                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划","物料发送完成","物料发送中"]), PlanManager.BatchID == BatchID).order_by(
                     "ID").count()
-                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"]), PlanManager.BatchID == BatchID).order_by(
+                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划","物料发送完成","物料发送中"]), PlanManager.BatchID == BatchID).order_by(
                     "ID").all()[
                          inipage:endpage]
             elif BatchID == "" and BrandName != "":
-                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"]), PlanManager.BrandName == BrandName).order_by(
+                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划","物料发送完成","物料发送中"]), PlanManager.BrandName == BrandName).order_by(
                     "ID").count()
-                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"]), PlanManager.BrandName == BrandName).order_by(
+                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划","物料发送完成","物料发送中"]), PlanManager.BrandName == BrandName).order_by(
                     "ID").all()[
                          inipage:endpage]
             else:
-                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"]),
+                count = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划","物料发送完成","物料发送中"]),
                                                              PlanManager.BrandName == BrandName, PlanManager.BatchID == BatchID).order_by(
                     "ID").count()
-                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划"]),
+                oclass = db_session.query(PlanManager).filter(PlanManager.PlanStatus.in_(["已完成","执行","待备料","已发送投料计划","物料发送完成","物料发送中"]),
                                                               PlanManager.BrandName == BrandName, PlanManager.BatchID == BatchID).order_by(
                     "ID").all()[
                          inipage:endpage]
@@ -828,3 +828,63 @@ def PlanManagerSelect():
             logger.error(e)
             insertSyslog("error", "批次计划执行后批次录页面查询报错Error：" + str(e), current_user.Name)
             return json.dumps({"code": "500", "message": "后端报错"})
+
+
+@batch_plan.route('/puidfinished', methods=['GET', 'POST'])
+def puidfinished():
+    '''
+    每个工艺段完成接口
+    :return:
+    '''
+    if request.method == 'POST':
+        data = request.values
+        try:
+            BatchID = data.get("BatchID")
+            BrandCode = data.get("BrandCode")
+            PUCode = data.get("PUCode")
+            ocalss = db_session.query(ZYPlan).filter(ZYPlan.BatchID == BatchID, ZYPlan.BrandCode == BrandCode, ZYPlan.PUCode == PUCode).first()
+            if ocalss:
+                ocalss.ZYPlanStatus = Global.ZYPlanStatus.Finshed.value
+                db_session.commit()
+            return json.dumps({"code": "200", "message": "成功！", "data": "OK"})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "每个工艺段完成接口报错Error：" + str(e), current_user.Name)
+            return json.dumps("每个工艺段完成接口报错", cls=AlchemyEncoder, ensure_ascii=False)
+
+@batch_plan.route('/batchconfirm', methods=['GET', 'POST'])
+def batchconfirm():
+    '''
+    批记录审核复合
+    :return:
+    '''
+    if request.method == 'POST':
+        data = request.values
+        try:
+            BatchID = data.get("BatchID")
+            BrandCode = data.get("BrandCode")
+            PUCode = data.get("PUCode")
+            key = data.get("key")
+            ocalss = db_session.query(EletronicBatchDataStore).filter(EletronicBatchDataStore.BatchID == BatchID, EletronicBatchDataStore.BrandCode == BrandCode,
+                                                                      EletronicBatchDataStore.PUCode == PUCode, EletronicBatchDataStore.Content == key).first()
+            if ocalss:
+                ocalss.OperationpValue = ocalss.OperationpValue + "," + current_user.Name
+            else:
+                ebd = EletronicBatchDataStore()
+                ebd.PUCode = PUCode
+                ebd.BrandCode = BrandCode
+                ebd.BatchID = BatchID
+                ebd.Content = key
+                ebd.OperationpValue = current_user.Name
+                ebd.Operator = current_user.Name
+                db_session.add(ebd)
+            db_session.commit()
+            return json.dumps({"code": "200", "message": "成功！", "data": "OK"})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "批记录审核复合报错Error：" + str(e), current_user.Name)
+            return json.dumps("批记录审核复合报错", cls=AlchemyEncoder, ensure_ascii=False)

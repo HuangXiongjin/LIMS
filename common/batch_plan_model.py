@@ -1058,6 +1058,9 @@ class ProductEquipment(Base):
     # 设备编号:
     Number = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
 
+    # 批记录设备定义字符:
+    EQPBatchCode = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
 # 批记录操作步骤（SOP）
 class EletronicBatchDataStore(Base):
     __tablename__ = 'EletronicBatchDataStore'
@@ -1098,6 +1101,83 @@ class FeedingRules(Base):
     BucketSum = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
     # 投料条件:
     Condition = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
+
+class EquipmentTags(Base):
+    '''设备采集点维护'''
+    __tablename__ = 'EquipmentTags'
+    # id:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+
+    # 设备ID:
+    EquipmentID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 采集变量tag点:
+    CollectTag = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 类型:
+    Type = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 编号:
+    Number = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+
+class BatchCollectRule(Base):
+    '''批记录采集规则'''
+    __tablename__ = "BatchCollectRule"
+
+    # ID:
+    ID = Column(BigInteger, primary_key=True, autoincrement=True, nullable=True)
+
+    # 设备编码:
+    EQPCode = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 设备名称:
+    EQPName = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段编码:
+    PUCode = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 工艺段名称:
+    PUName = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 设备ID:
+    EquipmentID = Column(Integer, primary_key=False, autoincrement=False, nullable=True)
+
+    # 批记录类型:
+    BatchType = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 批记录说明:
+    Description = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
+
+    # 采集类型:
+    CollectType = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 采集说明:
+    CollectDesc = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
+
+    # 采样Tag点:
+    CollectTag = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 条件Tag类型:
+    TagType = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 条件表达式:
+    TagDesc = Column(Unicode(200), primary_key=False, autoincrement=False, nullable=True)
+
+    # 符号:
+    BatchType = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
+
+    # 运算值:
+    NumberSum = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 条件关系:
+    Relationship = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
+
+    # 间隔时间:
+    IntervalTime = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
+    # 单位:
+    Unit = Column(Unicode(64), primary_key=False, autoincrement=False, nullable=True)
 
 
 
