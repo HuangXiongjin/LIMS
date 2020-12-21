@@ -15,8 +15,11 @@ def quality_testing():
     """质检报告检测"""
     try:
         if request.method == 'GET':
-            query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).all()
-            return json.dumps({'code': '1000', 'msg': '操作成功', 'data': query_data}, cls=MyEncoder, ensure_ascii=False)
+            name = request.values.get('Name')
+            query_work = db_session.query(WorkerBook).filter_by(Name=name).first()
+            query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO).all()
+            check_data = [{"name": item.Name, "work": item.CheckProject} for item in query_data]
+            return json.dumps({'code': '1000', 'msg': '操作成功', 'data': check_data}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'POST':
             NO = request.values.get('CheckProjectNO')
             Name = request.values.get('Name')
@@ -63,10 +66,13 @@ def check_report():
             data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
             if Action == '1':
                 data1.laboratory = 'Y'
+                data.Life = '审核'
             if Action == '2':
                 data1.QC = 'Y'
+                data.Life = '审核'
             if Action == '3':
                 data1.QA = 'Y'
+                data.Life = '审核'
             if Action == '4':
                 data1.QS = 'Y'
                 data.Life = '放行'

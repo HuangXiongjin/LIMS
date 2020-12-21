@@ -253,24 +253,6 @@ def product_save():
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
 
 
-@distribute.route('/Check', methods=['GET', 'POST'])
-def test():
-    """人员检测记录"""
-    try:
-        if request.method == 'GET':
-            name = request.values.get('Name')
-            query_work = db_session.query(WorkerBook).filter_by(Name=name).first()
-            query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO).all()
-            check_data = [{"name": item.Name, "work": item.CheckProject} for item in query_data]
-            return json.dumps({'code': '1000', 'msg': '操作成功', 'data': check_data}, cls=MyEncoder, ensure_ascii=False)
-        if request.method == 'POST':
-            # pass
-            return json.dumps({'code': '1000', 'msg': '操作成功', 'data': 'check_data'}, cls=MyEncoder, ensure_ascii=False)
-    except Exception as e:
-        log(e)
-        return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
-
-
 @distribute.route('/ProductSaveSurvey', methods=['POST'])
 def product_save_survey():
     try:
