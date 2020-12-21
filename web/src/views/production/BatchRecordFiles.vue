@@ -34,6 +34,9 @@
               <el-radio-button label="品名"></el-radio-button>
               <el-radio-button label="批次号"></el-radio-button>
               <el-radio-button label="录入数据字段"></el-radio-button>
+              <el-radio-button label="操作人"></el-radio-button>
+              <el-radio-button label="复核人"></el-radio-button>
+              <el-radio-button label="QA"></el-radio-button>
             </el-radio-group>
           </el-form-item>
           <el-form-item>
@@ -109,7 +112,7 @@
             $(".elementTable").find("tbody").css("display","inline-table")
             $(".elementTable").find("td").each(function(){
               $(this).click(function(){
-                if($(this).hasClass("isInput") || $(this).hasClass("collect")){
+                if($(this).attr("class") != ""){
                   that.$confirm('此操作将删除已定义的字段, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
@@ -156,6 +159,33 @@
                     $(this).addClass("collect")
                     $(this).attr("data-field","BatchNo")
                     $(this).attr("title","批次号")
+                  }else if(that.handleCellRadio === "操作人" || that.handleCellRadio === "复核人" || that.handleCellRadio === "QA"){
+                    that.$prompt('请输入单元格中'+ that.handleCellRadio +'的字段', '提示', {
+                      confirmButtonText: '确定',
+                      cancelButtonText: '取消',
+                    }).then(({ value }) => {
+                      if(value){
+                        if(that.handleCellRadio === "操作人"){
+                          $(this).addClass("operator")
+                        }else if(that.handleCellRadio === "复核人"){
+                          $(this).addClass("reviewingOfficer")
+                        }else if(that.handleCellRadio === "QA"){
+                          $(this).addClass("QAConform")
+                        }
+                        $(this).attr("data-field",value)
+                        $(this).attr("title",that.handleCellRadio)
+                      }else{
+                        that.$message({
+                          type: 'info',
+                          message: '不能为空'
+                        });
+                      }
+                    }).catch(() => {
+                      that.$message({
+                        type: 'info',
+                        message: '取消输入'
+                      });
+                    });
                   }
                 }
               })

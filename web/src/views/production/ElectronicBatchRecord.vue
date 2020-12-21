@@ -186,7 +186,6 @@
                       $(this).html("")
                       $(this).append("<p></p>")
                       $(this).find("p").attr("contenteditable","true").html(html)
-
                     }
                   }else if($(this).attr("data-field") === "ProductName"){
                     $(this).html(that.BrandName)
@@ -209,6 +208,7 @@
       },
       // 获取录入保存的数据
       getBatchModelField(){
+        let that = this
         var params = {
           BrandCode:this.BrandCode,
           PUCode:this.PUCode,
@@ -218,10 +218,17 @@
           params:params
         }).then(res =>{
           if(res.data.code === "200"){
+            console.log(res.data.data)
             this.$nextTick(function () {
               for(let key  in res.data.data){
                 $(".elementTable").find(".isInput").each(function(){
                   if($(this).attr("data-field") === key){
+                    $(this).find("p").html(res.data.data[key])
+                  }
+                })
+                $(".elementTable").find(".operator").each(function(){
+                  if($(this).attr("data-field") === key){
+                    $(this).append("<p></p>")
                     $(this).find("p").html(res.data.data[key])
                   }
                 })
@@ -239,6 +246,42 @@
                 }else if($(this).val() === "1"){
                   $(this).val("0")
                 }
+              })
+              $(".elementTable").find("td.operator").on("click",function(){ //操作确认
+                that.$confirm('您是否要确认操作人?', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning'
+                }).then(() => {
+                  var params = {
+                    BatchID:that.BatchID,
+                    BrandCode:this.BrandCode,
+                    PUCode:this.PUCode,
+                    key:$(this).attr("data-field")
+                  }
+                  that.axios.post("/api/batchconfirm",that.qs.stringify(params)).then(res =>{
+                    if(res.data.code === "200"){
+                      $(this).append("<p></p>")
+                      $(this).find("p").append(" "+res.data.data)
+                      that.$message({
+                        type: 'success',
+                        message: "操作人确认成功"
+                      });
+                    }else{
+                      that.$message({
+                        type: 'info',
+                        message: res.data.message
+                      });
+                    }
+                  },res =>{
+                    console.log("请求错误")
+                  })
+                }).catch(() => {
+                  that.$message({
+                    type: 'info',
+                    message: '已取消确认'
+                  });
+                });
               })
             })
           }else{
@@ -268,7 +311,14 @@
             $(".elementTable").find(".isInput").each(function(){
               params[$(this).attr("data-field")] = $(this).find("p").html()
             })
+            const loading = this.$loading({
+              lock: true,
+              text: 'Loading',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)'
+            });
             that.axios.post("/api/allUnitDataMutual",that.qs.stringify(params)).then(res =>{
+              loading.close();
               if(res.data.code === "200"){
                 that.$message({
                   type: 'success',
@@ -281,6 +331,7 @@
                 });
               }
             },res =>{
+              loading.close();
               console.log("请求错误")
             })
           })

@@ -101,9 +101,9 @@ export default new Router({
         {path:'/sendMaterialLog',name:'sendMaterialLog',meta:{ title:'物料运输记录',type:"生产执行系统"},component:sendMaterialLog},
         {path:'/sendPlan',name:'sendPlan',meta:{ title:'发送投料计划',type:"生产执行系统"},component:sendPlan},
 
-        {path:'/ProductionMonitoring',name:'ProductionMonitoring',meta:{ title:'生产监控',type:"生产数据管理"},component:ProductionMonitoring},
-        {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'批生产记录',type:"生产数据管理"},component:ElectronicBatchRecord},
-        {path:'/BatchRecordFiles',name:'BatchRecordFiles',meta:{ title:'批记录管理',type:"生产数据管理"},component:BatchRecordFiles},
+        {path:'/ProductionMonitoring',name:'ProductionMonitoring',meta:{ title:'生产监视',type:"生产数据管理"},component:ProductionMonitoring},
+        {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'电子批生产记录',type:"生产数据管理"},component:ElectronicBatchRecord},
+        {path:'/BatchRecordFiles',name:'BatchRecordFiles',meta:{ title:'批记录维护管理',type:"生产数据管理"},component:BatchRecordFiles},
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据管理"},component:MaterialBalanceStatistics},
         {path:'/TrendQuery',name:'TrendQuery',meta:{ title:'生产数据趋势分析',type:"生产数据管理"},component:TrendQuery},
 
