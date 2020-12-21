@@ -881,7 +881,7 @@ def batchconfirm():
                 ebd.Operator = current_user.Name
                 db_session.add(ebd)
             db_session.commit()
-            return json.dumps({"code": "200", "message": "成功！", "data": "OK"})
+            return json.dumps({"code": "200", "message": "成功！", "data": current_user.Name})
         except Exception as e:
             db_session.rollback()
             print(e)
