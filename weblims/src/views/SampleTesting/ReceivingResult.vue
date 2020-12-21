@@ -51,195 +51,119 @@
                             <el-button type='primary' @click="SearchTab">查询</el-button>
                         </el-col>
                         <el-col :span='6' class="req mgl15" style="paddingTop:3px;">
-                             <el-radio-group v-model="radio2"  @change='selectSampleTab'>
-                                <el-radio-button label="样本接收" ></el-radio-button>
-                                <el-radio-button label="记录接收"></el-radio-button>
+                             <el-radio-group v-model="radio2" @change="HandSelectChange">
+                                <el-radio-button label="样本分发" ></el-radio-button>
+                                <el-radio-button label="记录分发"></el-radio-button>
                              </el-radio-group>
                         </el-col>
                     </el-row>
                 </el-col>
                 <el-col :span='24'>
-                      <el-row class="padd15" v-if="radio2=='样本接收'">
+                      <el-row class="padd15" v-if="radio2=='样本分发'">
                           <el-col :span='24' class="container mgt24" style="backgroundColor:#EAEAEA;">
-                              <el-col :span='20'>
-                                  <el-col :span='24' class="lightgreen fsz20"><el-checkbox label="去检验" @change="isDiscern" checked></el-checkbox></el-col>
+                              <el-col :span='24'>
+                                  <el-col :span='24' class="lightgreen fsz20"><el-checkbox label="去检验" checked></el-checkbox></el-col>
                                   <el-col :span='24' class="mgt24">
                                       <el-row :gutter='10'>
-                                          <el-col :span='5'>样品品名</el-col>
-                                          <el-col :span='4'>类别</el-col>
-                                          <el-col :span='5'>批号(物料代码)</el-col>
-                                          <el-col :span='5'>编号</el-col>
-                                          <el-col :span='5'>分配小组</el-col>
+                                          <el-col :span='4'>样品品名</el-col>
+                                          <el-col :span='3'>类别</el-col>
+                                          <el-col :span='4'>批号(物料代码)</el-col>
+                                          <el-col :span='3'>分配样量</el-col>
+                                          <el-col :span='3'>编号</el-col>
+                                          <el-col :span='7'>分配小组</el-col>
                                       </el-row>
                                   </el-col>
                                   <el-col :span='24' class="mgt24">
-                                       <el-row :gutter='10'>
-                                          <el-col :span='5' class="lightgreen padt8">{{Row.Name}}</el-col>
-                                          <el-col :span='4' class="lightgreen padt8">{{Row.ProductType}}</el-col>
-                                          <el-col :span='5' class="lightgreen padt8">{{Row.Number}}</el-col>
-                                          <el-col :span='5' class="lightgreen padt8">
-                                              xcxcx
-                                          </el-col>
-                                          <el-col :span='5'>
-                                             <el-select v-model="distribute.group" placeholder="物料类">
+                                       <el-row>
+                                          <el-col :span='4' class="lightgreen padt8">{{Row.Name}}</el-col>
+                                          <el-col :span='3' class="lightgreen padt8">{{Row.ProductType}}</el-col>
+                                          <el-col :span='4' class="lightgreen padt8">{{Row.Number}}</el-col>
+                                          <el-col :span='3' class="lightgreen padt8">{{Row.JAccount}}</el-col>
+                                          <el-col :span='3' class="lightgreen padt8">{{Row.Foo}}</el-col>
+                                          <el-col :span='7'>
+                                              <el-select v-model="RecordForm.group" multiple placeholder="请选择" style="width:100%;">
                                                 <el-option
                                                 v-for="item in Groups"
                                                 :key="item.value"
                                                 :label="item.label"
-                                                :value="item.value">
+                                                :value="item.label">
                                                 </el-option>
                                             </el-select>
                                           </el-col>
                                       </el-row>
                                   </el-col>
                               </el-col>
-                              <el-col :span='4'>
-                                  <el-col class="padtop50 padl40"><el-button type="success" @click="DistributeSample('J')">{{curSta}}</el-button></el-col>
+                              <el-col :span='24'>
+                                  <el-col class="padtop50 padl40" style="textAlign:right;"><el-button type="success" @click="DistributeSample">{{curSta}}</el-button></el-col>
                               </el-col>
                           </el-col>
-                          <el-col :span='24' class="container mgt24" style="backgroundColor:#EAEAEA;">
-                              <el-col :span='20'>
-                                  <el-col :span='24' class="lightgreen fsz20"><el-checkbox label="去复查/备用"   @change="isCheck"></el-checkbox></el-col>
-                                  <el-col :span='24' class="mgt24">
-                                      <el-row :gutter='10'>
-                                          <el-col :span='5'>样品品名</el-col>
-                                          <el-col :span='4'>类别</el-col>
-                                          <el-col :span='5'>批号(物料代码)</el-col>
-                                          <el-col :span='5'>编号</el-col>
-                                          <el-col :span='5'>分配小组</el-col>
-                                      </el-row>
-                                  </el-col>
-                                  <el-col :span='24' class="mgt24">
-                                        <el-row :gutter='10'>
-                                          <el-col :span='5' class="lightgreen padt8">{{Row.Name}}</el-col>
-                                          <el-col :span='4' class="lightgreen padt8">{{Row.ProductType}}</el-col>
-                                          <el-col :span='5' class="lightgreen padt8">{{Row.Number}}</el-col>
-                                          <el-col :span='5' class="lightgreen padt8">
-                                              xcxcx
-                                          </el-col>
-                                          <el-col :span='5'>
-                                             <el-select v-model="distribute.group" placeholder="物料类">
-                                                <el-option
-                                                v-for="item in Groups"
-                                                :key="item.value"
-                                                :label="item.label"
-                                                :value="item.value">
-                                                </el-option>
-                                            </el-select>
-                                          </el-col>
-                                      </el-row>
-                                  </el-col>
-                              </el-col>
-                              <el-col :span='4'>
-                                    <el-col class="padtop50 padl40"><el-button type="success">确认接收</el-button></el-col>
-                              </el-col>
-                          </el-col>
-                          <el-col :span='24' class="container mgt24" style="backgroundColor:#EAEAEA;">
-                              <el-col :span='20'>
-                                  <el-col :span='24' class="lightgreen fsz20"><el-checkbox label="去留样"  @change="isLy"></el-checkbox></el-col>
-                                  <el-col :span='24' class="mgt24">
-                                      <el-row :gutter='10'>
-                                          <el-col :span='5'>样品品名</el-col>
-                                          <el-col :span='4'>类别</el-col>
-                                          <el-col :span='5'>批号(物料代码)</el-col>
-                                          <el-col :span='5'>编号</el-col>
-                                          <el-col :span='5'>分配小组</el-col>
-                                      </el-row>
-                                  </el-col>
-                                  <el-col :span='24' class="mgt24">
-                                       <el-row :gutter='10'>
-                                          <el-col :span='5' class="lightgreen padt8">{{Row.Name}}</el-col>
-                                          <el-col :span='4' class="lightgreen padt8">{{Row.ProductType}}</el-col>
-                                          <el-col :span='5' class="lightgreen padt8">{{Row.Number}}</el-col>
-                                          <el-col :span='5' class="lightgreen padt8">
-                                              xcxcx
-                                          </el-col>
-                                          <el-col :span='5'>
-                                             <el-select v-model="distribute.group" placeholder="物料类">
-                                                <el-option
-                                                v-for="item in Groups"
-                                                :key="item.value"
-                                                :label="item.label"
-                                                :value="item.value">
-                                                </el-option>
-                                            </el-select>
-                                          </el-col>
-                                      </el-row>
-                                  </el-col>
-                              </el-col>
-                              <el-col :span='4'>
-                                  <el-col class="padtop50 padl40"><el-button type="success" @click="DistributeSample('L')">{{curSta}}</el-button></el-col>
-                              </el-col>
-                          </el-col>
-                      </el-row> 
+                      </el-row>
                 </el-col>
             </el-row>
-            <el-row v-if="radio2=='记录接收'" class="mgt24">
+            <el-row v-if="radio2=='记录分发'" class="mgt24">
                  <el-col :span='24' class="container">
                     <el-menu :default-active="'1'" class="bgwhite mgt24" mode="horizontal" @select="handleSelect">
                         <el-menu-item :index="'1'" style="height:46px;lineHeight:30px;" v-if="Discernopt">检验记录</el-menu-item>
-                        <el-menu-item :index="'2'"  style="height:46px;lineHeight:30px;" v-if="Lyopt">留样记录</el-menu-item>
-                        <el-menu-item :index="'3'"  style="height:46px;lineHeight:30px;" v-if="Checkopt">复查记录</el-menu-item>
                     </el-menu>
-                    <div v-if="currentChoose=='1'">
+                    <div>
                         <div class="mgt24 mgb24">产品检验原始记录</div>
                         <div style="border:1px solid #ccc;paddingTop:26px;">
                             <el-form ref="form" :model="RecordForm" label-width="100px">
                                 <el-row>
                                     <el-col :span='11'>
                                         <el-form-item label="品名：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="Row.Name" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
                                         <el-form-item label="批号：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="Row.ProductNumber" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
                                     <el-col :span='11'>
                                         <el-form-item label="规格：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="Row.Specs" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
                                         <el-form-item label="请验部门：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="Row.CheckDepartment" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
                                     <el-col :span='11'>
-                                        <el-form-item label="制剂：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                        <el-form-item label="剂型：">
+                                            <el-input v-model="Recordobj.Type" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
                                         <el-form-item label="批数量：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="Row.Amount" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
                                     <el-col :span='11'>
-                                        <el-form-item label="品名：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                        <el-form-item label="取样时间：">
+                                            <el-input v-model="Row.VerifyDate" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
                                         <el-form-item label="检验日期：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="Recordobj.CheckTime" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
                                     <el-col :span='22'>
                                         <el-form-item label="检验依据：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="Recordobj.Basis" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
-                                </el-row>    
+                                </el-row>
                             </el-form>
                             <el-col class="mgt24">
                             <el-form >
@@ -273,7 +197,6 @@
                     </div>
                  </el-col>
             </el-row>
-            <el-col class="mgt24" style="textAlign:right;"><el-button :type="(Discernopt || Checkopt || Lyopt)?'primary':'info'">确认接收</el-button></el-col>
         </el-col>
     </el-row>
 </template>
@@ -282,15 +205,28 @@ var moment=require('moment')
 export default {
     data(){
         return {
-           curSta:'确认接收',
+           curSta:'确认分发',
            Discernopt:true,
            Checkopt:false,
            Lyopt:false,
            RecordForm:{
-               name:''
+               group:[]
+           },
+           Groups:[{label:"产品组",value:1},{label:"物料组",value:2},{label:"微生物组",value:3}],
+           LyForm:{
+               PackSpecs:'',
+               TheoreticalYield:'',
+               BatchAmount:'',
+               BatchDepartment:'',
+               BatchName:'',
+               Position:'',
+               BatchTime:'',
+               Handler:'',
+               ProductionDate:'',
+               ValidityDate:'',
+               Comment:''
            },
            Row:{},
-           Groups:[{label:'小组1',value:1},{label:'小组2',value:2},{label:'小组3',value:3}],
            distribute:{
                no1:'',
                Account1:'',
@@ -299,10 +235,11 @@ export default {
                no3:'',
                Account3:'',
                CheckProjectNO:'',
-               group:'小组1'
+
            },
-           currentChoose:'1',
-           radio2:'样本接收',
+           currentChoose:'2',
+           radio2:'样本分发',
+           Recordobj:{},
            searchObj:{
                category:'玉米淀粉',
                registrydate:moment(new Date()).format('YYYY-MM-DD')
@@ -330,33 +267,33 @@ export default {
        this.getInitTab()
     },
     methods: {
-        DistributeSample(act){
+        HandSelectChange(e){
+            this.radio2=e
+        },
+       getRecord(){
+           var params={
+               CheckProjectNO:this.distribute.CheckProjectNO
+           }
+           this.axios.get('/lims/CheckRecord',{params:params}).then((res) => {
+               if(res.data.code=='1000'){
+                   this.Recordobj=res.data.data
+               }
+           })
+       },
+        DistributeSample(){ //检验接收记录
             var params={
-                 Time:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                 Group:JSON.stringify(this.RecordForm.group),
                  CheckProjectNO:this.distribute.CheckProjectNO,
-                 User:localStorage.getItem('Name'),
-                 CheckProjectNO:this.distribute.CheckProjectNO,
-            }
-            if(act=='J'){
-                params.Account=this.distribute.Account1,
-                params.no=this.distribute.no1,
-                params.Action=act
-            }else if(act=='L'){
-                params.Account=this.distribute.Account3,
-                params.no=this.distribute.no3,
-                params.Action=act
-            }else if(act=='F'){
-                params.Account=this.distribute.Account2,
-                params.no=this.distribute.no2,
-                params.Action=act
+                 GroupUser:localStorage.getItem('Name'),
+                 Action:JSON.stringify(['Q'])
             }
            this.axios.post('/lims/Distribute',this.qs.stringify(params)).then((res) => {
                if(res.data.code=='1000'){
                    this.$message({
                        type:'success',
-                       message:'接收成功'
+                       message:'分发成功'
                    })
-                   this.curSta='已接收'
+                   this.curSta='已分发'
                }else{
                    this.$message({
                        type:'info',
@@ -365,36 +302,8 @@ export default {
                }
            })
         },
-        isDiscern(e){ //是否检验
-            if(e){
-                this.Discernopt=true  
-            }else{
-                this.Discernopt=false
-            }
-        },
-        isCheck(e){ //是否复查
-            if(e){
-                this.Checkopt=true  
-            }else{
-                this.Checkopt=false
-            }
-        },
-        isLy(e){ //是否留样
-            if(e){
-                this.Lyopt=true  
-            }else{
-                this.Lyopt=false
-            }
-        },
-        handleSelect(key) {
-            console.log(key)
+        handleSelect(key) { //区分样品和记录
             this.currentChoose=key
-        },
-        selectSampleTab(){
-            console.log(this.radio2)
-        },
-        LookJbInfo(){
-            this.dialogTableVisible=true
         },
          getSelectOption() { //获取下拉列表选项
            this.axios.get('/lims/AllProduct').then((res) => {
@@ -436,10 +345,12 @@ export default {
             })
         },
         handletabClick(row){ //左侧tab点击事件
-            this.curSta='确认接收'
+            this.curSta='确认分发'
             this.Row=row
+            this.RecordForm.CheckTime=moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
             this.distribute.CheckProjectNO=row.CheckProjectNO
             this.getJbInfo(row.CheckProjectNO)
+            this.getRecord()
         },
         getJbInfo(CheckProjectNO){
             var params={

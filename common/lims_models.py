@@ -14,18 +14,20 @@ db_session = Session()
 Base = declarative_base(engine)
 
 
-# class WorkRecord(Base):
-#     """检测分发指定"""
-#     __tablename__ = 'WorkRecord'
-#     Id = Column(Integer, autoincrement=True, primary_key=True)
-#     # 标识
-#     CheckProjectNO = Column(Unicode(32), nullable=True)
-#     # 员工编号
-#     No = Column(Unicode(16), nullable=True)
-#     # 被分发的人
-#     Name = Column(Unicode(16), nullable=True)
-#     # 被分发的内容
-#     Content = Column(Unicode(16), nullable=True)
+class ReportVerify(Base):
+    """报告审核"""
+    __tablename__ = 'ReportVerify'
+    Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 标识
+    CheckProjectNO = Column(Unicode(32), nullable=True)
+    # 实验室主管
+    laboratory = Column(Unicode(16), nullable=True, default='N')
+    # QC主任
+    QC = Column(Unicode(16), nullable=True, default='N')
+    # QA主任
+    QA = Column(Unicode(16), nullable=True, default='N')
+    # QA主任
+    QS = Column(Unicode(16), nullable=True, default='N')
 
 
 class Record(Base):
@@ -74,6 +76,8 @@ class CheckLife(Base):
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
     No = Column(Unicode(32), nullable=True)
+    # 请验单号
+    CheckNumber = Column(Unicode(32), nullable=True)
     # 品名
     Product = Column(Unicode(16), nullable=True)
     # 类型
@@ -82,7 +86,7 @@ class CheckLife(Base):
     User = Column(Unicode(16), nullable=True)
     # 操作（申请-审核-取样-接收-分发-质检中-报告-审核-放行）
     Status = Column(Unicode(16), nullable=True)
-    # 时间
+    # 操作时间
     OperationTime = Column(Unicode(32), nullable=True, default='')
     # 操作内容
     Work = Column(Unicode(32), nullable=True)
@@ -98,7 +102,7 @@ class QualityStandard(Base):
     Product = Column(Unicode(64), nullable=True)
     # 维护内容
     Describe = Column(Unicode(1024), nullable=True)
-    # 质量类型（Character-性状， Discern-鉴别，检查-检查，Content-含量测定，Microbe-微生物限度）
+    # 质量类型（Character-性状， Discern-鉴别，Inspect-检查，Content-含量测定，Microbe-微生物限度）
     Type = Column(Unicode(16), nullable=True)
     # 法定标准
     Statutory = Column(Unicode(1024), nullable=True)
@@ -153,9 +157,15 @@ class WorkerBook(Base):
     # 检测完成时间
     CheckEndTime = Column(Unicode(32), default='')
     # 当前状态(待接收， 检测中， 已完成)
-    Status = Column(Unicode(32), nullable=True, default='待接收')
-    # 检测结果是否是否合格(不合格-合格)
+    # Status = Column(Unicode(32), nullable=True, default='待接收')
+    # 检测结果是否是否合格(符合规定-不符合规定)
     Result = Column(Unicode(32), nullable=True, default='')
+    # 备注
+    Comment = Column(Unicode(128), nullable=True, default='')
+    # 完成状态
+    Status = Column(Unicode(32), default='N')
+    # 检测项分类
+    CheckType = Column(Unicode(32), default='')
 
 
 class CheckForm(Base):
@@ -226,7 +236,7 @@ class CheckForm(Base):
     Foo = Column(Unicode(32), nullable=True, default='')
     # 分发动作（J:检验-F:复查-L:留样）
     Action = Column(Unicode(16), nullable=True, default='')
-    # 实验室组长
+    # 实验室组长分发组
     LaboratoryUser = Column(Unicode(16), nullable=True, default='')
     # 备注
     Comment = Column(Unicode(32), nullable=True)
@@ -268,6 +278,8 @@ class Distribute(Base):
     GroupUser = Column(Unicode(32), nullable=True, default='')
     # 分发时间
     Time = Column(Unicode(32), nullable=True, default='')
+    # 动作状态
+    Status = Column(Unicode(32), nullable=True, default='')
 
 
 class WordForm(Base):
@@ -307,15 +319,15 @@ class ConclusionRecord(Base):
     # 规格
     Specs = Column(Unicode(32), nullable=True)
     # 大小样
-    BigLevel = Column(Unicode(32), nullable=True)
+    BigLevel = Column(Unicode(32), nullable=True, default='大样')
     # 药膏
-    ointment = Column(Unicode(32), nullable=True)
+    ointment = Column(Unicode(32), nullable=True, default='——')
     # 检验项目
     CheckProject = Column(Unicode(32), nullable=True)
     # 法定标准
-    StatutoryStandards = Column(Unicode(32), nullable=True)
+    StatutoryStandards = Column(Unicode(32), nullable=True, default='')
     # 内验标准
-    InnerStandards = Column(Unicode(32), nullable=True)
+    InnerStandards = Column(Unicode(32), nullable=True, default='')
     # 检验结果
     Comment = Column(Unicode(32), nullable=True)
     # 判定
@@ -352,12 +364,16 @@ class ProductSave(Base):
     Position = Column(Unicode(32), nullable=True)
     # 留样日期
     BatchTime = Column(Unicode(32), nullable=True, default='')
+    # 留样批号
+    BatchNumber = Column(Unicode(32), nullable=True)
     # 经手人
     Handler = Column(Unicode(32), nullable=True)
     # 生产日期
     ProductionDate = Column(Unicode(32), nullable=True, default='')
     # 有效日期
     ValidityDate = Column(Unicode(32), nullable=True, default='')
+    # 当前进度(待接收-留样观察中-申请销毁)
+    Status = Column(Unicode(32), nullable=True, default='待接收')
     # 备注
     Comment = Column(Unicode(32), nullable=True)
 
@@ -367,6 +383,8 @@ class ProductSaveSurvey(Base):
     __tablename__ = 'ProductSaveSurvey'
 
     Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 请验项目标识
+    CheckProjectNO = Column(Unicode(32), nullable=True)
     # 品名
     Name = Column(Unicode(32), nullable=True)
     # 温度
@@ -374,7 +392,7 @@ class ProductSaveSurvey(Base):
     # 相对湿度
     RH = Column(Unicode(32), nullable=True)
     # 留样位置
-    position = Column(Unicode(32), nullable=True)
+    Position = Column(Unicode(32), nullable=True)
     # 留样批号
     BatchNumber = Column(Unicode(32), nullable=True)
     # 留样日期

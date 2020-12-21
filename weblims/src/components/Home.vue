@@ -90,7 +90,7 @@ export default {
                     {name:'申请审核',path:'/ApplicationReview'},
 
                  ]},
-                 {name:'样本请验',icon:'el-icon-location',children:[
+                 {name:'样本请验',icon:'el-icon-s-order',children:[
                     {name:'申请检验',path:'/ApplyTest'},
                     {name:'请检审核',path:'/SampleCheck'},
                     {name:'取样登记',path:'/SampleRegistration'},

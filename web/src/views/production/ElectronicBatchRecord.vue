@@ -79,6 +79,7 @@
         currentBatch:true,//控制显示表格 boolen
         filebyte:"",
         BrandCode:"",
+        BrandName:"",
         PUCode:"",
         BatchID:"",
       }
@@ -154,7 +155,9 @@
         })
       },
       ClickPU(item){ //点击工艺展示电子批记录
+        let that = this
         this.BrandCode = item.BrandCode
+        this.BrandName = item.BrandName
         this.PUCode = item.PUCode
         this.BatchID = item.BatchID
         var params={
@@ -170,29 +173,28 @@
               this.$nextTick(function () {
                 $(".elementTable").find("td").each(function(){
                   if($(this).hasClass("isInput")){
-                    if($(this).children().length > 0){ //判断单元格是否为空的
+                    if($(this).children("p").length == 1){ //判断单元格有几个p标签
                       $(this).find("p").attr("contenteditable","true")
-                    }else{
+                    }else if($(this).children("p").length == 0){
                       $(this).append("<p></p>")
                       $(this).find("p").attr("contenteditable","true")
+                    }else{ //多个p标签的值合成一个
+                      var html = ""
+                      $(this).find("p").each(function(){
+                       html += $(this).html()
+                      })
+                      $(this).html("")
+                      $(this).append("<p></p>")
+                      $(this).find("p").attr("contenteditable","true").html(html)
+
                     }
+                  }else if($(this).attr("data-field") === "ProductName"){
+                    $(this).html(that.BrandName)
+                  }else if($(this).attr("data-field") === "BatchNo"){
+                    $(this).html(that.BatchID)
                   }
                 })
                 $(".elementTable").find("tbody").css("display","inline-table")
-                $(".elementTable").find("td input[type=checkbox]").each(function(){ //为复选框添加勾选
-                  if($(this).val() === "0"){
-                    $(this).prop("checked",false)
-                  }else if($(this).val() === "1"){
-                    $(this).prop("checked",true)
-                  }
-                })
-                $(".elementTable").find("td input[type=checkbox]").on("click",function(){
-                  if($(this).val() === "0"){
-                    $(this).val("1")
-                  }else if($(this).val() === "1"){
-                    $(this).val("0")
-                  }
-                })
               })
             }else{
               this.filebyte=''
@@ -216,7 +218,6 @@
           params:params
         }).then(res =>{
           if(res.data.code === "200"){
-            console.log(res.data)
             this.$nextTick(function () {
               for(let key  in res.data.data){
                 $(".elementTable").find(".isInput").each(function(){
@@ -225,7 +226,20 @@
                   }
                 })
               }
-
+              $(".elementTable").find("td input[type=checkbox]").each(function(){ //为复选框添加勾选
+                if($(this).val() === "0"){
+                  $(this).prop("checked",false)
+                }else if($(this).val() === "1"){
+                  $(this).prop("checked",true)
+                }
+              })
+              $(".elementTable").find("td input[type=checkbox]").on("click",function(){ //为复选框添加点击事件
+                if($(this).val() === "0"){
+                  $(this).val("1")
+                }else if($(this).val() === "1"){
+                  $(this).val("0")
+                }
+              })
             })
           }else{
             this.$message({
@@ -254,7 +268,6 @@
             $(".elementTable").find(".isInput").each(function(){
               params[$(this).attr("data-field")] = $(this).find("p").html()
             })
-            console.log(params)
             that.axios.post("/api/allUnitDataMutual",that.qs.stringify(params)).then(res =>{
               if(res.data.code === "200"){
                 that.$message({

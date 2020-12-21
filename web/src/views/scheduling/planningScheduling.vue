@@ -8,13 +8,9 @@
       </el-steps>
     </el-col>
     <el-col :span="24" class="marginTop">
-      <CheckscPlan v-show="steps===0" ref="child1"></CheckscPlan>
+      <CheckscPlan v-show="steps===0" ref="child1" @sonNext='NextStep' @sonLast='LastStep' :sonstep='steps'></CheckscPlan>
       <!-- <EquipmentChoose v-show="steps===1" ref="child2"></EquipmentChoose> -->
-      <DistributionPlan v-show="steps===1" ref="child3"></DistributionPlan>
-    </el-col>
-    <el-col :span="24" style="textAlign:right">
-      <el-button type="primary" v-show="steps != 0" @click="LastStep">上一步</el-button>
-      <el-button type="primary" v-show="steps != 2" @click="NextStep">下一步</el-button>
+      <DistributionPlan v-show="steps===1" ref="child3" @sonNext='NextStep' @sonLast='LastStep' :sonstep='steps'></DistributionPlan>
     </el-col>
   </el-row>
 </template>
