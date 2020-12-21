@@ -102,7 +102,7 @@ class QualityStandard(Base):
     Product = Column(Unicode(64), nullable=True)
     # 维护内容
     Describe = Column(Unicode(1024), nullable=True)
-    # 质量类型（Character-性状， Discern-鉴别，检查-检查，Content-含量测定，Microbe-微生物限度）
+    # 质量类型（Character-性状， Discern-鉴别，Inspect-检查，Content-含量测定，Microbe-微生物限度）
     Type = Column(Unicode(16), nullable=True)
     # 法定标准
     Statutory = Column(Unicode(1024), nullable=True)
@@ -164,6 +164,8 @@ class WorkerBook(Base):
     Comment = Column(Unicode(128), nullable=True, default='')
     # 完成状态
     Status = Column(Unicode(32), default='N')
+    # 检测项分类
+    CheckType = Column(Unicode(32), default='')
 
 
 class CheckForm(Base):

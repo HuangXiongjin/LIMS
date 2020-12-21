@@ -18,8 +18,14 @@ def quality_testing():
             name = request.values.get('Name')
             query_work = db_session.query(WorkerBook).filter_by(Name=name).first()
             query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO).all()
-            check_data = [{"name": item.Name, "work": item.CheckProject} for item in query_data]
-            return json.dumps({'code': '1000', 'msg': '操作成功', 'data': check_data}, cls=MyEncoder, ensure_ascii=False)
+            check_data = [item.CheckType for item in query_data]
+            results = []
+            for item in check_data:
+                query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO, CheckType=item).all()
+                for i in query_data:
+                    results.append({'CheckType': item, 'Id': i.Id, 'Name': i.Name})
+            # check_data = [{"name": item.Name, "work": item.CheckProject} for item in query_data]
+            return json.dumps({'code': '1000', 'msg': '操作成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'POST':
             NO = request.values.get('CheckProjectNO')
             Name = request.values.get('Name')

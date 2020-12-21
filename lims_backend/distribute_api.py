@@ -67,6 +67,12 @@ def get_worker():
             CheckProjectNO = request.values.get('CheckProjectNO')
             Content = json.loads(request.values.get('Content'))
             CheckStartTime = request.values.get('CheckStartTime')
+            Character = json.loads(request.values.get('Character'))
+            Discern = json.loads(request.values.get('Discern'))
+            Inspect = json.loads(request.values.get('Inspect'))
+            # Content = request.values.get('Content')
+            Microbe = json.loads(request.values.get('Microbe'))
+
             # Content = {"张三": ["性状", "检查1", "鉴别1"], "李四": ["鉴别2"]}
             data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
             db_session.add(CheckLife(No=CheckProjectNO, User=Name, Status='质检', Product=data.Name,
@@ -77,10 +83,31 @@ def get_worker():
             data.Life = '质检'
             db_session.add(data)
             db_session.commit()
-            for work in Content:
-                db_session.add(WorkerBook(CheckProjectNO=CheckProjectNO, Name=work_name, CheckProject=work,
-                                          CheckStartTime=CheckStartTime))
-                db_session.commit()
+            if len(Content) > 0:
+                for work in Content:
+                    db_session.add(WorkerBook(CheckProjectNO=CheckProjectNO, Name=work_name, CheckProject=work,
+                                              CheckStartTime=CheckStartTime, CheckType='Content'))
+                    db_session.commit()
+            if len(Discern) > 0:
+                for work in Discern:
+                    db_session.add(WorkerBook(CheckProjectNO=CheckProjectNO, Name=work_name, CheckProject=work,
+                                              CheckStartTime=CheckStartTime, CheckType='Discern'))
+                    db_session.commit()
+            if len(Character) > 0:
+                for work in Character:
+                    db_session.add(WorkerBook(CheckProjectNO=CheckProjectNO, Name=work_name, CheckProject=work,
+                                              CheckStartTime=CheckStartTime, CheckType='Character'))
+                    db_session.commit()
+            if len(Inspect) > 0:
+                for work in Inspect:
+                    db_session.add(WorkerBook(CheckProjectNO=CheckProjectNO, Name=work_name, CheckProject=work,
+                                              CheckStartTime=CheckStartTime, CheckType='Inspect'))
+                    db_session.commit()
+            if len(Microbe) > 0:
+                for work in Microbe:
+                    db_session.add(WorkerBook(CheckProjectNO=CheckProjectNO, Name=work_name, CheckProject=work,
+                                              CheckStartTime=CheckStartTime, CheckType='Microbe'))
+                    db_session.commit()
             return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder)
     except Exception as e:
         log(e)

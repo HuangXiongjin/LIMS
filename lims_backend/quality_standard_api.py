@@ -142,6 +142,9 @@ def quality_standard():
         if request.method == 'GET':
             # 获取当前节点下的品名
             No = request.values.get('No')
+            # q = request.values.get('TableName')
+            # result = f'select * from {q} where No={No}'
+            # dara = db_session.execute(result).fetchall()
             qs_center = db_session.query(QualityStandardCenter).filter_by(No=No).first()
             character = []
             discern = []
