@@ -130,7 +130,7 @@ def board():
         if request.method == 'GET':
             if request.values.get('Action') == 'p':
                 CheckProjectNO = request.values.get('CheckProjectNO')
-                results = db_session.query(CheckForm).filter_by(No=CheckProjectNO).all()
+                results = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).all()
                 return json.dumps({'code': '1000', 'msg': '成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
             # 当前页码
             page = int(request.values.get('Page'))
@@ -138,15 +138,9 @@ def board():
             per_page = int(request.values.get('PerPage'))
             status = request.values.get('Status')
             Product = request.values.get('Product')
-            results = db_session.query(CheckLife.No).filter_by(Product=Product, Status=status).all()
-            data = []
-            for result in results:
-                for item in result:
-                    query_data = db_session.query(CheckForm).filter_by(CheckProjectNO=item).first()
-                    if query_data is not None:
-                        data.append(query_data)
-            result_data = data[(page - 1) * per_page:page * per_page]
-            return json.dumps({'code': '1000', 'msg': '成功', 'data': result_data, 'total': len(data)}, cls=MyEncoder,
+            results = db_session.query(CheckForm).filter(CheckForm.Name == Product, CheckForm.Status == status).order_by(CheckForm.Id.desc()).all()
+            data = results[(page - 1) * per_page:page * per_page]
+            return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                               ensure_ascii=False)
         if request.method == 'POST':
             no_array = json.loads(request.values.get('CheckProjectNO'))
