@@ -201,11 +201,11 @@ def get_all_product():
 def receive():
     try:
         CheckProjectNO = request.values.get('CheckProjectNO')
-        # SampleUser = request.values.get('SampleUser')
+        CheckNumber = request.values.get('CheckNumber')
         ReceiveUser = request.values.get('ReceiveUser')
         ReceiveTime = request.values.get('ReceiveTime')
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
-        db_session.add(CheckLife(No=CheckProjectNO, User=ReceiveUser, Status='接收', Product=data.Name,
+        db_session.add(CheckLife(No=CheckProjectNO, CheckNumber=CheckNumber, User=ReceiveUser, Status='接收', Product=data.Name,
                                  ProductType=data.ProductType, OperationTime=ReceiveTime, Work='完成了样品接收'))
         db_session.commit()
         data.IntoUser = ReceiveUser

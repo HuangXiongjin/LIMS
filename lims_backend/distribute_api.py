@@ -75,11 +75,11 @@ def get_worker():
 
             # Content = {"张三": ["性状", "检查1", "鉴别1"], "李四": ["鉴别2"]}
             data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
-            db_session.add(CheckLife(No=CheckProjectNO, User=Name, Status='质检', Product=data.Name,
-                                     CheckNumber=data.CheckNumber, ProductType=data.ProductType,
-                                     OperationTime=CheckStartTime,
-                                     Work='完成了样品检测项分发'))
-            db_session.commit()
+            # db_session.add(CheckLife(No=CheckProjectNO, User=Name, Status='质检', Product=data.Name,
+            #                          CheckNumber=data.CheckNumber, ProductType=data.ProductType,
+            #                          OperationTime=CheckStartTime,
+            #                          Work='完成了样品检测项分发'))
+            # db_session.commit()
             data.Status = '质检'
             data.Life = '质检'
             db_session.add(data)
@@ -130,10 +130,6 @@ def product_distribute():
             LaboratoryUser = request.values.get('LaboratoryUser')
             Time = request.values.get('Time')
             CheckForm_data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
-            db_session.add(CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=CheckForm_data.Name,
-                                     CheckNumber=CheckForm_data.CheckNumber, ProductType=CheckForm_data.ProductType,
-                                     OperationTime=Time, Work='完成了样品分发'))
-            db_session.commit()
             for item in range(0, len(Action)):
                 if Action[item] == 'J':
                     d = Distribute()
@@ -151,6 +147,11 @@ def product_distribute():
                     d.Group = Group
                     CheckForm_data.OutUser = User
                     db_session.add_all([CheckForm_data, d])
+                    db_session.commit()
+                    db_session.add(
+                        CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=CheckForm_data.Name,
+                                  CheckNumber=CheckForm_data.CheckNumber, ProductType=CheckForm_data.ProductType,
+                                  OperationTime=Time, Work='完成了样品分发'))
                     db_session.commit()
                 elif Action[item] == 'F':
                     d = Distribute()
