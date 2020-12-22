@@ -223,7 +223,8 @@ export default {
         ReceiveSample(){//领样确认
             var params={
                 CheckProjectNO:this.requestform.CheckProjectNO,
-                SampleUser:localStorage.getItem('Name')
+                SampleUser:localStorage.getItem('Name'),
+                SampleTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
             }
             this.axios.post('/lims/Sample',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
@@ -257,7 +258,7 @@ export default {
                 PerPage:this.batchTableData.limit,
                 Product:this.searchObj.category,
                 DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:'待取样'
+                Status:'取样'
             }
             this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
                 this.batchTableData.data=res.data.data
@@ -270,7 +271,7 @@ export default {
                 PerPage:this.batchTableData.limit,
                 Product:this.searchObj.category,
                 DateTime:this.searchObj.registrydate,
-                Status:'待取样'
+                Status:'取样'
             }
             this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
                 this.batchTableData.data=res.data.data

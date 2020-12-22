@@ -221,7 +221,7 @@ export default {
     },
     created(){
        this.getSelectOption()
-       this.getInitTab()
+       this.SearchTab()
     },
     methods: {
         receiveConfirm(){//领样确认
@@ -232,8 +232,9 @@ export default {
             }).then(() => {
                 var params={
                 CheckProjectNO:this.requestform.CheckProjectNO,
-                SampleUser:this.requestform.SampleUser,
-                ReceiveUser:localStorage.getItem('Name')
+                ReceiveUser:localStorage.getItem('Name'),
+                ReceiveTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                CheckNumber:this.requestform.CheckNumber
             }
             this.axios.post('/lims/Receive',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
@@ -273,20 +274,7 @@ export default {
                 PerPage:this.batchTableData.limit,
                 Product:this.searchObj.category,
                 DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:'待检验'
-            }
-            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
-                this.batchTableData.data=res.data.data
-                this.batchTableData.total=res.data.total
-            })
-        },
-         getInitTab(){ //初始化获取表格数据
-            var params={
-                Page:this.batchTableData.offset,
-                PerPage:this.batchTableData.limit,
-                Product:this.searchObj.category,
-                DateTime:this.searchObj.registrydate,
-                Status:'待检验'
+                Status:'接收'
             }
             this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
                 this.batchTableData.data=res.data.data

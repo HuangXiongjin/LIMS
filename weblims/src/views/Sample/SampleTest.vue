@@ -83,20 +83,14 @@ export default {
                 label: '物料一'
                 }],
             opstate: [{
-                value: '待审核',
-                label: '待审核'
+                value: '请验审核',
+                label: '请验审核'
                 }, {
-                value: '待取样',
-                label: '待取样'
+                value: '取样',
+                label: '取样'
                 },{
-                value: '待检验',
-                label: '待检验'
-                },{
-                value: '检验中',
-                label: '检验中'
-                },{
-                value: '已完成',
-                label: '已完成'
+                value: '接收',
+                label: '接收'
                 }],
             batchTableData:{ //物料BOM
                 data:[],

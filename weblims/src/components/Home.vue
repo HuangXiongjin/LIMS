@@ -70,7 +70,7 @@ export default {
                  LastLoginTime:sessionStorage.getItem('LastLoginTime'),
                  Permissions:'登录'
              },
-             SonMenuList:[{name:'',path:'/'}],
+             SonMenuList:JSON.parse(localStorage.getItem('sonMenu')),
              ActiveMenu:100,
              ActiveSonMenu:0,
              conheight:{
@@ -106,11 +106,17 @@ export default {
                 ]
                 },
                  {name:'质检报告',icon:'el-icon-document',children:[
-                    {name:'质检看板',path:'/QualitycheckBoard'},
                     {name:'检验记录',path:'/QualitycheckRecord'},
+                    {name:'结果审核',path:'/CheckReport'},
+                    {name:'整合报告',path:'/MakeReport'},
+                    {name:'报告初审',path:'/ReportExamination'},
+                    {name:'报告复审',path:'/ReportExaminationed'},
+                    {name:'报告发送',path:'/ReportExaminationedSend'},
+                    {name:'质检看板',path:'/QualitycheckBoard'},
                  ]},
                  {name:'留样管理',icon:'el-icon-paperclip',children:[
                      {name:'留样接收',path:'/SampleReceiving'},
+                     {name:'留样观察记录',path:'/LySampleRecord'},
                      {name:'留样看板',path:'/SampleBoard'},
                  ]},
                  {name:'销毁管理',icon:'el-icon-delete',children:[
@@ -165,8 +171,9 @@ export default {
       getSonMenuList(obj,index){
           this.ActiveMenu=index
           if(obj.hasOwnProperty('children')){
-              this.SonMenuList=obj.children
-              this.getCurrentSonList(obj.children[0],0)
+              localStorage.setItem('sonMenu',JSON.stringify(obj.children))
+              this.SonMenuList=JSON.parse(localStorage.getItem('sonMenu'))
+              this.getCurrentSonList(this.SonMenuList[0],0)
           }else{
              this.$router.push(obj.path)
              this.SonMenuList=[]

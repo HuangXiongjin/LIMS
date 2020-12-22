@@ -106,7 +106,7 @@ export default {
            searchObj:{
                category:'丹参',
                registrydate:moment(new Date()).format('YYYY-MM-DD'),
-               state:'待审核',
+               state:'请验审核',
 
            },
             options: [{
@@ -114,8 +114,8 @@ export default {
                 label: '物料一'
                 }],
             opstate: [{
-                value: '待审核',
-                label: '待审核'
+                value: '请验审核',
+                label: '请验审核'
                 }],
             currentChoose:'1',
             batchTableData:{ //物料BOM
