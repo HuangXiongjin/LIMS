@@ -3,6 +3,7 @@ from datetime import datetime
 
 from flask import Blueprint, request
 
+from BSFramwork import AlchemyEncoder
 from tools.handle import MyEncoder, log, get_short_id, get_uuid
 from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard, CheckForm, \
     CheckProject, Distribute, ProductSave, CheckLife, Worker, Record, WorkerBook, ConclusionRecord, ReportVerify
@@ -114,6 +115,52 @@ def check_log():
                                                          ).order_by(CheckLife.Id.desc()).all()
             data = results[(page - 1) * per_page:page * per_page]
             return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
+                              ensure_ascii=False)
+    except Exception as e:
+        log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
+
+
+@report.route('/Board', methods=['GET'])
+def board():
+    try:
+        if request.method == 'GET':
+            # 当前页码
+            page = int(request.values.get('Page'))
+            # 每页记录数
+            per_page = int(request.values.get('PerPage'))
+            status = request.values.get('Status')
+            Product = request.values.get('Product')
+            results = db_session.query(CheckLife.No).filter_by(Product=Product, Status=status).all()
+            data = []
+            for result in results:
+                for item in result:
+                    query_data = db_session.query(CheckForm).filter_by(CheckProjectNO=item).first()
+                    if query_data is not None:
+                        data.append(query_data)
+            result_data = data[(page - 1) * per_page:page * per_page]
+            return json.dumps({'code': '1000', 'msg': '成功', 'data': result_data, 'total': len(data)}, cls=MyEncoder,
+                              ensure_ascii=False)
+    except Exception as e:
+        log(e)
+        return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
+
+
+@report.route('/Test', methods=['GET', 'POST'])
+def test():
+    try:
+        if request.method == 'GET':
+            # 当前页码
+            page = int(request.values.get('Page'))
+            # 每页记录数
+            per_page = int(request.values.get('PerPage'))
+            table_name = request.values.get('TableName')
+            sql = f"select * from {table_name} order by Id offset {(page-1)*per_page} rows fetch next {page*per_page} rows only"
+            results = db_session.execute(sql).fetchall()
+            data = [dict(zip(result.keys(), result)) for result in results]
+            # pass
+            print(data)
+            return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': 'len(results)'}, cls=MyEncoder,
                               ensure_ascii=False)
     except Exception as e:
         log(e)

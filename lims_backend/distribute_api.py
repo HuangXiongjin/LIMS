@@ -222,8 +222,8 @@ def product_save():
             # 每页记录数
             per_page = int(request.values.get('PerPage'))
             status = request.values.get('Status')
-            start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
-            end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
+            # start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
+            # end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
             Product = request.values.get('Product')
             CheckProjectNO = request.values.get('CheckProjectNO')
             # db_session.query(Distribute).filter_by(Status=status, CheckProjectNO=CheckProjectNO).first()
