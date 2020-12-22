@@ -4,7 +4,7 @@ from flask import Blueprint, request
 from sqlalchemy import MetaData, Table
 from sqlalchemy.ext.automap import automap_base
 
-from lims_models import engine, db_session
+from common.lims_models import engine, db_session
 from tools.MyEncode import MyEncoder
 from tools.handle import log
 
