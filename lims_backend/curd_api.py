@@ -26,7 +26,7 @@ def operation():
             table_name = request.values.get('TableName')
             obj = Base.classes.get(table_name)
             newTable = Table(table_name, metadata, autoload=True, autoload_with=engine)
-            data = db_session.query(table_name).all()
+            data = db_session.query(obj).all()
             print(data)
             sql = f"select * from {table_name} order by Id offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only"
             results = db_session.execute(sql).fetchall()
