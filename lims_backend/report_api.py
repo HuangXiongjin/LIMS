@@ -3,7 +3,6 @@ from datetime import datetime
 
 from flask import Blueprint, request
 
-from BSFramwork import AlchemyEncoder
 from tools.handle import MyEncoder, log, get_short_id, get_uuid
 from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard, CheckForm, \
     CheckProject, Distribute, ProductSave, CheckLife, Worker, Record, WorkerBook, ConclusionRecord, ReportVerify
@@ -125,6 +124,10 @@ def check_log():
 def board():
     try:
         if request.method == 'GET':
+            if request.values.get('Action') == 'p':
+                CheckProjectNO = request.values.get('CheckProjectNO')
+                results = db_session.query(CheckLife).filter_by(No=CheckProjectNO).all()
+                return json.dumps({'code': '1000', 'msg': '成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
             # 当前页码
             page = int(request.values.get('Page'))
             # 每页记录数
@@ -141,6 +144,14 @@ def board():
             result_data = data[(page - 1) * per_page:page * per_page]
             return json.dumps({'code': '1000', 'msg': '成功', 'data': result_data, 'total': len(data)}, cls=MyEncoder,
                               ensure_ascii=False)
+        if request.method == 'POST':
+            no_array = json.loads(request.values.get('CheckProjectNO'))
+            data = []
+            for item in no_array:
+                query_data = db_session.query(CheckForm).filter_by(CheckProjectNO=item).first()
+                if query_data is not None:
+                    data.append(query_data)
+            return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
