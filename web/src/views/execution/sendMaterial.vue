@@ -60,6 +60,7 @@
               <el-table-column prop="Description" label="描述"></el-table-column>
               <el-table-column prop="OperationDate" label="发送时间" width="110"></el-table-column>
               <el-table-column prop="SendFlag" label="发送状态"></el-table-column>
+              <el-table-column prop="EQPName" label="提取设备名称"></el-table-column>
               <el-table-column label="操作" fixed="right" width="150">
                 <template slot-scope="scope">
                   <el-button size="mini" @click="EditMaterial(scope.$index, scope.row)" v-has="['发送物料']">编辑</el-button>
@@ -134,7 +135,8 @@
               <el-table-column prop="Flag" label="桶/托盘"></el-table-column>
               <el-table-column prop="Description" label="描述"></el-table-column>
               <el-table-column prop="OperationDate" label="发送时间" width="110"></el-table-column>
-              <el-table-column prop="SendFlag" label="物料状态"></el-table-column>
+              <el-table-column prop="SendFlag" label="发送状态"></el-table-column>
+              <el-table-column prop="EQPName" label="提取设备名称"></el-table-column>
             </el-table>
           </div>
         </el-col>
@@ -389,7 +391,7 @@
         this.getBOMData()
       },
       EditMaterial(index,row){
-        if(this.PlanManagerTableData.multipleSelection[0].PlanStatus != "已发送投料计划"){
+        if(row.EQPCode === ""){
           this.MaterialTableData.dialogVisible = true
           this.MaterialTableData.dialogTitle = "编辑"
           this.getBOMData()
@@ -407,12 +409,12 @@
         }else{
           this.$message({
             type: 'info',
-            message: '已发送完成的计划下或已发送的物料不可修改'
+            message: '当前物料已选择设备，不可修改'
           });
         }
       },
       DeleteMaterial(index,row){
-        if(row.SendFlag != "WMS已接收"){
+        if(row.EQPCode === ""){
           var params = {tableName:"BatchMaterialInfo"}
           var mulId = []
           mulId.push({
@@ -445,7 +447,7 @@
         }else{
           this.$message({
             type: 'info',
-            message: '已发送完成的计划下或已发送的物料不可删除'
+            message: '当前物料已选择设备，不可删除'
           });
         }
       },
@@ -503,7 +505,8 @@
               BucketWeight:this.MaterialTableData.formField.BucketWeight,
               Unit:this.MaterialTableData.formField.Unit,
               Flag:this.MaterialTableData.formField.Flag,
-              FeedingSeq:this.MaterialTableData.formField.FeedingSeq
+              FeedingSeq:this.MaterialTableData.formField.FeedingSeq,
+              SendFlag:"待发送",
             }
             this.axios.put("/api/CUID",this.qs.stringify(params)).then(res =>{
               if(res.data.code === "200"){

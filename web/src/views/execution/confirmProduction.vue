@@ -10,7 +10,7 @@
         <span class="sideState bg-success"></span><span class="text-size-14">已完成</span>
       </div>
       <div class="platformContainer">
-        <el-row class="marginBottom" v-if="PlanManagerTableData.multipleSelection.length == 1">
+        <el-row class="marginBottom">
           <el-col :span="24">
             <div v-for="(item, index) in ZYPlanTableData.data" :key="index" style="display: inline-block;margin-right:18px;vertical-align: top;">
               <div style="display: inline-block; text-align: center;" v-if="item.PUName === '备料'">
@@ -38,6 +38,15 @@
           </el-col>
         </el-row>
         <el-form :inline="true">
+          <el-form-item label="查询品名">
+            <el-input v-model="BrandName" placeholder="请输入品名" size="small" @change="getPlanManagerTableData"></el-input>
+          </el-form-item>
+          <el-form-item label="查询批号">
+            <el-input v-model="BatchID" placeholder="请输入批次号" size="small" @change="getPlanManagerTableData"></el-input>
+          </el-form-item>
+          <el-form-item label="查询日期">
+            <el-date-picker type="date" v-model="searchDate" size="small" format="yyyy-MM-dd" value-format="yyyy-MM-dd" style="width: 160px;" @change="getPlanManagerTableData"></el-date-picker>
+          </el-form-item>
           <el-form-item class="floatRight">
             <el-radio-group v-model="PlanStatus" size="small" @change="getPlanManagerTableData">
               <el-radio-button label="物料发送中"></el-radio-button>
@@ -290,6 +299,9 @@
     data() {
       return {
         PlanStatus:"物料发送完成",
+        BrandName:"",
+        BatchID:"",
+        searchDate:"",
         PlanManagerTableData:{
           data:[],
           limit: 10,
@@ -331,15 +343,12 @@
       //选择批计划
       getPlanManagerTableData(){
         var that = this
-        var flag = ""
-        if(this.PlanStatus === "物料发送中"){
-          flag = "物料发送中"
-        }else if(this.PlanStatus === "物料发送完成"){
-          flag = "物料发送完成"
-        }
         var params = {
           tableName: "PlanManager",
-          PlanStatus:flag,
+          PlanStatus:this.PlanStatus,
+          BrandName:this.BrandName,
+          BatchID:this.BatchID,
+          SchedulePlanCode:this.searchDate,
           limit:this.PlanManagerTableData.limit,
           offset:this.PlanManagerTableData.offset - 1
         }
@@ -421,9 +430,11 @@
         }else if(type === "复核"){
           if(item.PUName === "提取（醇提）" || item.PUName === "提取（水提）" || item.PUName === "渗漉+醇提" || item.PUName === "浸渍提取" || item.PUName === "渗漉"){
             this.confirmTQDialogVisible = true
+            this.getProductEquipment(this.ZYPlanPUData.PUName)
             this.getMaterialTableData()
           }else{
             this.confirmDialogVisible = true
+            this.getProductEquipment(this.ZYPlanPUData.PUName)
             this.getZYTaskTable()
           }
         }

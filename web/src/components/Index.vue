@@ -131,8 +131,8 @@
           {label: '生产数据管理',icon:"el-icon-tickets",mainMenu:[
             {title:"生产监视",icon:"el-icon-view",url:"/ProductionMonitoring"},
             {title:"电子批生产记录",icon:"el-icon-edit-outline",url:"/ElectronicBatchRecord"},
-            {title:"批物料平衡统计",icon:"el-icon-box",url:"/MaterialBalanceStatistics"},
-            {title:"生产数据趋势分析",icon:"el-icon-box",url:"/TrendQuery"},
+            {title:"批物料平衡统计",icon:"fa fa-balance-scale",url:"/MaterialBalanceStatistics"},
+            // {title:"生产数据趋势分析",icon:"fa fa-bar-chart",url:"/TrendQuery"},
             {title:"批记录维护管理",icon:"el-icon-folder-opened",url:"/BatchRecordFiles"},
           ]},
           // {label: '质量管理',icon:"el-icon-data-analysis",mainMenu:[
