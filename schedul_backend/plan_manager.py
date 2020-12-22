@@ -888,3 +888,34 @@ def batchconfirm():
             logger.error(e)
             insertSyslog("error", "批记录审核复合报错Error：" + str(e), current_user.Name)
             return json.dumps("批记录审核复合报错", cls=AlchemyEncoder, ensure_ascii=False)
+
+
+@batch_plan.route('/materielbalance', methods=['GET', 'POST'])
+def materielbalance():
+    '''
+    物料平衡统计
+    :return:
+    '''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            BrandCode = data.get("BrandCode")
+            month = data.get("month")
+            sql = "SELECT [BatchID],SUM(Cast(BucketWeight as float)) FROM [LIMS].[dbo].[BatchMaterialInfo] where" \
+                  " BrandCode = '" + BrandCode + "' and OperationDate BETWEEN '" + month + "-01 00:00:00" + "' AND '" + month + "-31 23:59:59" + "' GROUP BY BatchID"
+            re = db_session.execute(sql)
+            list_oclass = []
+            for oclass in re:
+                dict_oclass = {}
+                dict_oclass["批次号"] = oclass[0]
+                dict_oclass["物料总重量"] = oclass[1]
+                list_oclass.append(dict_oclass)
+            dir = {}
+            dir["row"] = list_oclass
+            return json.dumps({"code": "200", "message": "成功！", "data": dir})
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "批记录审核复合报错Error：" + str(e), current_user.Name)
+            return json.dumps("批记录审核复合报错", cls=AlchemyEncoder, ensure_ascii=False)
