@@ -209,6 +209,7 @@ def receive():
                                  ProductType=data.ProductType, OperationTime=ReceiveTime, Work='完成了样品接收'))
         db_session.commit()
         data.IntoUser = ReceiveUser
+        data.Status = '分发'
         db_session.add(data)
         db_session.commit()
         return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
