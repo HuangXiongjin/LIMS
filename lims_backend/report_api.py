@@ -126,11 +126,12 @@ def check_log():
 
 @report.route('/Board', methods=['GET'])
 def board():
+    """功能看板"""
     try:
         if request.method == 'GET':
             if request.values.get('Action') == 'p':
                 CheckProjectNO = request.values.get('CheckProjectNO')
-                results = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).all()
+                results = db_session.query(CheckLife).filter_by(CheckProjectNO=CheckProjectNO).all()
                 return json.dumps({'code': '1000', 'msg': '成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
             # 当前页码
             page = int(request.values.get('Page'))

@@ -4,6 +4,7 @@ from flask_restful import Api, Resource
 
 from database.connect_db import CONNECT_DATABASE
 from lims_backend.check_api import check
+from lims_backend.curd_api import crud_interface
 from lims_backend.distribute_api import distribute
 from lims_backend.quality_standard_api import system_interface
 from lims_backend.report_api import report
@@ -19,6 +20,7 @@ account_auth.login_manager.init_app(app)
 # app.json_decoder = MyEncoder
 
 CORS(app, supports_credentials=True)
+app.register_blueprint(crud_interface)
 app.register_blueprint(report)
 app.register_blueprint(distribute)
 app.register_blueprint(check)
