@@ -76,16 +76,20 @@ def check_report():
             data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
             if Action == '1':
                 data1.laboratory = 'Y'
-                data.Life = '审核'
+                data.Life = '质检审核'
+                data.Status = '质检审核'
             if Action == '2':
                 data1.QC = 'Y'
-                data.Life = '审核'
+                data.Life = '质检审核'
+                data.Status = '质检审核'
             if Action == '3':
                 data1.QA = 'Y'
-                data.Life = '审核'
+                data.Life = '质检审核'
+                data.Status = '质检审核'
             if Action == '4':
                 data1.QS = 'Y'
                 data.Life = '放行'
+                data.Status = '放行'
             db_session.add_all([data1, data])
             db_session.commit()
             db_session.add(

@@ -80,6 +80,7 @@ def get_worker():
                                      OperationTime=CheckStartTime,
                                      Work='完成了样品检测项分发'))
             db_session.commit()
+            data.Status = '质检'
             data.Life = '质检'
             db_session.add(data)
             db_session.commit()
@@ -138,8 +139,7 @@ def product_distribute():
                     d = Distribute()
                     d.CheckProjectNO = CheckProjectNO
                     d.Status = 'JY'
-                    CheckForm_data.Action = '检验'
-                    CheckForm_data.Status = '检验中'
+                    CheckForm_data.Status = '分发'
                     CheckForm_data.Life = '分发'
                     CheckForm_data.JAccount = Account[item]
                     # data.JNo = No[item]

@@ -209,9 +209,9 @@ class CheckForm(Base):
     # 请验单类型（标准请验，小样请验）
     Type = Column(Unicode(16), nullable=True, default='标准请验')
     # 小样请验单审核状态（待审核，未通过，已通过）
-    Status = Column(Unicode(16), nullable=True, default='待审核')
+    Status = Column(Unicode(16), nullable=True, default='')
     # 请验单生命周期
-    Life = Column(Unicode(16), nullable=True, default='待审核')
+    Life = Column(Unicode(16), nullable=True, default='请验审核')
     # 取样人
     SampleUser = Column(Unicode(16), nullable=True, default='')
     # 取样日期
