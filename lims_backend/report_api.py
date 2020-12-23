@@ -78,6 +78,11 @@ def check_report():
                 data1.laboratory = 'Y'
                 data.Life = '质检审核'
                 data.Status = '质检审核'
+                db_session.add(
+                    CheckLife(No=CheckProjectNO, User=Name, Status="质检审核", Product=data.Name,
+                              CheckNumber=data.CheckNumber,
+                              ProductType=data.ProductType, OperationTime=Time, Work="完成质检了审核"))
+                db_session.commit()
             if Action == '2':
                 data1.QC = 'Y'
                 data.Life = '质检审核'
@@ -90,12 +95,14 @@ def check_report():
                 data1.QS = 'Y'
                 data.Life = '放行'
                 data.Status = '放行'
+                db_session.add(
+                    CheckLife(No=CheckProjectNO, User=Name, Status="放行", Product=data.Name,
+                              CheckNumber=data.CheckNumber,
+                              ProductType=data.ProductType, OperationTime=Time, Work="完成了审核放行"))
+                db_session.commit()
             db_session.add_all([data1, data])
             db_session.commit()
-            db_session.add(
-                CheckLife(No=CheckProjectNO, User=Name, Status="审核", Product=data.Name, CheckNumber=data.CheckNumber,
-                          ProductType=data.ProductType, OperationTime=Time, Work="完成了审核"))
-            db_session.commit()
+
     except Exception as e:
         log(e)
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
