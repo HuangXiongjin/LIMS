@@ -49,6 +49,7 @@ import CategoryManage from '@/views/System/CategoryManage'
 import DocumentManage from '@/views/System/DocumentManage'
 import RightDistribute from '@/views/System/RightDistribute'
 import RecordBar from '@/views/System/RecordBar'
+import SystemLog from '@/views/System/SystemLog'
 
 
 const originalPush = Router.prototype.push
@@ -69,6 +70,7 @@ const router=new Router({
       path: '/',
       name: 'home',
       component:Home,
+      redirect:'/ProgressBoard',
       children:[
         {path:'/Board',component:Board},
         {path:'/StatisticalAnalysis',component:StatisticalAnalysis},
@@ -121,25 +123,26 @@ const router=new Router({
         {path:'/DocumentManage',component:DocumentManage},
         {path:'/RightDistribute',component:RightDistribute},
         {path:'/RecordBar',component:RecordBar},
+        {path:'/SystemLog',component:SystemLog},
 
       ]
     }
   ]
 })
 
-// router.beforeEach((to,from,next)=>{
-//   if(to.path==='/login'){
-//     next()
-//     return;
-//   }else{
-//     var token=sessionStorage.getItem('WorkNumber')
-//     if(!token){
-//       next('/login')
-//     }else{
-//       next()
-//     }
+router.beforeEach((to,from,next)=>{
+  if(to.path==='/login'){
+    next()
+    return;
+  }else{
+    var token=sessionStorage.getItem('WorkNumber')
+    if(!token){
+      next('/login')
+    }else{
+      next()
+    }
 
-//   }
-// })
+  }
+})
 
 export default router

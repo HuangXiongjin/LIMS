@@ -78,10 +78,10 @@ export default {
             },
              mneulist:[
                  {name:'功能看板',icon:'el-icon-data-analysis',children:[
+                    {name:'进度看板',path:'/ProgressBoard'},
                     {name:'系统首页',path:'/Board'},
                     {name:'统计分析',path:'/StatisticalAnalysis'},
-                    {name:'进度看板',path:'/ProgressBoard'},
-                    {name:'批次进度',path:'/BatchProgress'},
+                    // {name:'批次进度',path:'/BatchProgress'},
                  ]},
                  {name:'出入库管理',icon:'el-icon-folder-opened',children:[
                     {name:'动态管理',path:'/DynamicManagement'},
@@ -131,8 +131,9 @@ export default {
                  ]},
                  {name:'系统管理',icon:'el-icon-setting',children:[
                      {name:'类目模板',path:'/CategoryManage'},
-                     {name:'文档管理',path:'/DocumentManage'},
+                     {name:'系统日志',path:'/SystemLog'},
                      {name:'记录模板',path:'/RecordBar'},
+                     {name:'文档管理',path:'/DocumentManage'},
                      {name:'权限分配',path:'/RightDistribute'},
                  ]},
                 ]
@@ -167,6 +168,7 @@ export default {
       loginOut(){
           sessionStorage.clear()
           this.$router.push('/login')
+          localStorage.removeItem('sonMenu')
       },
       getSonMenuList(obj,index){
           this.ActiveMenu=index

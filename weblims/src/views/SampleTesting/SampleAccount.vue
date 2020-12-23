@@ -1,5 +1,16 @@
 <template>
     <el-row class="container mgt24">
+        <el-col :span='24' class="mgt24 container mgb10" v-show="showstep">
+            <div class="mgb24 fsz14px">当前批次流程</div>
+            <el-steps :active="currentstep" finish-status="success">
+                <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
+                    <template slot="description">
+                        <div><span>姓名：</span><span>{{item.User}}</span></div>
+                        <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
+                    </template>
+                </el-step>
+            </el-steps>
+        </el-col>
         <el-row>
             <el-col :span='3' class="mgr15 boxshadow">
                <el-select v-model="searchObj.category" placeholder="物料类">
@@ -43,6 +54,7 @@
                         size='small'
                         highlight-current-row
                         style="width: 100%"
+                        @row-click="handletabClick"
                         >
                         <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                     </el-table>
@@ -64,8 +76,10 @@
 var moment=require('moment')
 export default {
     data(){
-
         return {
+          currentstep:4,
+           batchinfo:[],
+           showstep:false,
            searchObj:{
                category:'玉米淀粉',
                registrydate:moment(new Date()).format('YYYY-MM-DD'),
@@ -110,6 +124,30 @@ export default {
         this.SearchTab()
     },
     methods: {
+        handletabClick(row){ //点击行显示
+            this.getCurrentSteps(row.CheckProjectNO)
+        },
+        getCurrentSteps(CheckProjectNO){ //获取进度条
+           var params={
+                Action:'p',
+                CheckProjectNO:CheckProjectNO
+            }
+            this.axios.get('/lims/Board',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                    this.batchinfo=res.data.data
+                    if(this.batchinfo.length!==[]){
+                        this.showstep=true
+                    }else{
+                        this.showstep=false
+                    }
+                }else{
+                    this.$message({
+                        type:'info',
+                        message:'获取数据失败，请重试'
+                    })
+                }
+            })
+        },
         getSelectOption() { //获取下拉列表选项
            this.axios.get('/lims/AllProduct').then((res) => {
                if(res.data.code=='1000'){
@@ -132,6 +170,9 @@ export default {
                 Status:this.searchObj.status
             }
             this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
+                if(res.data.data.length==0){
+                    this.showstep=false
+                }
                 this.batchTableData.data=res.data.data
                 this.batchTableData.total=res.data.total
             })

@@ -1,5 +1,16 @@
 <template>
     <el-row :gutter='20'>
+        <el-col :span='24' class="mgt24 container" v-show="showstep">
+            <div class="mgb24 fsz14px">当前批次流程</div>
+            <el-steps :active="currentstep" finish-status="success">
+                <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
+                    <template slot="description" v-if='item.User'>
+                        <div><span>姓名：</span><span>{{item.User}}</span></div>
+                        <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
+                    </template>
+                </el-step>
+            </el-steps>
+        </el-col>
         <el-col :span='7'>
             <div class="container mgt24" style="height:400px;">
                 <el-col :span='24' style="borderBottom:1px solid #ccc;" class="padd15">
@@ -415,6 +426,9 @@ var moment=require('moment')
 export default {
     data(){
         return {
+           currentstep:4,
+           batchinfo:[],
+           showstep:false,
            curSta:'确认分发',
            Discernopt:true,
            Checkopt:false,
@@ -477,7 +491,29 @@ export default {
        this.getInitTab()
     },
     methods: {
-        mulDistribute(){
+        getCurrentSteps(CheckProjectNO){ //获取进度条
+           var params={
+                Action:'p',
+                CheckProjectNO:CheckProjectNO
+            }
+            this.axios.get('/lims/Board',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                    this.batchinfo=res.data.data
+                    this.batchinfo=this.batchinfo.concat({Status:'分发'},{Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'})
+                    if(this.batchinfo.length!==[]){
+                        this.showstep=true
+                    }else{
+                        this.showstep=false
+                    }
+                }else{
+                    this.$message({
+                        type:'info',
+                        message:'获取数据失败，请重试'
+                    })
+                }
+            })
+        },
+        mulDistribute(){ //多条下发
             var params={
                  Time:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
                  CheckProjectNO:this.distribute.CheckProjectNO,
@@ -693,6 +729,9 @@ export default {
                 Status:'分发'
             }
             this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
+                if(res.data.data.length==0){
+                    this.showstep=false
+                }
                 this.batchTableData.data=res.data.data
                 this.batchTableData.total=res.data.total
             })
@@ -716,6 +755,7 @@ export default {
             this.RecordForm.CheckTime=moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
             this.distribute.CheckProjectNO=row.CheckProjectNO
             this.getJbInfo(row.CheckProjectNO)
+            this.getCurrentSteps(row.CheckProjectNO)
         },
         getJbInfo(CheckProjectNO){
             var params={
