@@ -64,19 +64,12 @@ export default {
            currentgoods:'玉米淀粉',//当前点击的物类
            ProductType:'辅料',
            batchTableData:{ 
-                data:[
-                    {Product:'巴戟胶囊',Code:'BJJN',Uint:'kg',IntoTime:'2020-12-01 15:54:22',IntoUser:'lig',AlterTime:'2020-12-01 15:54:22',AlterUser:'张三',StandwardDocument:'点击查看'},
-                    {Product:'巴戟胶囊',Code:'BJJN',Uint:'kg',IntoTime:'2020-12-01 15:54:22',IntoUser:'lig',AlterTime:'2020-12-01 15:54:22',AlterUser:'张三'},
-                    {Product:'巴戟胶囊',Code:'BJJN',Uint:'kg',IntoTime:'2020-12-01 15:54:22',IntoUser:'lig',AlterTime:'2020-12-01 15:54:22',AlterUser:'张三'},
-                    {Product:'巴戟胶囊',Code:'BJJN',Uint:'kg',IntoTime:'2020-12-01 15:54:22',IntoUser:'lig',AlterTime:'2020-12-01 15:54:22',AlterUser:'张三'},
-                    {Product:'巴戟胶囊',Code:'BJJN',Uint:'kg',IntoTime:'2020-12-01 15:54:22',IntoUser:'lig',AlterTime:'2020-12-01 15:54:22',AlterUser:'张三'},
-                    {Product:'巴戟胶囊',Code:'BJJN',Uint:'kg',IntoTime:'2020-12-01 15:54:22',IntoUser:'lig',AlterTime:'2020-12-01 15:54:22',AlterUser:'张三'},
-                    ],
+                data:[],
                 limit: 10,//当前显示多少条
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
-            batchtableconfig:[{prop:'Product',label:"名称"},{prop:'CheckNumber',label:'请验单号'},{prop:'ProductType',label:'类型'},{prop:'Status',label:'操作'},{prop:'OperationTime',label:'操作时间',width:'180'},{prop:'User',label:'操作人'},{prop:'Work',label:'备注',width:'220'}],//批次列表
+            batchtableconfig:[{prop:'Product',label:"名称"},{prop:'CheckNumber',label:'请验单号'},{prop:'ProductType',label:'类型'},{prop:'Status',label:'操作'},{prop:'OperationTime',label:'操作时间',width:'180'},{prop:'User',label:'操作人'},{prop:'Work',label:'具体内容',width:'220'}],//批次列表
             treeDom: [],//渲染的树
             defaultProps: {
                 children: 'children',
