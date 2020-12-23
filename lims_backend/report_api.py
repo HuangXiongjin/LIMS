@@ -17,11 +17,11 @@ def quality_testing():
         if request.method == 'GET':
             name = request.values.get('Name')
             query_work = db_session.query(WorkerBook).filter_by(Name=name).first()
-            query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO).all()
+            query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO, Status='N').all()
             check_data = set(item.CheckType for item in query_data)
             results = []
             for item in check_data:
-                query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO, CheckType=item).all()
+                query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO, CheckType=item, Status='N').all()
                 child = []
                 parent = {'CheckType': item, 'values': child}
                 for i in query_data:

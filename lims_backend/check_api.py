@@ -120,7 +120,7 @@ def check_verify():
         items = json.loads(CheckProjectNO)
         for item in items:
             data = db_session.query(CheckForm).filter_by(CheckProjectNO=item).first()
-            db_session.add(CheckLife(No=item, User=VerifyName, Status="审核", Product=data.Name, CheckNumber=data.CheckNumber,
+            db_session.add(CheckLife(No=item, User=VerifyName, Status="请验审核", Product=data.Name, CheckNumber=data.CheckNumber,
                                      ProductType=data.ProductType, OperationTime=DateTime, Work="请验申请通过审核"))
             db_session.commit()
             data.VerifyUser = VerifyName
