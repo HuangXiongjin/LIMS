@@ -696,6 +696,8 @@ def taskSaveEqpCheck():
                 bms = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.BatchID == ocalss.BatchID,
                                                            BatchMaterialInfo.BrandCode == ocalss.BrandCode).all()
                 for bm in bms:
+                    if bm.EQPCode == None or bm.EQPCode == "":#没有选择设备的不保存task
+                        continue
                     iTaskSeq = iTaskSeq + 1
                     bReturn, strTaskNo = getTaskNo()
                     if bReturn == False:
