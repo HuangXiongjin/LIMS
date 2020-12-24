@@ -43,7 +43,7 @@ def quality_testing():
             data.Comment = Comment
             db_session.add(data)
             db_session.commit()
-            query_check = db_session.query(CheckForm).filter_by(Id=int(k)).first()
+            query_check = db_session.query(CheckForm).filter_by(Id=int(item['Id'])).first()
             query_data = db_session.query(Distribute).filter_by(CheckProjectNO=NO).first()
             # query_WorkerBook = db_session.query(WorkerBook).filter_by(Id=Id).first()
             query_record = db_session.query(Record).filter_by(
