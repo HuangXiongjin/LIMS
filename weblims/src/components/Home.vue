@@ -70,7 +70,7 @@ export default {
                  LastLoginTime:sessionStorage.getItem('LastLoginTime'),
                  Permissions:'登录'
              },
-             SonMenuList:[{name:'',path:'/'}],
+             SonMenuList:JSON.parse(localStorage.getItem('sonMenu')),
              ActiveMenu:100,
              ActiveSonMenu:0,
              conheight:{
@@ -78,9 +78,9 @@ export default {
             },
              mneulist:[
                  {name:'功能看板',icon:'el-icon-data-analysis',children:[
+                    {name:'进度看板',path:'/ProgressBoard'},
                     {name:'系统首页',path:'/Board'},
                     {name:'统计分析',path:'/StatisticalAnalysis'},
-                    {name:'进度看板',path:'/ProgressBoard'},
                     {name:'批次进度',path:'/BatchProgress'},
                  ]},
                  {name:'出入库管理',icon:'el-icon-folder-opened',children:[
@@ -106,11 +106,17 @@ export default {
                 ]
                 },
                  {name:'质检报告',icon:'el-icon-document',children:[
-                    {name:'质检看板',path:'/QualitycheckBoard'},
                     {name:'检验记录',path:'/QualitycheckRecord'},
+                    {name:'结果审核',path:'/CheckReport'},
+                    {name:'整合报告',path:'/MakeReport'},
+                    {name:'报告初审',path:'/ReportExamination'},
+                    {name:'报告复审',path:'/ReportExaminationed'},
+                    {name:'报告发送',path:'/ReportExaminationedSend'},
+                    {name:'质检看板',path:'/QualitycheckBoard'},
                  ]},
                  {name:'留样管理',icon:'el-icon-paperclip',children:[
                      {name:'留样接收',path:'/SampleReceiving'},
+                     {name:'留样观察记录',path:'/LySampleRecord'},
                      {name:'留样看板',path:'/SampleBoard'},
                  ]},
                  {name:'销毁管理',icon:'el-icon-delete',children:[
@@ -125,8 +131,9 @@ export default {
                  ]},
                  {name:'系统管理',icon:'el-icon-setting',children:[
                      {name:'类目模板',path:'/CategoryManage'},
-                     {name:'文档管理',path:'/DocumentManage'},
+                     {name:'系统日志',path:'/SystemLog'},
                      {name:'记录模板',path:'/RecordBar'},
+                     {name:'文档管理',path:'/DocumentManage'},
                      {name:'权限分配',path:'/RightDistribute'},
                  ]},
                 ]
@@ -161,12 +168,14 @@ export default {
       loginOut(){
           sessionStorage.clear()
           this.$router.push('/login')
+          localStorage.removeItem('sonMenu')
       },
       getSonMenuList(obj,index){
           this.ActiveMenu=index
           if(obj.hasOwnProperty('children')){
-              this.SonMenuList=obj.children
-              this.getCurrentSonList(obj.children[0],0)
+              localStorage.setItem('sonMenu',JSON.stringify(obj.children))
+              this.SonMenuList=JSON.parse(localStorage.getItem('sonMenu'))
+              this.getCurrentSonList(this.SonMenuList[0],0)
           }else{
              this.$router.push(obj.path)
              this.SonMenuList=[]

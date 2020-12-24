@@ -17,11 +17,11 @@ def quality_testing():
         if request.method == 'GET':
             name = request.values.get('Name')
             query_work = db_session.query(WorkerBook).filter_by(Name=name).first()
-            query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO).all()
+            query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO, Status='N').all()
             check_data = set(item.CheckType for item in query_data)
             results = []
             for item in check_data:
-                query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO, CheckType=item).all()
+                query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO, CheckType=item, Status='N').all()
                 child = []
                 parent = {'CheckType': item, 'values': child}
                 for i in query_data:
@@ -78,6 +78,11 @@ def check_report():
                 data1.laboratory = 'Y'
                 data.Life = '质检审核'
                 data.Status = '质检审核'
+                db_session.add(
+                    CheckLife(No=CheckProjectNO, User=Name, Status="质检审核", Product=data.Name,
+                              CheckNumber=data.CheckNumber,
+                              ProductType=data.ProductType, OperationTime=Time, Work="完成质检了审核"))
+                db_session.commit()
             if Action == '2':
                 data1.QC = 'Y'
                 data.Life = '质检审核'
@@ -90,12 +95,14 @@ def check_report():
                 data1.QS = 'Y'
                 data.Life = '放行'
                 data.Status = '放行'
+                db_session.add(
+                    CheckLife(No=CheckProjectNO, User=Name, Status="放行", Product=data.Name,
+                              CheckNumber=data.CheckNumber,
+                              ProductType=data.ProductType, OperationTime=Time, Work="完成了审核放行"))
+                db_session.commit()
             db_session.add_all([data1, data])
             db_session.commit()
-            db_session.add(
-                CheckLife(No=CheckProjectNO, User=Name, Status="审核", Product=data.Name, CheckNumber=data.CheckNumber,
-                          ProductType=data.ProductType, OperationTime=Time, Work="完成了审核"))
-            db_session.commit()
+
     except Exception as e:
         log(e)
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)

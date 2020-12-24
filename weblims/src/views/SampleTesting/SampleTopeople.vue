@@ -1,5 +1,16 @@
 <template>
     <el-row :gutter='20'>
+        <el-col :span='24' class="mgt24 container" v-show="showstep">
+            <div class="mgb24 fsz14px">当前批次流程</div>
+            <el-steps :active="currentstep" finish-status="success">
+                <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
+                    <template slot="description" v-if='item.User'>
+                        <div><span>姓名：</span><span>{{item.User}}</span></div>
+                        <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
+                    </template>
+                </el-step>
+            </el-steps>
+        </el-col>
         <el-col :span='7'>
             <div class="container mgt24" style="height:400px;">
                 <el-col :span='24' style="borderBottom:1px solid #ccc;" class="padd15">
@@ -60,7 +71,7 @@
                 </el-col>
             </el-row>
             <el-row v-if="radio2=='样本分发'" class="mgt24">
-                <div  class="padd15 container" style="height:600px;">
+                <div  class="padd15 container" style="height:700px;overflow:auto;">
                     <el-col :span='24'>
                       <el-row>
                           <div class="mgt24 lightgreen">详细信息</div>
@@ -94,10 +105,11 @@
                               </el-form>
                           </el-col>
                       </el-row>
-                      <el-row :gutter='24' class="mgt24">
+                      <el-row :gutter='24'>
                               <div class="lightgreen padd15">分配操作</div>
-                              <el-col :span='4'>
-                                  <el-select v-model="distribute.worker" placeholder="请选择">
+                              <el-row class="padd15">
+                               <el-col :span='12'>
+                                  <el-select v-model="distribute.worker" placeholder="请选择人">
                                     <el-option
                                     v-for="item in workers"
                                     :key="item.Id"
@@ -105,23 +117,91 @@
                                     :value="item.Name">
                                     </el-option>
                                 </el-select>
-                              </el-col>
-                              <el-col :span='16'>
-                                  <el-select v-model="distribute.jbs" multiple collapse-tags placeholder="请选择检测项">
+                               </el-col>
+                               <el-col :span='12'>
+                                  <el-select v-model="distribute.Discern" multiple collapse-tags placeholder="选择鉴别">
                                     <el-option
-                                    v-for="item in jbarr"
+                                    v-for="item in jbarr.Discern"
+                                    :key="item.label"
+                                    :label="item.value"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
+                               </el-col>
+                              </el-row>
+                              <el-row class="padd15">
+                               <el-col :span='12'>
+                                  <el-select v-model="distribute.Inspect" multiple collapse-tags placeholder="选择检查">
+                                    <el-option
+                                    v-for="item in jbarr.Inspect"
+                                    :key="item.label"
+                                    :label="item.value"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
+                               </el-col>
+                               <el-col :span='12'>
+                                  <el-select v-model="distribute.Microbe" multiple collapse-tags placeholder="选择微生物">
+                                    <el-option
+                                    v-for="item in jbarr.Microbe"
                                     :key="item.label"
                                     :label="item.value"
                                     :value="item.value">
                                     </el-option>
                                 </el-select>
                               </el-col>
-                              <el-col :span='4'><el-button type="success" @click="distributeToPeople">确定分发</el-button></el-col>
-                              <el-col :span='24' class="mgt24">
-                                    <el-tag type="warning">已选择检验项：</el-tag>
-                                    <p v-for="(item,index) in distribute.jbs" :key='index' class="lightgreen jbcontent fsz10">{{item}}</p>
+                            </el-row>
+                            <el-row class="padd15">
+                               <el-col :span='12'>
+                                  <el-select v-model="distribute.Content" multiple collapse-tags placeholder="选择含量">
+                                    <el-option
+                                    v-for="item in jbarr.Content"
+                                    :key="item.label"
+                                    :label="item.value"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
+                               </el-col>
+                               <el-col :span='12'>
+                                  <el-select v-model="distribute.Character" multiple collapse-tags placeholder="选择性状">
+                                    <el-option
+                                    v-for="item in jbarr.Character"
+                                    :key="item.label"
+                                    :label="item.value"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
+                               </el-col>
+                              </el-row>
+                              <el-row class="padd15">
+                                <el-col :span='24' style="textAlign:right;"><el-button type="success" @click="distributeToPeople">确定分发</el-button></el-col>
+                              </el-row>
+                              <div>
+                              <el-col :span='22'>
+                                    <el-tag type="info">【鉴别】：</el-tag>
+                                    <p v-for="(item,index) in distribute.Discern" :key='index' class="lightgreen jbcontent fsz10">{{item}}</p>
                                     <el-divider></el-divider>
-                              </el-col>
+                                </el-col>
+                                <el-col :span='22'>
+                                    <el-tag type="success">【检查】：</el-tag>
+                                    <p v-for="(item,index) in distribute.Inspect" :key='index' class="lightgreen jbcontent fsz10">{{item}}</p>
+                                    <el-divider></el-divider>
+                                </el-col>
+                                <el-col :span='22'>
+                                    <el-tag type="warning">【性状】：</el-tag>
+                                    <p v-for="(item,index) in distribute.Character" :key='index' class="lightgreen jbcontent fsz10">{{item}}</p>
+                                    <el-divider></el-divider>
+                                </el-col>
+                                <el-col :span='22'>
+                                    <el-tag type="danger">【含量测定】：</el-tag>
+                                    <p v-for="(item,index) in distribute.Content" :key='index'  class="lightgreen jbcontent fsz10">{{item}}</p>
+                                    <el-divider></el-divider>
+                                </el-col>
+                                <el-col :span='22'>
+                                    <el-tag type="info">【微生物限度】：</el-tag>
+                                    <p v-for="(item,index) in distribute.Microbe" :key='index'  class="lightgreen jbcontent fsz10">{{item}}</p>
+                                </el-col>
+                            </div>
                           </el-row>
                 </el-col>
                 </div>
@@ -136,7 +216,7 @@
                         <div style="border:1px solid #ccc;paddingTop:26px;">
                             <el-form ref="form" label-width="100px">
                                 <el-row>
-                                    <el-col :span='11'>
+                                    <el-col :span='11' class="mgt14">
                                         <el-form-item label="品名：">
                                             <el-input v-model="Row.Name" :disabled="true"></el-input>
                                         </el-form-item>
@@ -192,32 +272,30 @@
                                 </el-row>
                             </el-form>
                             <el-col class="mgt24">
-                            <el-form >
                                 <el-col :span='22'>
                                     <el-tag type="info">【鉴别】：</el-tag>
-                                    <p v-for="(item,index) in Discerns" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
+                                    <p v-for="(item,index) in jbarr.Discern" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
                                     <el-divider></el-divider>
                                 </el-col>
                                 <el-col :span='22'>
                                     <el-tag type="success">【检查】：</el-tag>
-                                    <p v-for="(item,index) in Inspects" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
+                                    <p v-for="(item,index) in jbarr.Inspect" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
                                     <el-divider></el-divider>
                                 </el-col>
                                 <el-col :span='22'>
                                     <el-tag type="warning">【性状】：</el-tag>
-                                    <p v-for="(item,index) in Characters" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
+                                    <p v-for="(item,index) in jbarr.Character" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
                                     <el-divider></el-divider>
                                 </el-col>
                                 <el-col :span='22'>
                                     <el-tag type="danger">【含量测定】：</el-tag>
-                                    <p v-for="(item,index) in Contents" :key='index'  class="lightgreen jbcontent fsz10">{{item.value}}</p>
+                                    <p v-for="(item,index) in jbarr.Content" :key='index'  class="lightgreen jbcontent fsz10">{{item.value}}</p>
                                     <el-divider></el-divider>
                                 </el-col>
                                 <el-col :span='22'>
                                     <el-tag type="info">【微生物限度】：</el-tag>
-                                    <p v-for="(item,index) in Microbes" :key='index'  class="lightgreen jbcontent fsz10">{{item.value}}</p>
+                                    <p v-for="(item,index) in jbarr.Microbe" :key='index'  class="lightgreen jbcontent fsz10">{{item.value}}</p>
                                 </el-col>
-                            </el-form>
                             </el-col>
                         </div>
                     </div>
@@ -231,17 +309,29 @@ var moment=require('moment')
 export default {
     data(){
         return {
+           currentstep:4,
+           batchinfo:[],
+           showstep:false,
            workers:[],
            Row:{},
-           distribute:{
+           distribute:{ //选择绑定的集合
                CheckProjectNO:'',
                worker:'',
-               jbs:[]
-
+               Discern:[],
+               Inspect:[],
+               Microbe:[],
+               Content:[],
+               Character:[],
            },
            radio2:'样本分发',
            Recordobj:{},
-           jbarr:[],
+           jbarr:{ //获取到集合
+               Discern:[],
+               Inspect:[],
+               Microbe:[],
+               Content:[],
+               Character:[],
+           },
            searchObj:{
                category:'玉米淀粉',
                registrydate:moment(new Date()).format('YYYY-MM-DD')
@@ -266,19 +356,56 @@ export default {
     },
     created(){
        this.getSelectOption()
-       this.getInitTab()
+       this.SearchTab()
     },
     methods: {
+         getCurrentSteps(CheckProjectNO){ //获取进度条
+           var params={
+                Action:'p',
+                CheckProjectNO:CheckProjectNO
+            }
+            this.axios.get('/lims/Board',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                    this.batchinfo=res.data.data
+                    this.batchinfo=this.batchinfo.concat({Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'})
+                    if(this.batchinfo.length!==[]){
+                        this.showstep=true
+                    }else{
+                        this.showstep=false
+                    }
+                }else{
+                    this.$message({
+                        type:'info',
+                        message:'获取数据失败，请重试'
+                    })
+                }
+            })
+        },
         distributeToPeople(){
             var params={
                 CheckProjectNO:this.distribute.CheckProjectNO,
                 Worker:this.distribute.worker,
-                Content:JSON.stringify(this.distribute.jbs),
+                Discern:JSON.stringify(this.distribute.Discern),
+                Inspect:JSON.stringify(this.distribute.Inspect),
+                Microbe:JSON.stringify(this.distribute.Microbe),
+                Content:JSON.stringify(this.distribute.Content),
+                Character:JSON.stringify(this.distribute.Character),
                 CheckStartTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
                 Name:'代晓进'
             }
             this.axios.post('/lims/Worker',this.qs.stringify(params)).then((res) => {
-                console.log(res)
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'下发操作成功'
+                    })
+                    this.SearchTab()
+                }else{
+                   this.$message({
+                        type:'error',
+                        message:'下发操作失败，请重试'
+                    }) 
+                }
             })
         },
        getWorker(){ //获取分组和人员
@@ -297,7 +424,7 @@ export default {
                CheckProjectNO:this.distribute.CheckProjectNO
            }
            this.axios.get('/lims/CheckRecord',{params:params}).then((res) => {
-               if(res.data.code=='1000'){
+               if(res.data.code=='1000' && res.data.data!=null){
                    this.Recordobj=res.data.data
                }
            })
@@ -321,22 +448,12 @@ export default {
                 PerPage:this.batchTableData.limit,
                 Product:this.searchObj.category,
                 DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:'检验中'
+                Status:'分发'
             }
             this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
-                this.batchTableData.data=res.data.data
-                this.batchTableData.total=res.data.total
-            })
-        },
-         getInitTab(){ //初始化获取表格数据
-            var params={
-                Page:this.batchTableData.offset,
-                PerPage:this.batchTableData.limit,
-                Product:this.searchObj.category,
-                DateTime:this.searchObj.registrydate,
-                Status:'检验中'
-            }
-            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
+                if(res.data.data.length==0){
+                    this.showstep=false
+                }
                 this.batchTableData.data=res.data.data
                 this.batchTableData.total=res.data.total
             })
@@ -350,19 +467,26 @@ export default {
             this.getJbInfo(row.CheckProjectNO)
             this.getRecord()
             this.getWorker()
+            this.getCurrentSteps(row.CheckProjectNO)
         },
         getJbInfo(CheckProjectNO){
             var params={
                 CheckProjectNO:CheckProjectNO
             }
             this.axios.get('/lims/Sample',{params:params}).then((res) => {
-                this.Discerns=res.data.data[0].Discern
-                this.Inspects=res.data.data[0].Inspect
-                this.Characters=res.data.data[0].Character
-                this.Contents=res.data.data[0].Content
-                this.Microbes=res.data.data[0].Microbe
-                var arr=this.Discerns.concat(this.Inspects,this.Characters,this.Contents,this.Microbes)
-                this.jbarr=arr.map((item, index) => {
+                this.jbarr.Discern=res.data.data[0].Discern.map((item, index) => {
+                    return {label:item.id,value:item.value}
+                })
+                this.jbarr.Inspect=res.data.data[0].Inspect.map((item, index) => {
+                    return {label:item.id,value:item.value}
+                })
+                this.jbarr.Character=res.data.data[0].Character.map((item, index) => {
+                    return {label:item.id,value:item.value}
+                })
+                this.jbarr.Content=res.data.data[0].Content.map((item, index) => {
+                    return {label:item.id,value:item.value}
+                })
+                this.jbarr.Microbe=res.data.data[0].Microbe.map((item, index) => {
                     return {label:item.id,value:item.value}
                 })
             })

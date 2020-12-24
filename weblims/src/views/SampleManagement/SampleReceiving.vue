@@ -55,85 +55,98 @@
             </el-row>
             <el-row class="mgt24">
                  <el-col :span='24' class="container">
-                    <div v-if="currentChoose=='1'">
-                        <div class="mgt24 mgb24">产品留样记录</div>
-                        <div style="border:1px solid #ccc;paddingTop:26px;">
-                            <el-form ref="form" :model="RecordForm" label-width="100px">
+                     <div class="mgt24 mgb24">产品留样原始记录</div>
+                     <div style="border:1px solid #ccc;paddingTop:26px;">
+                            <el-form ref="form" label-width="100px">
                                 <el-row>
                                     <el-col :span='11'>
                                         <el-form-item label="品名：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="Row.Name" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
-                                        <el-form-item label="批号：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                        <el-form-item label="产品批号：">
+                                            <el-input v-model="Row.ProductNumber" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
                                     <el-col :span='11'>
                                         <el-form-item label="规格：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                            <el-input v-model="Row.Specs" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
-                                        <el-form-item label="请验部门：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                        <el-form-item label="包装规格：">
+                                            <el-input v-model="Row.PackSpecs" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
                                     <el-col :span='11'>
-                                        <el-form-item label="制剂：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                        <el-form-item label="理论产量：">
+                                            <el-input v-model="Row.TheoreticalYield" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
-                                        <el-form-item label="批数量：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                        <el-form-item label="留样数量：">
+                                            <el-input v-model="Row.BatchAmount" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
                                     <el-col :span='11'>
-                                        <el-form-item label="品名：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                        <el-form-item label="留样部门：">
+                                            <el-input v-model="Row.BatchDepartment" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
-                                        <el-form-item label="检验日期：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                        <el-form-item label="留样人：">
+                                            <el-input v-model="Row.BatchName" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
-                                    <el-col :span='22'>
-                                        <el-form-item label="检验依据：">
-                                            <el-input v-model="RecordForm.name"></el-input>
+                                    <el-col :span='11'>
+                                        <el-form-item label="留样位置：">
+                                            <el-input v-model="Row.Position" :disabled="true"></el-input>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span='11'>
+                                        <el-form-item label="留样时间：">
+                                            <el-date-picker v-model="Row.BatchTime" type="date" placeholder="选择日期" :disabled="true"></el-date-picker>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row >
-                                    <el-col :span='22'>
-                                        <el-form-item label="【性状】：">
-                                            <el-input type="textarea" autosize placeholder="请输入内容" v-model="RecordForm.name"></el-input>
+                                    <el-col :span='11'>
+                                        <el-form-item label="经手人：">
+                                            <el-input v-model="Row.Handler" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
-                                </el-row>
+                                    <el-col :span='11'>
+                                        <el-form-item label="生产日期：">
+                                            <el-date-picker v-model="Row.ProductionDate" type="date" placeholder="选择日期" :disabled="true"></el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>  
                                 <el-row >
-                                    <el-col :span='22'>
-                                        <el-form-item label="检验结果：">
-                                            <el-input type="textarea" autosize placeholder="请输入内容" v-model="RecordForm.name"></el-input>
+                                    <el-col :span='11'>
+                                        <el-form-item label="有效日期：">
+                                            <el-date-picker v-model="Row.ValidityDate" type="date" placeholder="选择日期" :disabled="true"></el-date-picker>
+                                        </el-form-item>
+                                    </el-col>
+                                    <el-col :span='11'>
+                                        <el-form-item label="备注：">
+                                            <el-input type="textarea" autosize placeholder="请输入内容" v-model="Row.Comment" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                             </el-form>
                         </div>
-                    </div>
-                 </el-col>
+                </el-col>
             </el-row>
-            <el-col class="mgt24" style="textAlign:right;"><el-button type="primary">确认接收</el-button></el-col>
+            <el-col class="mgt24" style="textAlign:right;"><el-button type="primary" @click="ReceiveLYSample" :disabled='xfopt'>确认接收</el-button></el-col>
         </el-col>
     </el-row>
 </template>
@@ -142,30 +155,10 @@ var moment=require('moment')
 export default {
     data(){
         return {
-        curSta:'确认分发',
-        Groupsarr: [{
-          value: '小组1',
-          label: '小组1'
-        }, {
-          value: '小组2',
-          label: '小组2'
-        }],
-           Discernopt:true,
-           Checkopt:false,
-           Lyopt:false,
-           RecordForm:{
-               name:''
-           },
            Row:{},
            distribute:{
-               Group1:'',
-               Account1:'',
-               Group3:'',
-               Account3:'',
                CheckProjectNO:'',
            },
-           currentChoose:'1',
-           radio2:'样本分发',
            searchObj:{
                category:'巴戟胶囊',
                registrydate:moment(new Date()).format('YYYY-MM-DD')
@@ -180,75 +173,46 @@ export default {
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
-            batchtableconfig:[{prop:'CheckNumber',label:'请验单号'},{prop:'Name',label:'品名'},{prop:'CheckDate',label:'请验时间',width:155}],//批次列表
+            xfopt:true,
+            batchtableconfig:[{prop:'ProductNumber',label:'产品批号'},{prop:'Name',label:'品名'},{prop:'BatchTime',label:'留样时间',width:155}],//批次列表
         }
     },
     created(){
        this.getSelectOption()
-       this.getInitTab()
+       this.SearchTab()
     },
     methods: {
-        DistributeSample(act){
-            var params={
-                 Time:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-                 CheckProjectNO:this.distribute.CheckProjectNO,
-                 User:localStorage.getItem('Name'),
-                 CheckProjectNO:this.distribute.CheckProjectNO,
+        ReceiveLYSample(){ //接收留样记录
+            var params2={
+              CheckProjectNO:this.distribute.CheckProjectNO,
+              Product:this.Row.Name,
+              Specs:this.Row.Specs,
+              ProductNumber:this.Row.ProductNumber,
+              PackSpecs:this.Row.PackSpecs,
+              TheoreticalYield:this.Row.TheoreticalYield,
+              BatchAmount:this.Row.BatchAmount,
+              BatchDepartment:this.Row.BatchDepartment,
+              BatchName:this.Row.BatchName,
+              Position:this.Row.Position,
+              BatchTime:moment(this.Row.BatchTime).format("YYYY-MM-DD"),
+              Handler:this.Row.Handler,
+              ProductionDate:moment(this.Row.ProductionDate).format("YYYY-MM-DD"),
+              ValidityDate:moment(this.Row.ValidityDate).format("YYYY-MM-DD"),
+              Comment:this.Row.Comment
             }
-            if(act=='J'){
-                params.Account=this.distribute.Account1,
-                params.Group=this.distribute.Group1,
-                params.Action=act
-            }else if(act=='L'){
-                params.Account=this.distribute.Account3,
-                params.Group=this.distribute.Group3,
-                params.Action=act
-            }
-           this.axios.post('/lims/Distribute',this.qs.stringify(params)).then((res) => {
-               if(res.data.code=='1000'){
-                   this.$message({
-                       type:'success',
-                       message:'分发成功'
-                   })
-                   this.curSta='已分发'
-               }else{
-                   this.$message({
-                       type:'info',
-                       message:'请重试'
-                   })
-               }
-           })
-        },
-        isDiscern(e){ //是否检验
-            if(e){
-                this.Discernopt=true  
-            }else{
-                this.Discernopt=false
-            }
-        },
-        isCheck(e){ //是否复查
-            if(e){
-                this.Checkopt=true  
-            }else{
-                this.Checkopt=false
-            }
-        },
-        isLy(e){ //是否留样
-            if(e){
-                this.Lyopt=true  
-            }else{
-                this.Lyopt=false
-            }
-        },
-        handleSelect(key) {
-            console.log(key)
-            this.currentChoose=key
-        },
-        selectSampleTab(){
-            console.log(this.radio2)
-        },
-        LookJbInfo(){
-            this.dialogTableVisible=true
+            this.axios.post('/lims/ProductSave',this.qs.stringify(params2)).then((res) => {
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'留样记录接收成功'
+                    })
+                }else{
+                    this.$message({
+                        type:'error',
+                        message:'留样记录接收失败'
+                    })
+                }
+            })
         },
          getSelectOption() { //获取下拉列表选项
            this.axios.get('/lims/AllProduct').then((res) => {
@@ -269,28 +233,15 @@ export default {
                 PerPage:this.batchTableData.limit,
                 Product:this.searchObj.category,
                 DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:'待检验'
+                Status:'LY'
             }
-            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
-                this.batchTableData.data=res.data.data
-                this.batchTableData.total=res.data.total
-            })
-        },
-         getInitTab(){ //初始化获取表格数据
-            var params={
-                Page:this.batchTableData.offset,
-                PerPage:this.batchTableData.limit,
-                Product:this.searchObj.category,
-                DateTime:this.searchObj.registrydate,
-                Status:'待检验'
-            }
-            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
+            this.axios.get('/lims/ProductSave',{params:params}).then((res) => {
                 this.batchTableData.data=res.data.data
                 this.batchTableData.total=res.data.total
             })
         },
         handletabClick(row){ //左侧tab点击事件
-            this.curSta='确认分发'
+            this.xfopt=false
             this.Row=row
             this.distribute.CheckProjectNO=row.CheckProjectNO
         },

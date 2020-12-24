@@ -118,78 +118,37 @@
                             <el-form >
                                 <el-col :span='22'>
                                     <el-tag type="info">【鉴别】：</el-tag>
-                                    <div v-for="(item,index) in Discerns" :key='index' class="lightgreen jbcontent fsz10">{{item.work}}</div>
-                                    <div style="textAlign:right;">
-                                        <div class="InlineB">
-                                            <el-radio-group v-model="opt.Discernopt">
-                                                <el-radio :label="1">符合规定</el-radio>
-                                                <el-radio :label="2">不符合规定</el-radio>
-                                            </el-radio-group>
-                                        </div>
-                                        <div class="InlineB mgl15"><el-tag type="success">莫黄敏</el-tag></div>
-                                    </div>
+                                    <p v-for="(item,index) in Discerns" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
                                     <el-divider></el-divider>
                                 </el-col>
                                 <el-col :span='22'>
                                     <el-tag type="success">【检查】：</el-tag>
-                                    <div v-for="(item,index) in Inspects" :key='index' class="lightgreen jbcontent fsz10">{{item.work}}</div>
-                                     <div style="textAlign:right;">
-                                        <div class="InlineB">
-                                            <el-radio-group v-model="opt.Inspectopt">
-                                                <el-radio :label="1">符合规定</el-radio>
-                                                <el-radio :label="2">不符合规定</el-radio>
-                                            </el-radio-group>
-                                        </div>
-                                        <div class="InlineB mgl15"><el-tag type="success">莫黄敏</el-tag></div>
-                                    </div>
+                                    <p v-for="(item,index) in Inspects" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
                                     <el-divider></el-divider>
                                 </el-col>
                                 <el-col :span='22'>
                                     <el-tag type="warning">【性状】：</el-tag>
-                                    <div v-for="(item,index) in Characters" :key='index' class="lightgreen jbcontent fsz10">{{item.work}}</div>
-                                    <div style="textAlign:right;">
-                                        <div class="InlineB">
-                                            <el-radio-group v-model="opt.Characteropt">
-                                                <el-radio :label="1">符合规定</el-radio>
-                                                <el-radio :label="2">不符合规定</el-radio>
-                                            </el-radio-group>
-                                        </div>
-                                        <div class="InlineB mgl15"><el-tag type="success">莫黄敏</el-tag></div>
-                                    </div>
+                                    <p v-for="(item,index) in Characters" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
                                     <el-divider></el-divider>
                                 </el-col>
                                 <el-col :span='22'>
                                     <el-tag type="danger">【含量测定】：</el-tag>
-                                    <div v-for="(item,index) in Contents" :key='index'  class="lightgreen jbcontent fsz10">{{item.work}}</div>
-                                    <div style="textAlign:right;">
-                                        <div class="InlineB">
-                                            <el-radio-group v-model="opt.Contentopt">
-                                                <el-radio :label="1">符合规定</el-radio>
-                                                <el-radio :label="2">不符合规定</el-radio>
-                                            </el-radio-group>
-                                        </div>
-                                        <div class="InlineB mgl15"><el-tag type="success">莫黄敏</el-tag></div>
-                                    </div>
+                                    <p v-for="(item,index) in Contents" :key='index'  class="lightgreen jbcontent fsz10">{{item.value}}</p>
                                     <el-divider></el-divider>
                                 </el-col>
                                 <el-col :span='22'>
                                     <el-tag type="info">【微生物限度】：</el-tag>
-                                    <div v-for="(item,index) in Microbes" :key='index'  class="lightgreen jbcontent fsz10">{{item.work}}</div>
-                                    <div style="textAlign:right;">
-                                        <div class="InlineB">
-                                            <el-radio-group v-model="opt.Microbeopt">
-                                                <el-radio :label="1">符合规定</el-radio>
-                                                <el-radio :label="2">不符合规定</el-radio>
-                                            </el-radio-group>
-                                        </div>
-                                        <div class="InlineB mgl15"><el-tag type="success">莫黄敏</el-tag></div>
-                                    </div>
+                                    <p v-for="(item,index) in Microbes" :key='index'  class="lightgreen jbcontent fsz10">{{item.value}}</p>
                                 </el-col>
                             </el-form>
                             </el-col>
                         </div>
                  </el-col>
-                <el-col class="mgt24" style="textAlign:right;"><el-button type="primary" @click="postResult">发送结果</el-button></el-col>
+                <el-col class="mgt24" style="textAlign:right;">
+                    <el-button type="danger">驳回</el-button>
+                    <el-button type="primary">形成报告</el-button>
+                    <el-button type="success">发送</el-button>
+                </el-col>
             </el-row>
         </el-col>
     </el-row>
@@ -203,13 +162,6 @@ export default {
                Type:'',
                CheckTime:'',
                Basis:'',
-           },
-           opt:{
-               Discernopt:1,
-               Inspectopt:1,
-               Characteropt:1,
-               Contentopt:1,
-               Microbeopt:1,
            },
            Row:{},
            searchObj:{
@@ -239,14 +191,6 @@ export default {
        this.SearchTab()
     },
     methods: {
-        postResult(){ //发送结果按钮
-            var params={
-                CheckProjectNO:Row.CheckProjectNO,
-                Name:'莫黄敏',
-                Action:'Y',
-                CheckEndTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-            }
-        },
          getSelectOption() { //获取下拉列表选项
            this.axios.get('/lims/AllProduct').then((res) => {
                if(res.data.code=='1000'){
@@ -265,7 +209,7 @@ export default {
                 PerPage:this.batchTableData.limit,
                 Product:this.searchObj.category,
                 DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:'质检'
+                Status:'待检验'
             }
             this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
                 this.batchTableData.data=res.data.data
@@ -275,32 +219,20 @@ export default {
         handletabClick(row){ //左侧tab点击事件
             this.Row=row
             this.RecordForm.CheckTime=moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+            this.distribute.CheckProjectNO=row.CheckProjectNO
             this.getJbInfo(row.CheckProjectNO)
         },
         getJbInfo(CheckProjectNO){
             var params={
-                CheckProjectNO:CheckProjectNO,
-                Name:'莫黄敏'
+                CheckProjectNO:CheckProjectNO
             }
-            this.axios.get('/lims/QualityTesting',{params:params}).then((res) => {
-                var arr=res.data.data
-                arr.forEach((item, index) => {
-                    if(item.CheckType=='Microbe'){
-                        this.Microbes=item.values
-                    }
-                    if(item.CheckType=='Discern'){
-                        this.Discerns=item.values
-                    }
-                    if(item.CheckType=='Inspect'){
-                        this.Inspects=item.values
-                    }
-                    if(item.CheckType=='Character'){
-                        this.Characters=item.values
-                    }
-                    if(item.CheckType=='Content'){
-                        this.Contents=item.values
-                    }
-                })
+            this.axios.get('/lims/Sample',{params:params}).then((res) => {
+                this.Discerns=res.data.data[0].Discern
+                this.Inspects=res.data.data[0].Inspect
+                this.Characters=res.data.data[0].Character
+                this.Contents=res.data.data[0].Content
+                this.Characters=res.data.data[0].Character
+                this.Microbes=res.data.data[0].Microbe
             })
         },
         handleSizeChange(limit){ //每页条数切换

@@ -121,8 +121,8 @@
                 </el-col>
             </el-row>
             <el-col class="mgt24" style="textAlign:right;">
-                <el-button type="danger" :disabled='xfopt'>驳回</el-button>
-                <el-button type="success" :disabled='xfopt'>同意销毁</el-button>
+                <el-button type="primary" :disabled='xfopt'>编辑</el-button>
+                <el-button type="success" :disabled='xfopt'>保存</el-button>
             </el-col>
         </el-col>
     </el-row>
