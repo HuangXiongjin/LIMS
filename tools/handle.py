@@ -11,7 +11,7 @@ from flask_sqlalchemy import BaseQuery
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.collections import InstrumentedList
 
-from common.lims_models import db_session, LimsError
+from common.lims_models import db_session
 
 
 array = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
