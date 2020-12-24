@@ -573,15 +573,15 @@ class RepairTask(Base):
     EndTime = Column(Unicode(32), nullable=True)
 
 
-class LimsError(Base):
-    """实验室管理系统运行错误 """
-    __tablename__ = 'LimsError'
+class RunError(Base):
+    """系统运行错误 """
+    __tablename__ = 'RunError'
     Id = Column(Integer, autoincrement=True, primary_key=True)
-    # 时间
+    # 发生时间
     Time = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 操作人
     User = Column(Unicode(32), nullable=True)
-    # ip
+    # 操作IP
     IP = Column(Unicode(32), nullable=True)
     # 调用函数
     Func = Column(Unicode(32), nullable=True)
