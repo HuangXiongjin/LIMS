@@ -49,7 +49,7 @@ def quality_testing():
             query_record = db_session.query(Record).filter_by(
                 CheckProjectNO=request.values.get('CheckProjectNO')).first()
             db_session.add(
-                CheckLife(No=NO, User=Name, Status="质检", Product=data.Name, CheckNumber=data.CheckNumber,
+                CheckLife(No=NO, User=Name, Status="质检", Product=data.Name, CheckNumber=data.CheckProjectNO,
                           ProductType=data.ProductType, OperationTime=CheckEndTime, Work="完成了质检内容"))
             db_session.commit()
             db_session.add(ConclusionRecord(CheckNumber=query_check.Foo, TestDate=query_check.CheckDate,
