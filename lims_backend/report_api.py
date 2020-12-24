@@ -20,7 +20,7 @@ def quality_testing():
         check_data = set(item.CheckType for item in query_data)
         results = []
         for item in check_data:
-            query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO, CheckType=item, Status='N').all()
+            query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO, CheckType=item, Status='false').all()
             child = []
             parent = {'CheckType': item, 'values': child}
             for i in query_data:
