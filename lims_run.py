@@ -1,6 +1,9 @@
+import json
+import socket
+import datetime
+
 from flask import Flask, request
 from flask_cors import CORS
-from flask_restful import Api, Resource
 
 from database.connect_db import CONNECT_DATABASE
 from lims_backend.check_api import check
@@ -27,43 +30,6 @@ app.register_blueprint(check)
 app.register_blueprint(system_interface)
 app.register_blueprint(login_auth)
 
-#
-# class CRUD:
-#     # 定义函数完成构造对象数据初始化
-#     def __init__(self, **kwargs):
-#         for key, value in kwargs.items():
-#             setattr(self, key, value)
-#
-#     # 定义一个数据添加操作
-#     @classmethod
-#     def insert(self, *args, **kwargs):
-#         obj = ()
-#         if len(args) > 0 and isinstance(*args, list):
-#             for dict in args[0]:
-#                 obj = self(**dict)
-#                 db_session.add(obj)
-#         else:
-#             obj = self(**kwargs)
-#             db_session.add(obj)
-#         db_session.commit()
-#         return obj
-#
-#     # 定义函数完成数据更新
-#     def update(self, **kwargs):
-#         for key, value in kwargs.items():
-#             if hasattr(self, key):
-#                 setattr(self, key, value)
-#         db_session.commit()
-#
-#     # 定义函数完成数据删除
-#     def delete(self):
-#         db_session.delete(self)
-#         db_session.commit()
-#
-#     def select(self, *args, **kwargs):
-#         # sql = f'select * from {}'
-#         print('select')
-
 
 def main():
     # app.run(host='0.0.0.0', port=10002)
@@ -73,6 +39,20 @@ def main():
 @app.route('/')
 def hello_world():
     return 'This is lims_backend!'
+
+
+@app.errorhandler(Exception)
+def error_handler(e):
+    """全局捕获异常"""
+    re_path = request.path
+    re_func = request.url_rule.endpoint.split('.')[1]
+    re_method = request.method
+    # root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+    # file_path = os.path.join(root_path, 'logs\\logs.txt')
+    ip = socket.gethostbyname(socket.gethostname())
+    result = f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')} -- {ip} -- {re_path} -- {re_func} -- {re_method} -- {e} "
+    print(result)
+    return json.dumps({'code': '2000', 'msg': result}, cls=MyEncoder, ensure_ascii=False)
 
 
 if __name__ == '__main__':
