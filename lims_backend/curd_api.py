@@ -1,7 +1,7 @@
 import json
 
 from flask import Blueprint, request
-from sqlalchemy import MetaData, Table, Column
+from sqlalchemy import MetaData, Table
 from sqlalchemy.ext.automap import automap_base
 
 from common.lims_models import engine, db_session
@@ -15,10 +15,14 @@ Base.prepare(engine, reflect=True)
 crud_interface = Blueprint('crud', __name__)
 
 
-@crud_interface.route('/CRUD', methods=['GET', 'POST', 'DELETE', 'UPDATE'])
+@crud_interface.route('/CRUD', methods=['GET', 'POST', 'DELETE', 'PATCH'])
 def operation():
     global sql
     try:
+        # 表名
+        TableName = request.values.get('TableName')
+        table_name = Table(TableName, metadata, autoload=True, autoload_with=engine)
+        table_name2 = Base.classes.get(TableName)
         if request.method == 'GET':
             # 当前页码
             page = int(request.values.get('Page') if request.values.get('Page') is not None else '1')
@@ -33,9 +37,7 @@ def operation():
             # 查询参数2
             query_column_value2 = request.values.get('QueryColumnValue2')
             query_column_name2 = request.values.get('QueryColumnName2')
-            # 表名
             time_column_name = request.values.get('TimeColumn')
-            table_name = Table(request.values.get('TableName'), metadata, autoload=True, autoload_with=engine)
             # 精确查询
             if request.values.get('Query') == 'Accurate':
                 column1 = table_name.columns._data[query_column_name1]
@@ -62,12 +64,24 @@ def operation():
                 return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                                   ensure_ascii=False)
         if request.method == 'POST':
-            # TODO: 待完成
-            table_name = Table(request.values.get('TableName'), metadata, autoload=True, autoload_with=engine)
             insert_values = json.loads(request.values.get('Values'))
+            obj = table_name2()
             for col, value in insert_values.items():
-                pass
+                setattr(obj, col, value)
+            db_session.add(obj)
+            db_session.commit()
+            return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder)
+        if request.method == 'PATCH':
+            Id = int(request.values.get('Id'))
+            insert_values = json.loads(request.values.get('Values'))
+            query_data = db_session.query(table_name2).filter_by(Id=Id).first()
+            for col, value in insert_values.items():
+                setattr(query_data, col, value)
+            db_session.add(query_data)
+            db_session.commit()
+            return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
+        if request.method == 'DELETE':
             pass
     except Exception as e:
         log(e)
-        return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder)
+        return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder, ensure_ascii=False)
