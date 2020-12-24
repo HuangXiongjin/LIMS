@@ -33,30 +33,30 @@ def quality_testing():
         NO = request.values.get('CheckProjectNO')
         Name = request.values.get('Name')
         CheckEndTime = request.values.get('CheckEndTime')
-        Id = int(request.values.get('Id'))
-        Action = '符合规定' if request.values.get('Action') == 'Y' else '不符合规定'
-        Comment = request.values.get('Comment')
-        data = db_session.query(WorkerBook).filter_by(Id=Id).first()
-        query_check = db_session.query(CheckForm).filter_by(Id=Id).first()
-        query_data = db_session.query(Distribute).filter_by(CheckProjectNO=NO).first()
-        # query_WorkerBook = db_session.query(WorkerBook).filter_by(Id=Id).first()
-        query_record = db_session.query(Record).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
-        data.Result = '符合规定'
-        data.CheckEndTime = CheckEndTime
-        data.Comment = Comment
-        db_session.add_all(data)
-        db_session.commit()
-        db_session.add(
-            CheckLife(No=NO, User=Name, Status="质检", Product=data.Name, CheckNumber=data.CheckNumber,
-                      ProductType=data.ProductType, OperationTime=CheckEndTime, Work="完成了单项质检"))
-        db_session.commit()
-        db_session.add(ConclusionRecord(CheckNumber=query_check.Foo, TestDate=query_check.CheckDate,
-                                        ActualTime=query_check.SampleTime, CheckDate=query_data.Time,
-                                        Name=query_check.Name, ProductNumber=query_check.ProductNumber,
-                                        SampleDepartment=query_check.CheckDepartment, Type=query_check.ProductType,
-                                        medicine=query_record.Type, Specs=query_check.Specs, CheckProject=data.CheckProject,
-                                        Judge=Action, CheckName=data.Name))
-        db_session.commit()
+        Action = json.loads(request.values.get('Action'))
+        Comment = request.values.get('Comment', '')
+        for k, v in Action.items():
+            data = db_session.query(WorkerBook).filter_by(Id=int(k)).first()
+            data.Result = '符合规定' if v == 'true' else '不符合规定'
+            data.CheckEndTime = CheckEndTime
+            data.Comment = Comment
+            db_session.add(data)
+            db_session.commit()
+            query_check = db_session.query(CheckForm).filter_by(Id=int(k)).first()
+            query_data = db_session.query(Distribute).filter_by(CheckProjectNO=NO).first()
+            # query_WorkerBook = db_session.query(WorkerBook).filter_by(Id=Id).first()
+            query_record = db_session.query(Record).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
+            db_session.add(
+                CheckLife(No=NO, User=Name, Status="质检", Product=data.Name, CheckNumber=data.CheckNumber,
+                          ProductType=data.ProductType, OperationTime=CheckEndTime, Work="完成了质检内容"))
+            db_session.commit()
+            db_session.add(ConclusionRecord(CheckNumber=query_check.Foo, TestDate=query_check.CheckDate,
+                                            ActualTime=query_check.SampleTime, CheckDate=query_data.Time,
+                                            Name=query_check.Name, ProductNumber=query_check.ProductNumber,
+                                            SampleDepartment=query_check.CheckDepartment, Type=query_check.ProductType,
+                                            medicine=query_record.Type, Specs=query_check.Specs, CheckProject=data.CheckProject,
+                                            Judge=Action, CheckName=data.Name))
+            db_session.commit()
         return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
 
 
