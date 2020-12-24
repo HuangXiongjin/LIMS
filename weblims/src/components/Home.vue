@@ -81,7 +81,7 @@ export default {
                     {name:'进度看板',path:'/ProgressBoard'},
                     {name:'系统首页',path:'/Board'},
                     {name:'统计分析',path:'/StatisticalAnalysis'},
-                    // {name:'批次进度',path:'/BatchProgress'},
+                    {name:'批次进度',path:'/BatchProgress'},
                  ]},
                  {name:'出入库管理',icon:'el-icon-folder-opened',children:[
                     {name:'动态管理',path:'/DynamicManagement'},

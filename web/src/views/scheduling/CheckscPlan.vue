@@ -131,11 +131,11 @@ var moment=require('moment')
 
       },
       checkpass(index,row){
-          var obj={
+          var obj=[{
              PlanStatus:'待配置',
              Description:'',
              ID:row.ID
-          }
+          }]
           var params={
               datalist:JSON.stringify(obj)
             }

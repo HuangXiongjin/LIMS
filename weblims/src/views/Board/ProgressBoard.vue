@@ -153,9 +153,11 @@ export default {
         },
         handleSizeChange(limit){ //每页条数切换
             this.batchTableData.limit = limit
+            this.selectStatus()
       },
         handleCurrentChange(offset) { // 页码切换
             this.batchTableData.offset = offset
+            this.selectStatus()
         }
     },
 }

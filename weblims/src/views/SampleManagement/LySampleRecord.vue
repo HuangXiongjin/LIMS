@@ -66,7 +66,7 @@
                          <el-col :span='3' class="lightgreen">xxx</el-col>
                          <el-col :span='3'>留样位置：</el-col>
                          <el-col :span='3' class="lightgreen">{{Row.Position}}</el-col>
-                         <el-col :span='3' class="lightgreen">WERTY</el-col>
+                         <el-col :span='3' class="lightgreen">{{Row.ProductNumber}}</el-col>
                      </el-row>
                      <el-row style="paddingTop:26px;height:400px;">
                          <el-table :data="[Row]" style="width: 100%">
