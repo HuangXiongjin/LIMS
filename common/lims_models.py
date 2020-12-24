@@ -580,13 +580,17 @@ class RunError(Base):
     # 发生时间
     Time = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 操作人
-    User = Column(Unicode(32), nullable=True)
+    # User = Column(Unicode(32), nullable=True)
     # 操作IP
     IP = Column(Unicode(32), nullable=True)
+    # 请求路径
+    Path = Column(Unicode(32), nullable=True)
     # 调用函数
     Func = Column(Unicode(32), nullable=True)
+    # 请求方法
+    Method = Column(Unicode(32), nullable=True)
     # 错误信息
-    Error = Column(Unicode(64), nullable=True)
+    Error = Column(Unicode(128), nullable=True)
 
 
 class ClassifyTree(Base):
