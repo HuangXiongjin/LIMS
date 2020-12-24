@@ -17,6 +17,7 @@ crud_interface = Blueprint('crud', __name__)
 
 @crud_interface.route('/CRUD', methods=['GET', 'POST', 'DELETE', 'PATCH'])
 def operation():
+    """全局增删改查"""
     global sql
     try:
         # 表名
@@ -70,7 +71,7 @@ def operation():
                 setattr(obj, col, value)
             db_session.add(obj)
             db_session.commit()
-            return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder)
+            return json.dumps({'code': '1000', 'msg': '添加成功'}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'PATCH':
             Id = int(request.values.get('Id'))
             insert_values = json.loads(request.values.get('Values'))
@@ -79,9 +80,12 @@ def operation():
                 setattr(query_data, col, value)
             db_session.add(query_data)
             db_session.commit()
-            return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
+            return json.dumps({'code': '1000', 'msg': '修改成功'}, cls=MyEncoder, ensure_ascii=False)
         if request.method == 'DELETE':
-            pass
+            Id = int(request.values.get('Id'))
+            query_data = db_session.query(table_name2).filter_by(Id=Id).first()
+            db_session.delete(query_data)
+            return json.dumps({'code': '1000', 'msg': '删除成功'}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         log(e)
         return json.dumps({'code': '2000', 'msg': str(e)}, cls=MyEncoder, ensure_ascii=False)
