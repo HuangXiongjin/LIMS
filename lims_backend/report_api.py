@@ -31,6 +31,7 @@ def quality_testing():
     if request.method == 'POST':
         NO = request.values.get('CheckProjectNO')
         Name = request.values.get('Name')
+        Isopt = request.values.get('Y')
         CheckEndTime = request.values.get('CheckEndTime')
         Action = json.loads(request.values.get('Action', '[]'))
         Comment = request.values.get('Comment', '')
@@ -39,9 +40,10 @@ def quality_testing():
                 data = db_session.query(WorkerBook).filter_by(Id=int(item['Id'])).first()
                 result = '符合规定' if item['Status'] == 'true' else '不符合规定'
                 data.Result = result
-                data.Status = 'true'
+                data.Status = item['Status']
                 data.CheckEndTime = CheckEndTime
                 data.Comment = Comment
+                data.Isopt = Isopt
                 db_session.add(data)
                 db_session.commit()
                 query_check = db_session.query(CheckForm).filter_by(CheckProjectNO=NO).first()

@@ -157,7 +157,7 @@ class WorkerBook(Base):
     # 检测完成时间
     CheckEndTime = Column(Unicode(32), default='')
     # 当前状态(检测中， 已完成)
-    # Status = Column(Unicode(32), nullable=True, default='检测中')
+    Isopt = Column(Unicode(32), nullable=True, default='N')
     # 检测结果是否是否合格(符合规定-不符合规定)
     Result = Column(Unicode(32), nullable=True, default='')
     # 备注
