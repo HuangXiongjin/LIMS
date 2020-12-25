@@ -32,7 +32,7 @@ def quality_testing():
         NO = request.values.get('CheckProjectNO')
         Name = request.values.get('Name')
         CheckEndTime = request.values.get('CheckEndTime')
-        Action = json.loads(request.values.get('Action'))
+        Action = json.loads(request.values.get('Action', '[]'))
         Comment = request.values.get('Comment', '')
         for item in Action:
             if item is not None:
@@ -62,12 +62,21 @@ def quality_testing():
                                                 CheckProject=data.CheckProject,
                                                 Judge=result, CheckName=data.Name))
                 db_session.commit()
+        result = db_session.query(WorkerBook).filter_by(CheckProjectNO=NO, Status='true').all()
+        if len(result) == 0:
+            query_check = db_session.query(CheckForm).filter_by(CheckProjectNO=NO).first()
+            query_check.Status = '报告'
+            db_session.add(query_check)
+            db_session.commit()
         return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
 
 
 @report.route('/Report', methods=['GET', 'POST'])
 def check_report():
     """报告审核"""
+    # if request.method == 'GET':
+    #
+    #     pass
     if request.method == 'POST':
         CheckProjectNO = request.values.get('CheckProjectNO')
         Name = request.values.get('Name')
@@ -154,18 +163,19 @@ def board():
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
 
 
-@report.route('/Test', methods=['GET', 'POST'])
-def test():
-    if request.method == 'GET':
-        # 当前页码
-        page = int(request.values.get('Page'))
-        # 每页记录数
-        per_page = int(request.values.get('PerPage'))
-        table_name = request.values.get('TableName')
-        sql = f"select * from {table_name} order by Id offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only"
-        results = db_session.execute(sql).fetchall()
-        data = [dict(zip(result.keys(), result)) for result in results]
-        # pass
-        print(data)
-        return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': 'len(results)'}, cls=MyEncoder,
-                          ensure_ascii=False)
+# @report.route('/Test', methods=['GET', 'POST'])
+# def test():
+#     if request.method == 'GET':
+#         # 当前页码
+#         page = int(request.values.get('Page'))
+#         # 每页记录数
+#         per_page = int(request.values.get('PerPage'))
+#         StartTime = request.values.get('StartTime')
+#         EndTime = request.values.get('EndTime')
+#         sql = f"select * from {table_name} order by Id offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only"
+#         results = db_session.execute(sql).fetchall()
+#         data = [dict(zip(result.keys(), result)) for result in results]
+#         # pass
+#         print(data)
+#         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': 'len(results)'}, cls=MyEncoder,
+#                           ensure_ascii=False)
