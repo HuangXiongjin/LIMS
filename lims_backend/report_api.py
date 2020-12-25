@@ -23,7 +23,7 @@ def quality_testing():
         for item in check_data:
             child = []
             parent = {'CheckType': item, 'values': child}
-            query_data2 = db_session.query(WorkerBook).filter_by(Name=name, CheckProjectNO=CheckProjectNO,
+            query_data2 = db_session.query(WorkerBook).filter_by(CheckProjectNO=CheckProjectNO,
                                                                  Status='false', CheckType=item).all()
             for i in query_data2:
                 child.append({'Id': i.Id, 'Name': i.Name, 'work': i.CheckProject, 'Status': i.Status})
