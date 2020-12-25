@@ -163,7 +163,7 @@ class WorkerBook(Base):
     # 备注
     Comment = Column(Unicode(128), nullable=True, default='')
     # 完成状态
-    Status = Column(Unicode(32), default='N')
+    Status = Column(Unicode(32), default='false')
     # 检测项分类
     CheckType = Column(Unicode(32), default='')
 

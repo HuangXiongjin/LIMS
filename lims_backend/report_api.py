@@ -16,15 +16,14 @@ def quality_testing():
     if request.method == 'GET':
         name = request.values.get('Name')
         CheckProjectNO = request.values.get('CheckProjectNO')
-        query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=CheckProjectNO,
-                                                            Status='false').all()
+        query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=CheckProjectNO).all()
+
         check_data = set(item.CheckType for item in query_data)
         results = []
         for item in check_data:
             child = []
             parent = {'CheckType': item, 'values': child}
-            query_data2 = db_session.query(WorkerBook).filter_by(CheckProjectNO=CheckProjectNO,
-                                                                 Status='false', CheckType=item).all()
+            query_data2 = db_session.query(WorkerBook).filter_by(CheckProjectNO=CheckProjectNO, CheckType=item).all()
             for i in query_data2:
                 child.append({'Id': i.Id, 'Name': i.Name, 'work': i.CheckProject, 'Status': i.Status})
             results.append(parent)
