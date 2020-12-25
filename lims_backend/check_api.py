@@ -90,8 +90,6 @@ def check_form():
         db_session.add(CheckLife(No=CheckProjectNO, User=CheckUser, Status='申请', ProductType=ProductType,
                                  CheckNumber=CheckNumber, Product=Name, OperationTime=CheckDate, Work='提交了请验单'))
         db_session.commit()
-        db_session.add(ReportVerify(CheckProjectNO=CheckProjectNO))
-        db_session.commit()
         return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
 
 
@@ -114,6 +112,8 @@ def check_verify():
         data.Life = '取样'
         result.append(data)
     db_session.add_all(result)
+    db_session.commit()
+    db_session.add(ReportVerify(CheckProjectNO=CheckProjectNO))
     db_session.commit()
     return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
 

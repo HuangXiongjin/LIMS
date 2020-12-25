@@ -15,19 +15,16 @@ def quality_testing():
     """质检报告检测"""
     if request.method == 'GET':
         name = request.values.get('Name')
-        query_work = db_session.query(WorkerBook).filter_by(Name=name).first()
-        query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO, Status='false').all()
+        CheckProjectNO = request.values.get('CheckProjectNO')
+        query_data = db_session.query(WorkerBook).filter_by(Name=name, CheckProjectNO=CheckProjectNO, Status='false').all()
         check_data = set(item.CheckType for item in query_data)
         results = []
         for item in check_data:
-            query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=query_work.CheckProjectNO, CheckType=item, Status='false').all()
             child = []
             parent = {'CheckType': item, 'values': child}
             for i in query_data:
-                # parent = {'CheckType': item, 'Id': i.Id, 'Name': i.Name, 'work': i.CheckProject}
                 child.append({'Id': i.Id, 'Name': i.Name, 'work': i.CheckProject, 'Status': i.Status})
             results.append(parent)
-        # check_data = [{"name": item.Name, "work": item.CheckProject} for item in query_data]
         return json.dumps({'code': '1000', 'msg': '操作成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'POST':
         NO = request.values.get('CheckProjectNO')
@@ -40,6 +37,7 @@ def quality_testing():
                 data = db_session.query(WorkerBook).filter_by(Id=int(item['Id'])).first()
                 result = '符合规定' if item['Status'] == 'true' else '不符合规定'
                 data.Result = result
+                data.Status = 'true'
                 data.CheckEndTime = CheckEndTime
                 data.Comment = Comment
                 db_session.add(data)

@@ -26,7 +26,7 @@ class ReportVerify(Base):
     QC = Column(Unicode(16), nullable=True, default='N')
     # QA主任
     QA = Column(Unicode(16), nullable=True, default='N')
-    # QA主任
+    # QS主任
     QS = Column(Unicode(16), nullable=True, default='N')
 
 
@@ -84,7 +84,7 @@ class CheckLife(Base):
     ProductType = Column(Unicode(16), nullable=True)
     # 操作人
     User = Column(Unicode(16), nullable=True)
-    # 操作（申请-审核-取样-接收-分发-质检中-报告-审核-放行）
+    # 操作（申请-请验审核-取样-接收-分发-质检-报告-质检审核-放行）
     Status = Column(Unicode(16), nullable=True)
     # 操作时间
     OperationTime = Column(Unicode(32), nullable=True, default='')
