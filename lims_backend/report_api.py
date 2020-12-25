@@ -31,7 +31,7 @@ def quality_testing():
     if request.method == 'POST':
         NO = request.values.get('CheckProjectNO')
         Name = request.values.get('Name')
-        Isopt = request.values.get('Y')
+        Isopt = request.values.get('Isopt')
         CheckEndTime = request.values.get('CheckEndTime')
         Action = json.loads(request.values.get('Action', '[]'))
         Comment = request.values.get('Comment', '')
