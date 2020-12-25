@@ -64,7 +64,7 @@ def quality_testing():
                                                 CheckProject=data.CheckProject,
                                                 Judge=result, CheckName=data.Name))
                 db_session.commit()
-        result = db_session.query(WorkerBook).filter_by(CheckProjectNO=NO, Status='true').all()
+        result = db_session.query(WorkerBook).filter_by(CheckProjectNO=NO, Isopt='N').all()
         if len(result) == 0:
             query_check = db_session.query(CheckForm).filter_by(CheckProjectNO=NO).first()
             query_check.Status = '报告'
