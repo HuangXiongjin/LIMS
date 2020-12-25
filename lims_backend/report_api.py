@@ -16,7 +16,7 @@ def quality_testing():
     if request.method == 'GET':
         name = request.values.get('Name')
         CheckProjectNO = request.values.get('CheckProjectNO')
-        query_data = db_session.query(WorkerBook).filter_by(Name=name, CheckProjectNO=CheckProjectNO,
+        query_data = db_session.query(WorkerBook).filter_by(CheckProjectNO=CheckProjectNO,
                                                             Status='false').all()
         check_data = set(item.CheckType for item in query_data)
         results = []
