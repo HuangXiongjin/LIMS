@@ -26,7 +26,7 @@ class ReportVerify(Base):
     QC = Column(Unicode(16), nullable=True, default='N')
     # QA主任
     QA = Column(Unicode(16), nullable=True, default='N')
-    # QA主任
+    # QS主任
     QS = Column(Unicode(16), nullable=True, default='N')
 
 
@@ -84,7 +84,7 @@ class CheckLife(Base):
     ProductType = Column(Unicode(16), nullable=True)
     # 操作人
     User = Column(Unicode(16), nullable=True)
-    # 操作（申请-审核-取样-接收-分发-质检中-报告-审核-放行）
+    # 操作（申请-请验审核-取样-接收-分发-质检-报告-质检审核-放行）
     Status = Column(Unicode(16), nullable=True)
     # 操作时间
     OperationTime = Column(Unicode(32), nullable=True, default='')
@@ -157,13 +157,13 @@ class WorkerBook(Base):
     # 检测完成时间
     CheckEndTime = Column(Unicode(32), default='')
     # 当前状态(检测中， 已完成)
-    # Status = Column(Unicode(32), nullable=True, default='检测中')
+    Isopt = Column(Unicode(32), nullable=True, default='N')
     # 检测结果是否是否合格(符合规定-不符合规定)
     Result = Column(Unicode(32), nullable=True, default='')
     # 备注
     Comment = Column(Unicode(128), nullable=True, default='')
     # 完成状态
-    Status = Column(Unicode(32), default='N')
+    Status = Column(Unicode(32), default='false')
     # 检测项分类
     CheckType = Column(Unicode(32), default='')
 
