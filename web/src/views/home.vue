@@ -1,45 +1,55 @@
 <template>
   <el-row :gutter="15">
-    <el-col :span="24" v-if="!showDragBoard">
-      <el-form :inline="true">
-        <el-form-item>
-          <el-button @click="showDragBoard = true">调整看板</el-button>
-        </el-form-item>
-      </el-form>
-    </el-col>
-    <el-col :span="24" v-if="showDragBoard">
-      <el-form :inline="true">
-        <el-form-item>
-          <el-button @click="saveDragBoard">调整完成</el-button>
-        </el-form-item>
-      </el-form>
-      <el-row :gutter="15">
-        <el-col :span="18" style="min-height: 400px">
-          <div class="platformContainer">
-            <p class="marginBottom">当前界面</p>
-            <draggable :list="list1" v-bind="{group:'article', disabled: disabled,sort: true}"
-               @start="start22"
-               @end="end22" class="dragArea11" style="height: 400px;">
-              <el-col :span="item.col" v-for="(item, index) in list1" :key="index" class="list-complete-item">
-                <div class="container-col">
-                  <span class="text-size-14">{{ item.name }}</span>
-                  <i class="el-icon-delete" @click="handleDel(index, item.id)"></i>
-                </div>
-              </el-col>
-            </draggable>
+    <el-col :span="24">
+      <el-row :gutter='20'>
+        <el-col :span='4'>
+          <el-card class="marginBottom">
+            <p class="marginBottom">系统运行天数</p>
+            <p class="marginBottom color-darkblue">{{ runDays }} 天</p>
+          </el-card>
+        </el-col>
+        <el-col :span='4'>
+          <el-card class="marginBottom">
+            <p class="marginBottom">共生产品种</p>
+            <p class="marginBottom color-darkblue">{{ BrandNum }} 种</p>
+          </el-card>
+        </el-col>
+        <el-col :span='4'>
+          <el-card class="marginBottom">
+            <p class="marginBottom">本月订单数</p>
+            <p class="marginBottom color-darkblue">{{ planTableData.length }} 单</p>
+          </el-card>
+        </el-col>
+        <el-col :span='4'>
+          <el-card class="marginBottom">
+            <p class="marginBottom">本月计划批数</p>
+            <p class="marginBottom color-darkblue">{{ PlanBatchNum }} 批</p>
+          </el-card>
+        </el-col>
+        <el-col :span='4'>
+          <el-card class="marginBottom">
+            <p class="marginBottom">共运输物料</p>
+            <p class="marginBottom color-darkblue">{{ BucketNum }} 桶</p>
+          </el-card>
+        </el-col>
+        <el-col :span='4'>
+          <el-card class="marginBottom">
+            <p class="marginBottom">已使用生产罐</p>
+            <p class="marginBottom color-darkblue">{{ EqRunNum }} 罐</p>
+          </el-card>
+        </el-col>
+      </el-row>
+      <el-row :gutter='20'>
+        <el-col :span="18">
+          <div class="cardContainerHead">设备运行统计</div>
+          <div class="cardContainer">
+            <ve-histogram :data="chartEqData" :extend="chartExtend"></ve-histogram>
           </div>
         </el-col>
         <el-col :span="6">
-          <div class="platformContainer">
-            <p class="marginBottom">可使用的模块</p>
-            <draggable :list="list2" v-bind="{group:{name: falgs,pull:'clone'},filter:'.undraggable', sort: true}"
-               @end="end" class="dragArea">
-              <el-col :span="item.col" v-for="(item,index) in list2" :key="index" :class="{undraggable : item.flag}" class="list-complete-item">
-                <div class="container-col">
-                  <span class="text-size-14">{{ item.name }}</span>
-                </div>
-              </el-col>
-            </draggable>
+          <div class="cardContainerHead">批计划状态饼图</div>
+          <div class="cardContainer">
+            <ve-ring :data="chartPlanData" :extend="chartPlanExtend"></ve-ring>
           </div>
         </el-col>
       </el-row>
@@ -54,24 +64,51 @@
     components:{draggable},
     data(){
       return {
-        showDragBoard:false,
-        falgs: 'article',
-        disabled: false,
-        list1: [
-          {id: 1, name:"预览",col:6,flag: true},
-        ],
-        list2: [
-          {id: 1, name:"预览",col:6},
-          {id: 2, name:"预警",col:6},
-          {id: 3, name:"排名",col:18},
-          {id: 4, name:"生产",col:12},
-          {id: 5, name:"设备",col:12},
-          {id: 6, name:"排产",col:12},
-　　　　　]
+        runDays:moment().diff(moment("2020-11-10"),'days'),
+        BrandNum:0,
+        planTableData:[],
+        PlanBatchNum:0,
+        BucketNum:0,
+        EqRunNum:0,
+        chartPlanExtend:{
+          legend:{
+            show:false
+          },
+          series:{
+            radius:"50%",
+            labelLine:{
+              length:10,
+              length2:10,
+            }
+          }
+        },
+        chartPlanData:{
+          columns: ['状态', '批数'],
+          rows: []
+        },
+        chartExtend:{
+          'yAxis.0':{
+            name: '次数',
+          },
+          series:{
+            barMaxWidth: 50
+          }
+        },
+        chartEqData:{
+          columns: ['设备', '生产次数'],
+          rows: []
+        }
       }
     },
     created(){
 
+    },
+    mounted(){
+      this.getPlanTableData()
+      this.getBrandNum()
+      this.getPlanNum()
+      this.getBatchMaterialInfo()
+      this.getZYTask()
     },
     watch:{
 
@@ -80,56 +117,162 @@
 
     },
     methods: {
-      end (ev) {
-        if (ev.to.className === 'dragArea11') {
-          this.$set(this.list2[ev.oldIndex], 'flag', true)
+      //获取订单计划表
+      getPlanTableData(){
+        var that = this
+        var params = {
+          tableName: "product_plan",
+          CreateTimeTime:moment().format("YYYY-MM"),
         }
-      },
-      start22 (event) {
-        this.falgs = '222222'
-      },
-      end22 (ev) {
-        this.falgs = 'article'
-      },
-      handleDel (index, id) {
-        this.list1.splice(index, 1)
-        let q = this.list2.find((value, index, arr) => {
-          return value.id === id
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.planTableData = res.data.data.rows
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
         })
-        this.$set(q, 'flag', false)
       },
-      saveDragBoard(){
-        this.showDragBoard = false
-        console.log(this.list1)
-      }
+      getPlanNum(){
+        var that = this
+        var params = {
+          tableName:"PlanManager",
+          SchedulePlanCode:moment().format("YYYY-MM")
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if (res.data.code === "200") {
+            that.PlanBatchNum = res.data.data.rows.length
+          }
+        })
+      },
+      getBrandNum(){
+        var that = this
+        var params = {
+          tableName:"PlanManager"
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if (res.data.code === "200") {
+            const objList = {}
+            res.data.data.rows.forEach(item =>{
+              if(objList[item.BrandName]){
+                objList[item.BrandName]++
+              }else{
+                objList[item.BrandName] = 1
+              }
+            })
+            var count = 0;
+            for(var i in objList){
+              if(objList.hasOwnProperty(i)){
+                count++
+              }
+            }
+            that.BrandNum = count
+            //统计状态
+            var PlanStatus1 = 0
+            var PlanStatus2 = 0
+            var PlanStatus3 = 0
+            var PlanStatus4 = 0
+            var PlanStatus5 = 0
+            var PlanStatus6 = 0
+            var PlanStatus7 = 0
+            var PlanStatus8 = 0
+            res.data.data.rows.forEach(item =>{
+              if(item.PlanStatus === "待审核"){
+                PlanStatus1 = PlanStatus1 + 1
+              }
+              if(item.PlanStatus === "审核未通过"){
+                PlanStatus2 = PlanStatus2 + 1
+              }
+              if(item.PlanStatus === "待下发"){
+                PlanStatus3 = PlanStatus3 + 1
+              }
+              if(item.PlanStatus === "待执行"){
+                PlanStatus4 = PlanStatus4 + 1
+              }
+              if(item.PlanStatus === "撤回"){
+                PlanStatus5 = PlanStatus5 + 1
+              }
+              if(item.PlanStatus === "待备料"){
+                PlanStatus6 = PlanStatus6 + 1
+              }
+              if(item.PlanStatus === "物料发送中"){
+                PlanStatus7 = PlanStatus7 + 1
+              }
+              if(item.PlanStatus === "物料发送完成"){
+                PlanStatus8 = PlanStatus8 + 1
+              }
+            })
+            that.chartPlanData.rows = [
+              {"状态":"待审核","批数":PlanStatus1},
+              {"状态":"审核未通过","批数":PlanStatus2},
+              {"状态":"待下发","批数":PlanStatus3},
+              {"状态":"待执行","批数":PlanStatus4},
+              {"状态":"撤回","批数":PlanStatus5},
+              {"状态":"待备料","批数":PlanStatus6},
+              {"状态":"发送物料中","批数":PlanStatus7},
+              {"状态":"发送物料完成","批数":PlanStatus8},
+            ]
+          }
+        })
+      },
+      getBatchMaterialInfo(){
+        var that = this
+        var params = {
+          tableName:"BatchMaterialInfo",
+          SendFlag:"投料系统已接收",
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if (res.data.code === "200") {
+            that.BucketNum = 0
+            res.data.data.rows.forEach(item =>{
+              if(Array.isArray(item.BucketNum.split(","))){
+                that.BucketNum += item.BucketNum.split(",").length
+              }
+            })
+          }
+        })
+      },
+      getZYTask(){
+        var that = this
+        var params = {
+          tableName:"ZYTask",
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if (res.data.code === "200") {
+            const objList = {}
+            res.data.data.rows.forEach(item =>{
+              if(objList[item.EQPName]){
+                objList[item.EQPName]++
+              }else{
+                objList[item.EQPName] = 1
+              }
+            })
+            that.EqRunNum = 0
+            for(var key in objList){
+              that.EqRunNum++
+              this.chartEqData.rows.push({
+                "设备":key,
+                "生产次数":objList[key],
+              })
+            }
+          }
+        })
+      },
     }
   }
 </script>
 <style scoped>
-  .container-col{
-    clear: both;
-    overflow: hidden;
-    border:1px solid rgba(185,185,185,1);
-    background:rgba(211,237,239,1);
-    border-radius: 4px;
-    padding: 15px;
-    margin-bottom: 15px;
-    height: 50px;
-  }
-  .list-complete-item {
-    cursor: pointer;
-    position: relative;
-  }
-  .list-complete-item.sortable-chosen {
-    color: #4AB7BD;
-  }
-  .list-complete-item.sortable-ghost {
-    color: #30B08F;
-  }
-  .undraggable {
-    color: red;
-  }
-  .list-complete-enter,.list-complete-leave-active {
-    opacity: 0;
-  }
+
 </style>

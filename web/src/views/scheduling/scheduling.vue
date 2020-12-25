@@ -8,24 +8,20 @@
       </el-steps>
       <el-row :gutter="15" v-show="steps == 0">
         <el-col :span="24">
-          <el-collapse class="marginBottom">
-            <el-collapse-item title="多条件查询订单">
-              <el-form :model="planTableData.searchField" :inline="true" class="marginTop" label-width="110px">
-                <el-form-item label="状态">
-                   <el-select v-model="planTableData.searchField.PlanStatus" placeholder="请选择">
-                    <el-option v-for="item in optionsPlanStatus" :key="item.value" :label="item.value" :value="item.value">
-                    </el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="创建/同步时间">
-                   <el-date-picker v-model="planTableData.searchField.CreateTimeTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="primary" size="small" @click="getPlanTableData">查询</el-button>
-                </el-form-item>
-              </el-form>
-            </el-collapse-item>
-          </el-collapse>
+          <el-form :model="planTableData.searchField" :inline="true" class="marginTop">
+            <el-form-item label="状态">
+               <el-select v-model="planTableData.searchField.PlanStatus" placeholder="请选择">
+                <el-option v-for="item in optionsPlanStatus" :key="item.value" :label="item.value" :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="创建/同步时间">
+               <el-date-picker v-model="planTableData.searchField.CreateTimeTime" value-format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" size="small" @click="getPlanTableData">查询</el-button>
+            </el-form-item>
+          </el-form>
           <div class="platformContainer">
             <el-form :inline="true">
               <el-form-item v-for="(item,index) in planTableData.handleType" :key="index" v-has="['订单管理']">
@@ -179,8 +175,8 @@
               </el-table-column>
               <el-table-column label="操作" fixed="right" width="150" v-has="['计划分批']">
                 <template slot-scope="scope">
-                  <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" v-if="scope.row.PlanStatus === '待审核' || scope.row.PlanStatus === '审核未通过'">编辑</el-button>
-                  <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)" v-if="scope.row.PlanStatus === '待审核' || scope.row.PlanStatus === '审核未通过'">删除</el-button>
+                  <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" v-if="scope.row.PlanStatus === '待审核' || scope.row.PlanStatus === '审核未通过' || scope.row.PlanStatus === '撤回'">编辑</el-button>
+                  <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)" v-if="scope.row.PlanStatus === '待审核' || scope.row.PlanStatus === '审核未通过' || scope.row.PlanStatus === '撤回'">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>

@@ -2,16 +2,42 @@
   <el-row>
     <el-col :span='24'>
       <el-row :gutter='20'>
+        <el-col :span='6'>
+          <el-card class="marginBottom">
+            <p class="marginBottom">本月订单数</p>
+            <p class="color-darkblue">{{ planTableData.length }} 单</p>
+          </el-card>
+        </el-col>
+        <el-col :span='6'>
+          <el-card class="marginBottom">
+            <p class="marginBottom">本月计划批数</p>
+            <p class="color-darkblue">{{ PlanBatchNum }} 批</p>
+          </el-card>
+        </el-col>
+        <el-col :span='6'>
+          <el-card class="marginBottom">
+            <p class="marginBottom">本月计划生产品种</p>
+            <p class="color-darkblue">{{ BrandNum }} 种</p>
+          </el-card>
+        </el-col>
+        <el-col :span='6'>
+          <el-card class="marginBottom">
+            <p class="marginBottom">待处理计划</p>
+            <p class="color-darkblue">{{ PlanTableData.length }} 条</p>
+          </el-card>
+        </el-col>
+      </el-row>
+      <el-row :gutter='20'>
         <el-col :span='16'>
+          <div class="cardContainerHead">批计划状态瀑布图</div>
           <div class="cardContainer">
-            <div class="platformTitle">批计划状态统计图</div>
-            <ve-waterfall :data="chartPlanData" :extend="chartPlanExtend" height="360px"></ve-waterfall>
+            <ve-waterfall :data="chartPlanData" :extend="chartPlanExtend" height="400px"></ve-waterfall>
           </div>
         </el-col>
         <el-col :span='8'>
+          <div class="cardContainerHead">批计划待处理列表 <a href="javascript:;" class="floatRight text-size-14" @click="$router.push('/planningScheduling')">去调度</a></div>
           <div class="cardContainer">
-            <div class="platformTitle">批计划待处理列表</div>
-            <el-table :data="PlanTableData" border size="small" height="360px">
+            <el-table :data="PlanTableData" border size="small" height="400px">
               <el-table-column prop="PlanNum" label="编号"></el-table-column>
               <el-table-column prop="BrandName" label="品名"></el-table-column>
               <el-table-column prop="PlanQuantity" label="计划产量"></el-table-column>
@@ -32,10 +58,14 @@
 </template>
 
 <script>
+  var moment = require('moment');
   export default {
     name: "board",
     data(){
       return {
+        planTableData:[],
+        PlanBatchNum:"",
+        BrandNum:"",
         chartPlanExtend:{
           grid: {
             top: 30,
@@ -46,16 +76,67 @@
           }
         },
         chartPlanData: {
-          columns: ['状态', '数量'],
+          columns: ['状态', '批数'],
           rows: []
         },
         PlanTableData:[]
       }
     },
     mounted(){
+      this.getPlanTableData()
+      this.getPlanNum()
       this.searchPlan()
     },
     methods:{
+      //获取订单计划表
+      getPlanTableData(){
+        var that = this
+        var params = {
+          tableName: "product_plan",
+          CreateTimeTime:moment().format("YYYY-MM"),
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            that.planTableData = res.data.data.rows
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
+      getPlanNum(){
+        var that = this
+        var params = {
+          tableName:"PlanManager",
+          SchedulePlanCode:moment().format("YYYY-MM")
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res => {
+          if (res.data.code === "200") {
+            that.PlanBatchNum = res.data.data.rows.length
+            const objList = {}
+            res.data.data.rows.forEach(item =>{
+              if(objList[item.BrandName]){
+                objList[item.BrandName]++
+              }else{
+                objList[item.BrandName] = 1
+              }
+            })
+            var count = 0;
+            for(var i in objList){
+              if(objList.hasOwnProperty(i)){
+                count++
+              }
+            }
+            that.BrandNum = count
+          }
+        })
+      },
       searchPlan(){
         var that = this
         var params = {
@@ -81,41 +162,41 @@
               if(item.PlanStatus === "审核未通过"){
                 PlanStatus2 = PlanStatus2 + 1
               }
-              if(item.PlanStatus === "待配置"){
+              if(item.PlanStatus === "待下发"){
                 PlanStatus3 = PlanStatus3 + 1
               }
-              if(item.PlanStatus === "待下发"){
+              if(item.PlanStatus === "待执行"){
                 PlanStatus4 = PlanStatus4 + 1
               }
-              if(item.PlanStatus === "已下发"){
+              if(item.PlanStatus === "撤回"){
                 PlanStatus5 = PlanStatus5 + 1
               }
-              if(item.PlanStatus === "撤回"){
+              if(item.PlanStatus === "待备料"){
                 PlanStatus6 = PlanStatus6 + 1
               }
-              if(item.PlanStatus === "已发送投料计划"){
+              if(item.PlanStatus === "物料发送中"){
                 PlanStatus7 = PlanStatus7 + 1
               }
-              if(item.PlanStatus === "已发送物料明细"){
+              if(item.PlanStatus === "物料发送完成"){
                 PlanStatus8 = PlanStatus8 + 1
               }
               if(item.PlanStatus === "已完成"){
                 PlanStatus9 = PlanStatus9 + 1
               }
-              if(item.PlanStatus === "待审核" || item.PlanStatus === "待下发" || item.PlanStatus === "已下发"){
+              if(item.PlanStatus === "待审核" || item.PlanStatus === "待下发"){
                 that.PlanTableData.push(item)
               }
             })
             that.chartPlanData.rows = [
-              {"状态":"待审核","数量":PlanStatus1},
-              {"状态":"审核未通过","数量":PlanStatus2},
-              {"状态":"待配置","数量":PlanStatus3},
-              {"状态":"待下发","数量":PlanStatus4},
-              {"状态":"已下发","数量":PlanStatus5},
-              {"状态":"撤回","数量":PlanStatus6},
-              {"状态":"已发送投料计划","数量":PlanStatus7},
-              {"状态":"已发送物料明细","数量":PlanStatus8},
-              {"状态":"已完成","数量":PlanStatus9},
+              {"状态":"待审核","批数":PlanStatus1},
+              {"状态":"审核未通过","批数":PlanStatus2},
+              {"状态":"待下发","批数":PlanStatus3},
+              {"状态":"待执行","批数":PlanStatus4},
+              {"状态":"撤回","批数":PlanStatus5},
+              {"状态":"待备料","批数":PlanStatus6},
+              {"状态":"发送物料中","批数":PlanStatus7},
+              {"状态":"发送物料完成","批数":PlanStatus8},
+              {"状态":"已完成","批数":PlanStatus9},
             ]
           }else{
             that.$message({

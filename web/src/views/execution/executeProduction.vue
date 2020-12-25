@@ -50,6 +50,11 @@
               <b class="" v-else>{{ scope.row.PlanStatus }}</b>
             </template>
           </el-table-column>
+          <el-table-column label="操作" fixed="right" width='100'>
+            <template slot-scope="scope">
+              <el-button size="mini" type="danger" @click="chPlan(scope.$index, scope.row)" v-has="['计划下发','计划执行']">撤回</el-button>
+            </template>
+          </el-table-column>
         </el-table>
         <div class="paginationClass">
           <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
@@ -173,6 +178,37 @@
             message: '请选择要执行的计划'
           });
         }
+      },
+      chPlan(index,row){
+        var id=row.ID
+        var params={
+          PlanStatus:'撤回',
+          ID:id
+        }
+        this.$confirm('此操作将撤回此批次, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+        this.axios.post('/api/PlanManagerRealse',this.qs.stringify(params)).then((res) => {
+          if(res.data.code==='200'){
+            this.getSelectedEq()
+            this.$message({
+              type:'success',
+              message:res.data.message
+            })
+          }else{
+            this.$message({
+              type:'error',
+              message:'撤回失败,请重试'
+            })
+          }
+        })},()=>{
+           this.$message({
+              type:'info',
+              message:'已取消操作'
+            })
+        })
       },
     }
   }

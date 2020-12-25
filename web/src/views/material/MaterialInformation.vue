@@ -148,8 +148,8 @@
         }else if(label === "删除"){
           var params = {tableName:"Material"}
           var mulId = []
-          if(this.planTableData.multipleSelection.length >= 1){
-            this.planTableData.multipleSelection.forEach(item =>{
+          if(this.PlanManagerTableData.multipleSelection.length >= 1){
+            this.PlanManagerTableData.multipleSelection.forEach(item =>{
               mulId.push({id:item.ID});
             })
             params.delete_data = JSON.stringify(mulId)
