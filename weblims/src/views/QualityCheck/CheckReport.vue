@@ -188,7 +188,7 @@
                             </el-col>
                         </div>
                  </el-col>
-                <el-col class="mgt24" style="textAlign:right;"><el-button type="primary" @click="postResult">发送结果</el-button></el-col>
+                <el-col class="mgt24" style="textAlign:right;"><el-button type="primary" @click="postResult">审核结果</el-button></el-col>
             </el-row>
         </el-col>
     </el-row>
@@ -240,49 +240,22 @@ export default {
     },
     methods: {
         postResult(){ //发送结果按钮
-            var arr1=this.Discerns.map((item, index) => {
-                if(item.Name=='向蜜'){
-                    return {Id:item.Id,Status:(item.Status).toString()}
-                }
-            })
-            var arr2=this.Inspects.map((item, index) => {
-                if(item.Name=='向蜜'){
-                return {Id:item.Id,Status:(item.Status).toString()}
-                }
-            })
-            var arr3=this.Characters.map((item, index) => {
-                if(item.Name=='向蜜'){
-                return {Id:item.Id,Status:(item.Status).toString()}
-                }
-            })
-            var arr4=this.Contents.map((item, index) => {
-                if(item.Name=='向蜜'){
-                return {Id:item.Id,Status:(item.Status).toString()}
-                }
-            })
-            var arr5=this.Microbes.map((item, index) => {
-                if(item.Name=='向蜜'){
-                return {Id:item.Id,Status:(item.Status).toString()}
-                }
-            })
-            var arr=[...arr1,...arr2,...arr3,...arr4,...arr5]
             var params={
                 CheckProjectNO:this.CheckProjectNO,
-                Name:'向蜜',
-                Isopt:'Y',
-                Action:JSON.stringify(arr),
-                CheckEndTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                Name:'实验室主管',
+                Action:'1',
+                Time:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
             }
-            this.axios.post('/lims/QualityTesting',this.qs.stringify(params)).then((res) => {
+            this.axios.post('/lims/Report',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
                     this.$message({
                         type:'success',
-                        message:'发送结果成功'
+                        message:'审核结果成功'
                     })
                 }else{
                     this.$message({
-                        type:'success',
-                        message:'发送失败，请重试'
+                        type:'info',
+                        message:'审核失败，请重试'
                     })
                 }
             })

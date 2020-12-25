@@ -123,7 +123,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -137,7 +137,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -151,7 +151,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -165,7 +165,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -179,7 +179,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -188,11 +188,7 @@
                             </el-col>
                         </div>
                  </el-col>
-                <el-col class="mgt24" style="textAlign:right;">
-                    <el-button type="danger">驳回</el-button>
-                    <el-button type="success">形成报告</el-button>
-                    <el-button type="primary">发送</el-button>
-                </el-col>
+                <el-col class="mgt24" style="textAlign:right;"><el-button type="primary" @click="postResult">通过报告</el-button></el-col>
             </el-row>
         </el-col>
     </el-row>
@@ -243,6 +239,27 @@ export default {
        this.SearchTab()
     },
     methods: {
+        postResult(){ //发送结果按钮
+            var params={
+                CheckProjectNO:this.CheckProjectNO,
+                Name:'QA主管',
+                Action:'3',
+                Time:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+            }
+            this.axios.post('/lims/Report',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'审核结果成功'
+                    })
+                }else{
+                    this.$message({
+                        type:'info',
+                        message:'审核失败，请重试'
+                    })
+                }
+            })
+        },
          getSelectOption() { //获取下拉列表选项
            this.axios.get('/lims/AllProduct').then((res) => {
                if(res.data.code=='1000'){
@@ -261,7 +278,7 @@ export default {
                 PerPage:this.batchTableData.limit,
                 Product:this.searchObj.category,
                 DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:'报告'
+                Status:'质检审核'
             }
             this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
                 this.batchTableData.data=res.data.data
@@ -277,9 +294,10 @@ export default {
         getJbInfo(CheckProjectNO){
             var params={
                 CheckProjectNO:CheckProjectNO,
-                Name:'莫黄敏'
+                Name:'向蜜'
             }
             this.axios.get('/lims/QualityTesting',{params:params}).then((res) => {
+                if(res.data.data.length!=0){
                 var arr=res.data.data
                 arr.forEach((item, index) => {
                     if(item.CheckType=='Microbe'){
@@ -298,6 +316,12 @@ export default {
                         this.Contents=item.values
                     }
                 })
+                }else{
+                    this.$message({
+                        type:'info',
+                        message:'获取数据失败'
+                    })
+                }
             })
         },
         handleSizeChange(limit){ //每页条数切换
