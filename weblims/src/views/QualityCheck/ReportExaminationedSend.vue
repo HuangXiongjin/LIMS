@@ -115,39 +115,83 @@
                                 </el-row>
                             </el-form>
                             <el-col class="mgt24">
-                            <el-form >
                                 <el-col :span='22'>
                                     <el-tag type="info">【鉴别】：</el-tag>
-                                    <p v-for="(item,index) in Discerns" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
-                                    <el-divider></el-divider>
+                                    <div class="mgt14">
+                                        <div v-for="(item,index) in Discerns" :label="item" :key="index">
+                                            <el-row class="mgb10">
+                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
+                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                                <el-col :span='3'>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </div>
                                 </el-col>
-                                <el-col :span='22'>
+                                <el-col :span='22' class="mgt24">
                                     <el-tag type="success">【检查】：</el-tag>
-                                    <p v-for="(item,index) in Inspects" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
-                                    <el-divider></el-divider>
+                                    <div class="mgt14">
+                                        <div v-for="(item,index) in Inspects" :label="item" :key="index">
+                                            <el-row class="mgb10">
+                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
+                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                                <el-col :span='3'>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </div>
                                 </el-col>
-                                <el-col :span='22'>
-                                    <el-tag type="warning">【性状】：</el-tag>
-                                    <p v-for="(item,index) in Characters" :key='index' class="lightgreen jbcontent fsz10">{{item.value}}</p>
-                                    <el-divider></el-divider>
+                                <el-col :span='22' class="mgt24">
+                                    <el-tag type="info">【微生物测定】：</el-tag>
+                                    <div class="mgt14">
+                                        <div v-for="(item,index) in Microbes" :label="item" :key="index">
+                                            <el-row class="mgb10">
+                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
+                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                                <el-col :span='3'>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </div>
                                 </el-col>
-                                <el-col :span='22'>
-                                    <el-tag type="danger">【含量测定】：</el-tag>
-                                    <p v-for="(item,index) in Contents" :key='index'  class="lightgreen jbcontent fsz10">{{item.value}}</p>
-                                    <el-divider></el-divider>
+                                <el-col :span='22' class="mgt24">
+                                    <el-tag type="danger">【性状】：</el-tag>
+                                    <div class="mgt14">
+                                        <div v-for="(item,index) in Characters" :label="item" :key="index">
+                                            <el-row class="mgb10">
+                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
+                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                                <el-col :span='3'>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </div>
                                 </el-col>
-                                <el-col :span='22'>
-                                    <el-tag type="info">【微生物限度】：</el-tag>
-                                    <p v-for="(item,index) in Microbes" :key='index'  class="lightgreen jbcontent fsz10">{{item.value}}</p>
+                                <el-col :span='22' class="mgt24">
+                                    <el-tag type="info">【含量测定】：</el-tag>
+                                    <div class="mgt14">
+                                        <div v-for="(item,index) in Contents" :label="item" :key="index">
+                                            <el-row class="mgb10">
+                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
+                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                                <el-col :span='3'>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </div>
                                 </el-col>
-                            </el-form>
                             </el-col>
                         </div>
                  </el-col>
                 <el-col class="mgt24" style="textAlign:right;">
                     <el-button type="danger">驳回</el-button>
-                    <el-button type="primary">通过报告</el-button>
-                    <el-button type="success">发送</el-button>
+                    <el-button type="success">形成报告</el-button>
+                    <el-button type="primary">发送</el-button>
                 </el-col>
             </el-row>
         </el-col>
@@ -162,6 +206,13 @@ export default {
                Type:'',
                CheckTime:'',
                Basis:'',
+           },
+           opt:{
+               Discernopt:true,
+               Inspectopt:true,
+               Characteropt:true,
+               Contentopt:true,
+               Microbeopt:true,
            },
            Row:{},
            searchObj:{
@@ -183,6 +234,7 @@ export default {
             Characters:[],
             Contents:[],
             Microbes:[],
+            CheckProjectNO:'',
             batchtableconfig:[{prop:'CheckNumber',label:'请验单号'},{prop:'Name',label:'品名'},{prop:'CheckDate',label:'请验时间',width:155}],//批次列表
         }
     },
@@ -209,7 +261,7 @@ export default {
                 PerPage:this.batchTableData.limit,
                 Product:this.searchObj.category,
                 DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:'待检验'
+                Status:'质检审核'
             }
             this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
                 this.batchTableData.data=res.data.data
@@ -217,22 +269,35 @@ export default {
             })
         },
         handletabClick(row){ //左侧tab点击事件
+            this.CheckProjectNO=row.CheckProjectNO
             this.Row=row
             this.RecordForm.CheckTime=moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
-            this.distribute.CheckProjectNO=row.CheckProjectNO
             this.getJbInfo(row.CheckProjectNO)
         },
         getJbInfo(CheckProjectNO){
             var params={
-                CheckProjectNO:CheckProjectNO
+                CheckProjectNO:CheckProjectNO,
+                Name:'莫黄敏'
             }
-            this.axios.get('/lims/Sample',{params:params}).then((res) => {
-                this.Discerns=res.data.data[0].Discern
-                this.Inspects=res.data.data[0].Inspect
-                this.Characters=res.data.data[0].Character
-                this.Contents=res.data.data[0].Content
-                this.Characters=res.data.data[0].Character
-                this.Microbes=res.data.data[0].Microbe
+            this.axios.get('/lims/QualityTesting',{params:params}).then((res) => {
+                var arr=res.data.data
+                arr.forEach((item, index) => {
+                    if(item.CheckType=='Microbe'){
+                        this.Microbes=item.values
+                    }
+                    if(item.CheckType=='Discern'){
+                        this.Discerns=item.values
+                    }
+                    if(item.CheckType=='Inspect'){
+                        this.Inspects=item.values
+                    }
+                    if(item.CheckType=='Character'){
+                        this.Characters=item.values
+                    }
+                    if(item.CheckType=='Content'){
+                        this.Contents=item.values
+                    }
+                })
             })
         },
         handleSizeChange(limit){ //每页条数切换
