@@ -89,7 +89,7 @@ export default {
            batchinfo:[],
            showstep:false,
             searchObj:{
-               category:'丹参',
+               category:'玉米淀粉',
                registrydate:moment(new Date()).format('YYYY-MM-DD'),
                state:'待审核',
            },
@@ -132,6 +132,7 @@ export default {
             this.axios.get('/lims/Board',{params:params}).then((res) => {
                 if(res.data.code=='1000'){
                     this.batchinfo=res.data.data
+                    this.currentstep=res.data.data.length
                     if(this.batchinfo.length!==[]){
                         this.showstep=true
                     }else{

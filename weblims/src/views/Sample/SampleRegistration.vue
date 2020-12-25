@@ -156,7 +156,7 @@
                         </el-col>
                         <el-col :span='24'>
                             <div style="float:right;">
-                                <el-button type="primary" @click="LookJbInfo">查看鉴别</el-button>
+                                <el-button type="primary" @click="LookJbInfo">查看项目</el-button>
                                 <el-button type="success" @click="ReceiveSample">领样</el-button>
                             </div>
                         </el-col>

@@ -135,6 +135,7 @@ export default {
             this.axios.get('/lims/Board',{params:params}).then((res) => {
                 if(res.data.code=='1000'){
                     this.batchinfo=res.data.data
+                    this.currentstep=res.data.data.length
                     if(this.batchinfo.length!==[]){
                         this.showstep=true
                     }else{

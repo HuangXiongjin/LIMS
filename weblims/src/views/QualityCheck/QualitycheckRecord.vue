@@ -115,77 +115,76 @@
                                 </el-row>
                             </el-form>
                             <el-col class="mgt24">
-                            <el-form >
                                 <el-col :span='22'>
                                     <el-tag type="info">【鉴别】：</el-tag>
-                                    <div v-for="(item,index) in Discerns" :key='index' class="lightgreen jbcontent fsz10">{{item.work}}</div>
-                                    <div style="textAlign:right;">
-                                        <div class="InlineB">
-                                            <el-radio-group v-model="opt.Discernopt">
-                                                <el-radio :label="1">符合规定</el-radio>
-                                                <el-radio :label="2">不符合规定</el-radio>
-                                            </el-radio-group>
+                                    <div class="mgt14">
+                                        <div v-for="(item,index) in Discerns" :label="item" :key="index">
+                                            <el-row class="mgb10">
+                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
+                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                                <el-col :span='3'>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                </el-col>
+                                            </el-row>
                                         </div>
-                                        <div class="InlineB mgl15"><el-tag type="success">莫黄敏</el-tag></div>
                                     </div>
-                                    <el-divider></el-divider>
                                 </el-col>
-                                <el-col :span='22'>
+                                <el-col :span='22' class="mgt24">
                                     <el-tag type="success">【检查】：</el-tag>
-                                    <div v-for="(item,index) in Inspects" :key='index' class="lightgreen jbcontent fsz10">{{item.work}}</div>
-                                     <div style="textAlign:right;">
-                                        <div class="InlineB">
-                                            <el-radio-group v-model="opt.Inspectopt">
-                                                <el-radio :label="1">符合规定</el-radio>
-                                                <el-radio :label="2">不符合规定</el-radio>
-                                            </el-radio-group>
+                                    <div class="mgt14">
+                                        <div v-for="(item,index) in Inspects" :label="item" :key="index">
+                                            <el-row class="mgb10">
+                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
+                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                                <el-col :span='3'>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                </el-col>
+                                            </el-row>
                                         </div>
-                                        <div class="InlineB mgl15"><el-tag type="success">莫黄敏</el-tag></div>
-                                    </div>
-                                    <el-divider></el-divider>
-                                </el-col>
-                                <el-col :span='22'>
-                                    <el-tag type="warning">【性状】：</el-tag>
-                                    <div v-for="(item,index) in Characters" :key='index' class="lightgreen jbcontent fsz10">{{item.work}}</div>
-                                    <div style="textAlign:right;">
-                                        <div class="InlineB">
-                                            <el-radio-group v-model="opt.Characteropt">
-                                                <el-radio :label="1">符合规定</el-radio>
-                                                <el-radio :label="2">不符合规定</el-radio>
-                                            </el-radio-group>
-                                        </div>
-                                        <div class="InlineB mgl15"><el-tag type="success">莫黄敏</el-tag></div>
-                                    </div>
-                                    <el-divider></el-divider>
-                                </el-col>
-                                <el-col :span='22'>
-                                    <el-tag type="danger">【含量测定】：</el-tag>
-                                    <div v-for="(item,index) in Contents" :key='index'  class="lightgreen jbcontent fsz10">{{item.work}}</div>
-                                    <div style="textAlign:right;">
-                                        <div class="InlineB">
-                                            <el-radio-group v-model="opt.Contentopt">
-                                                <el-radio :label="1">符合规定</el-radio>
-                                                <el-radio :label="2">不符合规定</el-radio>
-                                            </el-radio-group>
-                                        </div>
-                                        <div class="InlineB mgl15"><el-tag type="success">莫黄敏</el-tag></div>
-                                    </div>
-                                    <el-divider></el-divider>
-                                </el-col>
-                                <el-col :span='22'>
-                                    <el-tag type="info">【微生物限度】：</el-tag>
-                                    <div v-for="(item,index) in Microbes" :key='index'  class="lightgreen jbcontent fsz10">{{item.work}}</div>
-                                    <div style="textAlign:right;">
-                                        <div class="InlineB">
-                                            <el-radio-group v-model="opt.Microbeopt">
-                                                <el-radio :label="1">符合规定</el-radio>
-                                                <el-radio :label="2">不符合规定</el-radio>
-                                            </el-radio-group>
-                                        </div>
-                                        <div class="InlineB mgl15"><el-tag type="success">莫黄敏</el-tag></div>
                                     </div>
                                 </el-col>
-                            </el-form>
+                                <el-col :span='22' class="mgt24">
+                                    <el-tag type="info">【微生物测定】：</el-tag>
+                                    <div class="mgt14">
+                                        <div v-for="(item,index) in Microbes" :label="item" :key="index">
+                                            <el-row class="mgb10">
+                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
+                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                                <el-col :span='3'>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </div>
+                                </el-col>
+                                <el-col :span='22' class="mgt24">
+                                    <el-tag type="danger">【性状】：</el-tag>
+                                    <div class="mgt14">
+                                        <div v-for="(item,index) in Characters" :label="item" :key="index">
+                                            <el-row class="mgb10">
+                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
+                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                                <el-col :span='3'>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </div>
+                                </el-col>
+                                <el-col :span='22' class="mgt24">
+                                    <el-tag type="info">【含量测定】：</el-tag>
+                                    <div class="mgt14">
+                                        <div v-for="(item,index) in Contents" :label="item" :key="index">
+                                            <el-row class="mgb10">
+                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
+                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                                <el-col :span='3'>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'">是否符合</el-checkbox>
+                                                </el-col>
+                                            </el-row>
+                                        </div>
+                                    </div>
+                                </el-col>
                             </el-col>
                         </div>
                  </el-col>
@@ -205,11 +204,11 @@ export default {
                Basis:'',
            },
            opt:{
-               Discernopt:1,
-               Inspectopt:1,
-               Characteropt:1,
-               Contentopt:1,
-               Microbeopt:1,
+               Discernopt:true,
+               Inspectopt:true,
+               Characteropt:true,
+               Contentopt:true,
+               Microbeopt:true,
            },
            Row:{},
            searchObj:{
@@ -231,6 +230,7 @@ export default {
             Characters:[],
             Contents:[],
             Microbes:[],
+            CheckProjectNO:'',
             batchtableconfig:[{prop:'CheckNumber',label:'请验单号'},{prop:'Name',label:'品名'},{prop:'CheckDate',label:'请验时间',width:155}],//批次列表
         }
     },
@@ -240,12 +240,41 @@ export default {
     },
     methods: {
         postResult(){ //发送结果按钮
+            var arr1=this.Discerns.map((item, index) => {
+                if(item.Name=='莫黄敏'){
+                    return {Id:item.Id,Status:(item.Status).toString()}
+                }
+            })
+            var arr2=this.Inspects.map((item, index) => {
+                if(item.Name=='莫黄敏'){
+                return {Id:item.Id,Status:(item.Status).toString()}
+                }
+            })
+            var arr3=this.Characters.map((item, index) => {
+                if(item.Name=='莫黄敏'){
+                return {Id:item.Id,Status:(item.Status).toString()}
+                }
+            })
+            var arr4=this.Contents.map((item, index) => {
+                if(item.Name=='莫黄敏'){
+                return {Id:item.Id,Status:(item.Status).toString()}
+                }
+            })
+            var arr5=this.Microbes.map((item, index) => {
+                if(item.Name=='莫黄敏'){
+                return {Id:item.Id,Status:(item.Status).toString()}
+                }
+            })
+            var arr=[...arr1,...arr2,...arr3,...arr4,...arr5]
             var params={
-                CheckProjectNO:Row.CheckProjectNO,
+                CheckProjectNO:this.CheckProjectNO,
                 Name:'莫黄敏',
-                Action:'Y',
+                Action:JSON.stringify(arr),
                 CheckEndTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
             }
+            this.axios.post('/lims/QualityTesting',this.qs.stringify(params)).then((res) => {
+                console.log(res)
+            })
         },
          getSelectOption() { //获取下拉列表选项
            this.axios.get('/lims/AllProduct').then((res) => {
@@ -273,6 +302,7 @@ export default {
             })
         },
         handletabClick(row){ //左侧tab点击事件
+            this.CheckProjectNO=row.CheckProjectNO
             this.Row=row
             this.RecordForm.CheckTime=moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
             this.getJbInfo(row.CheckProjectNO)

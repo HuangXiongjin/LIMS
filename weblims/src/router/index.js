@@ -112,7 +112,6 @@ const router=new Router({
         //试剂管理
         {path:'/ReagentManagement',component:ReagentManagement},
 
-
         //留样
         {path:'/SampleReceiving',component:SampleReceiving},
         {path:'/LySampleRecord',component:LySampleRecord},

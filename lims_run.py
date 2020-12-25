@@ -11,7 +11,7 @@ from lims_backend.curd_api import crud_interface
 from lims_backend.distribute_api import distribute
 from lims_backend.quality_standard_api import system_interface
 from lims_backend.report_api import report
-from lims_models import db_session, RunError
+# from common.lims_models import db_session, RunError
 from system_backend.SystemManagement import account_auth
 from system_backend.SystemManagement.account_auth import login_auth
 from tools.MyEncode import MyEncoder
@@ -54,8 +54,8 @@ def error_handler(e):
     now_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     result = f"{now_time} -- {ip} -- {re_path} -- {re_func} -- {re_method} -- {e}"
     print(result)
-    db_session.add(RunError(Time=now_time, IP=ip, User='user', Path=re_path, Func=re_func, Method=re_method, Error=e))
-    db_session.commit()
+    # db_session.add(RunError(Time=now_time, IP=ip, User='user', Path=re_path, Func=re_func, Method=re_method, Error=e))
+    # db_session.commit()
     return json.dumps({'code': '2000', 'msg': result}, cls=MyEncoder, ensure_ascii=False)
 
 

@@ -160,7 +160,7 @@ export default {
                CheckProjectNO:'',
            },
            searchObj:{
-               category:'巴戟胶囊',
+               category:'玉米淀粉',
                registrydate:moment(new Date()).format('YYYY-MM-DD')
            },
            options: [{
