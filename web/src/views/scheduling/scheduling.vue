@@ -6,6 +6,15 @@
         <el-step title="数据统计"></el-step>
         <el-step title="订单分批"></el-step>
       </el-steps>
+      <el-row>
+        <el-col :span="24">
+          <div class="marginBottom floatRight">
+            <el-button type="primary" size="small" v-show="steps != 0" @click="lastStep">上一步</el-button>
+            <el-button type="primary" size="small" v-show="steps != 2" @click="nextStep">下一步</el-button>
+            <el-button type="primary" size="small" v-show="steps == 2" @click="getPlanManagerAllTableData">去调度</el-button>
+          </div>
+        </el-col>
+      </el-row>
       <el-row :gutter="15" v-show="steps == 0">
         <el-col :span="24">
           <el-form :model="planTableData.searchField" :inline="true" class="marginTop">
@@ -135,7 +144,13 @@
           <div class="platformContainer">
             <el-row>
               <el-col :span="24">
-                <p class="marginBottom">共选择<span>{{ selectPlanList.length }}</span>类品种，需生成批数<span>{{ selectPlanBatchTotal }}</span>批</p>
+                <p class="marginBottom">共选择<span>{{ selectPlanList.length }}</span>类品种，生成批数<span>{{ selectPlanBatchTotal }}</span>批</p>
+                <p class="marginBottom" v-for="(item,index) in selectPlanList" :key="index">
+                  <span class="color-success text-center text-size-18">{{ item.PlanQuantityTotal }}</span>
+                  <span class="text-center text-size-16">{{ item.unit }}</span>
+                  <span class="color-darkblue text-center text-size-18">{{ item.BrandName }}</span> 分
+                  <span class="color-lightgreen text-size-18">{{ item.BatchNum }}</span> 批
+                </p>
               </el-col>
             </el-row>
             <el-button type="primary" size="small" @click="planschedul" v-has="['计划分批']">生成批计划</el-button>
@@ -146,7 +161,7 @@
                 <el-button :type="item.type" size="small" @click="handleFormPlanManager(item.label)">{{ item.label }}</el-button>
               </el-form-item>
               <el-form-item class="floatRight">
-                <el-button type="primary" size="small" icon='el-icon-refresh-right' @click="getPlanManagerTableData">刷新</el-button>
+                <el-button type="primary" size="small" icon='el-icon-refresh-right' @click="getPlanManagerTableData()">刷新</el-button>
               </el-form-item>
             </el-form>
             <el-table :data="PlanManagerTableData.data" border size="small">
@@ -212,11 +227,6 @@
           </div>
         </el-col>
       </el-row>
-      <el-col :span="24" style="text-align: right;">
-        <el-button type="primary" v-show="steps != 0" @click="lastStep">上一步</el-button>
-        <el-button type="primary" v-show="steps != 2" @click="nextStep">下一步</el-button>
-        <el-button type="primary" v-show="steps == 2" @click="$router.push('/planningScheduling')">去调度</el-button>
-      </el-col>
     </el-col>
   </el-row>
 </template>
@@ -278,6 +288,7 @@
             BrandName:"",
           },
         },
+        emptyBatchIDNum:0,
       }
     },
     mounted(){
@@ -494,6 +505,47 @@
           if(res.data.code === "200"){
             that.PlanManagerTableData.data = res.data.data.rows
             that.PlanManagerTableData.total = res.data.data.total
+          }else{
+            that.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+        })
+      },
+      getPlanManagerAllTableData(){
+        var that = this
+        var PlanNums = []
+        this.selectPlanList.forEach(item =>{
+          PlanNums.push(item.PlanNum)
+        })
+        var params = {
+          PlanNums:JSON.stringify(PlanNums),
+          limit:10000,
+          offset:0,
+        }
+        this.axios.get("/api/selectplanmanager",{
+          params: params
+        }).then(res => {
+          if(res.data.code === "200"){
+            var emptyNum = []
+            res.data.data.rows.forEach(item =>{
+              if(item.BatchID === ""){
+                emptyNum.push(item.PlanNum)
+              }
+            })
+            if(emptyNum.length == 0){
+              that.$router.push('/planningScheduling')
+            }else{
+              that.$confirm('当前订单还有'+emptyNum.length+'条批计划的批次号为空，是否现在去审核？', '提示', {
+                distinguishCancelAndClose:true,
+                type: 'warning'
+              }).then(()  => {
+                that.$router.push('/planningScheduling')
+              }).catch(() => {
+
+              });
+            }
           }else{
             that.$message({
               type: 'info',
