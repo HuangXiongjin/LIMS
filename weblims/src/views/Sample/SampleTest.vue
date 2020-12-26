@@ -48,7 +48,7 @@
             </el-row>
                 </el-col>
                 <el-col :span='24' class="mgt24">
-                        <div class="mgt24 boxshadow">
+                        <div class="mgt24" style="height:470px;overflow:auto;">
                           <el-table
                             :data="batchTableData.data"
                             size='small'

@@ -5,10 +5,14 @@
       <div class="logininfo">
           <el-form :model="ruleForm" status-icon ref="ruleForm" :rules="rules" label-width="80px">
             <el-form-item label="登录名称" prop="loginname">
-              <el-input v-model="ruleForm.loginname" autocomplete="off" @change='clearRemind'></el-input>
+              <el-input v-model="ruleForm.loginname" autocomplete="off" @change='clearRemind'>
+                <i slot="prefix" class="el-input__icon el-icon-user-solid"></i>
+              </el-input>
             </el-form-item>
             <el-form-item label="登录密码" prop="loginpass">
-              <el-input v-model="ruleForm.loginpass" autocomplete="off" @change='clearRemind'></el-input>
+              <el-input v-model="ruleForm.loginpass" autocomplete="off" @change='clearRemind'>
+                <i slot="prefix" class="el-input__icon el-icon-lock"></i>
+              </el-input>
             </el-form-item>
           </el-form>
           <div class="remindme"><el-checkbox v-model="checkedlogin" @change='remindKey'><span style="color:#333;">记住密码</span></el-checkbox></div>
@@ -105,6 +109,7 @@ export default {
           sessionStorage.setItem('LastLoginTime',moment(new Date()).format('YYYY-MM-DD HH:mm:ss'))
           this.$router.push('/')
           localStorage.setItem('sonMenu',JSON.stringify([{"name":"进度看板","path":"/ProgressBoard"},{"name":"系统首页","path":"/Board"},{"name":"统计分析","path":"/StatisticalAnalysis"},{"name":'批次进度',"path":'/BatchProgress'}]))
+          localStorage.setItem('SonMenuIndex','0')
           this.$message({
               showClose: true,
               message: "登录成功",

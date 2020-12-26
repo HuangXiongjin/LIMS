@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import json
 from io import BytesIO
 
@@ -76,3 +77,5 @@ for oc in ocs:
     # response.headers['Content-type'] = 'application/vnd.ms-excel'  # 响应头告诉浏览器发送的文件类型为excel
     # response.headers['Content-Disposition'] = 'attachment; filename=data.xlsx'  # 浏览器打开/保存的对话框，data.xlsx-设定的文件名
     # return response
+=======
+>>>>>>> 803af985be5fd858710dc6beaceb7d7cd3d42270

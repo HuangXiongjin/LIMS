@@ -238,6 +238,8 @@ class CheckForm(Base):
     Action = Column(Unicode(16), nullable=True, default='')
     # 实验室组长分发组
     LaboratoryUser = Column(Unicode(16), nullable=True, default='')
+    # 样品销毁状态
+    ProductDestruction = Column(Unicode(256), nullable=True, default='')
     # 备注
     Comment = Column(Unicode(32), nullable=True)
 
@@ -258,6 +260,44 @@ class CheckProject(Base):
     Statutory = Column(Unicode(1024), nullable=True)
     # 全局唯一地址
     CheckProjectNO = Column(Unicode(128), nullable=True)
+
+
+class DestructionForm(Base):
+    """销毁清单"""
+    __tablename__ = 'DestructionForm'
+    Id = Column(Integer, autoincrement=True, primary_key=True)
+    # 样本分发接收编号
+    No = Column(Unicode(32), nullable=True)
+    # 请验单号
+    CheckNumber = Column(Unicode(32), nullable=True)
+    # 样品类别
+    ProductType = Column(Unicode(32), nullable=True)
+    # 品名
+    Name = Column(Unicode(32), nullable=True)
+    # 规格
+    Specs = Column(Unicode(32), nullable=True)
+    # 供货单位
+    Supplier = Column(Unicode(32), nullable=True, default='无')
+    # 来料批号
+    ProductNumber = Column(Unicode(32), nullable=True)
+    # 批号（物料代码）
+    Number = Column(Unicode(32), nullable=True)
+    # 数量
+    Amount = Column(Unicode(16), nullable=True)
+    # 单位
+    Unit = Column(Unicode(8), nullable=True)
+    # 请验工序
+    CheckProcedure = Column(Unicode(32), nullable=True)
+    # 请验项目标识
+    CheckProjectNO = Column(Unicode(32), nullable=True)
+    # 请验部门
+    CheckDepartment = Column(Unicode(32), nullable=True)
+    # 请验时间
+    CheckDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d'))
+    # 请验人
+    CheckUser = Column(Unicode(16), nullable=True, default='')
+    # 类别（样品销毁-留样销毁）
+    Type = Column(Unicode(256), nullable=True, default='')
 
 
 class Distribute(Base):
@@ -374,6 +414,8 @@ class ProductSave(Base):
     ValidityDate = Column(Unicode(32), nullable=True, default='')
     # 当前进度(待接收-留样观察中-申请销毁)
     Status = Column(Unicode(32), nullable=True, default='待接收')
+    # 留样销毁状态
+    BatchDestruction = Column(Unicode(256), nullable=True, default='')
     # 备注
     Comment = Column(Unicode(32), nullable=True)
 
@@ -425,10 +467,6 @@ class ProductSaveSurvey(Base):
     # 备注
     Comment = Column(Unicode(32), nullable=True)
 
-
-# class Instrument(Base):
-#     """仪器表"""
-#     __tablename__ = 'Instrument'
 
 class KeepPlan(Base):
     """仪器保养计划表"""
@@ -579,8 +617,6 @@ class RunError(Base):
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 发生时间
     Time = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-    # 操作人
-    # User = Column(Unicode(32), nullable=True)
     # 操作IP
     IP = Column(Unicode(32), nullable=True)
     # 请求路径

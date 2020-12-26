@@ -50,6 +50,9 @@
                         <el-col :span='3' class="boxshadow req">
                             <el-button type='primary' @click="SearchTab">查询</el-button>
                         </el-col>
+                        <el-col :span='3' class="boxshadow req">
+                            <el-button type='info' icon="el-icon-printer">打印</el-button>
+                        </el-col>
                     </el-row>
                 </el-col>               
             </el-row>
