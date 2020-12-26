@@ -3,7 +3,7 @@
       <el-container>
         <el-aside width="240px" class="bggreen">
             <div class="project cursor">实验室管理系统</div>
-            <el-menu class="bggreen menuform" text-color="#d4d4d4" active-text-color="#323232" :style="conheight">
+            <el-menu class="bggreen menuform" text-color="#d4d4d4"  active-text-color="#323232" :style="conheight">
             <el-menu-item v-for="(item,index) in mneulist" :key='index' :index='index.toString()' @click="getSonMenuList(item,index)" :class="{'ActiveMenucss':index==ActiveMenu}">
                 <i :class="item.icon" style="color:#ccc;"></i>
                 <span slot="title">{{item.name}}</span>
@@ -14,8 +14,8 @@
             <el-header class="bgwhite " style="paddingTop:20px;backgroundColor:#0A9168;">
                     <el-row>
                     <el-col :span='20' class="sonMenucss">
-                        <el-menu  class="bgwhite selfradius" mode="horizontal" active-text-color="#323232" text-color="#d4d4d4">
-                            <el-menu-item  v-for="(item,index) in SonMenuList" :key='index' :index='item.path' @click="getCurrentSonList(item,index)" :class="{'ActiveSonMenucss':index==ActiveSonMenu}">{{item.name}}</el-menu-item>
+                        <el-menu  class="bgwhite selfradius" mode="horizontal"  :default-active="SonMenuIndex" active-text-color="#323232" text-color="#d4d4d4">
+                            <el-menu-item  v-for="(item,index1) in SonMenuList" :key='index1' :index='index1.toString()' @click="getCurrentSonList(item,index1)" >{{item.name}}</el-menu-item>
                         </el-menu>
                     </el-col>
                     <el-col :span='4' class="tools" style="float:right;">
@@ -61,6 +61,8 @@ var moment = require('moment')
 export default {
     data(){
         return {
+             MenuIndex:'0',
+             SonMenuIndex:localStorage.getItem('SonMenuIndex'),
              isCollapse: false,
              isFullScreen:false,
              persondialogTableVisible:false,
@@ -72,7 +74,6 @@ export default {
              },
              SonMenuList:JSON.parse(localStorage.getItem('sonMenu')),
              ActiveMenu:100,
-             ActiveSonMenu:0,
              conheight:{
                 height:''
             },
@@ -120,10 +121,10 @@ export default {
                      {name:'留样看板',path:'/SampleBoard'},
                  ]},
                  {name:'销毁管理',icon:'el-icon-delete',children:[
-                     {name:'销毁看板',path:'/DestroyBoard'},
                      {name:'销毁请求',path:'/DestroyRequest'},
                      {name:'销毁审核',path:'/DestroyAudit'},
                      {name:'销毁清单',path:'/Destroylist'},
+                     {name:'销毁看板',path:'/DestroyBoard'},
                  ]},
                  {name:'试剂耗材',icon:'el-icon-toilet-paper',children:[
                      {name:'试剂管理',path:'/ReagentManagement'},
@@ -148,7 +149,10 @@ export default {
           this.conheight.height=window.innerHeight-160+'px';
        },
         getCurrentSonList(obj,index){
-            this.ActiveSonMenu=index
+            localStorage.setItem('SonMenuIndex',index)
+            this.$nextTick(()=>{
+               this.SonMenuIndex=localStorage.getItem('SonMenuIndex')
+            })
             this.$router.push(obj.path)
 
         },
@@ -169,6 +173,7 @@ export default {
           sessionStorage.clear()
           this.$router.push('/login')
           localStorage.removeItem('sonMenu')
+          localStorage.removeItem('SonMenuIndex')
       },
       getSonMenuList(obj,index){
           this.ActiveMenu=index
@@ -220,10 +225,6 @@ export default {
     .ActiveMenucss{
        background-color:#fff;
        border-radius: 30px 0 0 30px;
-    }
-    .ActiveSonMenucss{
-        color: #323232!important;
-        border-radius: 25px 0 0 0;
     }
     .menuform .el-menu-item:hover{
         background-color: #00FA9A;

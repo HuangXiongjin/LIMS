@@ -279,6 +279,7 @@ export default {
                         type:'success',
                         message:'发送结果成功'
                     })
+                    this.SearchTab()
                 }else{
                     this.$message({
                         type:'success',

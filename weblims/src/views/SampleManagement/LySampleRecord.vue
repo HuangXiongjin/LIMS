@@ -123,6 +123,7 @@
             <el-col class="mgt24" style="textAlign:right;">
                 <el-button type="primary" :disabled='xfopt'>编辑</el-button>
                 <el-button type="success" :disabled='xfopt'>保存</el-button>
+                <el-button type="danger" :disabled='xfopt' @click="requireDestroy">申请销毁</el-button>
             </el-col>
         </el-col>
     </el-row>
@@ -165,6 +166,25 @@ export default {
        this.SearchTab()
     },
     methods: {
+         requireDestroy(){ //申请销户
+            var params={
+                CheckProjectNO:Row.CheckProjectNO,
+                DestructionType:'留样销毁'
+            }
+            this.axios.post('/lims/Destruction',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'申请销毁成功'
+                    })
+                }else{
+                     this.$message({
+                        type:'info',
+                        message:'申请失败，请重试'
+                    })
+                }
+            })
+        },
          getSelectOption() { //获取下拉列表选项
            this.axios.get('/lims/AllProduct').then((res) => {
                if(res.data.code=='1000'){

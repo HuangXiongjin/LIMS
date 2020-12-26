@@ -44,7 +44,7 @@
             </el-col>
         </el-row>
         <el-row>
-            <el-row class="container mgt24" style="height:400px;">
+            <el-row class="container mgt24">
                 <el-col :span='24' style="borderBottom:1px solid #ccc;" class="padd15">
                     <span class="fontWet titl" style="display:inline-block;height:40px;lineHeight:36px;">样本记录</span>
                 </el-col>
@@ -55,7 +55,9 @@
                         highlight-current-row
                         style="width: 100%"
                         @row-click="handletabClick"
+                        @selection-change='handleSelectedRow'
                         >
+                        <el-table-column type="selection" width="55"></el-table-column>
                         <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                     </el-table>
                     <div class="paginationClass">
@@ -68,6 +70,9 @@
                         </el-pagination>
                     </div>
                 </el-col>
+                <el-col :span='24' style="textAlign:right;paddingTop:20px;">
+                     <el-button type='danger' size='small' @click="requireDestroy">申请销毁</el-button>
+                </el-col>
         </el-row>
         </el-row>
     </el-row>
@@ -77,7 +82,8 @@ var moment=require('moment')
 export default {
     data(){
         return {
-          currentstep:4,
+           currentRow:[],
+           currentstep:4,
            batchinfo:[],
            showstep:false,
            searchObj:{
@@ -124,6 +130,31 @@ export default {
         this.SearchTab()
     },
     methods: {
+        handleSelectedRow(selection){
+            this.currentRow=selection
+        },
+        requireDestroy(){
+            var CheckProjectNO=this.currentRow.map((item, index) => {
+                return item.CheckProjectNO
+            })
+            var params={
+                CheckProjectNO:CheckProjectNO,
+                DestructionType:'样品销毁'
+            }
+            this.axios.post('/lims/Destruction',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'申请销毁成功'
+                    })
+                }else{
+                     this.$message({
+                        type:'info',
+                        message:'申请失败，请重试'
+                    })
+                }
+            })
+        },
         handletabClick(row){ //点击行显示
             this.getCurrentSteps(row.CheckProjectNO)
         },
