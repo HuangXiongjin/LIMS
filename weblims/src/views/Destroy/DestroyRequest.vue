@@ -181,7 +181,7 @@ export default {
                 CheckProjectNO:this.distribute.CheckProjectNO,
                 Isopt:opt
             }
-            this.axios.post('/lims/DestructionVerify').then((res) => {
+            this.axios.post('/lims/DestructionVerify',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
                     this.$message({
                         type:'success',
