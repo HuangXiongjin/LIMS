@@ -5,7 +5,8 @@ from flask import Blueprint, request
 
 from tools.handle import MyEncoder, log, get_short_id, get_uuid
 from common.lims_models import db_session, ClassifyTree, QualityStandardCenter, QualityStandard, CheckForm, \
-    CheckProject, Distribute, ProductSave, CheckLife, Worker, Record, WorkerBook, ConclusionRecord, ReportVerify
+    CheckProject, Distribute, ProductSave, CheckLife, Worker, Record, WorkerBook, ConclusionRecord, ReportVerify, \
+    DestructionForm
 
 report = Blueprint('report', __name__)
 
@@ -183,6 +184,8 @@ def destruction():
                 data.BatchDestruction = '留样销毁'
                 db_session.add(data)
                 db_session.commit()
+        return json.dumps({'code': '1000', 'msg': '成功'}, cls=MyEncoder, ensure_ascii=False)
+
     if request.method == 'GET':
         # (留样销毁 - 样品销毁)
         destruction_type = request.values.get('DestructionType')
@@ -203,8 +206,35 @@ def destruction():
                           ensure_ascii=False)
 
 
-# @report.route('/DestructionVerify', methods=['GET', 'POST'])
-# def destruction_verify():
-#     items = request.values.get('CheckProjectNO')
-#     db_session.query().filter_by()
-#     pass
+@report.route('/DestructionVerify', methods=['GET', 'POST'])
+def destruction_verify():
+    destruction_type = request.values.get('DestructionType')
+    CheckProjectNO = request.values.get('CheckProjectNO')
+    data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+    data2 = DestructionForm()
+    data = request.values
+    CheckNumber = data.get('CheckNumber')
+    ProductType = data.get('ProductType')
+    Name = data.get('Name')
+    Specs = data.get('Specs')
+    Supplier = data.get('Supplier')
+    ProductNumber = data.get('ProductNumber')
+    Number = data.get('Number')
+    Amount = data.get('Amount')
+    Unit = data.get('Unit')
+    CheckProcedure = data.get('CheckProcedure')
+    check_project = data.get('CheckProject')
+    CheckDepartment = data.get('CheckDepartment')
+    CheckDate = data.get('CheckDate')
+    CheckUser = data.get('CheckUser')
+    Type = data.get('Type')
+    Comment = data.get('Comment')
+    if destruction_type == '样品销毁':
+        data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+        data.ProductDestruction = '已销毁'
+    if destruction_type == '留样销毁':
+        data = db_session.query(ProductSave).filter_by(CheckProjectNO=CheckProjectNO).first()
+        data.BatchDestruction = '已销毁'
+    db_session.add(data)
+    db_session.commit()
+    return json.dumps({'code': '1000', 'msg': '成功'}, cls=MyEncoder, ensure_ascii=False)
