@@ -162,10 +162,10 @@ def product_distribute():
                 db_session.add_all([CheckForm_data, d])
                 db_session.commit()
             elif Action[item] == 'L':
-                d = Distribute()
+                d = db_session.query(Distribute).filter_by(CheckProjectNO=CheckProjectNO).first()
                 pro_save = ProductSave()
                 d.CheckProjectNO = CheckProjectNO
-                d.Status = 'LY'
+                # d.Status = 'LY'
                 pro_save.CheckProjectNO = CheckProjectNO
                 pro_save.BatchAmount = Account[item]
                 # CheckForm_data.Action = '留样'
