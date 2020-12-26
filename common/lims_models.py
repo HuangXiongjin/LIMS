@@ -19,7 +19,7 @@ class ReportVerify(Base):
     __tablename__ = 'ReportVerify'
     Id = Column(Integer, autoincrement=True, primary_key=True)
     # 标识
-    CheckProjectNO = Column(Unicode(32), nullable=True)
+    CheckProjectNO = Column(Unicode(128), nullable=True)
     # 实验室主管
     laboratory = Column(Unicode(16), nullable=True, default='N')
     # QC主任
