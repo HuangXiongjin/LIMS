@@ -6,8 +6,7 @@ import xlwt
 from flask import Blueprint, make_response
 from flask_login import current_user
 
-from BSFramwork import AlchemyEncoder
-from system import User
+from common.system import ISFlag
 from tools.handle import MyEncoder, log
 from common.lims_models import db_session
 # from database.connect_db import conn
@@ -16,19 +15,24 @@ from common.batch_plan_model import PlanManager
 t1 = Blueprint('t123', __name__)
 
 
-@t1.route('/index', methods=['GET'])
-def index1():
-    try:
-        data = [{'原提取车间': ['蒸气表']}, {'前处理车间': ['蒸气表']}, {'提取二车间': ['灭菌柜蒸气表', '喷雾车间蒸气表',
-                                                                   '管式灭菌蒸气表', '单号提取罐蒸气表', '双号提取罐蒸气表', '单/双效浓缩蒸气表']},
-                {'综合车间': ['120带干蒸汽表',
-                          '单号提取蒸汽表', '双号提取蒸气表', '双效浓缩蒸汽表', '二次浓缩（刮板浓缩）蒸汽表', '醇提车间（醇提+浓缩）蒸汽表',
-                          '流化床制粒蒸汽表	']}, {'固体制剂车间': ['蒸气表']}, {'办公楼\食堂': ['蒸气表']}, {'GMP车间': ['蒸气表']}]
-        # data = db_session.query(PlanManager).all()
-        return json.dumps({'code': '200', 'msg': '接收成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
-    except Exception as e:
-        log(e, 'current_user.Name')
 
+
+ocs = db_session.query(ISFlag).all()
+i = 0
+for oc in ocs:
+    try:
+        if i == 0:
+            for i in ocs:
+                try:
+                    float("qwe")
+                except Exception as e:
+                    print("2")
+                    break
+
+        print(oc.ID)
+        i = i+1
+    except Exception as e:
+        print("1")
 #
 # @t1.route('/export', methods=['GET'])
 # def export_excel():
