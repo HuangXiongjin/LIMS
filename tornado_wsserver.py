@@ -53,7 +53,7 @@ class SendThread(threading.Thread):
                 oclass = redis_conn.hgetall(REDIS_TABLENAME)
                 oc_dict_i_tag = {}
                 for oc in oclass:
-                    oc_dict_i_tag[returnb(oc)] = returnb(oclass.get(oc))
+                    oc_dict_i_tag[oc] = oclass.get(oc)
                 json_data = json.dumps(oc_dict_i_tag)
                 bytemsg = bytes(json_data,encoding="utf-8")
                 for key in clients.keys():
