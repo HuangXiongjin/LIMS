@@ -51,7 +51,7 @@
                             <el-button type='primary' @click="SearchTab">查询</el-button>
                         </el-col>
                     </el-row>
-                </el-col>               
+                </el-col>
             </el-row>
             <el-row class="mgt24">
                  <el-col :span='24' class="container">
@@ -123,7 +123,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='向蜜'" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -137,7 +137,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='向蜜'" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -151,7 +151,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='向蜜'" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -165,7 +165,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='向蜜'" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -179,7 +179,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='向蜜'" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -241,34 +241,34 @@ export default {
     methods: {
         postResult(){ //发送结果按钮
             var arr1=this.Discerns.map((item, index) => {
-                if(item.Name=='向蜜'){
+                if(item.Name=='莫黄敏'){
                     return {Id:item.Id,Status:(item.Status).toString()}
                 }
             })
             var arr2=this.Inspects.map((item, index) => {
-                if(item.Name=='向蜜'){
+                if(item.Name=='莫黄敏'){
                 return {Id:item.Id,Status:(item.Status).toString()}
                 }
             })
             var arr3=this.Characters.map((item, index) => {
-                if(item.Name=='向蜜'){
+                if(item.Name=='莫黄敏'){
                 return {Id:item.Id,Status:(item.Status).toString()}
                 }
             })
             var arr4=this.Contents.map((item, index) => {
-                if(item.Name=='向蜜'){
+                if(item.Name=='莫黄敏'){
                 return {Id:item.Id,Status:(item.Status).toString()}
                 }
             })
             var arr5=this.Microbes.map((item, index) => {
-                if(item.Name=='向蜜'){
+                if(item.Name=='莫黄敏'){
                 return {Id:item.Id,Status:(item.Status).toString()}
                 }
             })
             var arr=[...arr1,...arr2,...arr3,...arr4,...arr5]
             var params={
                 CheckProjectNO:this.CheckProjectNO,
-                Name:'向蜜',
+                Name:'莫黄敏',
                 Isopt:'Y',
                 Action:JSON.stringify(arr),
                 CheckEndTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
@@ -322,7 +322,7 @@ export default {
         getJbInfo(CheckProjectNO){
             var params={
                 CheckProjectNO:CheckProjectNO,
-                Name:'向蜜'
+                Name:'莫黄敏'
             }
             this.axios.get('/lims/QualityTesting',{params:params}).then((res) => {
                 if(res.data.data.length!=0){

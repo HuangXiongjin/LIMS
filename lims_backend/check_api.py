@@ -111,9 +111,9 @@ def check_verify():
         data.Status = '取样'
         data.Life = '取样'
         result.append(data)
+        db_session.add(ReportVerify(CheckProjectNO=item))
+        db_session.commit()
     db_session.add_all(result)
-    db_session.commit()
-    db_session.add(ReportVerify(CheckProjectNO=CheckProjectNO))
     db_session.commit()
     return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
 

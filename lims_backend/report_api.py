@@ -165,19 +165,46 @@ def board():
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
 
 
-# @report.route('/Test', methods=['GET', 'POST'])
-# def test():
-#     if request.method == 'GET':
-#         # 当前页码
-#         page = int(request.values.get('Page'))
-#         # 每页记录数
-#         per_page = int(request.values.get('PerPage'))
-#         StartTime = request.values.get('StartTime')
-#         EndTime = request.values.get('EndTime')
-#         sql = f"select * from {table_name} order by Id offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only"
-#         results = db_session.execute(sql).fetchall()
-#         data = [dict(zip(result.keys(), result)) for result in results]
-#         # pass
-#         print(data)
-#         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': 'len(results)'}, cls=MyEncoder,
-#                           ensure_ascii=False)
+@report.route('/Destruction', methods=['GET', 'POST'])
+def destruction():
+    if request.method == 'POST':
+        # (留样销毁 - 样品销毁)
+        destruction_type = request.values.get('DestructionType')
+        items = json.loads(request.values.get('CheckProjectNO'))
+        if destruction_type == '样品销毁':
+            for item in items:
+                data = db_session.query(CheckForm).filter_by(CheckProjectNO=item).first()
+                data.ProductDestruction = '样品销毁'
+                db_session.add(data)
+                db_session.commit()
+        if destruction_type == '留样销毁':
+            for item in items:
+                data = db_session.query(ProductSave).filter_by(CheckProjectNO=item).first()
+                data.BatchDestruction = '留样销毁'
+                db_session.add(data)
+                db_session.commit()
+    if request.method == 'GET':
+        # (留样销毁 - 样品销毁)
+        destruction_type = request.values.get('DestructionType')
+        # 当前页码
+        page = int(request.values.get('Page'))
+        # 每页记录数
+        per_page = int(request.values.get('PerPage'))
+        Product = request.values.get('Product')
+        # StartTime = request.values.get('StartTime')
+        # EndTime = request.values.get('EndTime')
+        results = ''
+        if destruction_type == '样品销毁':
+            results = db_session.query(CheckForm).filter(CheckForm.Name == Product, CheckForm.ProductDestruction == '样品销毁').order_by(CheckForm.Id.desc()).all()
+        if destruction_type == '留样销毁':
+            results = db_session.query(ProductSave).filter(ProductSave.Name == Product, ProductSave.BatchDestruction == '留样销毁').order_by(ProductSave.Id.desc()).all()
+        data = results[(page - 1) * per_page:page * per_page]
+        return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
+                          ensure_ascii=False)
+
+
+# @report.route('/DestructionVerify', methods=['GET', 'POST'])
+# def destruction_verify():
+#     items = request.values.get('CheckProjectNO')
+#     db_session.query().filter_by()
+#     pass
