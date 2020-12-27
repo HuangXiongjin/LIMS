@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import login from '@/components/Login'
 import Home from '@/components/Home'
+import Nopermission from '@/components/Nopermission'
 
 import Board from '@/views/Board/Board'
 import StatisticalAnalysis from '@/views/Board/StatisticalAnalysis'
@@ -124,6 +125,8 @@ const router=new Router({
         {path:'/RecordBar',component:RecordBar},
         {path:'/SystemLog',component:SystemLog},
 
+        //404页面
+        {path: '/Nopermission',name: 'Nopermissionn',component: Nopermission},
       ]
     }
   ]

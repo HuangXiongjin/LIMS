@@ -154,3 +154,9 @@
 .InlineB{
     display: inline-block;
 }
+.rightDis .el-form-item{
+    width: 100%;
+}
+.rightDis .el-select{
+    width: 100%;
+}
