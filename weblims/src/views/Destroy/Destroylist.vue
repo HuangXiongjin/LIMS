@@ -96,7 +96,7 @@ export default {
                 total: 0,//总的多少页
             },
             xfopt:true,
-            batchtableconfig:[{prop:'ProductNumber',label:'产品批号'},{prop:'Name',label:'品名'},{prop:'BatchTime',label:'留样时间',width:155}],//批次列表
+            batchtableconfig:[{prop:'ProductNumber',label:'产品批号'},{prop:'CheckDepartment',label:'请验编码'},{prop:'Name',label:'品名'},{prop:'ProductType',label:'物料类型'},{prop:'ProductDestruction',label:'销毁类型'},{prop:'BatchTime',label:'留样时间',width:155}],//批次列表
         }
     },
     created(){
@@ -104,26 +104,6 @@ export default {
        this.SearchTab()
     },
     methods: {
-        JudgeDestroy(opt){ //销毁审核通过不通过
-            var params={
-                DestructionType:this.searchObj.DestructionType,
-                CheckProjectNO:this.distribute.CheckProjectNO,
-                Isopt:opt
-            }
-            this.axios.post('/lims/DestructionVerify').then((res) => {
-                if(res.data.code=='1000'){
-                    this.$message({
-                        type:'success',
-                        message:'操作成功'
-                    })
-                }else{
-                    this.$message({
-                        type:'info',
-                        message:'操作失败,请重试'
-                    })
-                }
-            })
-        },
          getSelectOption() { //获取下拉列表选项
            this.axios.get('/lims/AllProduct').then((res) => {
                if(res.data.code=='1000'){
@@ -144,7 +124,7 @@ export default {
                 Product:this.searchObj.category,
                 DestructionType:this.searchObj.DestructionType
             }
-            this.axios.get('/lims/Destruction',{params:params}).then((res) => {
+            this.axios.get('/lims/DestructionVerify',{params:params}).then((res) => {
                 this.batchTableData.data=res.data.data
                 this.batchTableData.total=res.data.total
             })
