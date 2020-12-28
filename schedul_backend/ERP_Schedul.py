@@ -416,7 +416,7 @@ def selectordernum():
             oc = proclass = db_session.query(product_plan).filter().order_by(desc("ID")).first()
             dir_oc = {}
             splitString = re.split(r'(\d+)', oc.PlanNum)
-            num = int(splitString[1])+1
+            num = int(oc.PlanNum[-3:])+1
             num_str = ""
             if num < 10:
                 num_str = "00"+str(num)
@@ -424,7 +424,7 @@ def selectordernum():
                 num_str = "0"+str(num)
             else:
                 num_str = str(num)
-            dir_oc["PlanNum"] = splitString[0]+num_str
+            dir_oc["PlanNum"] = splitString[0]+datetime.datetime.now().strftime('%Y%m')+num_str
             return json.dumps({"code": "200", "message": "查询成功！", "data": dir_oc})
         except Exception as e:
             print(e)
