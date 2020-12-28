@@ -168,7 +168,7 @@ export default {
     methods: {
          requireDestroy(){ //申请销户
             var params={
-                CheckProjectNO:Row.CheckProjectNO,
+                CheckProjectNO:JSON.stringify([this.Row.CheckProjectNO]),
                 DestructionType:'留样销毁'
             }
             this.axios.post('/lims/Destruction',this.qs.stringify(params)).then((res) => {

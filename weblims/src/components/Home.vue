@@ -121,10 +121,10 @@ export default {
                      {name:'留样看板',path:'/SampleBoard'},
                  ]},
                  {name:'销毁管理',icon:'el-icon-delete',children:[
-                     {name:'销毁请求',path:'/DestroyRequest'},
-                     {name:'销毁审核',path:'/DestroyAudit'},
+                     {name:'销毁审核',path:'/DestroyRequest'},
+                    //  {name:'销毁审核',path:'/DestroyAudit'},
                      {name:'销毁清单',path:'/Destroylist'},
-                     {name:'销毁看板',path:'/DestroyBoard'},
+                    //  {name:'销毁看板',path:'/DestroyBoard'},
                  ]},
                  {name:'试剂耗材',icon:'el-icon-toilet-paper',children:[
                      {name:'试剂管理',path:'/ReagentManagement'},

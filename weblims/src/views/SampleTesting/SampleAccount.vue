@@ -134,11 +134,18 @@ export default {
             this.currentRow=selection
         },
         requireDestroy(){
+            if(this.currentRow.length==0){
+                 this.$message({
+                        type:'warning',
+                        message:'请先勾选数据'
+                    })
+                return;
+            }
             var CheckProjectNO=this.currentRow.map((item, index) => {
                 return item.CheckProjectNO
             })
             var params={
-                CheckProjectNO:CheckProjectNO,
+                CheckProjectNO:JSON.stringify(CheckProjectNO),
                 DestructionType:'样品销毁'
             }
             this.axios.post('/lims/Destruction',this.qs.stringify(params)).then((res) => {

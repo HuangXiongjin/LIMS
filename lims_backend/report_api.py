@@ -198,9 +198,13 @@ def destruction():
         # EndTime = request.values.get('EndTime')
         results = ''
         if destruction_type == '样品销毁':
-            results = db_session.query(CheckForm).filter(CheckForm.Name == Product, CheckForm.ProductDestruction == '样品销毁').order_by(CheckForm.Id.desc()).all()
+            results = db_session.query(CheckForm).filter(CheckForm.Name == Product,
+                                                         CheckForm.ProductDestruction == '样品销毁').order_by(
+                CheckForm.Id.desc()).all()
         if destruction_type == '留样销毁':
-            results = db_session.query(ProductSave).filter(ProductSave.Name == Product, ProductSave.BatchDestruction == '留样销毁').order_by(ProductSave.Id.desc()).all()
+            results = db_session.query(ProductSave).filter(ProductSave.Name == Product,
+                                                           ProductSave.BatchDestruction == '留样销毁').order_by(
+                ProductSave.Id.desc()).all()
         data = results[(page - 1) * per_page:page * per_page]
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                           ensure_ascii=False)
@@ -208,33 +212,66 @@ def destruction():
 
 @report.route('/DestructionVerify', methods=['GET', 'POST'])
 def destruction_verify():
-    destruction_type = request.values.get('DestructionType')
-    CheckProjectNO = request.values.get('CheckProjectNO')
-    data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
-    data2 = DestructionForm()
-    data = request.values
-    CheckNumber = data.get('CheckNumber')
-    ProductType = data.get('ProductType')
-    Name = data.get('Name')
-    Specs = data.get('Specs')
-    Supplier = data.get('Supplier')
-    ProductNumber = data.get('ProductNumber')
-    Number = data.get('Number')
-    Amount = data.get('Amount')
-    Unit = data.get('Unit')
-    CheckProcedure = data.get('CheckProcedure')
-    check_project = data.get('CheckProject')
-    CheckDepartment = data.get('CheckDepartment')
-    CheckDate = data.get('CheckDate')
-    CheckUser = data.get('CheckUser')
-    Type = data.get('Type')
-    Comment = data.get('Comment')
-    if destruction_type == '样品销毁':
+    """销毁审核"""
+    if request.method == 'GET':
+        # (留样销毁 - 样品销毁)
+        destruction_type = request.values.get('DestructionType')
+        # 当前页码
+        page = int(request.values.get('Page'))
+        # 每页记录数
+        per_page = int(request.values.get('PerPage'))
+        Product = request.values.get('Product')
+        # StartTime = request.values.get('StartTime')
+        # EndTime = request.values.get('EndTime')
+        results = ''
+        if destruction_type == '样品销毁':
+            results = db_session.query(DestructionForm).filter(CheckForm.Name == Product,
+                                                               DestructionForm.Type == '样品销毁').order_by(
+                DestructionForm.Id.desc()).all()
+        if destruction_type == '留样销毁':
+            results = db_session.query(DestructionForm).filter(DestructionForm.Name == Product,
+                                                               DestructionForm.Type == '留样销毁').order_by(
+                DestructionForm.Id.desc()).all()
+        data = results[(page - 1) * per_page:page * per_page]
+        return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
+                          ensure_ascii=False)
+    if request.method == 'POST':
+        destruction_type = request.values.get('DestructionType')
+        CheckProjectNO = request.values.get('CheckProjectNO')
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
-        data.ProductDestruction = '已销毁'
-    if destruction_type == '留样销毁':
-        data = db_session.query(ProductSave).filter_by(CheckProjectNO=CheckProjectNO).first()
-        data.BatchDestruction = '已销毁'
-    db_session.add(data)
-    db_session.commit()
-    return json.dumps({'code': '1000', 'msg': '成功'}, cls=MyEncoder, ensure_ascii=False)
+        if request.values.get('Isopt') == 'Y':
+            data2 = DestructionForm()
+            data2.CheckNumber = data.CheckNumber
+            data2.ProductType = data.ProductType
+            data2.Name = data.Name
+            data2.Specs = data.Specs
+            data2.Supplier = data.Supplier
+            data2.ProductNumber = data.ProductNumber
+            data2.Number = data.Number
+            data2.Amount = data.Amount
+            data2.Unit = data.Unit
+            data2.CheckProcedure = data.CheckProcedure
+            data2.CheckDepartment = data.CheckDepartment
+            data2.CheckDate = data.CheckDate
+            data2.CheckUser = data.CheckUser
+            if destruction_type == '样品销毁':
+                data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+                data.ProductDestruction = '已销毁'
+                data2.Type = '样品销毁'
+            if destruction_type == '留样销毁':
+                data = db_session.query(ProductSave).filter_by(CheckProjectNO=CheckProjectNO).first()
+                data.BatchDestruction = '已销毁'
+                data2.Type = '留样销毁'
+            db_session.add([data, data2])
+            db_session.commit()
+            return json.dumps({'code': '1000', 'msg': '成功'}, cls=MyEncoder, ensure_ascii=False)
+        else:
+            if destruction_type == '样品销毁':
+                data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
+                data.ProductDestruction = '样品销毁'
+            if destruction_type == '留样销毁':
+                data = db_session.query(ProductSave).filter_by(CheckProjectNO=CheckProjectNO).first()
+                data.BatchDestruction = '留样销毁'
+            db_session.add(data)
+            db_session.commit()
+            return json.dumps({'code': '1000', 'msg': '成功'}, cls=MyEncoder, ensure_ascii=False)

@@ -192,11 +192,11 @@
         }).then(() => {
         this.axios.post('/api/PlanManagerRealse',this.qs.stringify(params)).then((res) => {
           if(res.data.code==='200'){
-            this.getSelectedEq()
             this.$message({
               type:'success',
               message:res.data.message
             })
+            this.getPlanManagerTableData()
           }else{
             this.$message({
               type:'error',

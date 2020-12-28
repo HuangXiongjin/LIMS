@@ -41,11 +41,14 @@
                             </el-select>
                         </el-col>
                         <el-col :span='4' class="mgr15 boxshadow">
-                           <el-date-picker
-                            v-model="searchObj.registrydate"
-                            type="date"
-                            placeholder="选择日期">
-                           </el-date-picker>
+                           <el-select v-model="searchObj.DestructionType" placeholder="销毁类型">
+                                <el-option
+                                v-for="item in destroys"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                                </el-option>
+                            </el-select>
                         </el-col>
                         <el-col :span='3' class="boxshadow req">
                             <el-button type='primary' @click="SearchTab">查询</el-button>
@@ -121,8 +124,8 @@
                 </el-col>
             </el-row>
             <el-col class="mgt24" style="textAlign:right;">
-                <el-button type="danger" :disabled='xfopt'>驳回</el-button>
-                <el-button type="success" :disabled='xfopt'>同意销毁</el-button>
+                <el-button type="danger" :disabled='xfopt' @click="JudgeDestroy('N')">驳回</el-button>
+                <el-button type="success" :disabled='xfopt' @click="JudgeDestroy('Y')">同意销毁</el-button>
             </el-col>
         </el-col>
     </el-row>
@@ -144,11 +147,18 @@ export default {
            },
            searchObj:{
                category:'玉米淀粉',
-               registrydate:moment(new Date()).format('YYYY-MM-DD')
+               DestructionType:'样品销毁',
            },
            options: [{
                 value: '选项1',
                 label: '物料一'
+                }],
+           destroys: [{
+                value: '样品销毁',
+                label: '样品销毁'
+                },{
+                value: '留样销毁',
+                label: '留样销毁'
                 }],
             batchTableData:{ //物料BOM
                 data:[],
@@ -165,6 +175,26 @@ export default {
        this.SearchTab()
     },
     methods: {
+        JudgeDestroy(opt){ //销毁审核通过不通过
+            var params={
+                DestructionType:this.searchObj.DestructionType,
+                CheckProjectNO:this.distribute.CheckProjectNO,
+                Isopt:opt
+            }
+            this.axios.post('/lims/DestructionVerify',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'操作成功'
+                    })
+                }else{
+                    this.$message({
+                        type:'info',
+                        message:'操作失败,请重试'
+                    })
+                }
+            })
+        },
          getSelectOption() { //获取下拉列表选项
            this.axios.get('/lims/AllProduct').then((res) => {
                if(res.data.code=='1000'){
@@ -183,10 +213,9 @@ export default {
                 Page:this.batchTableData.offset,
                 PerPage:this.batchTableData.limit,
                 Product:this.searchObj.category,
-                DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:'LY'
+                DestructionType:this.searchObj.DestructionType
             }
-            this.axios.get('/lims/ProductSave',{params:params}).then((res) => {
+            this.axios.get('/lims/Destruction',{params:params}).then((res) => {
                 this.batchTableData.data=res.data.data
                 this.batchTableData.total=res.data.total
             })
