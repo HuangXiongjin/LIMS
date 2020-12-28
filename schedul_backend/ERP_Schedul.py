@@ -402,3 +402,32 @@ def selectplanmanager():
             logger.error(e)
             insertSyslog("error", "查询排产好的计划报错Error：" + str(e), current_user.Name)
             return json.dumps("查询排产好的计划报错", cls=AlchemyEncoder, ensure_ascii=False)
+
+
+@erp_schedul.route('/selectordernum', methods=['GET', 'POST'])
+def selectordernum():
+    '''
+    查询订单号
+    :return:
+    '''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            oc = proclass = db_session.query(product_plan).filter().order_by(desc("ID")).first()
+            dir_oc = {}
+            splitString = re.split(r'(\d+)', oc.PlanNum)
+            num = int(splitString[1])+1
+            num_str = ""
+            if num < 10:
+                num_str = "00"+str(num)
+            elif 10 < num < 100:
+                num_str = "0"+str(num)
+            else:
+                num_str = str(num)
+            dir_oc["PlanNum"] = splitString[0]+num_str
+            return json.dumps({"code": "200", "message": "查询成功！", "data": dir_oc})
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "查询订单号报错Error：" + str(e), current_user.Name)
+            return json.dumps("查询订单号报错", cls=AlchemyEncoder, ensure_ascii=False)
