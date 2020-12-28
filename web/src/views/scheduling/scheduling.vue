@@ -606,8 +606,15 @@
         })
       },
       cellClick(row,column){
-        this.showEditRow = row
-        this.showEdit = true
+        if(row.PlanStatus === '待审核' || row.PlanStatus === '审核未通过' || row.PlanStatus === '撤回'){
+          this.showEditRow = row
+          this.showEdit = true
+        }else{
+          this.$message({
+            type: 'info',
+            message: "当前批计划不可修改"
+          });
+        }
       },
       loseFcous(index,row){
         this.showEditRow = row
