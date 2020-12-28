@@ -399,6 +399,9 @@ class User(Base):
     # 是否锁定:
     IsLock = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
+    # 权限详情
+    Permissions = Column(Unicode(512), nullable=True, default='')
+
     # @property
     # def password(self):
     #     raise AttributeError('password is not a readable attribute')

@@ -294,6 +294,8 @@ class DestructionForm(Base):
     CheckDepartment = Column(Unicode(32), nullable=True)
     # 请验时间
     CheckDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d'))
+    # 销毁时间
+    DestructionTime = Column(Unicode(32), nullable=True)
     # 请验人
     CheckUser = Column(Unicode(16), nullable=True, default='')
     # 类别（样品销毁-留样销毁）
@@ -415,7 +417,7 @@ class ProductSave(Base):
     # 当前进度(待接收-留样观察中-申请销毁)
     Status = Column(Unicode(32), nullable=True, default='待接收')
     # 留样销毁状态
-    BatchDestruction = Column(Unicode(256), nullable=True, default='')
+    BatchDestruction = Column(Unicode(256), nullable=True, default='未销毁')
     # 备注
     Comment = Column(Unicode(32), nullable=True)
 
