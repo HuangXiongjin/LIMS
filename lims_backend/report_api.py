@@ -194,6 +194,8 @@ def destruction():
         # 每页记录数
         per_page = int(request.values.get('PerPage'))
         Product = request.values.get('Product')
+        # now_time = datetime.today()
+        # print(now_time)
         # StartTime = request.values.get('StartTime')
         # EndTime = request.values.get('EndTime')
         results = ''
@@ -254,6 +256,7 @@ def destruction_verify():
             data2.CheckDepartment = data.CheckDepartment
             data2.CheckDate = data.CheckDate
             data2.CheckUser = data.CheckUser
+            data2.DestructionTime = datetime.today().strftime('%Y-%m-%d')
             if destruction_type == '样品销毁':
                 data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
                 data.ProductDestruction = '已销毁'
@@ -262,16 +265,16 @@ def destruction_verify():
                 data = db_session.query(ProductSave).filter_by(CheckProjectNO=CheckProjectNO).first()
                 data.BatchDestruction = '已销毁'
                 data2.Type = '留样销毁'
-            db_session.add([data, data2])
+            db_session.add_all([data, data2])
             db_session.commit()
             return json.dumps({'code': '1000', 'msg': '成功'}, cls=MyEncoder, ensure_ascii=False)
         else:
             if destruction_type == '样品销毁':
                 data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
-                data.ProductDestruction = '样品销毁'
+                data.ProductDestruction = '未销毁'
             if destruction_type == '留样销毁':
                 data = db_session.query(ProductSave).filter_by(CheckProjectNO=CheckProjectNO).first()
-                data.BatchDestruction = '留样销毁'
+                data.BatchDestruction = '未销毁'
             db_session.add(data)
             db_session.commit()
             return json.dumps({'code': '1000', 'msg': '成功'}, cls=MyEncoder, ensure_ascii=False)
