@@ -121,6 +121,7 @@
         }
       },
       searchTab(){
+        this.tableData.offset = 1
         this.axios.get("/api/CUID",{
           params: {
             tableName: this.tableData.tableName,
