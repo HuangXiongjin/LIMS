@@ -125,7 +125,7 @@ export default {
     },
     beforeRouteEnter(to,from,next){
         if(to.path==='/RightDistribute'){
-            if(localStorage.getItem('Name')=='lig'){
+            if(localStorage.getItem('Name')=='xea'){
                 next()
             }else{
                 next('/Nopermission')
