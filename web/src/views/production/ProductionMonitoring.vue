@@ -14,20 +14,10 @@
       return {
         websock:null,
         websockVarData:{},
-        LS1Bit:"",
-        LS2Bit:"",
-        LST1Bit:"",
-        LST2Bit:"",
-        formParameters:{
-          HZLQ1:"",
-          HZLQ2:"",
-          HZLD1:"",
-          HZLD2:"",
-        },
       }
     },
     created(){
-      // this.initWebSocket()
+      this.initWebSocket()
     },
     mounted(){
 
@@ -67,14 +57,14 @@
           };
         }
       },
-      // initWebSocket(){ //初始化weosocket
-      //   // this.websock = new WebSocket('ws://' + location.host + '/socket');
-      //   this.websock = new WebSocket('ws://127.0.0.1:5002/socket');
-      //   this.websock.onmessage = this.websocketonmessage;
-      //   this.websock.onopen = this.websocketonopen;
-      //   this.websock.onerror = this.websocketonerror;
-      //   this.websock.onclose = this.websocketclose;
-      // },
+      initWebSocket(){ //初始化weosocket
+        // this.websock = new WebSocket('ws://' + location.host + '/socket');
+        this.websock = new WebSocket('ws://127.0.0.1:5002/socket');
+        this.websock.onmessage = this.websocketonmessage;
+        this.websock.onopen = this.websocketonopen;
+        this.websock.onerror = this.websocketonerror;
+        this.websock.onclose = this.websocketclose;
+      },
       websocketonopen(){ //连接建立之后执行send方法发送数据
         this.websocketsend();
       },
@@ -83,10 +73,7 @@
       },
       websocketonmessage(e){ //数据接收
         this.websockVarData = JSON.parse(e.data)
-        this.LS1Bit = parseInt(this.websockVarData["PLC.KG1.Global.KG2_KG1.Stu_Equ_x.Stu_Equ_108"],10).toString(2).split("")
-        this.LS2Bit = parseInt(this.websockVarData["PLC.KG1.Global.KG2_KG1.Stu_Equ_x.Stu_Equ_111"],10).toString(2).split("")
-        this.LST1Bit = parseInt(this.websockVarData["PLC.KG1.Global.KG2_KG1.Stu_Equ_x.Stu_Equ_127"],10).toString(2).split("")
-        this.LST2Bit = parseInt(this.websockVarData["PLC.KG1.Global.KG2_KG1.Stu_Equ_x.Stu_Equ_128"],10).toString(2).split("")
+        console.log(this.websockVarData)
       },
       websocketsend(Data){//数据发送
         this.websock.send(Data);
@@ -97,157 +84,6 @@
       closesocket(){
         this.websock.close()
       },
-      runControl(value,type){
-        this.$confirm('您是否要对'+value+'执行'+type+'操作', '提示', {
-          distinguishCancelAndClose:true,
-          center:true,
-          type: 'warning'
-        }).then(()  => {
-          this.axios.post("/api/run",{
-            params: {
-              EquipmentCode:value,
-              Status:type,
-            }
-          }).then(res =>{
-            if(res.data.code === "20001"){
-              this.$message({
-                showClose: true,
-                type: 'success',
-                message: res.data.message
-              });
-            }
-          },res =>{
-            console.log("请求错误")
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消操作'
-          });
-        });
-      },
-      editHZ(value,HZ){
-        this.$confirm('您是否要对'+value+'的频率进行修改', '提示', {
-          distinguishCancelAndClose:true,
-          center:true,
-          type: 'warning'
-        }).then(()  => {
-          this.axios.post("/api/status",{
-            params: {
-              EquipmentCode:value,
-              HZ:HZ,
-            }
-          }).then(res =>{
-            if(res.data.code === "20001"){
-              this.$message({
-                showClose: true,
-                type: 'success',
-                message: res.data.message
-              });
-            }
-          },res =>{
-            console.log("请求错误")
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消操作'
-          });
-        });
-      },
-      faultReset(value){
-        this.$confirm('您是否要对'+value+'进行故障复位', '提示', {
-          distinguishCancelAndClose:true,
-          center:true,
-          type: 'warning'
-        }).then(()  => {
-          this.axios.post("/api/fault",{
-            params: {
-              EquipmentCode:value,
-            }
-          }).then(res =>{
-            if(res.data.code === "20001"){
-              this.$message({
-                showClose: true,
-                type: 'success',
-                message: res.data.message
-              });
-            }
-          },res =>{
-            console.log("请求错误")
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消操作'
-          });
-        });
-      },
-      changeConservationSwitch(){
-        var SwitchState = ""
-        var SwitchParams = ""
-        if(this.websockVarData['LS_JN_FLAG'] === "1"){
-          SwitchState = "开"
-          SwitchParams = "on"
-          this.websockVarData['LS_JN_FLAG'] = "0"
-        }else if(this.websockVarData['LS_JN_FLAG'] === "0"){
-          SwitchState = "关"
-          SwitchParams = "off"
-          this.websockVarData['LS_JN_FLAG'] = "1"
-        }
-        this.$confirm('您是否要进行'+ SwitchState +'节能模式的操作？', '提示', {
-          distinguishCancelAndClose:true,
-          center:true,
-          type: 'warning'
-        }).then(()  => {
-          var params = {
-              switch:SwitchParams,
-            }
-          this.axios.post("/api/reset",this.qs.stringify(params)).then(res =>{
-            if(res.data.code === "20001"){
-              this.$message({
-                showClose: true,
-                type: 'success',
-                message: res.data.message
-              });
-            }
-          },res =>{
-            console.log("请求错误")
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消操作'
-          });
-        });
-      },
-      startReseting(){
-        this.$confirm('您确认要复位吗？', '提示', {
-          distinguishCancelAndClose:true,
-          center:true,
-          type: 'warning'
-        }).then(()  => {
-          var params = {
-              reset:"yes",
-            }
-          this.axios.post("/api/reset",this.qs.stringify(params)).then(res =>{
-            if(res.data.code === "20001"){
-              this.$message({
-                showClose: true,
-                type: 'success',
-                message: res.data.message
-              });
-            }
-          },res =>{
-            console.log("请求错误")
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消操作'
-          });
-        });
-      }
     }
   }
 </script>

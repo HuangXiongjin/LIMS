@@ -48,6 +48,7 @@
               <div class="platformContainer">
                 <p class="marginBottom">表格数据</p>
                 <el-table :data="inProcessList" border size="small">
+                  <el-table-column prop="BrandCode" label="编码"></el-table-column>
                   <el-table-column prop="BrandName" label="品名"></el-table-column>
                   <el-table-column prop="PUName" label="工艺段名称"></el-table-column>
                   <el-table-column prop="Seq" label="顺序号"></el-table-column>
@@ -117,13 +118,13 @@
       clickBrandTag(BrandName,BrandCode){
         this.BrandActive = BrandName
         this.BrandCode = BrandCode
-        this.getBrandProcessTableData(BrandName)
+        this.getBrandProcessTableData(BrandCode)
       },
-      getBrandProcessTableData(BrandName){ //查询当前品名绑定的工序
+      getBrandProcessTableData(BrandCode){ //查询当前品名绑定的工序
         var that = this
         var params = {
           tableName: "ProductUnit",
-          BrandName:BrandName,
+          BrandCode:BrandCode,
         }
         this.axios.get("/api/CUID",{
           params: params
