@@ -52,7 +52,7 @@ def operation():
                 column2 = table_name.columns._data[query_column_name2]
                 sql = f"select * from {table_name} where {column1}='{query_column_value1}' and {column2}='{query_column_value2}' order by Id desc offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only "
             else:
-                sql = f"select * from {table_name} where {column1}='{query_column_value1}' order by Id desc offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only "
+                sql = f"select * from [LIMS].[dbo].[{table_name}] where {query_column_name1}='{query_column_value1}' order by ID desc offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only "
             query_data = db_session.execute(sql).fetchall()
             results = [dict(zip(item.keys(), item)) for item in query_data]
             return json.dumps({'code': '1000', 'msg': '查询成功', 'data': results, 'total': len(results)}, cls=MyEncoder,
@@ -72,16 +72,16 @@ def operation():
         db_session.commit()
         return json.dumps({'code': '1000', 'msg': '添加成功'}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'PATCH':
-        Id = int(request.values.get('Id'))
+        Id = int(request.values.get('ID'))
         insert_values = json.loads(request.values.get('Values'))
-        query_data = db_session.query(table_name2).filter_by(Id=Id).first()
+        query_data = db_session.query(table_name2).filter_by(ID=Id).first()
         for col, value in insert_values.items():
             setattr(query_data, col, value)
         db_session.add(query_data)
         db_session.commit()
         return json.dumps({'code': '1000', 'msg': '修改成功'}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'DELETE':
-        Id = int(request.values.get('Id'))
-        query_data = db_session.query(table_name2).filter_by(Id=Id).first()
+        Id = int(request.values.get('ID'))
+        query_data = db_session.query(table_name2).filter_by(ID=Id).first()
         db_session.delete(query_data)
         return json.dumps({'code': '1000', 'msg': '删除成功'}, cls=MyEncoder, ensure_ascii=False)
