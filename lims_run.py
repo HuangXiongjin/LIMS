@@ -33,8 +33,8 @@ app.register_blueprint(login_auth)
 
 
 def main():
-    # app.run(host='0.0.0.0', port=10002)
-    app.run(host='127.0.0.1', port=10002)
+    app.run(host='0.0.0.0', port=10002)
+    # app.run(host='127.0.0.1', port=10002)
 
 
 @app.route('/')
