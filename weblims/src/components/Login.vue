@@ -104,12 +104,12 @@ export default {
       }
       this.axios.post('/lims/account/login',this.qs.stringify(params)).then((res) => {
          if(res.data.msg== "登录成功"){
-           sessionStorage.setItem('Name',this.ruleForm.loginname)
-          sessionStorage.setItem('WorkNumber',this.ruleForm.loginpass)
-          sessionStorage.setItem('LastLoginTime',moment(new Date()).format('YYYY-MM-DD HH:mm:ss'))
-          this.$router.push('/')
-          localStorage.setItem('sonMenu',JSON.stringify([{"name":"进度看板","path":"/ProgressBoard"},{"name":"系统首页","path":"/Board"},{"name":"统计分析","path":"/StatisticalAnalysis"},{"name":'批次进度',"path":'/BatchProgress'}]))
-          localStorage.setItem('SonMenuIndex','0')
+            sessionStorage.setItem('Name',this.ruleForm.loginname)
+            sessionStorage.setItem('WorkNumber',this.ruleForm.loginpass)
+            sessionStorage.setItem('LastLoginTime',moment(new Date()).format('YYYY-MM-DD HH:mm:ss'))
+            this.$router.push('/')
+            localStorage.setItem('sonMenu',JSON.stringify([{"name":"进度看板","path":"/ProgressBoard"},{"name":"系统首页","path":"/Board"},{"name":"统计分析","path":"/StatisticalAnalysis"},{"name":'批次进度',"path":'/BatchProgress'}]))
+            localStorage.setItem('SonMenuIndex','0')
           this.$message({
               showClose: true,
               message: "登录成功",
@@ -118,7 +118,7 @@ export default {
       }else{
         this.$message({
               showClose: true,
-              message: res.data.msg,
+              message: '登录失败，请重试',
               type: 'error'
           });
       }

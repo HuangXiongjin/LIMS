@@ -45,14 +45,14 @@
                             v-for="item in allrights"
                             :key="item.value"
                             :label="item.label"
-                            :value="item.value">
+                            :value="item.label">
                             </el-option>
                         </el-select>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="dialogTableVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="dialogTableVisible = false">确 定</el-button>
+                    <el-button type="primary" @click="Optform">确 定</el-button>
                 </div>
             </el-dialog>
         </el-col>
@@ -65,16 +65,31 @@ export default {
         return {
             allrights:[{
                 value:'1',
-                label:'设备操作'
+                label:'请验审核'
             },{
                 value:'2',
-                label:'设备修理'
+                label:'领样'
             },{
                 value:'3',
-                label:'设备修理'
+                label:'样本接收'
             },{
                 value:'4',
-                label:'设备修理'
+                label:'样本及记录分发'
+            },{
+                value:'5',
+                label:'质检发送'
+            },{
+                value:'6',
+                label:'质检审核'
+            },{
+                value:'7',
+                label:'报告初审'
+            },{
+                value:'8',
+                label:'报告复审'
+            },{
+                value:'9',
+                label:'销毁审核'
             }],
             formLabelAlign:{
                 name:'',
@@ -140,6 +155,34 @@ export default {
         handleSelectionChange(row){
             this.currentRow=row
         },
+        Optform(){
+            if(this.txt=='添加'){
+                this.addRole()
+            }else if(this.txt=='编辑'){
+                this.editRole()
+            }
+        },
+        addRole(){ //添加较色
+            var params={
+                TableName:'User',
+                Values:JSON.stringify({
+                    Name:this.formLabelAlign.man,
+                    WorkNumber:this.formLabelAlign.name,
+                    Password:this.formLabelAlign.password,
+                    CreateTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                    Permissions:this.formLabelAlign.rights,
+            })
+            }
+            this.axios.post('/lims/CRUD',this.qs.stringify(params)).then((res) => {
+                console.log(res)
+            })
+        },
+        editRole(){ //编辑角色
+            console.log(456)
+        },
+        deleteRole(){ //删除角色
+
+        },
          getSelectOption() { //获取下拉列表选项
            this.axios.get('/lims/AllProduct').then((res) => {
                if(res.data.code=='1000'){
@@ -154,16 +197,7 @@ export default {
            })
         },
          SearchTab(){ //查询相关数据
-            var params={
-                Page:this.batchTableData.offset,
-                PerPage:this.batchTableData.limit,
-                Product:this.searchObj.category,
-                DestructionType:this.searchObj.DestructionType
-            }
-            this.axios.get('/lims/DestructionVerify',{params:params}).then((res) => {
-                this.batchTableData.data=res.data.data
-                this.batchTableData.total=res.data.total
-            })
+           
         },
         handleSizeChange(limit){ //每页条数切换
             this.batchTableData.limit = limit
