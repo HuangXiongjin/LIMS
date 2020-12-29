@@ -67,7 +67,7 @@ def operation():
         insert_values = json.loads(request.values.get('Values'))
         obj = table_name2()
         for col, value in insert_values.items():
-            setattr(obj, col, value)
+            setattr(obj, col, str(value))
         db_session.add(obj)
         db_session.commit()
         return json.dumps({'code': '1000', 'msg': '添加成功'}, cls=MyEncoder, ensure_ascii=False)
