@@ -84,4 +84,5 @@ def operation():
         Id = int(request.values.get('ID'))
         query_data = db_session.query(table_name2).filter_by(ID=Id).first()
         db_session.delete(query_data)
+        db_session.commit()
         return json.dumps({'code': '1000', 'msg': '删除成功'}, cls=MyEncoder, ensure_ascii=False)
