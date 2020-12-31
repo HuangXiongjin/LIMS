@@ -173,15 +173,6 @@ export default {
     created(){
         this.getInitTree()
     },
-    beforeRouteEnter(to,from,next){
-        if(to.path==='/ApplyTest'){
-            if(localStorage.getItem('Name')=='lig'){
-                next()
-            }else{
-                next('/Nopermission')
-            }
-        }
-    },
     methods: {
         ResetRequest(){
             this.requestform={Specs:'',CheckNumber:'',Name:'',ProductNumber:'',Supplier:'',Number:'',Amount:'',Unit:''}

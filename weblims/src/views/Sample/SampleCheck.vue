@@ -81,7 +81,7 @@
                     </div>
                     <div style="textAlign:right;" class="mgt24">
                         <el-button type="danger" size='small'>驳回</el-button>
-                        <el-button type="success" size='small' @click="mulBatchPass">批量审核通过</el-button>
+                        <el-button type="success" size='small' @click="mulBatchPass" v-if="IsDoing">批量审核通过</el-button>
                     </div>
                 </div>
             </div>
@@ -94,6 +94,7 @@ export default {
     data(){
 
         return {
+           IsDoing:JSON.parse(sessionStorage.getItem('Rights').replace(/'/g, '"')).includes("请验审核"),
            currentstep:1,
            batchinfo:[],
            showstep:false,

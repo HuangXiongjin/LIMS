@@ -157,7 +157,7 @@
                         <el-col :span='24'>
                             <div style="float:right;">
                                 <el-button type="primary" @click="LookJbInfo">查看项目</el-button>
-                                <el-button type="success" @click="ReceiveSample">领样</el-button>
+                                <el-button type="success" @click="ReceiveSample" v-if="IsDoing">领样</el-button>
                             </div>
                         </el-col>
                       </div> 
@@ -194,6 +194,7 @@ var moment=require('moment')
 export default {
     data(){
         return {
+           IsDoing:JSON.parse(sessionStorage.getItem('Rights').replace(/'/g, '"')).includes("领样"),
            currentstep:2,
            batchinfo:[],
            showstep:false,

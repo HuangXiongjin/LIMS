@@ -6,7 +6,7 @@
                 <div class="mgb24">
                     <el-button type="primary" size='small' @click="New('添加')">添加</el-button>
                     <el-button type="success" size='small' @click="New('编辑')">编辑</el-button>
-                    <el-button type="warning" size='small'>删除</el-button>
+                    <el-button type="warning" size='small' @click="deleteRole">删除</el-button>
                 </div>
                 <el-table
                     :data="batchTableData.data"
@@ -90,6 +90,12 @@ export default {
             },{
                 value:'9',
                 label:'销毁审核'
+            },{
+                value:'10',
+                label:'申请销毁'
+            },{
+                value:'11',
+                label:'权限管理'
             }],
             formLabelAlign:{
                 name:'',
@@ -131,16 +137,17 @@ export default {
                 total: 0,//总的多少页
             },
             currentRow:[],
-            batchtableconfig:[{prop:'ProductNumber',label:'人物',width:'100'},{prop:'CheckDepartment',label:'登录名称',width:'120'},{prop:'Name',label:'登录密码',width:'120'},{prop:'CheckDate',label:'操作时间',width:'200'},{prop:'ProductDestruction',label:'对应权限'}],//批次列表
+            batchtableconfig:[{prop:'Name',label:'人物',width:'100'},{prop:'WorkNumber',label:'登录名称',width:'120'},{prop:'Password',label:'登录密码',width:'120'},{prop:'CreateTime',label:'操作时间',width:'200'},{prop:'Permissions',label:'对应权限'}],//批次列表
         }
     },
     created(){
        this.getSelectOption()
        this.SearchTab()
+       this.getAllPeople()
     },
     beforeRouteEnter(to,from,next){
         if(to.path==='/RightDistribute'){
-            if(localStorage.getItem('Name')=='xea'){
+            if(JSON.parse(sessionStorage.getItem('Rights').replace(/'/g, '"')).includes("权限管理")){
                 next()
             }else{
                 next('/Nopermission')
@@ -150,7 +157,27 @@ export default {
     methods: {
         New(txt){
             this.txt=txt
-            this.dialogTableVisible=true
+            if(this.txt=='添加'){
+                this.dialogTableVisible=true
+            }else if(this.txt=='编辑'){
+                if(this.currentRow.length==0){
+                    this.$message({
+                        type:'info',
+                        message:'请先勾选要编辑的数据'
+                    })
+                }else if(this.currentRow.length>=2){
+                    this.$message({
+                        type:'info',
+                        message:'只能编辑一条数据'
+                    })
+                }else{
+                    this.dialogTableVisible=true
+                    this.formLabelAlign.name=this.currentRow[0].WorkNumber
+                    this.formLabelAlign.password=this.currentRow[0].Password
+                    this.formLabelAlign.man=this.currentRow[0].Name
+                    this.formLabelAlign.rights=JSON.parse(this.currentRow[0].Permissions.replace(/'/g, '"'))
+                }
+            }
         },
         handleSelectionChange(row){
             this.currentRow=row
@@ -171,17 +198,93 @@ export default {
                     Password:this.formLabelAlign.password,
                     CreateTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
                     Permissions:this.formLabelAlign.rights,
+                    OrganizationName:"shiyanshi"
             })
             }
             this.axios.post('/lims/CRUD',this.qs.stringify(params)).then((res) => {
-                console.log(res)
+                if(res.data.code=='1000'){
+                    this.$message({
+                        type:'success',
+                        message:'添加成功'
+                    })
+                    this.dialogTableVisible=false
+                    this.getAllPeople()
+                }else{
+                    this.$message({
+                        type:'info',
+                        message:'添加失败'
+                    })
+                }
+            })
+        },
+        getAllPeople(){ //获取所有人
+            var params={
+                TableName:'User',
+                Page:this.batchTableData.offset,
+                Query:'Accurate',
+                PerPage:this.batchTableData.limit,
+                QueryColumnName:'OrganizationName',
+                QueryColumnValue:'shiyanshi',
+            }
+            this.axios.get('/lims/CRUD',{params:params}).then((res) => {
+                this.batchTableData.data=res.data.data
+                this.batchTableData.total=res.data.total
             })
         },
         editRole(){ //编辑角色
-            console.log(456)
+           var params={
+                TableName:'User',
+                ID:this.currentRow[0].ID,
+                Values:JSON.stringify({
+                    Name:this.formLabelAlign.man,
+                    WorkNumber:this.formLabelAlign.name,
+                    Password:this.formLabelAlign.password,
+                    CreateTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                    Permissions:this.formLabelAlign.rights,
+                    OrganizationName:"shiyanshi"
+            })
+            }
+            this.axios.patch('/lims/CRUD',this.qs.stringify(params)).then((res) => {
+                if(res.data.code=='1000'){
+                     this.$message({
+                        type:'success',
+                        message:'编辑成功'
+                    })
+                    this.dialogTableVisible=false
+                    this.getAllPeople()
+                }else{
+                    this.$message({
+                        type:'info',
+                        message:'编辑失败'
+                    })
+                }
+            })
         },
         deleteRole(){ //删除角色
-
+            if(this.currentRow.length==0){
+                    this.$message({
+                        type:'info',
+                        message:'请先勾选要删除的数据'
+                    })
+                }else if(this.currentRow.length>=2){
+                    this.$message({
+                        type:'info',
+                        message:'只能删除一条数据'
+                    })
+                }else{
+                    var params={
+                        TableName:'User',
+                        ID:this.currentRow[0].ID
+                    }
+                    this.axios.delete('/lims/CRUD',{params:params}).then((res) => {
+                        if(res.data.code=='1000'){
+                            this.$message({type:'success',message:'删除成功'})
+                            this.getAllPeople()
+                        }else{
+                            this.$message({type:'info',message:'删除失败'})
+                        }
+                        })
+                    }
         },
          getSelectOption() { //获取下拉列表选项
            this.axios.get('/lims/AllProduct').then((res) => {
