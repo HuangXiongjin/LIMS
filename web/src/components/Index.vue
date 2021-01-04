@@ -85,9 +85,9 @@
             <el-row :gutter="30">
               <el-col :span="24">
                 <el-col :span="6" v-for="(item,index) in systemOptions" :key="index">
-                  <div class="platformContainer cursor-pointer" style="text-align: center;" v-bind:class="{'color-lightgreen':index===systemActive}" @click="selectSystem(index,item.label)">
-                    <p class="marginBottom text-size-48"><i :class="item.icon"></i></p>
-                    <p class="text-size-16">{{ item.label }}</p>
+                  <div class="platformContainer cursor-pointer" style="text-align: center;" @click="selectSystem(index,item.label)">
+                    <p class="marginBottom text-size-48" v-bind:class="{'color-lightgreen':index===systemActive}"><i :class="item.icon"></i></p>
+                    <p class="text-size-16" v-bind:class="{'color-lightgreen':index===systemActive}">{{ item.label }}</p>
                   </div>
                 </el-col>
               </el-col>
