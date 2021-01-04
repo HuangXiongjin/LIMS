@@ -42,7 +42,7 @@
       </el-pagination>
     </div>
     <el-dialog :title="tableData.dialogTitle" :visible.sync="tableData.dialogVisible" :close-on-click-modal="false" :append-to-body="true" width="40%">
-      <el-form :model="tableData.submitForm" label-width="110px">
+      <el-form label-width="110px">
         <el-form-item v-for="(item,index) in tableData.column" :key="index" :label="item.label" :prop="item.prop" v-if="item.canSubmit != false">
           <el-input v-if="item.type === 'input'" v-model="item.value" :disabled="item.disabled"></el-input>
           <el-select v-if="item.type === 'select' && !item.multiple" v-model="item.value" placeholder="请选择" @change="changeHandleChildSelect(item.value,item.prop)">

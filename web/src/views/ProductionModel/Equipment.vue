@@ -21,16 +21,16 @@
       </div>
       <el-dialog :title="OperationName" :visible.sync="dialogVisible" :close-on-click-modal="false" :append-to-body="true" width="40%">
               <el-form :model="submitForm" label-width="110px">
-                <el-form-item key="1" label="设备编码">
+                <el-form-item label="设备编码">
                    <el-input v-model="submitForm.EQPCode"></el-input>
                 </el-form-item>
-                <el-form-item key="1" label="设备编号">
+                <el-form-item label="设备编号">
                    <el-input v-model="submitForm.Number"></el-input>
                 </el-form-item>
-                <el-form-item key="2" label="设备名称">
+                <el-form-item label="设备名称">
                    <el-input v-model="submitForm.EQPName"></el-input>
                 </el-form-item>
-                <el-form-item key="3" label="描述">
+                <el-form-item label="描述">
                    <el-input v-model="submitForm.Desc"></el-input>
                 </el-form-item>
               </el-form>
