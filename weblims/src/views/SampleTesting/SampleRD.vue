@@ -98,7 +98,7 @@
                                   </el-col>
                               </el-col>
                               <el-col :span='4'>
-                                  <el-col class="padtop50 padl40"><el-button type="success" @click="DistributeSample('J')">{{curSta}}</el-button></el-col>
+                                  <el-col class="padtop50 padl40"><el-button type="success" @click="DistributeSample('J')" v-if="IsDoing">{{curSta}}</el-button></el-col>
                               </el-col>
                           </el-col>
                           <el-col :span='24' class="container mgt24" style="backgroundColor:#EAEAEA;">
@@ -128,7 +128,7 @@
                                   </el-col>
                               </el-col>
                               <el-col :span='4'>
-                                    <el-col class="padtop50 padl40"><el-button type="success">确认分发</el-button></el-col>
+                                    <el-col class="padtop50 padl40"><el-button type="success" v-if="IsDoing">确认分发</el-button></el-col>
                               </el-col>
                           </el-col>
                           <el-col :span='24' class="container mgt24" style="backgroundColor:#EAEAEA;">
@@ -158,12 +158,12 @@
                                   </el-col>
                               </el-col>
                               <el-col :span='4'>
-                                  <el-col class="padtop50 padl40"><el-button type="success" @click="DistributeSample('L')">{{curSta}}</el-button></el-col>
+                                  <el-col class="padtop50 padl40"><el-button type="success" @click="DistributeSample('L')" v-if="IsDoing">{{curSta}}</el-button></el-col>
                               </el-col>
                           </el-col>
                       </el-row>
                 </el-col>
-                 <el-col class="mgt24" style="textAlign:right;" v-if="radio2=='样本分发'"><el-button :type="(Discernopt || Checkopt || Lyopt)?'primary':'info'" @click="mulDistribute">确认分发</el-button></el-col>
+                 <el-col class="mgt24" style="textAlign:right;" v-if="radio2=='样本分发'"><el-button :type="(Discernopt || Checkopt || Lyopt)?'primary':'info'" @click="mulDistribute" v-if="IsDoing">确认分发</el-button></el-col>
             </el-row>
             <el-row v-if="radio2=='记录分发'" class="mgt24">
                  <el-col :span='24' class="container">
@@ -416,7 +416,7 @@
                         </div>
                     </div>
                  </el-col>
-                <el-col class="mgt24" style="textAlign:right;" v-if="radio2=='记录分发'"><el-button type="primary" @click="postSampleRecord" >确认分发</el-button></el-col>
+                <el-col class="mgt24" style="textAlign:right;" v-if="radio2=='记录分发'"><el-button type="primary" @click="postSampleRecord" v-if="IsDoing">确认分发</el-button></el-col>
             </el-row>
         </el-col>
     </el-row>
@@ -426,6 +426,7 @@ var moment=require('moment')
 export default {
     data(){
         return {
+           IsDoing:JSON.parse(sessionStorage.getItem('Rights').replace(/'/g, '"')).includes("样本及记录分发"),
            currentstep:4,
            batchinfo:[],
            showstep:false,

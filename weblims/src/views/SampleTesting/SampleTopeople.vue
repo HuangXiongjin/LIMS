@@ -174,7 +174,7 @@
                                </el-col>
                               </el-row>
                               <el-row class="padd15">
-                                <el-col :span='24' style="textAlign:right;"><el-button type="success" @click="distributeToPeople">确定分发</el-button></el-col>
+                                <el-col :span='24' style="textAlign:right;"><el-button type="success" @click="distributeToPeople" v-if="IsDoing">确定分发</el-button></el-col>
                               </el-row>
                               <div>
                               <el-col :span='22'>
@@ -309,6 +309,7 @@ var moment=require('moment')
 export default {
     data(){
         return {
+           IsDoing:sessionStorage.getItem('Rights').replace(/'/g, '"').includes("样本及记录分发"),
            currentstep:4,
            batchinfo:[],
            showstep:false,

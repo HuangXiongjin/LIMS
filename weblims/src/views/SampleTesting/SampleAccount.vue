@@ -71,7 +71,7 @@
                     </div>
                 </el-col>
                 <el-col :span='24' style="textAlign:right;paddingTop:20px;">
-                     <el-button type='danger' size='small' @click="requireDestroy">申请销毁</el-button>
+                     <el-button type='danger' size='small' @click="requireDestroy" v-if="IsDoing">申请销毁</el-button>
                 </el-col>
         </el-row>
         </el-row>
@@ -82,6 +82,7 @@ var moment=require('moment')
 export default {
     data(){
         return {
+           IsDoing:JSON.parse(sessionStorage.getItem('Rights').replace(/'/g, '"')).includes("申请销毁"),
            currentRow:[],
            currentstep:4,
            batchinfo:[],

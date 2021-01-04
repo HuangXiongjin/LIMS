@@ -105,7 +105,7 @@
                                   </el-col>
                               </el-col>
                               <el-col :span='24'>
-                                  <el-col class="padtop50 padl40" style="textAlign:right;"><el-button type="success" @click="DistributeSample">{{curSta}}</el-button></el-col>
+                                  <el-col class="padtop50 padl40" style="textAlign:right;"><el-button type="success" @click="DistributeSample" v-if="IsDoing">{{curSta}}</el-button></el-col>
                               </el-col>
                           </el-col>
                       </el-row>
@@ -216,6 +216,7 @@ var moment=require('moment')
 export default {
     data(){
         return {
+           IsDoing:JSON.parse(sessionStorage.getItem('Rights').replace(/'/g, '"')).includes("样本及记录分发"),
            currentstep:4,
            batchinfo:[],
            showstep:false,
