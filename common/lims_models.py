@@ -98,6 +98,10 @@ class CheckLife(Base):
     ProductNumber = Column(Unicode(128), nullable=True)
     # 批号（物料代码）
     Number = Column(Unicode(128), nullable=True)
+    # 数量
+    Amount = Column(Unicode(128), nullable=True)
+    # 单位
+    Unit = Column(Unicode(128), nullable=True)
 
 
 class QualityStandard(Base):

@@ -74,7 +74,8 @@ def get_worker():
                                  CheckNumber=data.CheckNumber, ProductType=data.ProductType,
                                  OperationTime=CheckStartTime,
                                  Work='完成了样品检测项分发',
-                                 Specs=data.Specs, Supplier=data.Supplier, ProductNumber=data.ProductNumber, Number=data.Number))
+                                 Specs=data.Specs, Supplier=data.Supplier, ProductNumber=data.ProductNumber,
+                                 Number=data.Number, Amount=data.Amount, Unit=data.Unit))
         db_session.commit()
         data.Status = '质检'
         data.Life = '质检'
@@ -145,7 +146,8 @@ def product_distribute():
                               CheckNumber=CheckForm_data.CheckNumber, ProductType=CheckForm_data.ProductType,
                               OperationTime=Time, Work='完成了样品分发',
                               Specs=CheckForm_data.Specs, Supplier=CheckForm_data.Supplier,
-                              ProductNumber=CheckForm_data.ProductNumber, Number=CheckForm_data.Number))
+                              ProductNumber=CheckForm_data.ProductNumber, Number=CheckForm_data.Number,
+                              Amount=CheckForm_data.Amount, Unit=CheckForm_data.Unit))
                 db_session.commit()
             elif Action[item] == 'F':
                 d = Distribute()
@@ -200,7 +202,8 @@ def product_distribute():
                               CheckNumber=CheckForm_data.CheckNumber, ProductType=CheckForm_data.ProductType,
                               OperationTime=Time,
                               Work='完成了分配小组', Specs=CheckForm_data.Specs, Supplier=CheckForm_data.Supplier,
-                              ProductNumber=CheckForm_data.ProductNumber, Number=CheckForm_data.Number))
+                              ProductNumber=CheckForm_data.ProductNumber, Number=CheckForm_data.Number,
+                              Amount=CheckForm_data.Amount, Unit=CheckForm_data.Unit))
                 db_session.commit()
         return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
 
@@ -234,8 +237,8 @@ def product_save():
                                  Status='留样', Product=data.Name, ProductType=data.ProductType, Work='完成了样品留样',
                                  OperationTime=request.values.get('BatchTime'), CheckNumber=data.CheckNumber,
                                  Specs=data.Specs, Supplier=data.Supplier,
-                                 ProductNumber=data.ProductNumber, Number=data.Number
-                                 ))
+                                 ProductNumber=data.ProductNumber, Number=data.Number,
+                                 Amount=data.Amount, Unit=data.Unit))
         db_session.commit()
         pro_save = db_session.query(ProductSave).filter_by(
             CheckProjectNO=request.values.get('CheckProjectNO')).first()
