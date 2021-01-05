@@ -90,7 +90,7 @@ def check_form():
         db_session.add(CheckLife(No=CheckProjectNO, User=CheckUser, Status='申请', ProductType=ProductType,
                                  CheckNumber=CheckNumber, Product=Name, OperationTime=CheckDate, Work='提交了请验单'))
         db_session.commit()
-        return json.dumps({'code': '1000', 'msg': '操作成功'}, ensure_ascii=False)
+        return json.dumps({'code': '1000', 'msg': '操作成功', 'data': CheckProjectNO}, ensure_ascii=False)
 
 
 @check.route('/CheckVerify', methods=['POST'])
