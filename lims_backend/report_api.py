@@ -130,8 +130,14 @@ def check_log():
         ProductType = request.values.get('ProductType')
         # start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
         # end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
-        results = db_session.query(CheckLife).filter(CheckLife.Product == Product, CheckLife.ProductType == ProductType
+        name = request.values.get('Name')
+        if name is None:
+            results = db_session.query(CheckLife).filter(CheckLife.Product == Product, CheckLife.ProductType == ProductType
                                                      ).order_by(CheckLife.Id.desc()).all()
+        else:
+            results = db_session.query(CheckLife).filter(CheckLife.Product == Product, CheckLife.User == name,
+                                                         CheckLife.ProductType == ProductType
+                                                         ).order_by(CheckLife.Id.desc()).all()
         data = results[(page - 1) * per_page:page * per_page]
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                           ensure_ascii=False)
