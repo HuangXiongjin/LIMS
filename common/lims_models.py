@@ -80,7 +80,7 @@ class CheckLife(Base):
     CheckNumber = Column(Unicode(32), nullable=True)
     # 品名
     Product = Column(Unicode(16), nullable=True)
-    # 类型
+    # 样品类型
     ProductType = Column(Unicode(16), nullable=True)
     # 操作人
     User = Column(Unicode(16), nullable=True)
@@ -90,6 +90,14 @@ class CheckLife(Base):
     OperationTime = Column(Unicode(32), nullable=True, default='')
     # 操作内容
     Work = Column(Unicode(32), nullable=True)
+    # 规格
+    Specs = Column(Unicode(128), nullable=True)
+    # 供货单位
+    Supplier = Column(Unicode(128), nullable=True, default='无')
+    # 来料批号
+    ProductNumber = Column(Unicode(128), nullable=True)
+    # 批号（物料代码）
+    Number = Column(Unicode(128), nullable=True)
 
 
 class QualityStandard(Base):

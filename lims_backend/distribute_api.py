@@ -70,10 +70,11 @@ def get_worker():
 
         # Content = {"张三": ["性状", "检查1", "鉴别1"], "李四": ["鉴别2"]}
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
-        db_session.add(CheckLife(No=CheckProjectNO, User=Name, Status='质检', Product=data.Name,
+        db_session.add(CheckLife(No=CheckProjectNO, User=Name, Status='检测项分发', Product=data.Name,
                                  CheckNumber=data.CheckNumber, ProductType=data.ProductType,
                                  OperationTime=CheckStartTime,
-                                 Work='完成了样品检测项分发'))
+                                 Work='完成了样品检测项分发',
+                                 Specs=data.Specs, Supplier=data.Supplier, ProductNumber=data.ProductNumber, Number=data.Number))
         db_session.commit()
         data.Status = '质检'
         data.Life = '质检'
@@ -142,7 +143,9 @@ def product_distribute():
                 db_session.add(
                     CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=CheckForm_data.Name,
                               CheckNumber=CheckForm_data.CheckNumber, ProductType=CheckForm_data.ProductType,
-                              OperationTime=Time, Work='完成了样品分发'))
+                              OperationTime=Time, Work='完成了样品分发',
+                              Specs=CheckForm_data.Specs, Supplier=CheckForm_data.Supplier,
+                              ProductNumber=CheckForm_data.ProductNumber, Number=CheckForm_data.Number))
                 db_session.commit()
             elif Action[item] == 'F':
                 d = Distribute()
@@ -192,12 +195,13 @@ def product_distribute():
                 CheckForm_data.OutUser = User
                 db_session.add_all([CheckForm_data, d])
                 db_session.commit()
-                # db_session.add(
-                #     CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='分发', Product=CheckForm_data.Name,
-                #               CheckNumber=CheckForm_data.CheckNumber, ProductType=CheckForm_data.ProductType,
-                #               OperationTime=Time,
-                #               Work='完成了分配小组'))
-                # db_session.commit()
+                db_session.add(
+                    CheckLife(No=CheckProjectNO, User=LaboratoryUser, Status='小组分发', Product=CheckForm_data.Name,
+                              CheckNumber=CheckForm_data.CheckNumber, ProductType=CheckForm_data.ProductType,
+                              OperationTime=Time,
+                              Work='完成了分配小组', Specs=CheckForm_data.Specs, Supplier=CheckForm_data.Supplier,
+                              ProductNumber=CheckForm_data.ProductNumber, Number=CheckForm_data.Number))
+                db_session.commit()
         return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
 
 
@@ -228,7 +232,10 @@ def product_save():
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=request.values.get('CheckProjectNO')).first()
         db_session.add(CheckLife(No=request.values.get('CheckProjectNO'), User=request.values.get('BatchName'),
                                  Status='留样', Product=data.Name, ProductType=data.ProductType, Work='完成了样品留样',
-                                 OperationTime=request.values.get('BatchTime'), CheckNumber=data.CheckNumber))
+                                 OperationTime=request.values.get('BatchTime'), CheckNumber=data.CheckNumber,
+                                 Specs=data.Specs, Supplier=data.Supplier,
+                                 ProductNumber=data.ProductNumber, Number=data.Number
+                                 ))
         db_session.commit()
         pro_save = db_session.query(ProductSave).filter_by(
             CheckProjectNO=request.values.get('CheckProjectNO')).first()

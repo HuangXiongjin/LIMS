@@ -88,7 +88,9 @@ def check_form():
             db_session.add_all(data)
             db_session.commit()
         db_session.add(CheckLife(No=CheckProjectNO, User=CheckUser, Status='申请', ProductType=ProductType,
-                                 CheckNumber=CheckNumber, Product=Name, OperationTime=CheckDate, Work='提交了请验单'))
+                                 CheckNumber=CheckNumber, Product=Name, OperationTime=CheckDate, Work='提交了请验单',
+                                 Specs=Specs, Supplier=Supplier, ProductNumber=ProductNumber, Number=Number)
+                       )
         db_session.commit()
         return json.dumps({'code': '1000', 'msg': '操作成功', 'data': CheckProjectNO}, ensure_ascii=False)
 
@@ -104,7 +106,8 @@ def check_verify():
     for item in items:
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=item).first()
         db_session.add(CheckLife(No=item, User=VerifyName, Status="请验审核", Product=data.Name, CheckNumber=data.CheckNumber,
-                                 ProductType=data.ProductType, OperationTime=DateTime, Work="请验申请通过审核"))
+                                 ProductType=data.ProductType, OperationTime=DateTime, Work="请验申请通过审核",
+                                 Specs=data.Specs, Supplier=data.Supplier, ProductNumber=data.ProductNumber, Number=data.Number))
         db_session.commit()
         data.VerifyUser = VerifyName
         data.VerifyDate = DateTime
@@ -153,7 +156,8 @@ def sample():
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
         db_session.add(CheckLife(No=CheckProjectNO, User=SampleUser, Status='取样', Product=data.Name,
                                  CheckNumber=data.CheckNumber, ProductType=data.ProductType,
-                                 OperationTime=SampleTime, Work='完成了样品取样'))
+                                 OperationTime=SampleTime, Work='完成了样品取样',
+                                 Specs=data.Specs, Supplier=data.Supplier, ProductNumber=data.ProductNumber, Number=data.Number))
         db_session.commit()
         data.SampleUser = SampleUser
         data.Status = '接收'
@@ -179,7 +183,8 @@ def receive():
     ReceiveTime = request.values.get('ReceiveTime')
     data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
     db_session.add(CheckLife(No=CheckProjectNO, CheckNumber=CheckNumber, User=ReceiveUser, Status='接收', Product=data.Name,
-                             ProductType=data.ProductType, OperationTime=ReceiveTime, Work='完成了样品接收'))
+                             ProductType=data.ProductType, OperationTime=ReceiveTime, Work='完成了样品接收',
+                             Specs=data.Specs, Supplier=data.Supplier, ProductNumber=data.ProductNumber, Number=data.Number))
     db_session.commit()
     data.IntoUser = ReceiveUser
     data.Status = '分发'
