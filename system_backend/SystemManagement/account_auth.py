@@ -36,8 +36,6 @@ def load_user(user_id):
 @login_auth.route('/account/login', methods=['GET', 'POST'])
 def login():
     try:
-        # if request.method == 'GET':
-        #     return render_template('./main/login.html')
         if request.method == 'POST':
             data = request.values
             WorkNumber = data.get('WorkNumber')
@@ -50,23 +48,6 @@ def login():
                 db_session.commit()
                 return json.dumps({'code': '1000', 'msg': '登录成功', 'data': user}, cls=AlchemyEncoder, ensure_ascii=False)
             return json.dumps({'code': '1000', 'msg': '账号或密码错误'}, cls=AlchemyEncoder, ensure_ascii=False)
-                # roles = db_session.query(User.RoleName).filter_by(WorkNumber=WorkNumber).all()
-                # menus = []
-                # for role in roles:
-                #     for index in role:
-                #         role_id = db_session.query(Role.ID).filter_by(RoleName=index).first()
-                #         menu = db_session.query(Menu.ModuleCode).join(Role_Menu, isouter=True).filter_by(Role_ID=role_id).all()
-                #         for li in menu:
-                #             menus.append(li[0])
-                # session['menus'] = menus
-                # user.Status = "1"
-                # db_session.commit()
-                # use = db_session.query(User).filter_by(WorkNumber=WorkNumber).first()
-                # return redirect('/')
-                # return render_template('./main/heatmap.html')
-            # 认证失败返回登录页面
-            # error = '用户名或密码错误'
-            # return render_template('./main/login.html', error=error)
     except Exception as e:
         print(e)
         db_session.rollback()
@@ -74,42 +55,6 @@ def login():
         return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
 
 
-# 退出登录
-@login_auth.route('/account/logout')
-@login_required
-def logout():
-    logout_user()
-    flash(u'用户已经退出')
-    # current_user.Name
-    # user = db_session.query(User).filter_by(WorkNumber=work_number).first()
-    # user.Status = "0"
-    return redirect(url_for('login_auth.login'))
-
-
-# from wtforms import StringField,SubmitField
-# from wtforms.validators import Required, DataRequired
-#
-# from flask_wtf import FlaskForm
-# class LoginForm(FlaskForm):
-#     verify_code = StringField('验证码', validators=[DataRequired()])
-#     submit = SubmitField('登录')
-#
-# @login_auth.route('/login', methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         user = User.query.filter_by(email=form.email.data).first()
-#         if session.get('image') != form.verify_code.data:
-#             flash('验证码错误')
-#         # 验证用户的登录密码
-#         if user is not None and user.verify_password(form.password.data):
-#             login_user(user,form.remember_me.data)
-#             flash('验证通过，登录成功')
-#             return redirect(request.args.get('next') or
-#             url_for('main.index'))
-#         else:
-#             flash('用户名或者密码不正确')
-#     return render_template('auth/login.html',form=form)
 @login_auth.route('/account/code')
 def get_code():
     image, str = validate_picture()
