@@ -13,7 +13,6 @@ from common.system import User
 from common.MESLogger import logger
 from common.BSFramwork import AlchemyEncoder
 from database.connect_db import CONNECT_DATABASE
-login_manager = LoginManager()
 # 创建对象的基类
 engine = create_engine(CONNECT_DATABASE)
 Session = sessionmaker(bind=engine)
