@@ -50,6 +50,9 @@ def check_form():
     if request.method == 'POST':
         data = request.values
         CheckNumber = data.get('CheckNumber')
+        query_data = db_session.query(CheckForm).filter_by(CheckNumber=CheckNumber).first()
+        if query_data:
+            return json.dumps({'code': '1000', 'msg': '请验单好重复'}, ensure_ascii=False)
         ProductType = data.get('ProductType')
         Name = data.get('Name')
         Specs = data.get('Specs')
