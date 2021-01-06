@@ -1,10 +1,10 @@
 <template>
     <el-row :gutter='20'>
-        <el-col :span='24' class="mgt24 container" v-show="showstep">
+        <el-col :span='24' class="mgt24 container">
             <div class="mgb24 fsz14px">当前批次流程</div>
             <el-steps :active="currentstep" finish-status="success">
                 <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
-                    <template slot="description">
+                    <template slot="description" v-if='item.User'>
                         <div><span>姓名：</span><span>{{item.User}}</span></div>
                         <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
                     </template>
@@ -45,38 +45,38 @@
                      <el-col :span='2' class="boxshadow req">
                         <el-button type='primary' @click="SearchTab">查询</el-button>
                     </el-col>
-            </el-row>
-                </el-col>
-                <el-col :span='24' class="mgt24">
-                        <div class="mgt24" style="height:470px;overflow:auto;">
-                          <el-table
-                            :data="batchTableData.data"
-                            size='small'
-                            highlight-current-row
-                            style="width: 100%"
-                            @row-click="handletabClick">
-                            <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label'></el-table-column>
-                            <el-table-column
-                                fixed="right"
-                                label="操作"
-                                width="100">
-                                <template slot-scope="scope">
-                                    <el-button @click="handleClick(scope.row)" type="text" size="small">查看详情</el-button>
-                                </template>
-                            </el-table-column>
-                          </el-table>
-                          <div class="paginationClass">
-                                <el-pagination background  layout="total, prev, pager, next, jumper"
-                                :total="batchTableData.total"
-                                :current-page="batchTableData.offset"
-                                :page-size="batchTableData.limit"
-                                @size-change="handleSizeChange"
-                                @current-change="handleCurrentChange">
-                                </el-pagination>
-                          </div>
-                        </div>
-                </el-col>
-            </el-row>
+                </el-row>
+            </el-col>
+        <el-col :span='24' class="mgt24">
+            <div class="mgt24" style="height:470px;overflow:auto;">
+              <el-table
+                :data="batchTableData.data"
+                size='small'
+                highlight-current-row
+                style="width: 100%"
+                @row-click="handletabClick">
+                <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label'></el-table-column>
+                <el-table-column
+                    fixed="right"
+                    label="操作"
+                    width="100">
+                    <template slot-scope="scope">
+                        <el-button @click="handleClick(scope.row)" type="text" size="small">查看详情</el-button>
+                    </template>
+                </el-table-column>
+              </el-table>
+              <div class="paginationClass">
+                    <el-pagination background  layout="total, prev, pager, next, jumper"
+                    :total="batchTableData.total"
+                    :current-page="batchTableData.offset"
+                    :page-size="batchTableData.limit"
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange">
+                    </el-pagination>
+              </div>
+            </div>
+        </el-col>
+    </el-row>
         </el-col>
     </el-row>
 </template>
@@ -85,28 +85,21 @@ var moment=require('moment')
 export default {
     data(){
         return {
-           currentstep:3,
+           currentstep:1,
            batchinfo:[],
-           showstep:false,
-            searchObj:{
+           batchinfo:[{Status:'申请'},{Status:'请验审核'},{Status:'取样'},{Status:'接收'},{Status:'分发'},{Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'}],
+           searchObj:{
                category:'玉米淀粉',
                registrydate:moment(new Date()).format('YYYY-MM-DD'),
-               state:'待审核',
+               state:'请验审核',
            },
             options: [{
                 value: '选项1',
                 label: '物料一'
                 }],
-            opstate: [{
-                value: '请验审核',
-                label: '请验审核'
-                }, {
-                value: '取样',
-                label: '取样'
-                },{
-                value: '接收',
-                label: '接收'
-                }],
+            opstate: [{value: '申请',label: '申请'},{value: '请验审核',label: '请验审核'}, {value: '取样',label: '取样'},{value: '接收',label: '接收'},{value: '分发',label: '分发'},
+            {value: '质检',label: '质检'},{value: '报告',label: '报告'}, {value: '质检审核',label: '质检审核'},{value: '放行',label: '放行'}
+            ],
             batchTableData:{ //物料BOM
                 data:[],
                 limit: 5,//当前显示多少条
@@ -131,13 +124,12 @@ export default {
             }
             this.axios.get('/lims/Board',{params:params}).then((res) => {
                 if(res.data.code=='1000'){
-                    this.batchinfo=res.data.data
-                    this.currentstep=res.data.data.length
-                    if(this.batchinfo.length!==[]){
-                        this.showstep=true
-                    }else{
-                        this.showstep=false
-                    }
+                   this.currentstep=res.data.data.length
+                   this.batchinfo=this.batchinfo.map((item) => { //清空缓存的状态
+                       return {Status:item.Status}
+                   })
+                   this.batchinfo.splice(0,res.data.data.length)
+                   this.batchinfo=res.data.data.concat(this.batchinfo)
                 }else{
                     this.$message({
                         type:'info',
@@ -170,9 +162,6 @@ export default {
                 Status:this.searchObj.state
             }
             this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
-                if(res.data.data.length==0){
-                    this.showstep=false
-                }
                 this.batchTableData.data=res.data.data
                 this.batchTableData.total=res.data.total
             })

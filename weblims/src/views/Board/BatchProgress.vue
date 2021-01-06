@@ -1,6 +1,6 @@
 <template>
     <el-row class="container mgt24">
-        <el-col :span='24' class="mgt24 container mgb10" v-show="showstep">
+        <el-col :span='24' class="mgt24 container mgb10">
             <div class="mgb24 fsz14px">当前批次流程</div>
             <el-steps :active="currentstep" finish-status="success">
                 <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
@@ -70,7 +70,7 @@ var moment=require('moment')
 export default {
     data(){
         return {
-           currentstep:0,
+           currentstep:5,
            batchinfo:[],
            showstep:false,
            searchObj:{
@@ -87,6 +87,7 @@ export default {
                 value: '选项1',
                 label: '物料一'
                 }],
+            batchinfo:[{Status:'申请'},{Status:'请验审核'},{Status:'取样'},{Status:'接收'},{Status:'分发'},{Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'}],
             opstate: [{value: '申请',label: '申请'}, {value: '请验审核',label: '请验审核'},{value: '取样',label: '取样'},{value: '接收',label: '接收'},
             {value: '分发',label: '分发'},{value: '质检',label: '质检'},{value: '报告',label: '报告'},{value: '质检审核',label: '质检审核'},{value: '放行',label: '放行'}],
             batchtableconfig:[{prop:'Name',label:"样本品名"},{prop:'ProductNumber',label:'样本批次'},{prop:'VerifyDate',label:'登记时间',width:210},{prop:'VerifyUser',label:'登记人'},{prop:'ProductType',label:'类型'},{prop:'Status',label:'状态'}],//批次列表
@@ -108,13 +109,12 @@ export default {
             }
             this.axios.get('/lims/Board',{params:params}).then((res) => {
                 if(res.data.code=='1000'){
-                    this.batchinfo=res.data.data
-                    this.currentstep=res.data.data.length
-                    if(this.batchinfo.length!==[]){
-                        this.showstep=true
-                    }else{
-                        this.showstep=false
-                    }
+                   this.currentstep=res.data.data.length
+                   this.batchinfo=this.batchinfo.map((item) => { //清空缓存的状态
+                       return {Status:item.Status}
+                   })
+                   this.batchinfo.splice(0,res.data.data.length)
+                   this.batchinfo=res.data.data.concat(this.batchinfo)
                 }else{
                     this.$message({
                         type:'info',
