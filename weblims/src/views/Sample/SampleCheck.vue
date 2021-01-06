@@ -48,8 +48,8 @@
         <el-col :span='24' class="mgt24">
             <div class="container">
                 <el-menu :default-active="'1'" class="bgwhite" mode="horizontal" @select="handleSelect">
-                    <el-menu-item :index="'1'" style="height:46px;lineHeight:30px;">申请列表</el-menu-item>
-                    <el-menu-item :index="'2'" style="height:46px;lineHeight:30px;">通过列表</el-menu-item>
+                    <el-menu-item :index="'1'" style="height:46px;lineHeight:30px;">申请清单</el-menu-item>
+                    <el-menu-item :index="'2'" style="height:46px;lineHeight:30px;">通过清单</el-menu-item>
                 </el-menu>
                 <div class="mgt24" v-if="currentChoose==='1'">
                     <el-table
@@ -195,10 +195,15 @@ export default {
         },
         SearchTab(){
             var params={
+                TableName:"CheckForm",
+                Query:"Accurate",
                 Page:this.batchTableData.offset,
                 PerPage:this.batchTableData.limit,
-                Product:this.searchObj.category,
-                DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
+                QueryColumnName:"Product",
+                QueryColumnValue:this.searchObj.category,
+                StartTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 00:00:00"),
+                EndTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 23:59:59"),
+                QueryColumnName2:"Status",
                 Status:this.searchObj.state
             }
             this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
@@ -212,7 +217,7 @@ export default {
                 PerPage:this.batchTableData2.limit,
                 Name:localStorage.getItem('Name')
             }
-            this.axios.get('/lims/CheckLog',{params:params}).then((res) => {
+            this.axios.get('/lims/CRUD',{params:params}).then((res) => {
                 this.batchTableData2.data=res.data.data
                 this.batchTableData2.total=res.data.total
             })
