@@ -115,7 +115,7 @@
                                   </el-col>
                               </el-col>
                               <el-col :span='24'>
-                                  <el-col class="padtop50 padl40" style="textAlign:right;"><el-button type="success" @click="DistributeSample" v-if="IsDoing">{{curSta}}</el-button></el-col>
+                                  <el-col class="padtop50 padl40" style="textAlign:right;"><el-button type="success" @click="DistributeSample" v-if="IsDoing" :disabled="curSta=='已分发'">{{curSta}}</el-button></el-col>
                               </el-col>
                           </el-col>
                       </el-row>
@@ -337,7 +337,8 @@ export default {
                  Group:JSON.stringify(this.RecordForm.group),
                  CheckProjectNO:this.distribute.CheckProjectNO,
                  GroupUser:localStorage.getItem('Name'),
-                 Action:JSON.stringify(['Q'])
+                 Action:JSON.stringify(['Q']),
+                 Time:moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
             }
            this.axios.post('/lims/Distribute',this.qs.stringify(params)).then((res) => {
                if(res.data.code=='1000'){

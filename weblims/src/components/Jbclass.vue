@@ -23,9 +23,9 @@ export default {
         }
     },
     methods: {
-        Deljb(Id){ //删除鉴别
+        Deljb(ID){ //删除鉴别
            var params={
-               ID:Id
+               ID:ID
            }
            this.axios.delete('/lims/QualityStandard',{params:params}).then((res) => {
                if(res.data.code=='1000'){
@@ -37,10 +37,10 @@ export default {
                }
            })
         },
-        Editjb(Id){ //编辑鉴别
+        Editjb(ID){ //编辑鉴别
            this.inputVisible=true
            this.jbopt='修改'
-           this.jbID=Id
+           this.jbID=ID
         },
          showInputtxt(){ //点击右侧加号弹出输入框
             this.jbopt='添加'

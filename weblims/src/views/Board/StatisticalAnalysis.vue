@@ -43,8 +43,8 @@ export default {
                 this.myecharts=null
             }
             this.myecharts=echarts.init(document.getElementById('box'))
-            var xData = ["取样", "审核", "质检"];
-            var yData = [22, 30, 45];
+            var xData = ["取样", "审核", "质检","质检审核"];
+            var yData = [22, 30, 45,20];
             var option = {
                 backgroundColor: '#061326',
                 "grid": {

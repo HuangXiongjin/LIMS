@@ -173,7 +173,7 @@
                           </el-col>
                       </el-row>
                 </el-col>
-                 <el-col class="mgt24" style="textAlign:right;" v-if="radio2=='样本分发'"><el-button :type="(Discernopt || Checkopt || Lyopt)?'primary':'info'" @click="mulDistribute" v-if="IsDoing">确认分发</el-button></el-col>
+                 <el-col class="mgt24" style="textAlign:right;" v-if="radio2=='样本分发'"><el-button :type="(Discernopt || Checkopt || Lyopt)?'primary':'info'" @click="mulDistribute" v-if="IsDoing" :disabled="curSta=='已分发'">确认分发</el-button></el-col>
             </el-row>
             <el-row v-if="radio2=='记录分发'" class="mgt24">
                  <el-col :span='24' class="container">
