@@ -45,12 +45,12 @@ def operation():
                 time_column = table_name.columns._data[time_column_name]
                 if query_column_name2 is not None:
                     column2 = table_name.columns._data[query_column_name2]
-                    sql = f"select * from [LIMS].[dbo].[{table_name}] where {column1}='{query_column_value1}' and {column2}='{query_column_value2}' and {time_column} between '{start_time}' and '{end_time}' order by Id desc offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only "
+                    sql = f"select * from [LIMS].[dbo].[{table_name}] where {column1}='{query_column_value1}' and {column2}='{query_column_value2}' and {time_column} between '{start_time}' and '{end_time}' order by ID desc offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only "
                 else:
-                    sql = f"select * from [LIMS].[dbo].[{table_name}] where {column1}='{query_column_value1}' and {time_column} between '{start_time}' and '{end_time}' order by Id desc offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only "
+                    sql = f"select * from [LIMS].[dbo].[{table_name}] where {column1}='{query_column_value1}' and {time_column} between '{start_time}' and '{end_time}' order by ID desc offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only "
             elif query_column_name2 is not None:
                 column2 = table_name.columns._data[query_column_name2]
-                sql = f"select * from [LIMS].[dbo].[{table_name}] where {column1}='{query_column_value1}' and {column2}='{query_column_value2}' order by Id desc offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only "
+                sql = f"select * from [LIMS].[dbo].[{table_name}] where {column1}='{query_column_value1}' and {column2}='{query_column_value2}' order by ID desc offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only "
             else:
                 sql = f"select * from [LIMS].[dbo].[{table_name}] where {query_column_name1}='{query_column_value1}' order by ID desc offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only "
             query_data = db_session.execute(sql).fetchall()
@@ -58,7 +58,7 @@ def operation():
             return json.dumps({'code': '1000', 'msg': '查询成功', 'data': results, 'total': len(results)}, cls=MyEncoder,
                               ensure_ascii=False)
         else:
-            query_data = db_session.query(table_name).order_by(table_name.columns._data['Id'].desc()).all()
+            query_data = db_session.query(table_name).order_by(table_name.columns._data['ID'].desc()).all()
             results = [dict(zip(item.keys(), item)) for item in query_data]
             data = results[(page - 1) * per_page:page * per_page]
             return json.dumps({'code': '1000', 'msg': '查询成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
@@ -81,8 +81,9 @@ def operation():
         db_session.commit()
         return json.dumps({'code': '1000', 'msg': '修改成功'}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'DELETE':
-        Id = int(request.values.get('ID'))
-        query_data = db_session.query(table_name2).filter_by(ID=Id).first()
-        db_session.delete(query_data)
-        db_session.commit()
+        id_items = json.loads(request.values.get('ID'))
+        for item in id_items:
+            query_data = db_session.query(table_name2).filter_by(ID=int(item)).first()
+            db_session.delete(query_data)
+            db_session.commit()
         return json.dumps({'code': '1000', 'msg': '删除成功'}, cls=MyEncoder, ensure_ascii=False)
