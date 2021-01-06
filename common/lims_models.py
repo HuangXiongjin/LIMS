@@ -17,7 +17,7 @@ Base = declarative_base(engine)
 class ReportVerify(Base):
     """报告审核"""
     __tablename__ = 'ReportVerify'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 标识
     CheckProjectNO = Column(Unicode(128), nullable=True)
     # 实验室主管
@@ -33,7 +33,7 @@ class ReportVerify(Base):
 class Record(Base):
     """检验记录"""
     __tablename__ = 'Record'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 标识
     CheckProjectNO = Column(Unicode(32), nullable=True)
     # 品名
@@ -59,7 +59,7 @@ class Record(Base):
 class Worker(Base):
     """实验室组员"""
     __tablename__ = 'Worker'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 员工编号
     No = Column(Unicode(32), nullable=True)
     # 姓名
@@ -73,7 +73,7 @@ class Worker(Base):
 class CheckLife(Base):
     """请验生命周期"""
     __tablename__ = 'CheckLife'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
     No = Column(Unicode(32), nullable=True)
     # 请验单号
@@ -107,7 +107,7 @@ class CheckLife(Base):
 class QualityStandard(Base):
     """质量维护表"""
     __tablename__ = 'QualityStandard'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
     No = Column(Unicode(32), nullable=True)
     # 品名
@@ -123,7 +123,7 @@ class QualityStandard(Base):
 class QualityStandardCenter(Base):
     """质量标准样品表"""
     __tablename__ = 'QualityStandardCenter'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
     No = Column(Unicode(64), nullable=True)
     # 物料名称
@@ -151,7 +151,7 @@ class QualityStandardCenter(Base):
 class WorkerBook(Base):
     """员工工作台账"""
     __tablename__ = 'WorkerBook'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 姓名
     Name = Column(Unicode(32), nullable=True)
     # 工号
@@ -183,9 +183,9 @@ class WorkerBook(Base):
 class CheckForm(Base):
     """请验单"""
     __tablename__ = 'CheckForm'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
-    # 样本分发接收编号
-    No = Column(Unicode(32), nullable=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
+    # # 样本分发接收编号
+    # No = Column(Unicode(32), nullable=True)
     # 请验单号
     CheckNumber = Column(Unicode(32), nullable=True)
     # 样品类别
@@ -259,7 +259,7 @@ class CheckForm(Base):
 class CheckProject(Base):
     """请验项目明细"""
     __tablename__ = 'CheckProject'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
     No = Column(Unicode(32), nullable=True)
     # 品名
@@ -277,7 +277,7 @@ class CheckProject(Base):
 class DestructionForm(Base):
     """销毁清单"""
     __tablename__ = 'DestructionForm'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 样本分发接收编号
     No = Column(Unicode(32), nullable=True)
     # 请验单号
@@ -317,7 +317,7 @@ class DestructionForm(Base):
 class Distribute(Base):
     """样品分发"""
     __tablename__ = 'Distribute'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 请验项目标识
     CheckProjectNO = Column(Unicode(32), nullable=True)
     # 分发人
@@ -339,7 +339,7 @@ class Distribute(Base):
 class WordForm(Base):
     """文档维护"""
     __tablename__ = 'WordForm'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 文档名称
     FileName = Column(Unicode(64), nullable=True)
     # 品名
@@ -351,7 +351,7 @@ class WordForm(Base):
 class ConclusionRecord(Base):
     """报告完成记录"""
     __tablename__ = 'ConclusionRecord'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 检验编号
     CheckNumber = Column(Unicode(32), nullable=True)
     # 请验单日期
@@ -393,7 +393,7 @@ class ConclusionRecord(Base):
 class ProductSave(Base):
     """产品留样单"""
     __tablename__ = 'ProductSave'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 请样标识
     CheckProjectNO = Column(Unicode(32), nullable=True)
     # 留样标识
@@ -425,7 +425,7 @@ class ProductSave(Base):
     # 生产日期
     ProductionDate = Column(Unicode(32), nullable=True, default='')
     # 有效日期
-    ValidityDate = Column(Unicode(32), nullable=True, default='')
+    ValIDityDate = Column(Unicode(32), nullable=True, default='')
     # 当前进度(待接收-留样观察中-申请销毁)
     Status = Column(Unicode(32), nullable=True, default='待接收')
     # 留样销毁状态
@@ -438,7 +438,7 @@ class ProductSaveSurvey(Base):
     """产品留样观察表"""
     __tablename__ = 'ProductSaveSurvey'
 
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 请验项目标识
     CheckProjectNO = Column(Unicode(32), nullable=True)
     # 品名
@@ -628,7 +628,7 @@ class RepairTask(Base):
 class RunError(Base):
     """系统运行错误 """
     __tablename__ = 'RunError'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 发生时间
     Time = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 操作IP

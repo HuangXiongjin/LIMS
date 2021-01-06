@@ -23,7 +23,7 @@ def life():
         # end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
         # Product = request.values.get('Product')
         results = db_session.query(CheckForm).filter(CheckForm.ProductType == ProductType, CheckForm.Status == status
-                                                     ).order_by(CheckForm.Id.desc()).all()
+                                                     ).order_by(CheckForm.ID.desc()).all()
         data = results[(page - 1) * per_page:page * per_page]
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                           ensure_ascii=False)
@@ -43,7 +43,7 @@ def check_form():
         Product = request.values.get('Product')
         results = db_session.query(CheckForm).filter(CheckForm.Name == Product, CheckForm.Status == status,
                                                      CheckForm.CheckDate.between(start_time, end_time)).order_by(
-            CheckForm.Id.desc()).all()
+            CheckForm.ID.desc()).all()
         data = results[(page - 1) * per_page:page * per_page]
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                           ensure_ascii=False)
@@ -144,15 +144,15 @@ def sample():
              'Microbe': microbe}]
         for result in results:
             if result.Type == 'Character':
-                character.append({'id': result.Id, 'value': result.Describe})
+                character.append({'ID': result.ID, 'value': result.Describe})
             if result.Type == 'Discern':
-                discern.append({'id': result.Id, 'value': result.Describe})
+                discern.append({'ID': result.ID, 'value': result.Describe})
             if result.Type == 'Inspect':
-                inspect.append({'id': result.Id, 'value': result.Describe})
+                inspect.append({'ID': result.ID, 'value': result.Describe})
             if result.Type == 'Content':
-                content.append({'id': result.Id, 'value': result.Describe})
+                content.append({'ID': result.ID, 'value': result.Describe})
             if result.Type == 'Microbe':
-                microbe.append({'id': result.Id, 'value': result.Describe})
+                microbe.append({'ID': result.ID, 'value': result.Describe})
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'POST':
         CheckProjectNO = request.values.get('CheckProjectNO')

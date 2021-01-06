@@ -45,15 +45,15 @@ def get_worker():
         if data1.Group == '产品组主管':
             data = db_session.query(Worker).filter_by(Group='产品组').all()
             for i in data:
-                result.append({'Id': i.Id, 'Name': i.Name})
+                result.append({'ID': i.ID, 'Name': i.Name})
         elif data1.Group == '微生物组主管':
             data = db_session.query(Worker).filter_by(Group='微生物组').all()
             for i in data:
-                result.append({'Id': i.Id, 'Name': i.Name})
+                result.append({'ID': i.ID, 'Name': i.Name})
         elif data1.Group == '物料组主管':
             data = db_session.query(Worker).filter_by(Group='物料组').all()
             for i in data:
-                result.append({'Id': i.Id, 'Name': i.Name})
+                result.append({'ID': i.ID, 'Name': i.Name})
         return json.dumps({'code': '1000', 'msg': '操作成功', 'data': result, 'Group': groups}, cls=MyEncoder,
                           ensure_ascii=False)
     if request.method == 'POST':
@@ -223,7 +223,7 @@ def product_save():
         CheckProjectNO = request.values.get('CheckProjectNO')
         # db_session.query(Distribute).filter_by(Status=status, CheckProjectNO=CheckProjectNO).first()
         if CheckProjectNO is None:
-            results = db_session.query(ProductSave).filter_by(Name=Product).order_by(ProductSave.Id.desc()).all()
+            results = db_session.query(ProductSave).filter_by(Name=Product).order_by(ProductSave.ID.desc()).all()
             data = results[(page - 1) * per_page:page * per_page]
             return json.dumps({'code': '1000', 'msg': '操作成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                               ensure_ascii=False)
@@ -319,7 +319,7 @@ def save_list():
         Product = request.values.get('Product')
         results = db_session.query(ProductSave).filter(ProductSave.Name == Product, ProductSave.Status == status,
                                                        ProductSave.BatchTime.between(start_time, end_time)).order_by(
-            ProductSave.Id.desc()).all()
+            ProductSave.ID.desc()).all()
         data = results[(page - 1) * per_page:page * per_page]
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                           ensure_ascii=False)
