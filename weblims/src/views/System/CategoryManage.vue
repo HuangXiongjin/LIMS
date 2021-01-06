@@ -248,14 +248,14 @@ export default {
         this.refreshTable()
     },
     methods: {
-        Editjb(Id){ //编辑鉴别
+        Editjb(ID){ //编辑鉴别
            this.inputVisible=true
            this.jbopt='修改'
-           this.jbID=Id
+           this.jbID=ID
         },
-        Deljb(Id){ //删除鉴别
+        Deljb(ID){ //删除鉴别
            var params={
-               Id:Id
+               ID:ID
            }
            this.axios.delete('/lims/QualityStandard',{params:params}).then((res) => {
                if(res.data.code=='1000'){
@@ -298,7 +298,7 @@ export default {
             if(this.opt=='鉴别'){
               if(this.jbopt==='修改'){
                 var params={
-                    Id:this.jbID,
+                    ID:this.jbID,
                     Data:this.jbinput,
                     Product:this.Product
                 }
@@ -329,7 +329,7 @@ export default {
             }else if(this.opt=='检查'){
                 if(this.jbopt==='修改'){
                 var params={
-                    Id:this.jbID,
+                    ID:this.jbID,
                     Data:this.jbinput,
                     Product:this.Product
                 }
@@ -360,10 +360,10 @@ export default {
             }else if(this.opt=='性状'){
                 if(this.jbopt==='修改'){
                 var params={
-                Id:this.jbID,
-                Data:this.jbinput,
-                Product:this.Product
-            }
+                    ID:this.jbID,
+                    Data:this.jbinput,
+                    Product:this.Product
+                }
             this.axios.patch('/lims/QualityStandard',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
                      this.$message({
@@ -391,7 +391,7 @@ export default {
             }else if(this.opt=='含量测定'){
                 if(this.jbopt==='修改'){
                 var params={
-                    Id:this.jbID,
+                    ID:this.jbID,
                     Data:this.jbinput,
                     Product:this.Product
                 }
@@ -422,7 +422,7 @@ export default {
             }else if(this.opt=='微生物限度'){
                 if(this.jbopt==='修改'){
                 var params={
-                Id:this.jbID,
+                ID:this.jbID,
                 Data:this.jbinput,
                 Product:this.Product
             }
@@ -503,9 +503,9 @@ export default {
         },
         handleDelete(row){ //表格删除按钮
             var arr=[]
-            arr.push(row.Id)
+            arr.push(row.ID)
             var params={
-                Id:arr
+                ID:arr
             }
             this.axios.delete('/lims/QualityStandardCenter',{data:params}).then((res) => {
                 if(res.data.code=='1000'){
@@ -571,9 +571,9 @@ export default {
                 })
             }else{
                 dels=this.checkedRow.map((item) => {
-                    return item.Id
+                    return item.ID
                 })
-                var params={Id:dels}
+                var params={ID:dels}
                 this.axios.delete('/lims/QualityStandardCenter',{data:params}).then((res) => {
                    if(res.data.code=='1000'){
                        this.$message({

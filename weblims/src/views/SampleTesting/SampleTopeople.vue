@@ -122,7 +122,7 @@
                                   <el-select v-model="distribute.worker" placeholder="请选择人">
                                     <el-option
                                     v-for="item in workers"
-                                    :key="item.Id"
+                                    :key="item.ID"
                                     :label="item.Name"
                                     :value="item.Name">
                                     </el-option>
@@ -493,19 +493,19 @@ export default {
             }
             this.axios.get('/lims/Sample',{params:params}).then((res) => {
                 this.jbarr.Discern=res.data.data[0].Discern.map((item, index) => {
-                    return {label:item.id,value:item.value}
+                    return {label:item.ID,value:item.value}
                 })
                 this.jbarr.Inspect=res.data.data[0].Inspect.map((item, index) => {
-                    return {label:item.id,value:item.value}
+                    return {label:item.ID,value:item.value}
                 })
                 this.jbarr.Character=res.data.data[0].Character.map((item, index) => {
-                    return {label:item.id,value:item.value}
+                    return {label:item.ID,value:item.value}
                 })
                 this.jbarr.Content=res.data.data[0].Content.map((item, index) => {
-                    return {label:item.id,value:item.value}
+                    return {label:item.ID,value:item.value}
                 })
                 this.jbarr.Microbe=res.data.data[0].Microbe.map((item, index) => {
-                    return {label:item.id,value:item.value}
+                    return {label:item.ID,value:item.value}
                 })
             })
         },

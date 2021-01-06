@@ -99,7 +99,7 @@ export default {
             this.dialogFormVisible=true
         },
         deleteUploaded(file, fileList){ 
-            var params={Id:file.Id}
+            var params={ID:file.ID}
             this.$confirm('确定要删除该文件吗？', '温馨提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -149,7 +149,7 @@ export default {
                     return {
                         name:item.FileName,
                         url:item.FilePath,
-                        Id:item.Id
+                        ID:item.ID
                     }
                 })
             })

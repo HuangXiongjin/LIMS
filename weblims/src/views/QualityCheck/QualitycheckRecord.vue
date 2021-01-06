@@ -271,27 +271,27 @@ export default {
         postResult(){ //发送结果按钮
             var arr1=this.Discerns.map((item, index) => {
                 if(item.Name==this.currentMan){
-                    return {Id:item.Id,Status:(item.Status).toString()}
+                    return {ID:item.ID,Status:(item.Status).toString()}
                 }
             })
             var arr2=this.Inspects.map((item, index) => {
                 if(item.Name==this.currentMan){
-                return {Id:item.Id,Status:(item.Status).toString()}
+                return {ID:item.ID,Status:(item.Status).toString()}
                 }
             })
             var arr3=this.Characters.map((item, index) => {
                 if(item.Name==this.currentMan){
-                return {Id:item.Id,Status:(item.Status).toString()}
+                return {ID:item.ID,Status:(item.Status).toString()}
                 }
             })
             var arr4=this.Contents.map((item, index) => {
                 if(item.Name==this.currentMan){
-                return {Id:item.Id,Status:(item.Status).toString()}
+                return {ID:item.ID,Status:(item.Status).toString()}
                 }
             })
             var arr5=this.Microbes.map((item, index) => {
                 if(item.Name==this.currentMan){
-                return {Id:item.Id,Status:(item.Status).toString()}
+                return {ID:item.ID,Status:(item.Status).toString()}
                 }
             })
             var arr=[...arr1,...arr2,...arr3,...arr4,...arr5]

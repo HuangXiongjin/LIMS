@@ -25,7 +25,7 @@ export default {
     methods: {
         Deljb(Id){ //删除鉴别
            var params={
-               Id:Id
+               ID:Id
            }
            this.axios.delete('/lims/QualityStandard',{params:params}).then((res) => {
                if(res.data.code=='1000'){
@@ -65,7 +65,7 @@ export default {
         showInputContent(){ //鉴别添加修改的展示
             if(this.jbopt==='修改'){
                 var params={
-                Id:this.jbID,
+                ID:this.jbID,
                 Discern:this.jbinput,
                 Product:this.Product
             }

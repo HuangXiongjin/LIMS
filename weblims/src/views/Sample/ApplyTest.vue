@@ -241,9 +241,9 @@ export default {
         selectJbChoice(){
             this.jbTableVisible=true
         },
-        getJB(Id){
+        getJB(ID){
              var params={
-                No:Id
+                No:ID
             }
             this.axios.get('/lims/QualityStandard',{params:params}).then((res) => {
                 this.jbarr=res.data.data[0]['Discern']
