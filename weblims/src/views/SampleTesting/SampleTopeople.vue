@@ -1,6 +1,6 @@
 <template>
     <el-row :gutter='20'>
-        <el-col :span='24' class="mgt24 container" v-show="showstep">
+        <el-col :span='24' class="mgt24 container">
             <div class="mgb24 fsz14px">当前批次流程</div>
             <el-steps :active="currentstep" finish-status="success">
                 <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
@@ -45,6 +45,16 @@
                            <el-select v-model="searchObj.category" placeholder="物料类">
                                 <el-option
                                 v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                        <el-col :span='4' class="mgr15 boxshadow">
+                           <el-select v-model="searchObj.state" placeholder="物料类">
+                                <el-option
+                                v-for="item in opstate"
                                 :key="item.value"
                                 :label="item.label"
                                 :value="item.value">
@@ -311,7 +321,10 @@ export default {
         return {
            IsDoing:sessionStorage.getItem('Rights').replace(/'/g, '"').includes("样本及记录分发"),
            currentstep:4,
-           batchinfo:[],
+           batchinfo:[{Status:'申请'},{Status:'请验审核'},{Status:'取样'},{Status:'接收'},{Status:'分发'},{Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'}],
+           opstate: [{value: '申请',label: '申请'},{value: '请验审核',label: '请验审核'}, {value: '取样',label: '取样'},{value: '接收',label: '接收'},{value: '分发',label: '分发'},
+            {value: '质检',label: '质检'},{value: '报告',label: '报告'}, {value: '质检审核',label: '质检审核'},{value: '放行',label: '放行'}
+            ],
            showstep:false,
            workers:[],
            Row:{},
@@ -335,6 +348,7 @@ export default {
            },
            searchObj:{
                category:'玉米淀粉',
+               state:'分发',
                registrydate:moment(new Date()).format('YYYY-MM-DD')
            },
            options: [{
@@ -367,13 +381,12 @@ export default {
             }
             this.axios.get('/lims/Board',{params:params}).then((res) => {
                 if(res.data.code=='1000'){
-                    this.batchinfo=res.data.data
-                    this.batchinfo=this.batchinfo.concat({Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'})
-                    if(this.batchinfo.length!==[]){
-                        this.showstep=true
-                    }else{
-                        this.showstep=false
-                    }
+                   this.currentstep=res.data.data.length
+                   this.batchinfo=this.batchinfo.map((item) => { //清空缓存的状态
+                       return {Status:item.Status}
+                   })
+                   this.batchinfo.splice(0,res.data.data.length)
+                   this.batchinfo=res.data.data.concat(this.batchinfo)
                 }else{
                     this.$message({
                         type:'info',
@@ -392,7 +405,7 @@ export default {
                 Content:JSON.stringify(this.distribute.Content),
                 Character:JSON.stringify(this.distribute.Character),
                 CheckStartTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-                Name:'代晓进'
+                Name:localStorage.getItem('Name')
             }
             this.axios.post('/lims/Worker',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
@@ -400,7 +413,6 @@ export default {
                         type:'success',
                         message:'下发操作成功'
                     })
-                    this.SearchTab()
                 }else{
                    this.$message({
                         type:'error',
@@ -412,11 +424,16 @@ export default {
        getWorker(){ //获取分组和人员
            var params={
                CheckProjectNO:this.distribute.CheckProjectNO,
-               Name:'代晓进'
+               Name:localStorage.getItem('Name')
            }
            this.axios.get('/lims/Worker',{params:params}).then((res) => {
                if(res.data.code=='1000'){
                    this.workers=res.data.data
+               }else{
+                   this.$message({
+                       type:'warning',
+                       message:'无权限，获取小组人员失败'
+                   })
                }
            })
        },
@@ -449,7 +466,7 @@ export default {
                 PerPage:this.batchTableData.limit,
                 Product:this.searchObj.category,
                 DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:'分发'
+                Status:this.searchObj.state
             }
             this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
                 if(res.data.data.length==0){

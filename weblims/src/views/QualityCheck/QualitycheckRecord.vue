@@ -1,5 +1,16 @@
 <template>
     <el-row :gutter='20'>
+         <el-col :span='24' class="mgt24 container mgb10">
+            <div class="mgb24 fsz14px">当前批次流程</div>
+            <el-steps :active="currentstep" finish-status="success">
+                <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
+                    <template slot="description" v-if="item.User">
+                        <div><span>姓名：</span><span>{{item.User}}</span></div>
+                        <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
+                    </template>
+                </el-step>
+            </el-steps>
+        </el-col>
         <el-col :span='7'>
             <div class="container mgt24" style="height:400px;">
                 <el-col :span='24' style="borderBottom:1px solid #ccc;" class="padd15">
@@ -39,6 +50,16 @@
                                 :value="item.value">
                                 </el-option>
                             </el-select>
+                        </el-col>
+                        <el-col :span='4' class="mgr15 boxshadow">
+                            <el-select v-model="searchObj.state" placeholder="状态">
+                                    <el-option
+                                    v-for="item in opstate"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
                         </el-col>
                         <el-col :span='4' class="mgr15 boxshadow">
                            <el-date-picker
@@ -123,7 +144,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name==currentMan" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -137,7 +158,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name==currentMan" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -151,7 +172,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name==currentMan" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -165,7 +186,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name==currentMan" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -179,7 +200,7 @@
                                                 <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
                                                 <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" v-if="item.Name=='莫黄敏'" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                                   <el-checkbox v-model="item.Status" v-if="item.Name==currentMan" :checked='item.Status=="true"'>是否符合</el-checkbox>
                                                 </el-col>
                                             </el-row>
                                         </div>
@@ -188,7 +209,7 @@
                             </el-col>
                         </div>
                  </el-col>
-                <el-col class="mgt24" style="textAlign:right;"><el-button type="primary" @click="postResult">发送结果</el-button></el-col>
+                <el-col class="mgt24" style="textAlign:right;" v-if="IsDoing"><el-button type="primary" @click="postResult">发送结果</el-button></el-col>
             </el-row>
         </el-col>
     </el-row>
@@ -198,6 +219,12 @@ var moment=require('moment')
 export default {
     data(){
         return {
+           currentstep:5,
+           batchinfo:[{Status:'申请'},{Status:'请验审核'},{Status:'取样'},{Status:'接收'},{Status:'分发'},{Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'}],
+           IsDoing:JSON.parse(sessionStorage.getItem('Rights').replace(/'/g, '"')).includes("质检发送"),
+           opstate: [{value: '申请',label: '申请'},{value: '请验审核',label: '请验审核'}, {value: '取样',label: '取样'},{value: '接收',label: '接收'},{value: '分发',label: '分发'},
+            {value: '质检',label: '质检'},{value: '报告',label: '报告'}, {value: '质检审核',label: '质检审核'},{value: '放行',label: '放行'}
+            ],
            RecordForm:{ //检验记录清单
                Type:'',
                CheckTime:'',
@@ -213,6 +240,7 @@ export default {
            Row:{},
            searchObj:{
                category:'玉米淀粉',
+               state:'质检',
                registrydate:moment(new Date()).format('YYYY-MM-DD')
            },
            options: [{
@@ -225,6 +253,7 @@ export default {
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
+            currentMan:localStorage.getItem('Name'),
             Discerns:[],
             Inspects:[],
             Characters:[],
@@ -241,34 +270,34 @@ export default {
     methods: {
         postResult(){ //发送结果按钮
             var arr1=this.Discerns.map((item, index) => {
-                if(item.Name=='莫黄敏'){
+                if(item.Name==this.currentMan){
                     return {Id:item.Id,Status:(item.Status).toString()}
                 }
             })
             var arr2=this.Inspects.map((item, index) => {
-                if(item.Name=='莫黄敏'){
+                if(item.Name==this.currentMan){
                 return {Id:item.Id,Status:(item.Status).toString()}
                 }
             })
             var arr3=this.Characters.map((item, index) => {
-                if(item.Name=='莫黄敏'){
+                if(item.Name==this.currentMan){
                 return {Id:item.Id,Status:(item.Status).toString()}
                 }
             })
             var arr4=this.Contents.map((item, index) => {
-                if(item.Name=='莫黄敏'){
+                if(item.Name==this.currentMan){
                 return {Id:item.Id,Status:(item.Status).toString()}
                 }
             })
             var arr5=this.Microbes.map((item, index) => {
-                if(item.Name=='莫黄敏'){
+                if(item.Name==this.currentMan){
                 return {Id:item.Id,Status:(item.Status).toString()}
                 }
             })
             var arr=[...arr1,...arr2,...arr3,...arr4,...arr5]
             var params={
                 CheckProjectNO:this.CheckProjectNO,
-                Name:'莫黄敏',
+                Name:localStorage.getItem('Name'),
                 Isopt:'Y',
                 Action:JSON.stringify(arr),
                 CheckEndTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
@@ -306,7 +335,7 @@ export default {
                 PerPage:this.batchTableData.limit,
                 Product:this.searchObj.category,
                 DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:'质检'
+                Status:this.searchObj.state
             }
             this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
                 this.batchTableData.data=res.data.data
@@ -318,11 +347,33 @@ export default {
             this.Row=row
             this.RecordForm.CheckTime=moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
             this.getJbInfo(row.CheckProjectNO)
+            this.getCurrentSteps(row.CheckProjectNO)
+        },
+        getCurrentSteps(CheckProjectNO){ //获取进度条
+           var params={
+                Action:'p',
+                CheckProjectNO:CheckProjectNO
+            }
+            this.axios.get('/lims/Board',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                   this.currentstep=res.data.data.length
+                   this.batchinfo=this.batchinfo.map((item) => { //清空缓存的状态
+                       return {Status:item.Status}
+                   })
+                   this.batchinfo.splice(0,res.data.data.length)
+                   this.batchinfo=res.data.data.concat(this.batchinfo)
+                }else{
+                    this.$message({
+                        type:'info',
+                        message:'获取数据失败，请重试'
+                    })
+                }
+            })
         },
         getJbInfo(CheckProjectNO){
             var params={
                 CheckProjectNO:CheckProjectNO,
-                Name:'莫黄敏'
+                Name:this.currentMan
             }
             this.axios.get('/lims/QualityTesting',{params:params}).then((res) => {
                 if(res.data.data.length!=0){

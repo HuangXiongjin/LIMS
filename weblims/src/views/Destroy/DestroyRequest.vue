@@ -71,7 +71,7 @@
                          <el-col :span='3' class="lightgreen">{{Row.Position}}</el-col>
                          <el-col :span='3' class="lightgreen">{{Row.ProductNumber}}</el-col>
                      </el-row>
-                     <el-row style="paddingTop:26px;height:400px;">
+                     <el-row style="paddingTop:26px;height:300px;">
                          <el-table :data="[Row]" style="width: 100%">
                             <el-table-column prop="ProductNumber" label="留样批号"></el-table-column>
                             <el-table-column prop="BatchTime" label="留样日期" width="150"></el-table-column>
@@ -123,7 +123,7 @@
                      </el-row>
                 </el-col>
             </el-row>
-            <el-col class="mgt24" style="textAlign:right;">
+            <el-col class="mgt24" style="textAlign:right;" v-if="IsDoing">
                 <el-button type="danger" :disabled='xfopt' @click="JudgeDestroy('N')">驳回</el-button>
                 <el-button type="success" :disabled='xfopt' @click="JudgeDestroy('Y')">同意销毁</el-button>
             </el-col>
@@ -135,6 +135,7 @@ var moment=require('moment')
 export default {
     data(){
         return {
+            IsDoing:JSON.parse(sessionStorage.getItem('Rights').replace(/'/g, '"')).includes("销毁审核"),
             batchTableData:{ //物料BOM
                 data:[],
                 limit: 5,//当前显示多少条

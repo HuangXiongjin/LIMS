@@ -19,14 +19,15 @@
         <el-col :span='19'>
             <el-col :span='24' class="container">
                 <el-steps :active="currentstep" finish-status="success">
-                    <el-step title="请验审核" @click.native="selectStatus('请验审核',0)" class="cursor"></el-step>
-                    <el-step title="取样" @click.native="selectStatus('取样',1)" class="cursor"></el-step>
-                    <el-step title="接收" @click.native="selectStatus('接收',2)" class="cursor"></el-step>
-                    <el-step title="分发" @click.native="selectStatus('分发',3)" class="cursor"></el-step>
-                    <el-step title="质检" @click.native="selectStatus('质检',4)" class="cursor"></el-step>
-                    <el-step title="报告" @click.native="selectStatus('报告',5)" class="cursor"></el-step>
-                    <el-step title="质检审核" @click.native="selectStatus('质检审核',6)" class="cursor"></el-step>
-                    <el-step title="放行" @click.native="selectStatus('放行',7)" class="cursor"></el-step>
+                    <el-step title="申请" @click.native="selectStatus('申请',0)" class="cursor"></el-step>
+                    <el-step title="请验审核" @click.native="selectStatus('请验审核',1)" class="cursor"></el-step>
+                    <el-step title="取样" @click.native="selectStatus('取样',2)" class="cursor"></el-step>
+                    <el-step title="接收" @click.native="selectStatus('接收',3)" class="cursor"></el-step>
+                    <el-step title="分发" @click.native="selectStatus('分发',4)" class="cursor"></el-step>
+                    <el-step title="质检" @click.native="selectStatus('质检',5)" class="cursor"></el-step>
+                    <el-step title="报告" @click.native="selectStatus('报告',6)" class="cursor"></el-step>
+                    <el-step title="质检审核" @click.native="selectStatus('质检审核',7)" class="cursor"></el-step>
+                    <el-step title="放行" @click.native="selectStatus('放行',8)" class="cursor"></el-step>
                 </el-steps>
             </el-col>
             <el-col :span='24' class="mgt24 container">

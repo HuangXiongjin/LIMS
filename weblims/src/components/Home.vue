@@ -43,12 +43,12 @@
                 <router-view></router-view>
             </el-main>
         </el-container>
-        <el-dialog title="个人信息" :visible.sync="persondialogTableVisible" width='300px' :modal=false>
+        <el-dialog title="个人信息" :visible.sync="persondialogTableVisible" width='320px' :modal=false>
              <el-form>
-                <el-form-item label="用户名：">{{ userInfo.Name }}</el-form-item>
-                <el-form-item label="工号：">{{ userInfo.WorkNumber }}</el-form-item>
-                <el-form-item label="最近登录时间：">{{ userInfo.LastLoginTime }}</el-form-item>
-                <el-form-item label="权限：">{{ userInfo.Permissions }}</el-form-item>
+                <el-form-item label="登录名称：">{{ userInfo.Name }}</el-form-item>
+                <el-form-item label="登录密码：">{{ userInfo.WorkNumber }}</el-form-item>
+                <el-form-item label="登录时间：">{{ userInfo.LastLoginTime }}</el-form-item>
+                <el-form-item label="拥有权限：">{{ userInfo.Permissions }}</el-form-item>
               </el-form>
         </el-dialog>
       </el-container>
@@ -70,7 +70,7 @@ export default {
                  Name:sessionStorage.getItem('Name'),
                  WorkNumber:sessionStorage.getItem('WorkNumber'),
                  LastLoginTime:sessionStorage.getItem('LastLoginTime'),
-                 Permissions:'登录'
+                 Permissions:JSON.parse(sessionStorage.getItem('Rights').replace(/'/g, '"'))
              },
              SonMenuList:JSON.parse(localStorage.getItem('sonMenu')),
              ActiveMenu:100,
@@ -79,7 +79,7 @@ export default {
             },
              mneulist:[
                  {name:'功能看板',icon:'el-icon-data-analysis',children:[
-                    {name:'进度看板',path:'/ProgressBoard'},
+                    {name:'工艺看板',path:'/ProgressBoard'},
                     {name:'系统首页',path:'/Board'},
                     {name:'统计分析',path:'/StatisticalAnalysis'},
                     {name:'批次进度',path:'/BatchProgress'},
@@ -146,7 +146,7 @@ export default {
     },
     methods: {
         getHeight(){
-          this.conheight.height=window.innerHeight-160+'px';
+          this.conheight.height=(window.innerHeight-160)+'px'
        },
         getCurrentSonList(obj,index){
             localStorage.setItem('SonMenuIndex',index)
