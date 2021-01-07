@@ -320,7 +320,7 @@ export default {
 </script>
 <style scoped>
   .box{
-      background-color:#E8E8E8;
+      background-color:#FFFF99;
       height: 100%;
   }
   #box3{

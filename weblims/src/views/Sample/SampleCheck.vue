@@ -204,9 +204,9 @@ export default {
                 StartTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 00:00:00"),
                 EndTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 23:59:59"),
                 QueryColumnName2:"Status",
-                Status:this.searchObj.state
+                QueryColumnValue2:this.searchObj.state
             }
-            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
+            this.axios.get('/lims/CRUD',{params:params}).then((res) => {
                 this.batchTableData.data=res.data.data
                 this.batchTableData.total=res.data.total
             })

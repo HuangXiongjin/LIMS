@@ -246,11 +246,18 @@ export default {
                 No:ID
             }
             this.axios.get('/lims/QualityStandard',{params:params}).then((res) => {
-                this.jbarr=res.data.data[0]['Discern']
-                this.jcarr=res.data.data[0]['Inspect']
-                this.xzarr=res.data.data[0]['Character']
-                this.hlcdarr=res.data.data[0]['Content']
-                this.wswarr=res.data.data[0]['Microbe']
+                if(res.data.code=='1000'){
+                    this.jbarr=res.data.data[0]['Discern']
+                    this.jcarr=res.data.data[0]['Inspect']
+                    this.xzarr=res.data.data[0]['Character']
+                    this.hlcdarr=res.data.data[0]['Content']
+                    this.wswarr=res.data.data[0]['Microbe']
+                }else{
+                    this.$message({
+                        type:'warning',
+                        message:'获取检验数据失败'
+                    })
+                }
             })
         },
         getInitTree() { //获取初始树形结构
