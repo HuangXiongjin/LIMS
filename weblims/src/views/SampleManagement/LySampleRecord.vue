@@ -4,9 +4,9 @@
             <div class="mgb24 fsz14px">当前批次流程</div>
             <el-steps :active="currentstep" finish-status="success">
                 <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
-                    <template slot="description" v-if="item.User">
-                        <div><span>姓名：</span><span>{{item.User}}</span></div>
-                        <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
+                    <template slot="description" v-if="item.CheckUser">
+                        <div><span>姓名：</span><span>{{item.CheckUser}}</span></div>
+                        <div><span>时间：</span><span>{{item.CheckDate}}</span></div>
                     </template>
                 </el-step>
             </el-steps>
@@ -70,7 +70,7 @@
                      <el-divider></el-divider>
                      <el-row style="paddingTop:10px;">
                          <el-col :span='2'>品名：</el-col>
-                         <el-col :span='3' class="lightgreen">{{Row.Name}}</el-col>
+                         <el-col :span='3' class="lightgreen">{{Row.Product}}</el-col>
                          <el-col :span='2'>温度：</el-col>
                          <el-col :span='2' class="lightgreen">25</el-col>
                          <el-col :span='3'>相对湿度：</el-col>
@@ -172,7 +172,7 @@ export default {
                 total: 0,//总的多少页
             },
             xfopt:true,
-            batchtableconfig:[{prop:'ProductNumber',label:'产品批号'},{prop:'Name',label:'品名'},{prop:'BatchTime',label:'留样时间',width:155}],//批次列表
+            batchtableconfig:[{prop:'ProductNumber',label:'产品批号'},{prop:'Product',label:'品名'},{prop:'BatchTime',label:'留样时间',width:155}],//批次列表
         }
     },
     created(){

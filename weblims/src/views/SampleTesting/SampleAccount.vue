@@ -4,9 +4,9 @@
             <div class="mgb24 fsz14px">当前批次流程</div>
             <el-steps :active="currentstep" finish-status="success">
                 <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
-                    <template slot="description" v-if="item.User">
-                        <div><span>姓名：</span><span>{{item.User}}</span></div>
-                        <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
+                    <template slot="description" v-if="item.CheckUser">
+                        <div><span>姓名：</span><span>{{item.CheckUser}}</span></div>
+                        <div><span>时间：</span><span>{{item.CheckDate}}</span></div>
                     </template>
                 </el-step>
             </el-steps>
@@ -86,7 +86,6 @@ export default {
            currentRow:[],
            currentstep:4,
            batchinfo:[{Status:'申请'},{Status:'请验审核'},{Status:'取样'},{Status:'接收'},{Status:'分发'},{Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'}],
-           showstep:false,
            searchObj:{
                category:'玉米淀粉',
                registrydate:moment(new Date()).format('YYYY-MM-DD'),
@@ -111,7 +110,7 @@ export default {
             opstate: [{value: '申请',label: '申请'},{value: '请验审核',label: '请验审核'}, {value: '取样',label: '取样'},{value: '接收',label: '接收'},{value: '分发',label: '分发'},
             {value: '质检',label: '质检'},{value: '报告',label: '报告'}, {value: '质检审核',label: '质检审核'},{value: '放行',label: '放行'}
             ],
-            batchtableconfig:[{prop:'Name',label:'品名'},{prop:'ProductType',label:'类型'}
+            batchtableconfig:[{prop:'Product',label:'品名'},{prop:'ProductType',label:'类型'}
             ,{prop:'ProductNumber',label:'来料批号'},{prop:'Number',label:'物料编码'},{prop:'Amount',label:'数量'},{prop:'Unit',label:'单位'},
             {prop:'CheckDepartment',label:'请验部门'},{prop:'CheckProcedure',label:'请验工序'},
             {prop:'CheckUser',label:'请验人'},{prop:'CheckDate',label:'请验时间',width:'150'},
@@ -195,18 +194,23 @@ export default {
         },
         SearchTab(){ //查询相关数据
             var params={
+                TableName:"CheckForm",
+                Query:"Accurate",
                 Page:this.batchTableData.offset,
                 PerPage:this.batchTableData.limit,
-                Product:this.searchObj.category,
-                DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:this.searchObj.status
+                QueryColumnName:"Product",
+                QueryColumnValue:this.searchObj.category,
+                TimeColumn:"CheckDate",
+                StartTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 00:00:00"),
+                EndTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 23:59:59"),
+                QueryColumnName2:"Status",
+                QueryColumnValue2:this.searchObj.status
             }
-            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
-                if(res.data.data.length==0){
-                    this.showstep=false
+            this.axios.get('/lims/CRUD',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                    this.batchTableData.data=res.data.data
+                    this.batchTableData.total=res.data.total
                 }
-                this.batchTableData.data=res.data.data
-                this.batchTableData.total=res.data.total
             })
         },
         handleSizeChange(limit){ //每页条数切换

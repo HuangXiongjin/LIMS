@@ -4,9 +4,9 @@
             <div class="mgb24 fsz14px">当前批次流程</div>
             <el-steps :active="currentstep" finish-status="success">
                 <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
-                    <template slot="description" v-if='item.User'>
-                        <div><span>姓名：</span><span>{{item.User}}</span></div>
-                        <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
+                    <template slot="description" v-if='item.CheckUser'>
+                        <div><span>姓名：</span><span>{{item.CheckUser}}</span></div>
+                        <div><span>时间：</span><span>{{item.CheckDate}}</span></div>
                     </template>
                 </el-step>
             </el-steps>
@@ -92,7 +92,7 @@
                                 </el-col>
                                 <el-col :span='10'>
                                     <el-form-item label="品名/名称">
-                                        <el-input v-model="requestform.Name"></el-input>
+                                        <el-input v-model="requestform.Product"></el-input>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span='10'>
@@ -237,13 +237,14 @@ export default {
                 value: '选项1',
                 label: '物料一'
                 }],
+            rowCheckProjectNO:'',
             batchTableData:{ //物料BOM
                 data:[],
                 limit: 3,//当前显示多少条
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
-            batchtableconfig:[{prop:'CheckNumber',label:'请验单号'},{prop:'Name',label:'品名'},{prop:'CheckDate',label:'请验时间',width:155}],//批次列表
+            batchtableconfig:[{prop:'CheckNumber',label:'请验单号'},{prop:'Product',label:'品名'},{prop:'CheckDate',label:'请验时间',width:155}],//批次列表
         }
     },
     created(){
@@ -317,19 +318,31 @@ export default {
            })
         },
          SearchTab(){ //查询相关数据
-            var params={
+             var params={
+                TableName:"CheckForm",
+                Query:"Accurate",
                 Page:this.batchTableData.offset,
                 PerPage:this.batchTableData.limit,
-                Product:this.searchObj.category,
-                DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:this.searchObj.state
+                QueryColumnName:"Product",
+                QueryColumnValue:this.searchObj.category,
+                TimeColumn:"CheckDate",
+                StartTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 00:00:00"),
+                EndTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 23:59:59"),
+                QueryColumnName2:"Status",
+                QueryColumnValue2:this.searchObj.state
             }
-            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
-                this.batchTableData.data=res.data.data
-                this.batchTableData.total=res.data.total
+            this.axios.get('/lims/CRUD',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                    this.batchTableData.data=res.data.data
+                    this.batchTableData.total=res.data.total
+                     if(this.rowCheckProjectNO!==''){
+                        this.getCurrentSteps(this.rowCheckProjectNO)
+                    }
+                }
             })
         },
         handletabClick(row){ //左侧tab点击事件
+            this.rowCheckProjectNO=row.CheckProjectNO
             this.currentgoods=row.CheckNumber
             this.requestform=row
             this.projectform=row

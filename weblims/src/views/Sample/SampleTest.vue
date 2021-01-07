@@ -4,9 +4,9 @@
             <div class="mgb24 fsz14px">当前批次流程</div>
             <el-steps :active="currentstep" finish-status="success">
                 <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
-                    <template slot="description" v-if='item.User'>
-                        <div><span>姓名：</span><span>{{item.User}}</span></div>
-                        <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
+                    <template slot="description" v-if='item.CheckUser'>
+                        <div><span>姓名：</span><span>{{item.CheckUser}}</span></div>
+                        <div><span>时间：</span><span>{{item.CheckDate}}</span></div>
                     </template>
                 </el-step>
             </el-steps>
@@ -154,16 +154,24 @@ export default {
            })
         },
         SearchTab(){ //查询相关数据
-            var params={
+             var params={
+                TableName:"CheckForm",
+                Query:"Accurate",
                 Page:this.batchTableData.offset,
                 PerPage:this.batchTableData.limit,
-                Product:this.searchObj.category,
-                DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:this.searchObj.state
+                QueryColumnName:"Product",
+                QueryColumnValue:this.searchObj.category,
+                TimeColumn:"CheckDate",
+                StartTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 00:00:00"),
+                EndTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 23:59:59"),
+                QueryColumnName2:"Status",
+                QueryColumnValue2:this.searchObj.state
             }
-            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
-                this.batchTableData.data=res.data.data
-                this.batchTableData.total=res.data.total
+            this.axios.get('/lims/CRUD',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                    this.batchTableData.data=res.data.data
+                    this.batchTableData.total=res.data.total
+                }
             })
         },
         getInitTab(){ //初始化获取表格数据

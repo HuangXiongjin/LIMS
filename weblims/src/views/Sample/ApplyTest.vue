@@ -4,9 +4,9 @@
             <div class="mgb24 fsz14px">当前批次流程</div>
             <el-steps :active="currentstep" finish-status="success">
                 <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
-                    <template slot="description" v-if='item.User'>
-                        <div><span>姓名：</span><span>{{item.User}}</span></div>
-                        <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
+                    <template slot="description" v-if='item.CheckUser'>
+                        <div><span>姓名：</span><span>{{item.CheckUser}}</span></div>
+                        <div><span>时间：</span><span>{{item.CheckDate}}</span></div>
                     </template>
                 </el-step>
             </el-steps>
@@ -217,7 +217,7 @@ export default {
                 if(res.data.code=='1000'){
                   this.currentstep=res.data.data.length
                    this.batchinfo=this.batchinfo.map((item) => { //清空缓存的状态
-                       return {Status:item.Status}
+                       return {Status:item.Status,}
                    })
                    this.batchinfo.splice(0,res.data.data.length)
                    this.batchinfo=res.data.data.concat(this.batchinfo)
@@ -298,7 +298,19 @@ export default {
                         message:'提交成功'
                     })
                     this.checkNo=res.data.data
+                    this.requestform={Specs:'',CheckNumber:'',Name:'',ProductNumber:'',Supplier:'',Number:'',Amount:'',Unit:''}
+                    this.projectform={CheckProcedure:'',CheckDepartment:'',ProductType:'',CheckProject:{Discern:[],Character:[],Inspect:[],Content:[],Microbe:[]}}
                     this.getCurrentSteps()
+                }else if(res.data.code=='1001'){
+                     this.$message({
+                        type:'warning',
+                        message:"请验单号不能重复"
+                    })
+                }else{
+                     this.$message({
+                        type:'success',
+                        message:"提交失败"
+                    })
                 }
             })
         }

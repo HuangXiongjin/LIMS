@@ -38,9 +38,9 @@
             <div class="mgb24 fsz14px">当前批次流程</div>
             <el-steps :active="currentstep" finish-status="success">
                 <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
-                    <template slot="description" v-if='item.User'>
-                        <div><span>姓名：</span><span>{{item.User}}</span></div>
-                        <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
+                    <template slot="description" v-if='item.CheckUser'>
+                        <div><span>姓名：</span><span>{{item.CheckUser}}</span></div>
+                        <div><span>时间：</span><span>{{item.CheckDate}}</span></div>
                     </template>
                 </el-step>
             </el-steps>
@@ -144,7 +144,8 @@ export default {
                 total: 0,//总的多少页
             },
             CheckProjectNO:'',
-            batchtableconfig:[{prop:'Specs',label:"规格"},{prop:'CheckNumber',label:'请验单号'},{prop:'Name',label:'品名'},{prop:'ProductNumber',label:'来料批号'},{prop:'Supplier',label:'供货单位'},{prop:'Number',label:'物料编码'},{prop:'Amount',label:'数量'},{prop:'Unit',label:'单位'},{prop:'CheckDate',label:'请验时间',width:'200'}],//批次列表
+            rowCheckProjectNO:'',
+            batchtableconfig:[{prop:'Specs',label:"规格"},{prop:'CheckNumber',label:'请验单号'},{prop:'Product',label:'品名'},{prop:'ProductNumber',label:'来料批号'},{prop:'Supplier',label:'供货单位'},{prop:'Number',label:'物料编码'},{prop:'Amount',label:'数量'},{prop:'Unit',label:'单位'},{prop:'CheckDate',label:'请验时间',width:'200'}],//批次列表
             batchtableconfig2:[{prop:'Specs',label:"规格"},{prop:'CheckNumber',label:'请验单号'},{prop:'Product',label:'品名'},{prop:'ProductNumber',label:'来料批号'},{prop:'Supplier',label:'供货单位'},{prop:'Number',label:'物料编码'},{prop:'ProductType',label:'物料类型'},{prop:'Amount',label:'数量'},{prop:'Unit',label:'单位'},{prop:'OperationTime',label:'操作时间',width:'200'}],//批次列表
         }
     },
@@ -154,10 +155,11 @@ export default {
     },
     methods: {
         clickSingleTab(row){
-            this.getCurrentSteps(row.No)    
+            this.getCurrentSteps(row.CheckProjectNO)   
         },
         clickAllTab(row){
             this.getCurrentSteps(row.CheckProjectNO)
+            this.rowCheckProjectNO=row.CheckProjectNO
         },
         getCurrentSteps(CheckProjectNO){
            var params={
@@ -211,19 +213,29 @@ export default {
                 if(res.data.code=='1000'){
                     this.batchTableData.data=res.data.data
                     this.batchTableData.total=res.data.total
+                    if(this.rowCheckProjectNO!==''){
+                        this.getCurrentSteps(this.rowCheckProjectNO)
+                    }
                 }
-                
             })
         },
         getPassedTab(){
             var params={
                 Page:this.batchTableData2.offset,
                 PerPage:this.batchTableData2.limit,
-                Name:localStorage.getItem('Name')
+                User:localStorage.getItem('Name')
             }
-            this.axios.get('/lims/CRUD',{params:params}).then((res) => {
-                this.batchTableData2.data=res.data.data
-                this.batchTableData2.total=res.data.total
+            this.axios.get('/lims/GetList',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                    this.batchTableData2.data=res.data.data
+                    this.batchTableData2.total=res.data.total
+                }else{
+                    this.$message({
+                        type:'warning',
+                        message:'查询数据失败'
+                    })
+                }
+                
             })
         },
         mulBatchPass(){ //多条数据审核通过
@@ -267,7 +279,7 @@ export default {
             this.checkedRow=row
         },
         handleBack(row){ //驳回审核
-            console.log(row)
+           
         },
         handlePass(row){ //通过审核
             this.$confirm('此操作将审核通过该项, 是否继续?', '提示', {

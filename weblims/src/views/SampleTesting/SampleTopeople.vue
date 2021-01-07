@@ -4,9 +4,9 @@
             <div class="mgb24 fsz14px">当前批次流程</div>
             <el-steps :active="currentstep" finish-status="success">
                 <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
-                    <template slot="description" v-if='item.User'>
-                        <div><span>姓名：</span><span>{{item.User}}</span></div>
-                        <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
+                    <template slot="description" v-if='item.CheckUser'>
+                        <div><span>姓名：</span><span>{{item.CheckUser}}</span></div>
+                        <div><span>时间：</span><span>{{item.CheckDate}}</span></div>
                     </template>
                 </el-step>
             </el-steps>
@@ -89,7 +89,7 @@
                               <el-form :inline="true">
                                 <el-col :span='8'>
                                   <el-form-item label="品名">
-                                    <el-input v-model="Row.Name" placeholder="品名"></el-input>
+                                    <el-input v-model="Row.Product" placeholder="品名"></el-input>
                                   </el-form-item>
                                </el-col>
                                <el-col :span='8'>
@@ -99,7 +99,7 @@
                                </el-col>
                                <el-col :span='8'>
                                  <el-form-item label="分配样量">
-                                    <el-input v-model="Row.JAccount" placeholder="分配样量"></el-input>
+                                    <el-input v-model="Record.JNumber" placeholder="分配样量"></el-input>
                                 </el-form-item>
                                </el-col>
                                <el-col :span='8'>
@@ -109,7 +109,7 @@
                                </el-col>
                                <el-col :span='8'>
                                  <el-form-item label="编号">
-                                    <el-input v-model="Row.Foo" placeholder="编号"></el-input>
+                                    <el-input v-model="Record.No" placeholder="编号"></el-input>
                                 </el-form-item>
                                </el-col>
                               </el-form>
@@ -228,7 +228,7 @@
                                 <el-row>
                                     <el-col :span='11' class="mgt14">
                                         <el-form-item label="品名：">
-                                            <el-input v-model="Row.Name" :disabled="true"></el-input>
+                                            <el-input v-model="Row.Product" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
@@ -325,7 +325,6 @@ export default {
            opstate: [{value: '申请',label: '申请'},{value: '请验审核',label: '请验审核'}, {value: '取样',label: '取样'},{value: '接收',label: '接收'},{value: '分发',label: '分发'},
             {value: '质检',label: '质检'},{value: '报告',label: '报告'}, {value: '质检审核',label: '质检审核'},{value: '放行',label: '放行'}
             ],
-           showstep:false,
            workers:[],
            Row:{},
            distribute:{ //选择绑定的集合
@@ -339,6 +338,7 @@ export default {
            },
            radio2:'样本分发',
            Recordobj:{},
+           Record:{},
            jbarr:{ //获取到集合
                Discern:[],
                Inspect:[],
@@ -366,7 +366,7 @@ export default {
             Characters:[],
             Contents:[],
             Microbes:[],
-            batchtableconfig:[{prop:'CheckNumber',label:'请验单号'},{prop:'Name',label:'品名'},{prop:'CheckDate',label:'请验时间',width:155}],//批次列表
+            batchtableconfig:[{prop:'CheckNumber',label:'请验单号'},{prop:'Product',label:'品名'},{prop:'CheckDate',label:'请验时间',width:155}],//批次列表
         }
     },
     created(){
@@ -437,13 +437,18 @@ export default {
                }
            })
        },
-       getRecord(){ //获取记录项数据
+       getRecord(){
            var params={
-               CheckProjectNO:this.distribute.CheckProjectNO
+               TableName:"Distribute",
+               Query:"Accurate", 
+               QueryColumnName:"CheckProjectNO",
+               QueryColumnValue:this.distribute.CheckProjectNO,
+               QueryColumnName2:"Status",
+               QueryColumnValue2:"J"
            }
-           this.axios.get('/lims/CheckRecord',{params:params}).then((res) => {
+           this.axios.get('/lims/CRUD',{params:params}).then((res) => {
                if(res.data.code=='1000' && res.data.data!=null){
-                   this.Recordobj=res.data.data
+                   this.Record=res.data.data[0]
                }
            })
        },
@@ -461,19 +466,24 @@ export default {
            })
         },
          SearchTab(){ //查询相关数据
-            var params={
+           var params={
+                TableName:"CheckForm",
+                Query:"Accurate",
                 Page:this.batchTableData.offset,
                 PerPage:this.batchTableData.limit,
-                Product:this.searchObj.category,
-                DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:this.searchObj.state
+                QueryColumnName:"Product",
+                QueryColumnValue:this.searchObj.category,
+                TimeColumn:"CheckDate",
+                StartTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 00:00:00"),
+                EndTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 23:59:59"),
+                QueryColumnName2:"Status",
+                QueryColumnValue2:this.searchObj.state
             }
-            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
-                if(res.data.data.length==0){
-                    this.showstep=false
+            this.axios.get('/lims/CRUD',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                    this.batchTableData.data=res.data.data
+                    this.batchTableData.total=res.data.total
                 }
-                this.batchTableData.data=res.data.data
-                this.batchTableData.total=res.data.total
             })
         },
         handSelectChange(e){
