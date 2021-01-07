@@ -20,7 +20,7 @@ def record():
     if request.method == 'POST':
         CheckProjectNO = request.values.get('CheckProjectNO')
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
-        db_session.add(Record(CheckProjectNO=CheckProjectNO, Product=data.Name, ProductNumber=data.ProductNumber,
+        db_session.add(Record(CheckProjectNO=CheckProjectNO, Product=data.Product, ProductNumber=data.ProductNumber,
                               Specs=data.Specs, CheckDepartment=data.CheckDepartment,
                               Type=request.values.get('Type'),
                               Number=data.Amount, SampleTime=data.SampleTime,
