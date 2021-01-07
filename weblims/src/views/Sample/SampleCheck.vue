@@ -201,14 +201,18 @@ export default {
                 PerPage:this.batchTableData.limit,
                 QueryColumnName:"Product",
                 QueryColumnValue:this.searchObj.category,
+                TimeColumn:"CheckDate",
                 StartTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 00:00:00"),
                 EndTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 23:59:59"),
                 QueryColumnName2:"Status",
                 QueryColumnValue2:this.searchObj.state
             }
             this.axios.get('/lims/CRUD',{params:params}).then((res) => {
-                this.batchTableData.data=res.data.data
-                this.batchTableData.total=res.data.total
+                if(res.data.code=='1000'){
+                    this.batchTableData.data=res.data.data
+                    this.batchTableData.total=res.data.total
+                }
+                
             })
         },
         getPassedTab(){
