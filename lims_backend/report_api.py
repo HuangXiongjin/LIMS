@@ -53,8 +53,8 @@ def quality_testing():
                 query_record = db_session.query(Record).filter_by(
                     CheckProjectNO=request.values.get('CheckProjectNO')).first()
                 db_session.add(
-                    CheckLife(No=NO, User=Name, Status="质检", Product=data.Name, CheckNumber=query_check.CheckNumber,
-                              ProductType=query_check.ProductType, OperationTime=CheckEndTime, Work="完成了质检内容"))
+                    CheckLife(CheckProjectNO=NO, CheckUser=Name, Status="质检", Product=data.Name, CheckNumber=query_check.CheckNumber,
+                              ProductType=query_check.ProductType, CheckDate=CheckEndTime, Content="完成了质检内容"))
                 db_session.commit()
                 db_session.add(ConclusionRecord(CheckNumber=query_check.Foo, TestDate=query_check.CheckDate,
                                                 ActualTime=query_check.SampleTime, CheckDate=query_data.Time,
@@ -92,9 +92,9 @@ def check_report():
             data.Life = '质检审核'
             data.Status = '质检审核'
             db_session.add(
-                CheckLife(No=CheckProjectNO, User=Name, Status="质检审核", Product=data.Name,
+                CheckLife(CheckProjectNO=CheckProjectNO, CheckUser=Name, Status="质检审核", Product=data.Name,
                           CheckNumber=data.CheckNumber,
-                          ProductType=data.ProductType, OperationTime=Time, Work="完成质检了审核"))
+                          ProductType=data.ProductType, CheckDate=Time, Content="完成质检了审核"))
             db_session.commit()
         if Action == '2':
             data1.QC = 'Y'
@@ -109,9 +109,9 @@ def check_report():
             data.Life = '放行'
             data.Status = '放行'
             db_session.add(
-                CheckLife(No=CheckProjectNO, User=Name, Status="放行", Product=data.Name,
+                CheckLife(CheckProjectNO=CheckProjectNO, CheckUser=Name, Status="放行", Product=data.Name,
                           CheckNumber=data.CheckNumber,
-                          ProductType=data.ProductType, OperationTime=Time, Work="完成了审核放行"))
+                          ProductType=data.ProductType, CheckDate=Time, Content="完成了审核放行"))
             db_session.commit()
         db_session.add_all([data1, data])
         db_session.commit()
@@ -135,7 +135,7 @@ def check_log():
             results = db_session.query(CheckLife).filter(CheckLife.Product == Product, CheckLife.ProductType == ProductType
                                                      ).order_by(CheckLife.ID.desc()).all()
         else:
-            results = db_session.query(CheckLife).filter(CheckLife.User == name).order_by(CheckLife.ID.desc()).all()
+            results = db_session.query(CheckLife).filter(CheckLife.CheckUser == name).order_by(CheckLife.ID.desc()).all()
         data = results[(page - 1) * per_page:page * per_page]
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                           ensure_ascii=False)
@@ -207,7 +207,7 @@ def destruction():
         # EndTime = request.values.get('EndTime')
         results = ''
         if destruction_type == '样品销毁':
-            results = db_session.query(CheckForm).filter(CheckForm.Name == Product,
+            results = db_session.query(CheckForm).filter(CheckForm.Product == Product,
                                                          CheckForm.ProductDestruction == '样品销毁').order_by(
                 CheckForm.ID.desc()).all()
         if destruction_type == '留样销毁':
@@ -234,7 +234,7 @@ def destruction_verify():
         # EndTime = request.values.get('EndTime')
         results = ''
         if destruction_type == '样品销毁':
-            results = db_session.query(DestructionForm).filter(CheckForm.Name == Product,
+            results = db_session.query(DestructionForm).filter(DestructionForm.Name == Product,
                                                                DestructionForm.Type == '样品销毁').order_by(
                 DestructionForm.ID.desc()).all()
         if destruction_type == '留样销毁':

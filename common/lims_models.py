@@ -98,7 +98,7 @@ class CheckLife(Base):
     CheckProjectNO = Column(Unicode(32), nullable=True)
     # 请验部门
     CheckDepartment = Column(Unicode(32), nullable=True)
-    # 请验时间
+    # 操作时间
     CheckDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d'))
     # 操作人
     CheckUser = Column(Unicode(16), nullable=True, default='')
@@ -222,6 +222,8 @@ class CheckForm(Base):
     Status = Column(Unicode(128), nullable=True, default='请验审核')
     # 备注
     Comment = Column(Unicode(256), nullable=True, default='')
+    # 样品销毁(样品销毁-留样销毁)
+    ProductDestruction = Column(Unicode(256), nullable=True, default='')
     # # 审核人
     # VerifyUser = Column(Unicode(16), nullable=True, default='')
     # # 审核时间

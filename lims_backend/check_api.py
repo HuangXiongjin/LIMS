@@ -52,7 +52,7 @@ def check_form():
         CheckNumber = data.get('CheckNumber')
         query_data = db_session.query(CheckForm).filter_by(CheckNumber=CheckNumber).first()
         if query_data:
-            return json.dumps({'code': '1000', 'msg': '请验单号不能重复'}, ensure_ascii=False)
+            return json.dumps({'code': '1001', 'msg': '请验单号不能重复'}, ensure_ascii=False)
         else:
             ProductType = data.get('ProductType')
             Product = data.get('Name')
@@ -207,3 +207,21 @@ def receive():
     db_session.add(data)
     db_session.commit()
     return json.dumps({'code': '1000', 'msg': '操作成功'}, cls=MyEncoder, ensure_ascii=False)
+
+
+@check.route('/GetList', methods=['GET'])
+def get_list():
+    # 当前页码
+    page = int(request.values.get('Page'))
+    # 每页记录数
+    per_page = int(request.values.get('PerPage'))
+    user = request.values.get('User')
+    query_check_life = db_session.query(CheckLife.CheckProjectNO).filter_by(CheckUser=user).all()
+    unique_no = set(i for i in query_check_life)
+    results = []
+    for item in unique_no:
+        query_data = db_session.query(CheckForm).filter_by(CheckProjectNO=item).first()
+        results.append(query_data)
+    data = results[(page - 1) * per_page:page * per_page]
+    return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
+                      ensure_ascii=False)
