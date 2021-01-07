@@ -3,16 +3,19 @@ import os
 import pymssql
 import pymysql
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CONFIG_DIR = os.path.join(BASE_DIR, 'config_db.ini')
+BASE_DIR = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
+CONFIG_DIR = os.path.abspath(os.path.join(BASE_DIR, 'config_db.ini'))
+# CONFIG_DIR = os.path.abspath(os.path.join('E:\project\LIMS\database', 'config_db.ini'))
+# print(os.path.join(BASE_DIR, 'config_db.ini'))
+# print(CONFIG_DIR)
 config = configparser.ConfigParser()
 config.read(CONFIG_DIR, encoding='utf-8')
 
-USERNAME = config['DATABASE']['USERNAME']
-PASSWORD = config['DATABASE']['PASSWORD']
-HOST = config['DATABASE']['HOST']
-PORT = config['DATABASE']['PORT']
-DB_NAME = config['DATABASE']['DB_NAME']
+USERNAME = config['SERVER']['USERNAME']
+PASSWORD = config['SERVER']['PASSWORD']
+HOST = config['SERVER']['HOST']
+PORT = config['SERVER']['PORT']
+DB_NAME = config['SERVER']['DB_NAME']
 
 REDIS_HOST = config['REDIS']['HOST']
 

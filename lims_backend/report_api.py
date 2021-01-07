@@ -148,7 +148,12 @@ def board():
         if request.values.get('Action') == 'p':
             CheckProjectNO = request.values.get('CheckProjectNO')
             if CheckProjectNO:
+                status_list = ['申请', '请验审核', '取样', '接收', '分发', '质检', '报告', '质检审核', '放行']
+                data = []
                 results = db_session.query(CheckLife).filter_by(CheckProjectNO=CheckProjectNO).all()
+                for result in results:
+                    if results.Status in status_list:
+                        data.append(result)
                 return json.dumps({'code': '1000', 'msg': '成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
             else:
                 return json.dumps({'code': '1000', 'msg': '成功'}, cls=MyEncoder, ensure_ascii=False)
