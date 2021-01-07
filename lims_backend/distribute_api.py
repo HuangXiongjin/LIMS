@@ -19,11 +19,12 @@ def record():
         return json.dumps({'code': '1000', 'msg': '操作成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'POST':
         CheckProjectNO = request.values.get('CheckProjectNO')
+        SampleTime = request.values.get('Time')
         data = db_session.query(CheckForm).filter_by(CheckProjectNO=CheckProjectNO).first()
         db_session.add(Record(CheckProjectNO=CheckProjectNO, Product=data.Product, ProductNumber=data.ProductNumber,
                               Specs=data.Specs, CheckDepartment=data.CheckDepartment,
                               Type=request.values.get('Type'),
-                              Number=data.Amount, SampleTime=data.SampleTime,
+                              Number=data.Amount, SampleTime=SampleTime,
                               CheckTime=request.values.get('CheckTime'),
                               Basis=request.values.get('Basis')))
         db_session.commit()
