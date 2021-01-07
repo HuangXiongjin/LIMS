@@ -147,15 +147,18 @@ def board():
     if request.method == 'GET':
         if request.values.get('Action') == 'p':
             CheckProjectNO = request.values.get('CheckProjectNO')
-            results = db_session.query(CheckLife).filter_by(No=CheckProjectNO).all()
-            return json.dumps({'code': '1000', 'msg': '成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
+            if CheckProjectNO:
+                results = db_session.query(CheckLife).filter_by(No=CheckProjectNO).all()
+                return json.dumps({'code': '1000', 'msg': '成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
+            else:
+                return json.dumps({'code': '1000', 'msg': '成功'}, cls=MyEncoder, ensure_ascii=False)
         # 当前页码
         page = int(request.values.get('Page'))
         # 每页记录数
         per_page = int(request.values.get('PerPage'))
         status = request.values.get('Status')
         Product = request.values.get('Product')
-        results = db_session.query(CheckForm).filter(CheckForm.Name == Product, CheckForm.Status == status).order_by(
+        results = db_session.query(CheckForm).filter(CheckForm.Product == Product, CheckForm.Status == status).order_by(
             CheckForm.ID.desc()).all()
         data = results[(page - 1) * per_page:page * per_page]
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,

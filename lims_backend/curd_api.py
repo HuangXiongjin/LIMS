@@ -39,6 +39,7 @@ def operation():
         query_column_name2 = request.values.get('QueryColumnName2')
         time_column_name = request.values.get('TimeColumn')
         # 精确查询
+        sql = ''
         if request.values.get('Query') == 'Accurate':
             column1 = table_name.columns._data[query_column_name1]
             if time_column_name is not None:
