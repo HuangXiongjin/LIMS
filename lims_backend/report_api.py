@@ -56,7 +56,7 @@ def quality_testing():
                     CheckLife(CheckProjectNO=NO, CheckUser=Name, Status="质检", Product=data.Name, CheckNumber=query_check.CheckNumber,
                               ProductType=query_check.ProductType, CheckDate=CheckEndTime, Content="完成了质检内容"))
                 db_session.commit()
-                db_session.add(ConclusionRecord(CheckNumber=query_check.Foo, TestDate=query_check.CheckDate,
+                db_session.add(ConclusionRecord(CheckNumber=query_check.CheckNumber, TestDate=query_check.CheckDate,
                                                 ActualTime=query_check.SampleTime, CheckDate=query_data.Time,
                                                 Name=query_check.Name, ProductNumber=query_check.ProductNumber,
                                                 SampleDepartment=query_check.CheckDepartment,
