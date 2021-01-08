@@ -59,7 +59,7 @@ def quality_testing():
                 db_session.commit()
                 db_session.add(ConclusionRecord(CheckNumber=query_check.CheckNumber, TestDate=query_check.CheckDate,
                                                 ActualTime=SampleTime, CheckDate=query_data.Time,
-                                                Name=query_check.Name, ProductNumber=query_check.ProductNumber,
+                                                Name=query_check.Product, ProductNumber=query_check.ProductNumber,
                                                 SampleDepartment=query_check.CheckDepartment,
                                                 Type=query_check.ProductType,
                                                 medicine=query_record.Type, Specs=query_check.Specs,
