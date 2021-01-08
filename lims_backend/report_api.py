@@ -36,6 +36,7 @@ def quality_testing():
         CheckEndTime = request.values.get('CheckEndTime')
         Action = json.loads(request.values.get('Action', '[]'))
         Comment = request.values.get('Comment', '')
+        SampleTime = request.values.get('Time')
         for item in Action:
             if item is not None:
                 data = db_session.query(WorkerBook).filter_by(ID=int(item['ID'])).first()
@@ -57,7 +58,7 @@ def quality_testing():
                               ProductType=query_check.ProductType, CheckDate=CheckEndTime, Content="完成了质检内容"))
                 db_session.commit()
                 db_session.add(ConclusionRecord(CheckNumber=query_check.CheckNumber, TestDate=query_check.CheckDate,
-                                                ActualTime=query_check.SampleTime, CheckDate=query_data.Time,
+                                                ActualTime=SampleTime, CheckDate=query_data.Time,
                                                 Name=query_check.Name, ProductNumber=query_check.ProductNumber,
                                                 SampleDepartment=query_check.CheckDepartment,
                                                 Type=query_check.ProductType,
