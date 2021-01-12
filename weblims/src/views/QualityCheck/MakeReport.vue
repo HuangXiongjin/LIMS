@@ -139,71 +139,76 @@
                                 </el-row>
                             </el-form>
                             <el-col class="mgt24">
-                                <el-col :span='22'>
+                                <el-col :span='24'>
                                     <el-tag type="info">【鉴别】：</el-tag>
                                     <div class="mgt14">
                                         <div v-for="(item,index) in Discerns" :label="item" :key="index">
                                             <el-row class="mgb10">
-                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
-                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
-                                                <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                                <el-col :span='17' class="fsz12 ">{{item.work}}</el-col>
+                                                <el-col :span='2' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                                <el-col :span='5'>
+                                                    <el-radio v-model="item.Status" label="true" >符合</el-radio>
+                                                    <el-radio v-model="item.Status" label="false">不符合</el-radio>
                                                 </el-col>
                                             </el-row>
                                         </div>
                                     </div>
                                 </el-col>
-                                <el-col :span='22' class="mgt24">
+                                <el-col :span='24' class="mgt24">
                                     <el-tag type="success">【检查】：</el-tag>
                                     <div class="mgt14">
                                         <div v-for="(item,index) in Inspects" :label="item" :key="index">
                                             <el-row class="mgb10">
-                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
-                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
-                                                <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                               <el-col :span='17' class="fsz12 ">{{item.work}}</el-col>
+                                               <el-col :span='2' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                               <el-col :span='5'>
+                                                    <el-radio v-model="item.Status" label="true" >符合</el-radio>
+                                                    <el-radio v-model="item.Status" label="false">不符合</el-radio>
                                                 </el-col>
                                             </el-row>
                                         </div>
                                     </div>
                                 </el-col>
-                                <el-col :span='22' class="mgt24">
+                                <el-col :span='24' class="mgt24">
                                     <el-tag type="info">【微生物测定】：</el-tag>
                                     <div class="mgt14">
                                         <div v-for="(item,index) in Microbes" :label="item" :key="index">
                                             <el-row class="mgb10">
-                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
-                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
-                                                <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                               <el-col :span='17' class="fsz12 ">{{item.work}}</el-col>
+                                               <el-col :span='2' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                               <el-col :span='5'>
+                                                    <el-radio v-model="item.Status" label="true" >符合</el-radio>
+                                                    <el-radio v-model="item.Status" label="false">不符合</el-radio>
                                                 </el-col>
                                             </el-row>
                                         </div>
                                     </div>
                                 </el-col>
-                                <el-col :span='22' class="mgt24">
+                                <el-col :span='24' class="mgt24">
                                     <el-tag type="danger">【性状】：</el-tag>
                                     <div class="mgt14">
                                         <div v-for="(item,index) in Characters" :label="item" :key="index">
                                             <el-row class="mgb10">
-                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
-                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
-                                                <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                               <el-col :span='17' class="fsz12 ">{{item.work}}</el-col>
+                                               <el-col :span='2' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                               <el-col :span='5'>
+                                                    <el-radio v-model="item.Status" label="true" >符合</el-radio>
+                                                    <el-radio v-model="item.Status" label="false">不符合</el-radio>
                                                 </el-col>
                                             </el-row>
                                         </div>
                                     </div>
                                 </el-col>
-                                <el-col :span='22' class="mgt24">
+                                <el-col :span='24' class="mgt24">
                                     <el-tag type="info">【含量测定】：</el-tag>
                                     <div class="mgt14">
                                         <div v-for="(item,index) in Contents" :label="item" :key="index">
                                             <el-row class="mgb10">
-                                                <el-col :span='18' class="fsz12 ">{{item.work}}</el-col>
-                                                <el-col :span='3' class="fsz10 lightgreen">{{item.Name}}</el-col>
-                                                <el-col :span='3'>
-                                                   <el-checkbox v-model="item.Status" :checked='item.Status=="true"'>是否符合</el-checkbox>
+                                               <el-col :span='17' class="fsz12 ">{{item.work}}</el-col>
+                                               <el-col :span='2' class="fsz10 lightgreen">{{item.Name}}</el-col>
+                                               <el-col :span='5'>
+                                                    <el-radio v-model="item.Status" label="true" >符合</el-radio>
+                                                    <el-radio v-model="item.Status" label="false">不符合</el-radio>
                                                 </el-col>
                                             </el-row>
                                         </div>

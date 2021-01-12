@@ -1,5 +1,5 @@
 <template>
-    <el-row :gutter='20'>
+    <el-row :gutter='20' :style="conheight" style="overflow:auto;">
          <el-col :span='24' class="mgt24 container mgb10">
             <div class="mgb24 fsz14px">当前批次流程</div>
             <el-steps :active="currentstep" finish-status="success">
@@ -224,6 +224,9 @@ var moment=require('moment')
 export default {
     data(){
         return {
+           conheight:{
+               height:''
+           },
            currentstep:5,
            batchinfo:[{Status:'申请'},{Status:'请验审核'},{Status:'取样'},{Status:'接收'},{Status:'分发'},{Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'}],
            IsDoing:JSON.parse(sessionStorage.getItem('Rights').replace(/'/g, '"')).includes("质检发送"),
@@ -271,8 +274,13 @@ export default {
     created(){
        this.getSelectOption()
        this.SearchTab()
+       window.addEventListener('resize', this.getHeight);
+       this.getHeight()
     },
     methods: {
+        getHeight(){
+          this.conheight.height=(window.innerHeight-160)+'px'
+       },
         postResult(){ //发送结果按钮
             var arr1=this.Discerns.map((item, index) => {
                 if(item.Name==this.currentMan){

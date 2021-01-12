@@ -1,7 +1,7 @@
 <template>
   <div class="login" :style="conheight">
     <div class='container loginbox'>
-      <div class="logintop">实验室信息管理系统</div>
+      <div class="logintop">希尔安质量管理系统</div>
       <div class="logininfo">
           <el-form :model="ruleForm" status-icon ref="ruleForm" :rules="rules" label-width="80px">
             <el-form-item label="登录名称" prop="loginname">
@@ -110,7 +110,7 @@ export default {
             this.$router.push('/')
             localStorage.setItem('Name',this.ruleForm.loginname)
             localStorage.setItem('WorkNumber',this.ruleForm.loginpass)
-            localStorage.setItem('sonMenu',JSON.stringify([{"name":"工艺看板","path":"/ProgressBoard"},{"name":"系统首页","path":"/Board"},{"name":"统计分析","path":"/StatisticalAnalysis"},{"name":'批次进度',"path":'/BatchProgress'}]))
+            localStorage.setItem('sonMenu',JSON.stringify([{"name":"系统首页","path":"/Board"}]))
             localStorage.setItem('SonMenuIndex','0')
             sessionStorage.setItem('Rights',res.data.data.Permissions)
           this.$message({
@@ -134,12 +134,12 @@ export default {
 <style scoped>
    .login {
     width:100%;
-    background:#0A9168 url('../assets/image/bg.jpg') no-repeat fixed top;
+    background:rgb(90, 214, 177) url('../assets/image/quality.jpg') no-repeat fixed top;
   }
   .loginbox{
     width:400px;
     height:275px;
-    background-color:rgba(255, 255,255, 0.4);
+    background-color:rgba(109, 243, 187, 0.3);
     opacity: 0.8;
     position:fixed;
     top:50%;
@@ -151,7 +151,7 @@ export default {
     line-height: 80px;
     font-size: 18px;
     text-align:center;
-    color:#333;
+    color:rgb(243, 189, 189);
   }
   .logininfo{
     width: 80%;
