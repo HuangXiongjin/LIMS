@@ -17,7 +17,7 @@ Base = declarative_base(engine)
 class ReportVerify(Base):
     """报告审核"""
     __tablename__ = 'ReportVerify'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 标识
     CheckProjectNO = Column(Unicode(128), nullable=True)
     # 实验室主管
@@ -33,7 +33,7 @@ class ReportVerify(Base):
 class Record(Base):
     """检验记录"""
     __tablename__ = 'Record'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 标识
     CheckProjectNO = Column(Unicode(32), nullable=True)
     # 品名
@@ -59,7 +59,7 @@ class Record(Base):
 class Worker(Base):
     """实验室组员"""
     __tablename__ = 'Worker'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 员工编号
     No = Column(Unicode(32), nullable=True)
     # 姓名
@@ -73,29 +73,45 @@ class Worker(Base):
 class CheckLife(Base):
     """请验生命周期"""
     __tablename__ = 'CheckLife'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
-    # 品名唯一标识
-    No = Column(Unicode(32), nullable=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 请验单号
     CheckNumber = Column(Unicode(32), nullable=True)
+    # 样品类别
+    ProductType = Column(Unicode(32), nullable=True)
     # 品名
-    Product = Column(Unicode(16), nullable=True)
-    # 类型
-    ProductType = Column(Unicode(16), nullable=True)
-    # 操作人
-    User = Column(Unicode(16), nullable=True)
-    # 操作（申请-请验审核-取样-接收-分发-质检-报告-质检审核-放行）
-    Status = Column(Unicode(16), nullable=True)
+    Product = Column(Unicode(32), nullable=True)
+    # 规格
+    Specs = Column(Unicode(32), nullable=True)
+    # 供货单位
+    Supplier = Column(Unicode(32), nullable=True, default='无')
+    # 来料批号
+    ProductNumber = Column(Unicode(32), nullable=True)
+    # 批号（物料代码）
+    Number = Column(Unicode(32), nullable=True)
+    # 数量
+    Amount = Column(Unicode(16), nullable=True)
+    # 单位
+    Unit = Column(Unicode(8), nullable=True)
+    # 请验工序
+    CheckProcedure = Column(Unicode(32), nullable=True)
+    # 请验项目标识
+    CheckProjectNO = Column(Unicode(32), nullable=True)
+    # 请验部门
+    CheckDepartment = Column(Unicode(32), nullable=True)
     # 操作时间
-    OperationTime = Column(Unicode(32), nullable=True, default='')
+    CheckDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d'))
+    # 操作人
+    CheckUser = Column(Unicode(16), nullable=True, default='')
+    # 操作（申请-请验审核-取样-接收-分发-质检-报告-质检审核-放行）
+    Status = Column(Unicode(128), nullable=True, default='')
     # 操作内容
-    Work = Column(Unicode(32), nullable=True)
+    Content = Column(Unicode(256), nullable=True, default='')
 
 
 class QualityStandard(Base):
     """质量维护表"""
     __tablename__ = 'QualityStandard'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
     No = Column(Unicode(32), nullable=True)
     # 品名
@@ -111,7 +127,7 @@ class QualityStandard(Base):
 class QualityStandardCenter(Base):
     """质量标准样品表"""
     __tablename__ = 'QualityStandardCenter'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 品名唯一标识
     No = Column(Unicode(64), nullable=True)
     # 物料名称
@@ -139,7 +155,7 @@ class QualityStandardCenter(Base):
 class WorkerBook(Base):
     """员工工作台账"""
     __tablename__ = 'WorkerBook'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 姓名
     Name = Column(Unicode(32), nullable=True)
     # 工号
@@ -171,15 +187,13 @@ class WorkerBook(Base):
 class CheckForm(Base):
     """请验单"""
     __tablename__ = 'CheckForm'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
-    # 样本分发接收编号
-    No = Column(Unicode(32), nullable=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 请验单号
     CheckNumber = Column(Unicode(32), nullable=True)
     # 样品类别
     ProductType = Column(Unicode(32), nullable=True)
     # 品名
-    Name = Column(Unicode(32), nullable=True)
+    Product = Column(Unicode(32), nullable=True)
     # 规格
     Specs = Column(Unicode(32), nullable=True)
     # 供货单位
@@ -202,54 +216,56 @@ class CheckForm(Base):
     CheckDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d'))
     # 请验人
     CheckUser = Column(Unicode(16), nullable=True, default='')
-    # 审核人
-    VerifyUser = Column(Unicode(16), nullable=True, default='')
-    # 审核时间
-    VerifyDate = Column(Unicode(32), nullable=True, default='')
     # 请验单类型（标准请验，小样请验）
-    Type = Column(Unicode(16), nullable=True, default='标准请验')
-    # 小样请验单审核状态（待审核，未通过，已通过）
-    Status = Column(Unicode(16), nullable=True, default='')
-    # 请验单生命周期
-    Life = Column(Unicode(16), nullable=True, default='请验审核')
-    # 取样人
-    SampleUser = Column(Unicode(16), nullable=True, default='')
-    # 取样日期
-    SampleTime = Column(Unicode(16), nullable=True, default='')
-    # 送样人
-    SongUser = Column(Unicode(16), nullable=True, default='')
-    # 接收人
-    IntoUser = Column(Unicode(16), nullable=True, default='')
-    # 检测分发人
-    OutUser = Column(Unicode(16), nullable=True, default='')
-    # 留样人
-    LUser = Column(Unicode(16), nullable=True, default='')
-    # 留样分发量
-    LAccount = Column(Unicode(16), nullable=True, default='')
-    # 复查分发量
-    FAccount = Column(Unicode(16), nullable=True, default='')
-    # 复查留样人
-    FUser = Column(Unicode(16), nullable=True, default='')
-    # 检测分发量
-    JAccount = Column(Unicode(32), nullable=True, default='')
-    # 编号
-    Foo = Column(Unicode(32), nullable=True, default='')
-    # 分发动作（J:检验-F:复查-L:留样）
-    Action = Column(Unicode(16), nullable=True, default='')
-    # 实验室组长分发组
-    LaboratoryUser = Column(Unicode(16), nullable=True, default='')
-    # 样品销毁状态
-    ProductDestruction = Column(Unicode(256), nullable=True, default='')
+    Type = Column(Unicode(128), nullable=True, default='标准请验')
+    # 请验单生命周期（申请-请验审核-取样-接收-分发-质检-报告-质检审核-放行）
+    Status = Column(Unicode(128), nullable=True, default='请验审核')
     # 备注
-    Comment = Column(Unicode(32), nullable=True)
+    Comment = Column(Unicode(256), nullable=True, default='')
+    # 样品销毁(样品销毁-留样销毁)
+    ProductDestruction = Column(Unicode(256), nullable=True, default='')
+    # # 审核人
+    # VerifyUser = Column(Unicode(16), nullable=True, default='')
+    # # 审核时间
+    # VerifyDate = Column(Unicode(32), nullable=True, default='')
+    # # 请验单生命周期
+    # Life = Column(Unicode(16), nullable=True, default='请验审核')
+    # # 取样人
+    # SampleUser = Column(Unicode(16), nullable=True, default='')
+    # # 取样日期
+    # SampleTime = Column(Unicode(16), nullable=True, default='')
+    # # 送样人
+    # SongUser = Column(Unicode(16), nullable=True, default='')
+    # # 接收人
+    # IntoUser = Column(Unicode(16), nullable=True, default='')
+    # # 检测分发人
+    # OutUser = Column(Unicode(16), nullable=True, default='')
+    # # 留样人
+    # LUser = Column(Unicode(16), nullable=True, default='')
+    # # 留样分发量
+    # LAccount = Column(Unicode(16), nullable=True, default='')
+    # # 复查分发量
+    # FAccount = Column(Unicode(16), nullable=True, default='')
+    # # 复查留样人
+    # FUser = Column(Unicode(16), nullable=True, default='')
+    # # 检测分发量
+    # JAccount = Column(Unicode(32), nullable=True, default='')
+    # # 编号
+    # Foo = Column(Unicode(32), nullable=True, default='')
+    # # 分发动作（J:检验-F:复查-L:留样）
+    # Action = Column(Unicode(16), nullable=True, default='')
+    # # 实验室组长分发组
+    # LaboratoryUser = Column(Unicode(16), nullable=True, default='')
+    # # 样品销毁状态
+    # ProductDestruction = Column(Unicode(256), nullable=True, default='')
 
 
 class CheckProject(Base):
     """请验项目明细"""
     __tablename__ = 'CheckProject'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
-    # 品名唯一标识
-    No = Column(Unicode(32), nullable=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
+    # 请验单号
+    CheckNumber = Column(Unicode(32), nullable=True)
     # 品名
     Product = Column(Unicode(64), nullable=True)
     # 维护内容
@@ -265,7 +281,7 @@ class CheckProject(Base):
 class DestructionForm(Base):
     """销毁清单"""
     __tablename__ = 'DestructionForm'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 样本分发接收编号
     No = Column(Unicode(32), nullable=True)
     # 请验单号
@@ -305,15 +321,19 @@ class DestructionForm(Base):
 class Distribute(Base):
     """样品分发"""
     __tablename__ = 'Distribute'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 请验项目标识
     CheckProjectNO = Column(Unicode(32), nullable=True)
     # 分发人
     User = Column(Unicode(32), nullable=True)
     # 分发编号
     No = Column(Unicode(32), nullable=True)
-    # 分配数量
-    Number = Column(Unicode(32), nullable=True, default='')
+    # 检验分配数量
+    JNumber = Column(Unicode(32), nullable=True, default='')
+    # 复查分配数量
+    FNumber = Column(Unicode(32), nullable=True, default='')
+    # 留样分配数量
+    LNumber = Column(Unicode(32), nullable=True, default='')
     # 分配组
     Group = Column(Unicode(32), nullable=True, default='')
     # 指派人
@@ -327,7 +347,7 @@ class Distribute(Base):
 class WordForm(Base):
     """文档维护"""
     __tablename__ = 'WordForm'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 文档名称
     FileName = Column(Unicode(64), nullable=True)
     # 品名
@@ -339,7 +359,7 @@ class WordForm(Base):
 class ConclusionRecord(Base):
     """报告完成记录"""
     __tablename__ = 'ConclusionRecord'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 检验编号
     CheckNumber = Column(Unicode(32), nullable=True)
     # 请验单日期
@@ -381,7 +401,7 @@ class ConclusionRecord(Base):
 class ProductSave(Base):
     """产品留样单"""
     __tablename__ = 'ProductSave'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 请样标识
     CheckProjectNO = Column(Unicode(32), nullable=True)
     # 留样标识
@@ -413,7 +433,7 @@ class ProductSave(Base):
     # 生产日期
     ProductionDate = Column(Unicode(32), nullable=True, default='')
     # 有效日期
-    ValidityDate = Column(Unicode(32), nullable=True, default='')
+    ValIDityDate = Column(Unicode(32), nullable=True, default='')
     # 当前进度(待接收-留样观察中-申请销毁)
     Status = Column(Unicode(32), nullable=True, default='待接收')
     # 留样销毁状态
@@ -426,7 +446,7 @@ class ProductSaveSurvey(Base):
     """产品留样观察表"""
     __tablename__ = 'ProductSaveSurvey'
 
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 请验项目标识
     CheckProjectNO = Column(Unicode(32), nullable=True)
     # 品名
@@ -616,7 +636,7 @@ class RepairTask(Base):
 class RunError(Base):
     """系统运行错误 """
     __tablename__ = 'RunError'
-    Id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 发生时间
     Time = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 操作IP

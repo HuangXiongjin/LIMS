@@ -1,5 +1,16 @@
 <template>
     <el-row :gutter='20'>
+        <el-col :span='24' class="mgt24 container mgb10">
+            <div class="mgb24 fsz14px">当前批次流程</div>
+            <el-steps :active="currentstep" finish-status="success">
+                <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
+                    <template slot="description" v-if="item.CheckUser">
+                        <div><span>姓名：</span><span>{{item.CheckUser}}</span></div>
+                        <div><span>时间：</span><span>{{item.CheckDate}}</span></div>
+                    </template>
+                </el-step>
+            </el-steps>
+        </el-col>
         <el-col :span='7'>
             <div class="container mgt24" style="height:400px;">
                 <el-col :span='24' style="borderBottom:1px solid #ccc;" class="padd15">
@@ -61,7 +72,7 @@
                                 <el-row>
                                     <el-col :span='11'>
                                         <el-form-item label="品名：">
-                                            <el-input v-model="Row.Name" :disabled="true"></el-input>
+                                            <el-input v-model="Row.Product" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
@@ -156,6 +167,8 @@ export default {
     data(){
         return {
            Row:{},
+           currentstep:5,
+           batchinfo:[{Status:'申请'},{Status:'请验审核'},{Status:'取样'},{Status:'接收'},{Status:'分发'},{Status:'留样接收'},{Status:'留样观察'}],
            distribute:{
                CheckProjectNO:'',
            },
@@ -174,7 +187,7 @@ export default {
                 total: 0,//总的多少页
             },
             xfopt:true,
-            batchtableconfig:[{prop:'ProductNumber',label:'产品批号'},{prop:'Name',label:'品名'},{prop:'BatchTime',label:'留样时间',width:155}],//批次列表
+            batchtableconfig:[{prop:'ProductNumber',label:'产品批号'},{prop:'Product',label:'品名'},{prop:'BatchTime',label:'留样时间',width:155}],//批次列表
         }
     },
     created(){
@@ -244,6 +257,28 @@ export default {
             this.xfopt=false
             this.Row=row
             this.distribute.CheckProjectNO=row.CheckProjectNO
+            this.getCurrentSteps(row.CheckProjectNO)
+        },
+        getCurrentSteps(CheckProjectNO){ //获取进度条
+           var params={
+                Action:'p',
+                CheckProjectNO:CheckProjectNO
+            }
+            this.axios.get('/lims/Board',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                   this.currentstep=res.data.data.length
+                   this.batchinfo=this.batchinfo.map((item) => { //清空缓存的状态
+                       return {Status:item.Status}
+                   })
+                   this.batchinfo.splice(0,res.data.data.length)
+                   this.batchinfo=res.data.data.concat(this.batchinfo)
+                }else{
+                    this.$message({
+                        type:'info',
+                        message:'获取数据失败，请重试'
+                    })
+                }
+            })
         },
         handleSizeChange(limit){ //每页条数切换
             this.batchTableData.limit = limit

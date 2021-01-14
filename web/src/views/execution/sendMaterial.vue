@@ -391,7 +391,7 @@
         this.getBOMData()
       },
       EditMaterial(index,row){
-        if(row.EQPCode === ""){
+        if(!row.EQPCode){
           this.MaterialTableData.dialogVisible = true
           this.MaterialTableData.dialogTitle = "编辑"
           this.getBOMData()
@@ -414,7 +414,7 @@
         }
       },
       DeleteMaterial(index,row){
-        if(row.EQPCode === ""){
+        if(!row.EQPCode){
           var params = {tableName:"BatchMaterialInfo"}
           var mulId = []
           mulId.push({

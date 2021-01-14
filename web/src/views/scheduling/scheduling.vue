@@ -57,6 +57,7 @@
               <el-form :model="planTableData.formField" label-width="110px">
                 <el-form-item label="编号">
                   <el-input v-model="planTableData.formField.PlanNum"></el-input>
+                  生成的订单编号规则：上一个订单的英文字母+日期+数量
                 </el-form-item>
                 <el-form-item label="品名">
                   <el-select v-model="planTableData.formField.BrandCode" placeholder="请选择" @change="change">

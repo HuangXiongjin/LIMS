@@ -34,13 +34,13 @@
                 </el-col>
             </el-row>
         </el-col>
-        <el-col :span='24' class="mgt24 container" v-show="showstep">
+        <el-col :span='24' class="mgt24 container">
             <div class="mgb24 fsz14px">当前批次流程</div>
             <el-steps :active="currentstep" finish-status="success">
                 <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
-                    <template slot="description" v-if='item.User'>
-                        <div><span>姓名：</span><span>{{item.User}}</span></div>
-                        <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
+                    <template slot="description" v-if='item.CheckUser'>
+                        <div><span>姓名：</span><span>{{item.CheckUser}}</span></div>
+                        <div><span>时间：</span><span>{{item.CheckDate}}</span></div>
                     </template>
                 </el-step>
             </el-steps>
@@ -48,7 +48,8 @@
         <el-col :span='24' class="mgt24">
             <div class="container">
                 <el-menu :default-active="'1'" class="bgwhite" mode="horizontal" @select="handleSelect">
-                    <el-menu-item :index="'1'" style="height:46px;lineHeight:30px;">申请列表</el-menu-item>
+                    <el-menu-item :index="'1'" style="height:46px;lineHeight:30px;">申请清单</el-menu-item>
+                    <el-menu-item :index="'2'" style="height:46px;lineHeight:30px;">通过清单</el-menu-item>
                 </el-menu>
                 <div class="mgt24" v-if="currentChoose==='1'">
                     <el-table
@@ -57,9 +58,9 @@
                     highlight-current-row
                     style="width: 100%"
                     @selection-change="handleSelectionChange"
-                    @row-click='getCurrentSteps'>
+                    @row-click='clickAllTab'>
                     <el-table-column type="selection" width="55"></el-table-column>
-                    <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label'></el-table-column>
+                    <el-table-column v-for="item in batchtableconfig" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
                     <el-table-column
                         fixed="right"
                         label="操作"
@@ -79,9 +80,28 @@
                         @current-change="handleCurrentChange">
                         </el-pagination>
                     </div>
-                    <div style="textAlign:right;" class="mgt24">
+                    <div style="textAlign:right;" class="mgt24" v-if="IsDoing">
                         <el-button type="danger" size='small'>驳回</el-button>
                         <el-button type="success" size='small' @click="mulBatchPass">批量审核通过</el-button>
+                    </div>
+                </div>
+                  <div class="mgt24" v-if="currentChoose==='2'">
+                    <el-table
+                    :data="batchTableData2.data"
+                    size='small'
+                    highlight-current-row
+                    style="width: 100%"
+                    @row-click='clickSingleTab'>
+                    <el-table-column v-for="item in batchtableconfig2" :key='item.prop' :prop='item.prop' :label='item.label' :width='item.width'></el-table-column>
+                    </el-table>
+                    <div class="paginationClass">
+                        <el-pagination background  layout="total, prev, pager, next, jumper"
+                        :total="batchTableData2.total"
+                        :current-page="batchTableData2.offset"
+                        :page-size="batchTableData2.limit"
+                        @size-change="handleSizeChange2"
+                        @current-change="handleCurrentChange2">
+                        </el-pagination>
                     </div>
                 </div>
             </div>
@@ -94,9 +114,9 @@ export default {
     data(){
 
         return {
+           IsDoing:JSON.parse(sessionStorage.getItem('Rights').replace(/'/g, '"')).includes("请验审核"),
            currentstep:1,
-           batchinfo:[],
-           showstep:false,
+           batchinfo:[{Status:'申请'},{Status:'请验审核'},{Status:'取样'},{Status:'接收'},{Status:'分发'},{Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'}],
            checkedRow:[],
            searchObj:{
                category:'玉米淀粉',
@@ -108,10 +128,8 @@ export default {
                 value: '选项1',
                 label: '物料一'
                 }],
-            opstate: [{
-                value: '请验审核',
-                label: '请验审核'
-                }],
+            opstate: [{value: '申请',label: '申请'},{value: '请验审核',label: '请验审核'},{value: '取样',label: '取样'},{value: '接收',label: '接收'},{value: '分发',label: '分发'},
+            {value: '质检',label: '质检'},{value: '报告',label: '报告'},{value: '质检审核',label: '质检审核'},{value: '放行',label: '放行'}],
             currentChoose:'1',
             batchTableData:{ //物料BOM
                 data:[],
@@ -119,28 +137,43 @@ export default {
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
-            batchtableconfig:[{prop:'Specs',label:"规格"},{prop:'CheckNumber',label:'请验单号'},{prop:'Name',label:'品名'},{prop:'ProductNumber',label:'来料批号'},{prop:'Supplier',label:'供货单位'},{prop:'Number',label:'物料编码'},{prop:'Amount',label:'数量'},{prop:'Unit',label:'单位'},{prop:'CheckDate',label:'请验时间'}],//批次列表
+            batchTableData2:{ //物料BOM
+                data:[],
+                limit: 5,//当前显示多少条
+                offset: 1,//当前处于多少页
+                total: 0,//总的多少页
+            },
+            CheckProjectNO:'',
+            rowCheckProjectNO:'',
+            batchtableconfig:[{prop:'Specs',label:"规格"},{prop:'CheckNumber',label:'请验单号'},{prop:'Product',label:'品名'},{prop:'ProductNumber',label:'来料批号'},{prop:'Supplier',label:'供货单位'},{prop:'Number',label:'物料编码'},{prop:'Amount',label:'数量'},{prop:'Unit',label:'单位'},{prop:'CheckDate',label:'请验时间',width:'200'}],//批次列表
+            batchtableconfig2:[{prop:'Specs',label:"规格"},{prop:'CheckNumber',label:'请验单号'},{prop:'Product',label:'品名'},{prop:'ProductNumber',label:'来料批号'},{prop:'Supplier',label:'供货单位'},{prop:'Number',label:'物料编码'},{prop:'ProductType',label:'物料类型'},{prop:'Amount',label:'数量'},{prop:'Unit',label:'单位'},{prop:'OperationTime',label:'操作时间',width:'200'}],//批次列表
         }
     },
     created(){
-        this.getInitTab()
+        this.SearchTab()
         this.getSelectOption()
     },
     methods: {
-        getCurrentSteps(row){
+        clickSingleTab(row){
+            this.getCurrentSteps(row.CheckProjectNO)   
+        },
+        clickAllTab(row){
+            this.getCurrentSteps(row.CheckProjectNO)
+            this.rowCheckProjectNO=row.CheckProjectNO
+        },
+        getCurrentSteps(CheckProjectNO){
            var params={
                 Action:'p',
-                CheckProjectNO:row.CheckProjectNO
+                CheckProjectNO:CheckProjectNO
             }
             this.axios.get('/lims/Board',{params:params}).then((res) => {
                 if(res.data.code=='1000'){
-                    this.batchinfo=res.data.data
-                    this.batchinfo=this.batchinfo.concat([{Status:'请验审核'},{Status:'取样'},{Status:'接收'},{Status:'分发'},{Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'}])
-                    if(this.batchinfo.length!==[]){
-                        this.showstep=true
-                    }else{
-                        this.showstep=false
-                    }
+                    this.currentstep=res.data.data.length
+                    this.batchinfo=this.batchinfo.map((item) => { //清空缓存的状态
+                       return {Status:item.Status}
+                   })
+                   this.batchinfo.splice(0,res.data.data.length)
+                   this.batchinfo=res.data.data.concat(this.batchinfo)
                 }else{
                     this.$message({
                         type:'info',
@@ -164,18 +197,45 @@ export default {
         },
         SearchTab(){
             var params={
+                TableName:"CheckForm",
+                Query:"Accurate",
                 Page:this.batchTableData.offset,
                 PerPage:this.batchTableData.limit,
-                Product:this.searchObj.category,
-                DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:this.searchObj.state
+                QueryColumnName:"Product",
+                QueryColumnValue:this.searchObj.category,
+                TimeColumn:"CheckDate",
+                StartTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 00:00:00"),
+                EndTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 23:59:59"),
+                QueryColumnName2:"Status",
+                QueryColumnValue2:this.searchObj.state
             }
-            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
-                if(res.data.data.length==0){
-                this.showstep=false
+            this.axios.get('/lims/CRUD',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                    this.batchTableData.data=res.data.data
+                    this.batchTableData.total=res.data.total
+                    if(this.rowCheckProjectNO!==''){
+                        this.getCurrentSteps(this.rowCheckProjectNO)
+                    }
                 }
-                this.batchTableData.data=res.data.data
-                this.batchTableData.total=res.data.total
+            })
+        },
+        getPassedTab(){
+            var params={
+                Page:this.batchTableData2.offset,
+                PerPage:this.batchTableData2.limit,
+                User:localStorage.getItem('Name')
+            }
+            this.axios.get('/lims/GetList',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                    this.batchTableData2.data=res.data.data
+                    this.batchTableData2.total=res.data.total
+                }else{
+                    this.$message({
+                        type:'warning',
+                        message:'查询数据失败'
+                    })
+                }
+                
             })
         },
         mulBatchPass(){ //多条数据审核通过
@@ -219,7 +279,7 @@ export default {
             this.checkedRow=row
         },
         handleBack(row){ //驳回审核
-            console.log(row)
+           
         },
         handlePass(row){ //通过审核
             this.$confirm('此操作将审核通过该项, 是否继续?', '提示', {
@@ -248,29 +308,27 @@ export default {
             });          
             });
         },
-        getInitTab(){
-            var params={
-                Page:this.batchTableData.offset,
-                PerPage:this.batchTableData.limit,
-                Product:this.searchObj.category,
-                DateTime:this.searchObj.registrydate,
-                Status:this.searchObj.state
-            }
-            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
-                this.batchTableData.data=res.data.data
-                this.batchTableData.total=res.data.total
-            })
-        },
         handleSelect(key) {
+            if(key==2){
+                this.getPassedTab()
+            }
             this.currentChoose=key
         },
         handleSizeChange(limit){ //每页条数切换
             this.batchTableData.limit = limit
-            this.getInitTab()
+            this.SearchTab()
       },
         handleCurrentChange(offset) { // 页码切换
             this.batchTableData.offset = offset
-            this.getInitTab()
+            this.SearchTab()
+        },
+        handleSizeChange2(limit){ //每页条数切换
+            this.batchTableData2.limit = limit
+            this.getPassedTab()
+      },
+        handleCurrentChange2(offset) { // 页码切换
+            this.batchTableData2.offset = offset
+            this.getPassedTab()
         }
     },
 }

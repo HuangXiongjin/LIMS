@@ -1,12 +1,12 @@
 <template>
     <el-row :gutter='20'>
-        <el-col :span='24' class="mgt24 container" v-show="showstep">
+        <el-col :span='24' class="mgt24 container">
             <div class="mgb24 fsz14px">当前批次流程</div>
             <el-steps :active="currentstep" finish-status="success">
                 <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
-                    <template slot="description" v-if='item.User'>
-                        <div><span>姓名：</span><span>{{item.User}}</span></div>
-                        <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
+                    <template slot="description" v-if='item.CheckUser'>
+                        <div><span>姓名：</span><span>{{item.CheckUser}}</span></div>
+                        <div><span>时间：</span><span>{{item.CheckDate}}</span></div>
                     </template>
                 </el-step>
             </el-steps>
@@ -52,6 +52,16 @@
                             </el-select>
                         </el-col>
                         <el-col :span='4' class="mgr15 boxshadow">
+                           <el-select v-model="searchObj.state" placeholder="物料类">
+                                <el-option
+                                v-for="item in opstate"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                        <el-col :span='4' class="mgr15 boxshadow">
                            <el-date-picker
                             v-model="searchObj.registrydate"
                             type="date"
@@ -79,7 +89,7 @@
                               <el-form :inline="true">
                                 <el-col :span='8'>
                                   <el-form-item label="品名">
-                                    <el-input v-model="Row.Name" placeholder="品名"></el-input>
+                                    <el-input v-model="Row.Product" placeholder="品名"></el-input>
                                   </el-form-item>
                                </el-col>
                                <el-col :span='8'>
@@ -89,7 +99,7 @@
                                </el-col>
                                <el-col :span='8'>
                                  <el-form-item label="分配样量">
-                                    <el-input v-model="Row.JAccount" placeholder="分配样量"></el-input>
+                                    <el-input v-model="Record.JNumber" placeholder="分配样量"></el-input>
                                 </el-form-item>
                                </el-col>
                                <el-col :span='8'>
@@ -99,7 +109,7 @@
                                </el-col>
                                <el-col :span='8'>
                                  <el-form-item label="编号">
-                                    <el-input v-model="Row.Foo" placeholder="编号"></el-input>
+                                    <el-input v-model="Record.No" placeholder="编号"></el-input>
                                 </el-form-item>
                                </el-col>
                               </el-form>
@@ -112,7 +122,7 @@
                                   <el-select v-model="distribute.worker" placeholder="请选择人">
                                     <el-option
                                     v-for="item in workers"
-                                    :key="item.Id"
+                                    :key="item.ID"
                                     :label="item.Name"
                                     :value="item.Name">
                                     </el-option>
@@ -174,7 +184,7 @@
                                </el-col>
                               </el-row>
                               <el-row class="padd15">
-                                <el-col :span='24' style="textAlign:right;"><el-button type="success" @click="distributeToPeople">确定分发</el-button></el-col>
+                                <el-col :span='24' style="textAlign:right;"><el-button type="success" @click="distributeToPeople" v-if="IsDoing">确定分发</el-button></el-col>
                               </el-row>
                               <div>
                               <el-col :span='22'>
@@ -218,7 +228,7 @@
                                 <el-row>
                                     <el-col :span='11' class="mgt14">
                                         <el-form-item label="品名：">
-                                            <el-input v-model="Row.Name" :disabled="true"></el-input>
+                                            <el-input v-model="Row.Product" :disabled="true"></el-input>
                                         </el-form-item>
                                     </el-col>
                                     <el-col :span='11'>
@@ -309,9 +319,12 @@ var moment=require('moment')
 export default {
     data(){
         return {
+           IsDoing:sessionStorage.getItem('Rights').replace(/'/g, '"').includes("样本及记录分发"),
            currentstep:4,
-           batchinfo:[],
-           showstep:false,
+           batchinfo:[{Status:'申请'},{Status:'请验审核'},{Status:'取样'},{Status:'接收'},{Status:'分发'},{Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'}],
+           opstate: [{value: '申请',label: '申请'},{value: '请验审核',label: '请验审核'}, {value: '取样',label: '取样'},{value: '接收',label: '接收'},{value: '分发',label: '分发'},
+            {value: '质检',label: '质检'},{value: '报告',label: '报告'}, {value: '质检审核',label: '质检审核'},{value: '放行',label: '放行'}
+            ],
            workers:[],
            Row:{},
            distribute:{ //选择绑定的集合
@@ -325,6 +338,7 @@ export default {
            },
            radio2:'样本分发',
            Recordobj:{},
+           Record:{},
            jbarr:{ //获取到集合
                Discern:[],
                Inspect:[],
@@ -334,6 +348,7 @@ export default {
            },
            searchObj:{
                category:'玉米淀粉',
+               state:'分发',
                registrydate:moment(new Date()).format('YYYY-MM-DD')
            },
            options: [{
@@ -351,7 +366,7 @@ export default {
             Characters:[],
             Contents:[],
             Microbes:[],
-            batchtableconfig:[{prop:'CheckNumber',label:'请验单号'},{prop:'Name',label:'品名'},{prop:'CheckDate',label:'请验时间',width:155}],//批次列表
+            batchtableconfig:[{prop:'CheckNumber',label:'请验单号'},{prop:'Product',label:'品名'},{prop:'CheckDate',label:'请验时间',width:155}],//批次列表
         }
     },
     created(){
@@ -366,13 +381,12 @@ export default {
             }
             this.axios.get('/lims/Board',{params:params}).then((res) => {
                 if(res.data.code=='1000'){
-                    this.batchinfo=res.data.data
-                    this.batchinfo=this.batchinfo.concat({Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'})
-                    if(this.batchinfo.length!==[]){
-                        this.showstep=true
-                    }else{
-                        this.showstep=false
-                    }
+                   this.currentstep=res.data.data.length
+                   this.batchinfo=this.batchinfo.map((item) => { //清空缓存的状态
+                       return {Status:item.Status}
+                   })
+                   this.batchinfo.splice(0,res.data.data.length)
+                   this.batchinfo=res.data.data.concat(this.batchinfo)
                 }else{
                     this.$message({
                         type:'info',
@@ -391,7 +405,7 @@ export default {
                 Content:JSON.stringify(this.distribute.Content),
                 Character:JSON.stringify(this.distribute.Character),
                 CheckStartTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-                Name:'代晓进'
+                Name:localStorage.getItem('Name')
             }
             this.axios.post('/lims/Worker',this.qs.stringify(params)).then((res) => {
                 if(res.data.code=='1000'){
@@ -399,7 +413,6 @@ export default {
                         type:'success',
                         message:'下发操作成功'
                     })
-                    this.SearchTab()
                 }else{
                    this.$message({
                         type:'error',
@@ -411,21 +424,31 @@ export default {
        getWorker(){ //获取分组和人员
            var params={
                CheckProjectNO:this.distribute.CheckProjectNO,
-               Name:'代晓进'
+               Name:localStorage.getItem('Name')
            }
            this.axios.get('/lims/Worker',{params:params}).then((res) => {
                if(res.data.code=='1000'){
                    this.workers=res.data.data
+               }else{
+                   this.$message({
+                       type:'warning',
+                       message:'无权限，获取小组人员失败'
+                   })
                }
            })
        },
-       getRecord(){ //获取记录项数据
+       getRecord(){
            var params={
-               CheckProjectNO:this.distribute.CheckProjectNO
+               TableName:"Distribute",
+               Query:"Accurate", 
+               QueryColumnName:"CheckProjectNO",
+               QueryColumnValue:this.distribute.CheckProjectNO,
+               QueryColumnName2:"Status",
+               QueryColumnValue2:"J"
            }
-           this.axios.get('/lims/CheckRecord',{params:params}).then((res) => {
+           this.axios.get('/lims/CRUD',{params:params}).then((res) => {
                if(res.data.code=='1000' && res.data.data!=null){
-                   this.Recordobj=res.data.data
+                   this.Record=res.data.data[0]
                }
            })
        },
@@ -443,19 +466,24 @@ export default {
            })
         },
          SearchTab(){ //查询相关数据
-            var params={
+           var params={
+                TableName:"CheckForm",
+                Query:"Accurate",
                 Page:this.batchTableData.offset,
                 PerPage:this.batchTableData.limit,
-                Product:this.searchObj.category,
-                DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:'分发'
+                QueryColumnName:"Product",
+                QueryColumnValue:this.searchObj.category,
+                TimeColumn:"CheckDate",
+                StartTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 00:00:00"),
+                EndTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 23:59:59"),
+                QueryColumnName2:"Status",
+                QueryColumnValue2:this.searchObj.state
             }
-            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
-                if(res.data.data.length==0){
-                    this.showstep=false
+            this.axios.get('/lims/CRUD',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                    this.batchTableData.data=res.data.data
+                    this.batchTableData.total=res.data.total
                 }
-                this.batchTableData.data=res.data.data
-                this.batchTableData.total=res.data.total
             })
         },
         handSelectChange(e){
@@ -475,19 +503,19 @@ export default {
             }
             this.axios.get('/lims/Sample',{params:params}).then((res) => {
                 this.jbarr.Discern=res.data.data[0].Discern.map((item, index) => {
-                    return {label:item.id,value:item.value}
+                    return {label:item.ID,value:item.value}
                 })
                 this.jbarr.Inspect=res.data.data[0].Inspect.map((item, index) => {
-                    return {label:item.id,value:item.value}
+                    return {label:item.ID,value:item.value}
                 })
                 this.jbarr.Character=res.data.data[0].Character.map((item, index) => {
-                    return {label:item.id,value:item.value}
+                    return {label:item.ID,value:item.value}
                 })
                 this.jbarr.Content=res.data.data[0].Content.map((item, index) => {
-                    return {label:item.id,value:item.value}
+                    return {label:item.ID,value:item.value}
                 })
                 this.jbarr.Microbe=res.data.data[0].Microbe.map((item, index) => {
-                    return {label:item.id,value:item.value}
+                    return {label:item.ID,value:item.value}
                 })
             })
         },

@@ -89,7 +89,7 @@ export default {
         }else{
             this.$message({
               type:'info',
-              message:'请输入你的用户名密码'
+              message:'请完整填写登录信息'
             })
         }
       }else{
@@ -108,8 +108,11 @@ export default {
             sessionStorage.setItem('WorkNumber',this.ruleForm.loginpass)
             sessionStorage.setItem('LastLoginTime',moment(new Date()).format('YYYY-MM-DD HH:mm:ss'))
             this.$router.push('/')
-            localStorage.setItem('sonMenu',JSON.stringify([{"name":"进度看板","path":"/ProgressBoard"},{"name":"系统首页","path":"/Board"},{"name":"统计分析","path":"/StatisticalAnalysis"},{"name":'批次进度',"path":'/BatchProgress'}]))
+            localStorage.setItem('Name',this.ruleForm.loginname)
+            localStorage.setItem('WorkNumber',this.ruleForm.loginpass)
+            localStorage.setItem('sonMenu',JSON.stringify([{"name":"工艺看板","path":"/ProgressBoard"},{"name":"系统首页","path":"/Board"},{"name":"统计分析","path":"/StatisticalAnalysis"},{"name":'批次进度',"path":'/BatchProgress'}]))
             localStorage.setItem('SonMenuIndex','0')
+            sessionStorage.setItem('Rights',res.data.data.Permissions)
           this.$message({
               showClose: true,
               message: "登录成功",
