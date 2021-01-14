@@ -115,7 +115,7 @@ def check_verify():
         db_session.add(
             CheckLife(Product=data.Product, Specs=data.Specs, Supplier=data.Supplier, ProductNumber=data.ProductNumber,
                       Number=data.Number, Amount=data.Amount, Unit=data.Unit, CheckProcedure=data.CheckProcedure,
-                      CheckDepartment=data.CheckDepartment, CheckDate=data.CheckDate, CheckUser=data.CheckUser,
+                      CheckDepartment=data.CheckDepartment, CheckDate=DateTime, CheckUser=data.CheckUser,
                       Content='通过了请验申请审核', Status='请验审核', CheckProjectNO=item,
                       CheckNumber=data.CheckNumber, ProductType=data.ProductType
                       ))
