@@ -16,12 +16,9 @@ dominate==2.3.5
 et-xmlfile==1.0.1
 excel==1.0.0
 Flask==0.12.2
-Flask-Bootstrap==3.3.7.1
 Flask-Cors==3.0.8
 Flask-HTTPBasicAuth==1.0.1
-Flask-JWT-Extended==3.24.1
 Flask-Login==0.4.1
-flask-marshmallow==0.11.0
 Flask-Migrate==2.5.3
 Flask-RESTful==0.3.7
 Flask-Script==2.0.6
@@ -40,8 +37,6 @@ macholib==1.11
 Mako==1.1.2
 MarkupPy==1.14
 MarkupSafe==1.1.1
-marshmallow==3.5.1
-marshmallow-sqlalchemy==0.22.3
 modbus-tk==1.1.0
 Naked==0.1.31
 numpy==1.15.4

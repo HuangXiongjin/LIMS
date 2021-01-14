@@ -26,7 +26,7 @@ def quality_testing():
             parent = {'CheckType': item, 'values': child}
             query_data2 = db_session.query(WorkerBook).filter_by(CheckProjectNO=CheckProjectNO, CheckType=item).all()
             for i in query_data2:
-                child.append({'Id': i.Id, 'Name': i.Name, 'work': i.CheckProject, 'Status': i.Status})
+                child.append({'ID': i.ID, 'Name': i.Name, 'work': i.CheckProject, 'Status': i.Status})
             results.append(parent)
         return json.dumps({'code': '1000', 'msg': '操作成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'POST':
@@ -36,9 +36,10 @@ def quality_testing():
         CheckEndTime = request.values.get('CheckEndTime')
         Action = json.loads(request.values.get('Action', '[]'))
         Comment = request.values.get('Comment', '')
+        SampleTime = request.values.get('Time')
         for item in Action:
             if item is not None:
-                data = db_session.query(WorkerBook).filter_by(Id=int(item['Id'])).first()
+                data = db_session.query(WorkerBook).filter_by(ID=int(item['ID'])).first()
                 result = '符合规定' if item['Status'] == 'true' else '不符合规定'
                 data.Result = result
                 data.Status = item['Status']
@@ -49,16 +50,16 @@ def quality_testing():
                 db_session.commit()
                 query_check = db_session.query(CheckForm).filter_by(CheckProjectNO=NO).first()
                 query_data = db_session.query(Distribute).filter_by(CheckProjectNO=NO).first()
-                # query_WorkerBook = db_session.query(WorkerBook).filter_by(Id=Id).first()
+                # query_WorkerBook = db_session.query(WorkerBook).filter_by(ID=ID).first()
                 query_record = db_session.query(Record).filter_by(
                     CheckProjectNO=request.values.get('CheckProjectNO')).first()
                 db_session.add(
-                    CheckLife(No=NO, User=Name, Status="质检", Product=data.Name, CheckNumber=query_check.CheckNumber,
-                              ProductType=query_check.ProductType, OperationTime=CheckEndTime, Work="完成了质检内容"))
+                    CheckLife(CheckProjectNO=NO, CheckUser=Name, Status="质检", Product=data.Name, CheckNumber=query_check.CheckNumber,
+                              ProductType=query_check.ProductType, CheckDate=CheckEndTime, Content="完成了质检内容"))
                 db_session.commit()
-                db_session.add(ConclusionRecord(CheckNumber=query_check.Foo, TestDate=query_check.CheckDate,
-                                                ActualTime=query_check.SampleTime, CheckDate=query_data.Time,
-                                                Name=query_check.Name, ProductNumber=query_check.ProductNumber,
+                db_session.add(ConclusionRecord(CheckNumber=query_check.CheckNumber, TestDate=query_check.CheckDate,
+                                                ActualTime=SampleTime, CheckDate=query_data.Time,
+                                                Name=query_check.Product, ProductNumber=query_check.ProductNumber,
                                                 SampleDepartment=query_check.CheckDepartment,
                                                 Type=query_check.ProductType,
                                                 medicine=query_record.Type, Specs=query_check.Specs,
@@ -92,9 +93,9 @@ def check_report():
             data.Life = '质检审核'
             data.Status = '质检审核'
             db_session.add(
-                CheckLife(No=CheckProjectNO, User=Name, Status="质检审核", Product=data.Name,
+                CheckLife(CheckProjectNO=CheckProjectNO, CheckUser=Name, Status="质检审核", Product=data.Name,
                           CheckNumber=data.CheckNumber,
-                          ProductType=data.ProductType, OperationTime=Time, Work="完成质检了审核"))
+                          ProductType=data.ProductType, CheckDate=Time, Content="完成质检了审核"))
             db_session.commit()
         if Action == '2':
             data1.QC = 'Y'
@@ -109,9 +110,9 @@ def check_report():
             data.Life = '放行'
             data.Status = '放行'
             db_session.add(
-                CheckLife(No=CheckProjectNO, User=Name, Status="放行", Product=data.Name,
+                CheckLife(CheckProjectNO=CheckProjectNO, CheckUser=Name, Status="放行", Product=data.Name,
                           CheckNumber=data.CheckNumber,
-                          ProductType=data.ProductType, OperationTime=Time, Work="完成了审核放行"))
+                          ProductType=data.ProductType, CheckDate=Time, Content="完成了审核放行"))
             db_session.commit()
         db_session.add_all([data1, data])
         db_session.commit()
@@ -130,8 +131,12 @@ def check_log():
         ProductType = request.values.get('ProductType')
         # start_time = "'" + request.values.get('DateTime') + " 00:00:00'"
         # end_time = "'" + request.values.get('DateTime') + " 23:59:59'"
-        results = db_session.query(CheckLife).filter(CheckLife.Product == Product, CheckLife.ProductType == ProductType
-                                                     ).order_by(CheckLife.Id.desc()).all()
+        name = request.values.get('Name')
+        if name is None:
+            results = db_session.query(CheckLife).filter(CheckLife.Product == Product, CheckLife.ProductType == ProductType
+                                                     ).order_by(CheckLife.ID.desc()).all()
+        else:
+            results = db_session.query(CheckLife).filter(CheckLife.CheckUser == name).order_by(CheckLife.ID.desc()).all()
         data = results[(page - 1) * per_page:page * per_page]
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                           ensure_ascii=False)
@@ -143,16 +148,26 @@ def board():
     if request.method == 'GET':
         if request.values.get('Action') == 'p':
             CheckProjectNO = request.values.get('CheckProjectNO')
-            results = db_session.query(CheckLife).filter_by(No=CheckProjectNO).all()
-            return json.dumps({'code': '1000', 'msg': '成功', 'data': results}, cls=MyEncoder, ensure_ascii=False)
+            if CheckProjectNO:
+                status_list = ['申请', '请验审核', '取样', '接收', '分发', '质检', '报告', '质检审核', '放行']
+                data = []
+                filter_status = []
+                results = db_session.query(CheckLife).filter_by(CheckProjectNO=CheckProjectNO).all()
+                for result in results:
+                    if result.Status in status_list and result.Status not in filter_status:
+                        filter_status.append(result.Status)
+                        data.append(result)
+                return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
+            else:
+                return json.dumps({'code': '1000', 'msg': '成功'}, cls=MyEncoder, ensure_ascii=False)
         # 当前页码
         page = int(request.values.get('Page'))
         # 每页记录数
         per_page = int(request.values.get('PerPage'))
         status = request.values.get('Status')
         Product = request.values.get('Product')
-        results = db_session.query(CheckForm).filter(CheckForm.Name == Product, CheckForm.Status == status).order_by(
-            CheckForm.Id.desc()).all()
+        results = db_session.query(CheckForm).filter(CheckForm.Product == Product, CheckForm.Status == status).order_by(
+            CheckForm.ID.desc()).all()
         data = results[(page - 1) * per_page:page * per_page]
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                           ensure_ascii=False)
@@ -200,13 +215,13 @@ def destruction():
         # EndTime = request.values.get('EndTime')
         results = ''
         if destruction_type == '样品销毁':
-            results = db_session.query(CheckForm).filter(CheckForm.Name == Product,
+            results = db_session.query(CheckForm).filter(CheckForm.Product == Product,
                                                          CheckForm.ProductDestruction == '样品销毁').order_by(
-                CheckForm.Id.desc()).all()
+                CheckForm.ID.desc()).all()
         if destruction_type == '留样销毁':
             results = db_session.query(ProductSave).filter(ProductSave.Name == Product,
                                                            ProductSave.BatchDestruction == '留样销毁').order_by(
-                ProductSave.Id.desc()).all()
+                ProductSave.ID.desc()).all()
         data = results[(page - 1) * per_page:page * per_page]
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                           ensure_ascii=False)
@@ -227,13 +242,13 @@ def destruction_verify():
         # EndTime = request.values.get('EndTime')
         results = ''
         if destruction_type == '样品销毁':
-            results = db_session.query(DestructionForm).filter(CheckForm.Name == Product,
+            results = db_session.query(DestructionForm).filter(DestructionForm.Name == Product,
                                                                DestructionForm.Type == '样品销毁').order_by(
-                DestructionForm.Id.desc()).all()
+                DestructionForm.ID.desc()).all()
         if destruction_type == '留样销毁':
             results = db_session.query(DestructionForm).filter(DestructionForm.Name == Product,
                                                                DestructionForm.Type == '留样销毁').order_by(
-                DestructionForm.Id.desc()).all()
+                DestructionForm.ID.desc()).all()
         data = results[(page - 1) * per_page:page * per_page]
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
                           ensure_ascii=False)

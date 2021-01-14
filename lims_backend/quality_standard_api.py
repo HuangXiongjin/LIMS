@@ -77,7 +77,7 @@ def product():
         # 每页记录数
         per_page = int(request.values.get('PerPage'))
         tag = db_session.query(ClassifyTree).filter_by(TagCode=code).first()
-        results = db_session.query(QualityStandardCenter).order_by(QualityStandardCenter.Id.asc()).filter_by(
+        results = db_session.query(QualityStandardCenter).order_by(QualityStandardCenter.ID.asc()).filter_by(
             Type=tag.TagName).all()
         data = results[(page - 1) * per_page:page * per_page]
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data, 'total': len(results)}, cls=MyEncoder,
@@ -148,19 +148,19 @@ def quality_standard():
         character_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product,
                                                                      Type='Character').all()
         for result in character_data:
-            character.append({'id': result.Id, 'value': result.Describe})
+            character.append({'ID': result.ID, 'value': result.Describe})
         discern_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Discern').all()
         for result in discern_data:
-            discern.append({'id': result.Id, 'value': result.Describe})
+            discern.append({'ID': result.ID, 'value': result.Describe})
         inspect_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Inspect').all()
         for result in inspect_data:
-            inspect.append({'id': result.Id, 'value': result.Describe})
+            inspect.append({'ID': result.ID, 'value': result.Describe})
         content_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Content').all()
         for result in content_data:
-            content.append({'id': result.Id, 'value': result.Describe})
+            content.append({'ID': result.ID, 'value': result.Describe})
         microbe_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Microbe').all()
         for result in microbe_data:
-            microbe.append({'id': result.Id, 'value': result.Describe})
+            microbe.append({'ID': result.ID, 'value': result.Describe})
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'POST':
         # 当前品名下的质检维护
@@ -172,15 +172,15 @@ def quality_standard():
         db_session.commit()
         return json.dumps({'code': '1000', 'msg': '添加成功'}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'PATCH':
-        Id = request.values.get('Id')
-        data = db_session.query(QualityStandard).filter_by(Id=Id).first()
+        ID = request.values.get('ID')
+        data = db_session.query(QualityStandard).filter_by(ID=ID).first()
         data.Describe = request.values.get('Data')
         db_session.add(data)
         db_session.commit()
         return json.dumps({'code': '1000', 'msg': '修改成功'}, cls=MyEncoder, ensure_ascii=False)
     if request.method == 'DELETE':
-        Id = request.values.get('Id')
-        data = db_session.query(QualityStandard).filter_by(Id=Id).first()
+        ID = request.values.get('ID')
+        data = db_session.query(QualityStandard).filter_by(ID=ID).first()
         db_session.delete(data)
         db_session.commit()
         return json.dumps({'code': '1000', 'msg': '删除成功'}, cls=MyEncoder, ensure_ascii=False)
@@ -247,8 +247,8 @@ def get_file():
         return json.dumps({'code': '1000', 'msg': '请求成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)
         # return send_from_directory(root_path, pic_path)
     if request.method == 'DELETE':
-        no = request.values.get('Id')
-        data = db_session.query(WordForm).filter_by(Id=no).first()
+        no = request.values.get('ID')
+        data = db_session.query(WordForm).filter_by(ID=no).first()
         db_session.delete(data)
         db_session.commit()
         return json.dumps({'code': '1000', 'msg': '删除成功'}, cls=MyEncoder, ensure_ascii=False)

@@ -1,81 +1,56 @@
-<<<<<<< HEAD
-import json
-from io import BytesIO
-
-import pymssql
-import xlwt
-from flask import Blueprint, make_response
-from flask_login import current_user
-
-from common.system import ISFlag
-from tools.handle import MyEncoder, log
-from common.lims_models import db_session
-# from database.connect_db import conn
-from common.batch_plan_model import PlanManager
-
-t1 = Blueprint('t123', __name__)
-
-
-
-
-ocs = db_session.query(ISFlag).all()
-i = 0
-for oc in ocs:
-    try:
-        if i == 0:
-            for i in ocs:
-                try:
-                    float("qwe")
-                except Exception as e:
-                    print("2")
-                    break
-
-        print(oc.ID)
-        i = i+1
-    except Exception as e:
-        print("1")
-#
-# @t1.route('/export', methods=['GET'])
-# def export_excel():
-#     # 方式一：游标语句查询
-#     conn = pymssql.connect(user='sa', host='192.168.7.100', port='1433', password='xea@123', charset='utf8')
-#     cur = conn.cursor()  # 获取游标
-#     sql = 'select Name, session_id from LIMS.dbo.[User]'
-#     cur.execute(sql)  # 游标查询
-#     data1 = cur.fetchall()
-#     print(data1)
-#
-#     # # 方式二：Session查询
-#     data2 = db_session.execute(sql).fetchall()  # Session查询
-#     print(data2)
-#     #
-#     # # 方式三：ORM查询
-#     # data3 = db_session.query(User).all()
-#     # print(data3)
-#     return json.dumps({'data': data2}, cls=AlchemyEncoder, ensure_ascii=False)
-    #
-    # fields = ['姓名', '验证码']  # 设置自己需要的Excel表头
-    #
-    # book = xlwt.Workbook(encoding='utf-8')   # 获取excel对象
-    #
-    # sheet = book.add_sheet('用户信息')  # 设置excel的sheet名称
-    #
-    # for col, field in enumerate(fields):  # 写入excel表头
-    #     sheet.write(0, col, field)
-    #
-    # row = 1
-    # for data in data3:  # 根据数据写入excel，col-单元格行标，field-单元格列标
-    #     for col, field in enumerate(data):
-    #         sheet.write(row, col, field)
-    #     row += 1
-    #
-    # # 使用BytesIO将数据转为字节串在发送给浏览器
-    # sio = BytesIO()
-    # book.save(sio)  # 将数据存储为bytes
-    # sio.seek(0)
-    # response = make_response(sio.getvalue())
-    # response.headers['Content-type'] = 'application/vnd.ms-excel'  # 响应头告诉浏览器发送的文件类型为excel
-    # response.headers['Content-Disposition'] = 'attachment; filename=data.xlsx'  # 浏览器打开/保存的对话框，data.xlsx-设定的文件名
-    # return response
-=======
->>>>>>> 803af985be5fd858710dc6beaceb7d7cd3d42270
+# class Equipment(Base):
+#     __tablename__ = "Equipment"
+#     # ID:
+#     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+#     # 设备名称
+#     EquipmentName = Column(Unicode(128), nullable=True)
+#     # 设备编号
+#     EquipmentCode = Column(Unicode(128), nullable=True)
+#     # 资产编号
+#     AssetCode = Column(Unicode(128), nullable=True)
+#     # 出厂编号
+#     LeaveFactoryCode = Column(Unicode(128), nullable=True)
+#     # 电子标签码
+#     ElectronicCode = Column(Unicode(128), nullable=True)
+#     # 设备类别
+#     EquipmentType = Column(Unicode(64), nullable=True)
+#     # 品牌
+#     Brand = Column(Unicode(64), nullable=True)
+#     # 规格
+#     Specs = Column(Unicode(64), nullable=True)
+#     # 单位
+#     Unit = Column(Unicode(32), nullable=True)
+#     # 设备来源
+#     Source = Column(Unicode(128), nullable=True)
+#     # 供应商
+#     Manufacturer = Column(Unicode(128), nullable=True)
+#     # 设备状态（运行中，维修中）
+#     Status = Column(Unicode(128), default="运行中", nullable=True)
+#     # 购置时间
+#     PurchaseTime = Column(Unicode(128), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+#     # 购置金额
+#     PurchaseMoney = Column(Unicode(64), nullable=True)
+#     # 保修期
+#     WarrantyTime = Column(Unicode(128), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+#     # 投产时间
+#     UseTime = Column(Unicode(128), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+#     # 预计报废时间
+#     ScrapTime = Column(Unicode(128), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+#     # 设备等级
+#     Grade = Column(Unicode(64), nullable=True)
+#     # 负责人
+#     Director = Column(Unicode(64), nullable=True)
+#     # 所属部门
+#     Department = Column(Unicode(128), nullable=True)
+#     # 放置位置
+#     Position = Column(Unicode(128), nullable=True)
+#     # 是否计量设备
+#     IsCalculate = Column(Unicode(32), nullable=True)
+#     # 是否折旧设备
+#     IsDepreciation = Column(Unicode(32), nullable=True)
+#     # 当前净值
+#     NetValue = Column(Unicode(64), nullable=True)
+#     # 是否折旧设备
+#     TechnicalParameter = Column(Unicode(128), nullable=True)
+#     # 备注
+#     Comment = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)

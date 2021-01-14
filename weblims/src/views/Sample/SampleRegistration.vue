@@ -1,12 +1,12 @@
 <template>
     <el-row :gutter='20'>
-        <el-col :span='24' class="mgt24 container" v-show="showstep">
+        <el-col :span='24' class="mgt24 container">
             <div class="mgb24 fsz14px">当前批次流程</div>
             <el-steps :active="currentstep" finish-status="success">
                 <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
-                    <template slot="description" v-if='item.User'>
-                        <div><span>姓名：</span><span>{{item.User}}</span></div>
-                        <div><span>时间：</span><span>{{item.OperationTime}}</span></div>
+                    <template slot="description" v-if='item.CheckUser'>
+                        <div><span>姓名：</span><span>{{item.CheckUser}}</span></div>
+                        <div><span>时间：</span><span>{{item.CheckDate}}</span></div>
                     </template>
                 </el-step>
             </el-steps>
@@ -51,6 +51,16 @@
                                 </el-option>
                             </el-select>
                         </el-col>
+                        <el-col :span='3' class="mgr15 boxshadow">
+                        <el-select v-model="searchObj.state" placeholder="状态">
+                            <el-option
+                            v-for="item in opstate"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-col>
                         <el-col :span='4' class="mgr15 boxshadow">
                            <el-date-picker
                             v-model="searchObj.registrydate"
@@ -82,7 +92,7 @@
                                 </el-col>
                                 <el-col :span='10'>
                                     <el-form-item label="品名/名称">
-                                        <el-input v-model="requestform.Name"></el-input>
+                                        <el-input v-model="requestform.Product"></el-input>
                                     </el-form-item>
                                 </el-col>
                                 <el-col :span='10'>
@@ -196,8 +206,7 @@ export default {
         return {
            IsDoing:JSON.parse(sessionStorage.getItem('Rights').replace(/'/g, '"')).includes("领样"),
            currentstep:2,
-           batchinfo:[],
-           showstep:false,
+           batchinfo:[{Status:'申请'},{Status:'请验审核'},{Status:'取样'},{Status:'接收'},{Status:'分发'},{Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'}],
            activeNames:['Discern','Character','Inspect','Content','Microbe'],
            Discerns:[],
            Inspects:[],
@@ -207,9 +216,11 @@ export default {
            dialogTableVisible:false,
            searchObj:{
                category:'玉米淀粉',
+               state:'取样',
                registrydate:moment(new Date()).format('YYYY-MM-DD')
            },
            currentgoods:'物料编码',
+           rowCheckProjectNO:'',
            requestform:{Specs:'',CheckNumber:'',Name:'',ProductNumber:'',Supplier:'',Number:'',Amount:'',Unit:''},
            projectform:{
                CheckProcedure:'',CheckDepartment:'',
@@ -217,6 +228,9 @@ export default {
                ProductType:'',
                CheckProject:{Discern:[],Character:[],Inspect:[],Content:[],Microbe:[]}
            },
+            opstate: [{value: '申请',label: '申请'},{value: '请验审核',label: '请验审核'}, {value: '取样',label: '取样'},{value: '接收',label: '接收'},{value: '分发',label: '分发'},
+            {value: '质检',label: '质检'},{value: '报告',label: '报告'}, {value: '质检审核',label: '质检审核'},{value: '放行',label: '放行'}
+            ],
            options: [{
                 value: '选项1',
                 label: '物料一'
@@ -227,12 +241,12 @@ export default {
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
-            batchtableconfig:[{prop:'CheckNumber',label:'请验单号'},{prop:'Name',label:'品名'},{prop:'CheckDate',label:'请验时间',width:155}],//批次列表
+            batchtableconfig:[{prop:'CheckNumber',label:'请验单号'},{prop:'Product',label:'品名'},{prop:'CheckDate',label:'请验时间',width:155}],//批次列表
         }
     },
     created(){
        this.getSelectOption()
-       this.getInitTab()
+       this.SearchTab()
     },
     methods: {
         ReceiveSample(){//领样确认
@@ -269,35 +283,31 @@ export default {
         },
          SearchTab(){ //查询相关数据
             var params={
+                TableName:"CheckForm",
+                Query:"Accurate",
                 Page:this.batchTableData.offset,
                 PerPage:this.batchTableData.limit,
-                Product:this.searchObj.category,
-                DateTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD"),
-                Status:'取样'
+                QueryColumnName:"Product",
+                QueryColumnValue:this.searchObj.category,
+                TimeColumn:"CheckDate",
+                StartTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 00:00:00"),
+                EndTime:moment(this.searchObj.registrydate).format("YYYY-MM-DD 23:59:59"),
+                QueryColumnName2:"Status",
+                QueryColumnValue2:this.searchObj.state
             }
-            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
-                if(res.data.data.length==0){
-                this.showstep=false
+            this.axios.get('/lims/CRUD',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                    this.batchTableData.data=res.data.data
+                    this.batchTableData.total=res.data.total
+                    if(this.rowCheckProjectNO!==''){
+                        this.getCurrentSteps(this.rowCheckProjectNO)
+                    }
                 }
-                this.batchTableData.data=res.data.data
-                this.batchTableData.total=res.data.total
-            })
-        },
-         getInitTab(){ //初始化获取表格数据
-            var params={
-                Page:this.batchTableData.offset,
-                PerPage:this.batchTableData.limit,
-                Product:this.searchObj.category,
-                DateTime:this.searchObj.registrydate,
-                Status:'取样'
-            }
-            this.axios.get('/lims/CheckForm',{params:params}).then((res) => {
-                this.batchTableData.data=res.data.data
-                this.batchTableData.total=res.data.total
             })
         },
         handletabClick(row){ //左侧tab点击事件
             this.currentgoods=row.CheckNumber
+            this.rowCheckProjectNO=row.CheckProjectNO
             this.requestform=row
             this.projectform=row
             this.getJbInfo(row.CheckProjectNO)
@@ -310,13 +320,12 @@ export default {
             }
             this.axios.get('/lims/Board',{params:params}).then((res) => {
                 if(res.data.code=='1000'){
-                    this.batchinfo=res.data.data
-                    this.batchinfo=this.batchinfo.concat([{Status:'取样'},{Status:'接收'},{Status:'分发'},{Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'}])
-                    if(this.batchinfo.length!==[]){
-                        this.showstep=true
-                    }else{
-                        this.showstep=false
-                    }
+                    this.currentstep=res.data.data.length
+                    this.batchinfo=this.batchinfo.map((item) => { //清空缓存的状态
+                       return {Status:item.Status}
+                   })
+                   this.batchinfo.splice(0,res.data.data.length)
+                   this.batchinfo=res.data.data.concat(this.batchinfo)
                 }else{
                     this.$message({
                         type:'info',

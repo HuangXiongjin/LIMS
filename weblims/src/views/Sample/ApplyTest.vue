@@ -1,5 +1,16 @@
 <template>
     <el-row :gutter="20">
+        <el-col :span='24' class="mgt24 mgb24 container">
+            <div class="mgb24 fsz14px">当前批次流程</div>
+            <el-steps :active="currentstep" finish-status="success">
+                <el-step class="cursor" name='description' v-for="(item,index) in batchinfo" :key='index' :title="item.Status" >
+                    <template slot="description" v-if='item.CheckUser'>
+                        <div><span>姓名：</span><span>{{item.CheckUser}}</span></div>
+                        <div><span>时间：</span><span>{{item.CheckDate}}</span></div>
+                    </template>
+                </el-step>
+            </el-steps>
+        </el-col>
         <el-col :span='5'>
             <el-col class="container">
                 <div class="fontWet titl">样本分类</div>
@@ -100,6 +111,25 @@
                          </el-row>
                        </el-form>
                    </el-col>
+                   <el-col :span='24' class="padd15">
+                       <el-collapse v-model="activeNames">
+                            <el-collapse-item title="性状" name="Character">
+                                <div v-for="(item,index) in projectform.CheckProject['Character']" :key='index' class="lightgreen">{{item}}</div>
+                            </el-collapse-item>
+                            <el-collapse-item title="鉴别" name="Discern">
+                                <div v-for="(item,index) in projectform.CheckProject['Discern']" :key='index' class="lightgreen">{{item}}</div>
+                            </el-collapse-item>
+                            <el-collapse-item title="检查" name="Inspect">
+                                <div v-for="(item,index) in projectform.CheckProject['Inspect']" :key='index' class="lightgreen">{{item}}</div>
+                            </el-collapse-item>
+                            <el-collapse-item title="含量测定" name="Content">
+                                <div v-for="(item,index) in projectform.CheckProject['Content']" :key='index' class="lightgreen">{{item}}</div>
+                            </el-collapse-item>
+                            <el-collapse-item title="微生物限度" name="Microbe">
+                                <div v-for="(item,index) in projectform.CheckProject['Microbe']" :key='index' class="lightgreen">{{item}}</div>
+                            </el-collapse-item>
+                        </el-collapse>
+                   </el-col>
                    <el-col :span='24'>
                        <div style="float:right;">
                         <el-button type="danger" @click="ResetRequest">重置</el-button>
@@ -151,6 +181,10 @@ export default {
     data(){
 
         return {
+           currentstep:0,
+           checkNo:'',
+           batchinfo:[{Status:'申请'},{Status:'请验审核'},{Status:'取样'},{Status:'接收'},{Status:'分发'},{Status:'质检'},{Status:'报告'},{Status:'质检审核'},{Status:'放行'}],
+           activeNames:['Discern','Character','Inspect','Content','Microbe'],
            requestform:{Specs:'',CheckNumber:'',Name:'',ProductNumber:'',Supplier:'',Number:'',Amount:'',Unit:''},
            projectform:{
                CheckProcedure:'',CheckDepartment:'',ProductType:'',
@@ -174,6 +208,27 @@ export default {
         this.getInitTree()
     },
     methods: {
+        getCurrentSteps(){
+           var params={
+                Action:'p',
+                CheckProjectNO:this.checkNo
+            }
+            this.axios.get('/lims/Board',{params:params}).then((res) => {
+                if(res.data.code=='1000'){
+                  this.currentstep=res.data.data.length
+                   this.batchinfo=this.batchinfo.map((item) => { //清空缓存的状态
+                       return {Status:item.Status,}
+                   })
+                   this.batchinfo.splice(0,res.data.data.length)
+                   this.batchinfo=res.data.data.concat(this.batchinfo)
+                }else{
+                    this.$message({
+                        type:'info',
+                        message:'获取数据失败，请重试'
+                    })
+                }
+            })
+        },
         ResetRequest(){
             this.requestform={Specs:'',CheckNumber:'',Name:'',ProductNumber:'',Supplier:'',Number:'',Amount:'',Unit:''}
             this.projectform={
@@ -186,16 +241,23 @@ export default {
         selectJbChoice(){
             this.jbTableVisible=true
         },
-        getJB(Id){
+        getJB(ID){
              var params={
-                No:Id
+                No:ID
             }
             this.axios.get('/lims/QualityStandard',{params:params}).then((res) => {
-                this.jbarr=res.data.data[0]['Discern']
-                this.jcarr=res.data.data[0]['Inspect']
-                this.xzarr=res.data.data[0]['Character']
-                this.hlcdarr=res.data.data[0]['Content']
-                this.wswarr=res.data.data[0]['Microbe']
+                if(res.data.code=='1000'){
+                    this.jbarr=res.data.data[0]['Discern']
+                    this.jcarr=res.data.data[0]['Inspect']
+                    this.xzarr=res.data.data[0]['Character']
+                    this.hlcdarr=res.data.data[0]['Content']
+                    this.wswarr=res.data.data[0]['Microbe']
+                }else{
+                    this.$message({
+                        type:'warning',
+                        message:'获取检验数据失败'
+                    })
+                }
             })
         },
         getInitTree() { //获取初始树形结构
@@ -234,6 +296,20 @@ export default {
                     this.$message({
                         type:'success',
                         message:'提交成功'
+                    })
+                    this.checkNo=res.data.data
+                    this.requestform={Specs:'',CheckNumber:'',Name:'',ProductNumber:'',Supplier:'',Number:'',Amount:'',Unit:''}
+                    this.projectform={CheckProcedure:'',CheckDepartment:'',ProductType:'',CheckProject:{Discern:[],Character:[],Inspect:[],Content:[],Microbe:[]}}
+                    this.getCurrentSteps()
+                }else if(res.data.code=='1001'){
+                     this.$message({
+                        type:'warning',
+                        message:"请验单号不能重复"
+                    })
+                }else{
+                     this.$message({
+                        type:'success',
+                        message:"提交失败"
                     })
                 }
             })
