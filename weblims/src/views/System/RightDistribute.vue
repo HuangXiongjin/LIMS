@@ -228,8 +228,10 @@ export default {
                 QueryColumnValue:'shiyanshi',
             }
             this.axios.get('/lims/CRUD',{params:params}).then((res) => {
+               if(res.data.code=='1000'){
                 this.batchTableData.data=res.data.data
                 this.batchTableData.total=res.data.total
+                }
             })
         },
         editRole(){ //编辑角色
