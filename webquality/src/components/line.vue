@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <div class="fsz14px" style="backgroundColor:#0E2A43;color:#fff;textAlign:center;">原料质检数量趋势</div>
+        <div class="fsz14px" style="backgroundColor:#fff;color:#fff;textAlign:center;">原料质检数量趋势</div>
         <div style="overflow:hidden;">
-            <div  style="height:300px;backgroundColor:#0E2A43;" id="box5"></div>
+            <div  style="height:300px;backgroundColor:#fff;" id="box5"></div>
         </div>
     </div>
 </template>
@@ -77,7 +77,7 @@ export default {
                     yData.push(v.num)
                 })
                 var option = {
-                    backgroundColor: '#0E2A43',
+                    backgroundColor: '#fff',
                     tooltip: {
                         trigger: 'axis',
                         axisPointer: {
@@ -87,7 +87,7 @@ export default {
                                 fontSize: 12
                             },
                         },
-                        textStyle: { fontSize: '100%' },
+                        textStyle: { fontSize: '80%' },
                         formatter: v => {
                             return `
                             <div class='u-p-2'>
@@ -107,17 +107,17 @@ export default {
                     },
                     xAxis: {
                         type: 'category', boundaryGap: false, // 两边留白
-                        axisLabel: { textStyle: { color: '#fff', fontSize:14}},
+                        axisLabel: { textStyle: { color: '#666', fontSize:14}},
                         data: xData,
                         axisLine: { lineStyle: { color:'#000', width:1}},    
                         splitLine: { lineStyle: { type: 'dashed', color: 'rgba(255,255,255,.2)',width:1}, show: true },
                     },
                     yAxis:{ 
                         name:'质检数', type: 'value', scale: true, 
-                        nameTextStyle: { color:'rgba(255,255,255,.5)', align:'center', padding:[0,10,10,10], fontSize: '80%'},
-                        axisLabel: { textStyle: { color: '#fff', fontSize: '100%' }, margin: 8 }, 
-                        axisLine: { lineStyle: { color:'#000', width:1 }},    
-                        splitLine: { lineStyle: { type: 'solid', color: 'rgba(255,255,255,.2)',width:1 }, show: true }
+                        nameTextStyle: { color:'#666', align:'center', padding:[0,10,10,10], fontSize: '80%'},
+                        axisLabel: { textStyle: { color: '#666', fontSize: '100%' }, margin: 8 }, 
+                        axisLine: { lineStyle: { color:'#666', width:1 }},    
+                        splitLine: { lineStyle: { type: 'solid', color: '#eee',width:1 }, show: true }
                     },
                     series: {
                         name: '', type: 'line', stack: '',

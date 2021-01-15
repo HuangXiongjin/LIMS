@@ -13,13 +13,13 @@ from sqlalchemy.orm import sessionmaker
 from common import MESLogger, autocode
 from flask_login import current_user, LoginManager
 from common.BSFramwork import AlchemyEncoder
-from common.system import Organization, Factory, DepartmentManager, Role
+from common.system import Organization, Factory, DepartmentManager, Role, Enterprise
 from database import connect_db
 
 from database.connect_db import CONNECT_DATABASE
 login_manager = LoginManager()
 # 创建对象的基类
-engine = create_engine(CONNECT_DATABASE)
+engine = create_engine(CONNECT_DATABASE, deprecate_large_types=True)
 Session = sessionmaker(bind=engine)
 db_session = Session()
 

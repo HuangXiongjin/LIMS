@@ -5,6 +5,7 @@ import Home from '@/components/Home'
 import Nopermission from '@/components/Nopermission'
 
 import Board from '@/views/Board/Board'
+import BatchProgress from '@/views/Board/BatchProgress'
 
 //原料质量
 import StatisticalAnalysis from '@/views/MaterialQuality/StatisticalAnalysis'
@@ -54,6 +55,7 @@ const router=new Router({
       redirect:'/Board',
       children:[
         {path:'/Board',component:Board},
+        {path:'/BatchProgress',component:BatchProgress},
          
         //原料质量
         {path:'/StatisticalAnalysis',component:StatisticalAnalysis},

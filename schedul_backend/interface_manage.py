@@ -67,6 +67,7 @@ class WMS_Interface(ServiceBase):
             return json.dumps("SUCCESS")
         except Exception as e:
             print("WMS调用WMS_OrderStatus接口报错！")
+            insertSyslog("error", "WMS调用WMS_OrderStatus接口报错Error" + str(e), current_user.Name)
             return json.dumps(e)
 
     @rpc(Unicode, Unicode, _returns=Unicode())
@@ -98,6 +99,7 @@ class WMS_Interface(ServiceBase):
             return json.dumps("SUCCESS")
         except Exception as e:
             print("WMS调用WMS_ZYPlanStatus接口报错！")
+            insertSyslog("error", "WMS调用WMS_ZYPlanStatus接口报错Error" + str(e), current_user.Name)
             return json.dumps(e)
 
     @rpc(Unicode, Unicode, _returns=Unicode())
@@ -133,6 +135,7 @@ class WMS_Interface(ServiceBase):
             return json.dumps("SUCCESS")
         except Exception as e:
             print("WMS调用WMS_TrayNumber接口报错！")
+            insertSyslog("error", "WMS调用WMS_TrayNumber接口报错Error" + str(e), current_user.Name)
             return json.dumps(e)
 
 

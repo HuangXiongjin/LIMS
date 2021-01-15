@@ -47,10 +47,10 @@
         </el-col>
         <el-col :span='24' class="mgt24">
             <div class="container">
-                <el-menu :default-active="'1'" class="bgwhite" mode="horizontal" @select="handleSelect">
+                <el-menu :default-active="'1'" class="bgwhite" mode="horizontal">
                     <el-menu-item :index="'1'" style="height:46px;lineHeight:30px;">原料检验清单</el-menu-item>
                 </el-menu>
-                <div class="mgt24" v-if="currentChoose==='1'">
+                <div class="mgt24">
                     <el-table
                     :data="batchTableData.data"
                     size='small'
@@ -65,8 +65,8 @@
                         label="操作"
                         width="100">
                         <template slot-scope="scope">
-                            <el-button @click="handlePass(scope.row)" type="text" size="small" class="bledit">通过</el-button>
-                            <el-button @click.native.prevent="handleBack(scope.row)" type="text" size="small" class="redde">驳回</el-button>
+                            <el-button @click="handlePass(scope.row)" type="text" size="small" class="bledit" v-if="searchObj.state=='请验审核'">通过</el-button>
+                            <el-button @click.native.prevent="handleDetail(scope.row)" type="text" size="small" class="redde">详情</el-button>
                         </template>
                     </el-table-column>
                     </el-table>
@@ -100,8 +100,7 @@ export default {
            searchObj:{
                category:'玉米淀粉',
                registrydate:moment(new Date()).format('YYYY-MM-DD'),
-               state:'请验审核',
-
+               state:'请验审核'
            },
             options: [{
                 value: '选项1',
@@ -109,7 +108,6 @@ export default {
                 }],
             opstate: [{value: '申请',label: '申请'},{value: '请验审核',label: '请验审核'},{value: '取样',label: '取样'},{value: '接收',label: '接收'},{value: '分发',label: '分发'},
             {value: '质检',label: '质检'},{value: '报告',label: '报告'},{value: '质检审核',label: '质检审核'},{value: '放行',label: '放行'}],
-            currentChoose:'1',
             batchTableData:{ //物料BOM
                 data:[],
                 limit: 5,//当前显示多少条
@@ -247,8 +245,9 @@ export default {
         handleSelectionChange(row){ //选择多条数据
             this.checkedRow=row
         },
-        handleBack(row){ //驳回审核
-           
+        handleDetail(row){ //驳回审核
+           this.getCurrentSteps(row.CheckProjectNO)
+           this.rowCheckProjectNO=row.CheckProjectNO
         },
         handlePass(row){ //通过审核
             this.$confirm('此操作将审核通过该项, 是否继续?', '提示', {
@@ -276,12 +275,6 @@ export default {
                 message: '已取消审核'
             });          
             });
-        },
-        handleSelect(key) {
-            if(key==2){
-                this.getPassedTab()
-            }
-            this.currentChoose=key
         },
         handleSizeChange(limit){ //每页条数切换
             this.batchTableData.limit = limit
