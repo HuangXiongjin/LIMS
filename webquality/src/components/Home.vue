@@ -79,8 +79,7 @@ export default {
             },
              mneulist:[
                  {name:'功能看板',icon:'el-icon-data-analysis',children:[
-                    {name:'系统首页',path:'/Board'},
-                    {name:'折线图',path:'/BatchProgress'}
+                    {name:'系统首页',path:'/Board'}
                    
                  ]},
                  {name:'原料质量',icon:'el-icon-star-off',children:[
