@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <div class="fsz14px" style="backgroundColor:#0E2A43;color:#fff;textAlign:center;">原料质检排名及完成情况</div>
+        <div class="fsz14px" style="backgroundColor:#fff;color:#666;textAlign:center;">{{res3}}排名及完成情况</div>
         <div style="overflow:hidden;">
-            <div style="height:300px;backgroundColor:#0E2A43;" id="box4"></div>
+            <div style="height:300px;backgroundColor:#fff;" id="box4"></div>
         </div>
     </div>
 </template>
@@ -17,7 +17,8 @@ export default {
     mounted(){
         this.drawpic()
     },
-     beforeDestroy(){
+    props:['res1','res2','res3'],
+    beforeDestroy(){
             this.comparelist.clear()
             this.comparelist.dispose()
             this.comparelist=null
@@ -46,7 +47,7 @@ export default {
                     }
                 ];
                 var option = {
-                    backgroundColor: '#0E2A43',
+                    backgroundColor: '#fff',
                     tooltip: {
                         show: true,
                         formatter: "{b}:{c}"
@@ -69,7 +70,7 @@ export default {
                         axisLine: {
                             show: false,
                             lineStyle: {
-                                color: '#fff',
+                                color: '#666',
                             }
                         },
                         splitLine: {
@@ -91,10 +92,10 @@ export default {
                             axisLine: {
                                 show: false,
                                 lineStyle: {
-                                    color: '#fff',
+                                    color: '#666',
                                 }
                             },
-                            data: ['原料A', '原料B', '原料C', '原料D', '原料E']
+                            data: this.res1
                         }
 
                     ],
@@ -107,7 +108,7 @@ export default {
                                 position: 'right',
                                 formatter: '{c}',
                                 textStyle: {
-                                    color: 'white' //color of value
+                                    color: '#666' //color of value
                                 }
                                 }
                             },
@@ -165,7 +166,7 @@ export default {
                             },
                             barGap: '0%',
                             barCategoryGap: '60%',
-                            data: [60, 132, 89, 134, 60]
+                            data:this.res2
                         }
 
                     ]

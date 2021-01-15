@@ -143,7 +143,7 @@
                                             <el-row class="mgb10">
                                                 <el-col :span='17' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='2' class="fsz10 lightgreen">{{item.Name}}</el-col>
-                                                <el-col :span='5' v-if="item.Name==currentMan">
+                                                <el-col :span='5'>
                                                     <el-radio v-model="item.Status" label="true" >符合</el-radio>
                                                     <el-radio v-model="item.Status" label="false">不符合</el-radio>
                                                 </el-col>
@@ -158,7 +158,7 @@
                                             <el-row class="mgb10">
                                                 <el-col :span='17' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='2' class="fsz10 lightgreen">{{item.Name}}</el-col>
-                                                <el-col :span='5' v-if="item.Name==currentMan">
+                                                <el-col :span='5'>
                                                     <el-radio v-model="item.Status" label="true" >符合</el-radio>
                                                     <el-radio v-model="item.Status" label="false">不符合</el-radio>
                                                 </el-col>
@@ -173,7 +173,7 @@
                                             <el-row class="mgb10">
                                                 <el-col :span='17' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='2' class="fsz10 lightgreen">{{item.Name}}</el-col>
-                                                <el-col :span='5' v-if="item.Name==currentMan">
+                                                <el-col :span='5'>
                                                     <el-radio v-model="item.Status" label="true" >符合</el-radio>
                                                     <el-radio v-model="item.Status" label="false">不符合</el-radio>
                                                 </el-col>
@@ -188,7 +188,7 @@
                                             <el-row class="mgb10">
                                                 <el-col :span='17' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='2' class="fsz10 lightgreen">{{item.Name}}</el-col>
-                                                <el-col :span='5' v-if="item.Name==currentMan">
+                                                <el-col :span='5'>
                                                     <el-radio v-model="item.Status" label="true" >符合</el-radio>
                                                     <el-radio v-model="item.Status" label="false">不符合</el-radio>
                                                 </el-col>
@@ -203,7 +203,7 @@
                                             <el-row class="mgb10">
                                                 <el-col :span='17' class="fsz12 ">{{item.work}}</el-col>
                                                 <el-col :span='2' class="fsz10 lightgreen">{{item.Name}}</el-col>
-                                                <el-col :span='5' v-if="item.Name==currentMan">
+                                                <el-col :span='5'>
                                                     <el-radio v-model="item.Status" label="true" >符合</el-radio>
                                                     <el-radio v-model="item.Status" label="false">不符合</el-radio>
                                                 </el-col>
@@ -214,7 +214,6 @@
                             </el-col>
                         </div>
                  </el-col>
-                <el-col class="mgt24" style="textAlign:right;" v-if="IsDoing"><el-button type="primary" @click="postResult">发送结果</el-button></el-col>
             </el-row>
         </el-col>
     </el-row>
@@ -237,13 +236,6 @@ export default {
                Type:'',
                CheckTime:'',
                Basis:'',
-           },
-           opt:{
-               Discernopt:true,
-               Inspectopt:true,
-               Characteropt:true,
-               Contentopt:true,
-               Microbeopt:true,
            },
            Row:{},
            searchObj:{
@@ -281,56 +273,6 @@ export default {
         getHeight(){
           this.conheight.height=(window.innerHeight-160)+'px'
        },
-        postResult(){ //发送结果按钮
-            var arr1=this.Discerns.map((item, index) => {
-                if(item.Name==this.currentMan){
-                    return {ID:item.ID,Status:(item.Status).toString()}
-                }
-            })
-            var arr2=this.Inspects.map((item, index) => {
-                if(item.Name==this.currentMan){
-                return {ID:item.ID,Status:(item.Status).toString()}
-                }
-            })
-            var arr3=this.Characters.map((item, index) => {
-                if(item.Name==this.currentMan){
-                return {ID:item.ID,Status:(item.Status).toString()}
-                }
-            })
-            var arr4=this.Contents.map((item, index) => {
-                if(item.Name==this.currentMan){
-                return {ID:item.ID,Status:(item.Status).toString()}
-                }
-            })
-            var arr5=this.Microbes.map((item, index) => {
-                if(item.Name==this.currentMan){
-                return {ID:item.ID,Status:(item.Status).toString()}
-                }
-            })
-            var arr=[...arr1,...arr2,...arr3,...arr4,...arr5]
-            var params={
-                CheckProjectNO:this.CheckProjectNO,
-                Name:localStorage.getItem('Name'),
-                Isopt:'Y',
-                Action:JSON.stringify(arr),
-                Time:this.batchinfo[2].CheckDate,
-                CheckEndTime:moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-            }
-            this.axios.post('/lims/QualityTesting',this.qs.stringify(params)).then((res) => {
-                if(res.data.code=='1000'){
-                    this.$message({
-                        type:'success',
-                        message:'发送结果成功'
-                    })
-                    this.SearchTab()
-                }else{
-                    this.$message({
-                        type:'warning',
-                        message:'发送失败，请重试'
-                    })
-                }
-            })
-        },
          getSelectOption() { //获取下拉列表选项
            this.axios.get('/lims/AllProduct').then((res) => {
                if(res.data.code=='1000'){

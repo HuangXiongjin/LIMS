@@ -146,7 +146,7 @@ export default {
             CheckProjectNO:'',
             rowCheckProjectNO:'',
             batchtableconfig:[{prop:'Specs',label:"规格"},{prop:'CheckNumber',label:'请验单号'},{prop:'Product',label:'品名'},{prop:'ProductNumber',label:'来料批号'},{prop:'Supplier',label:'供货单位'},{prop:'Number',label:'物料编码'},{prop:'Amount',label:'数量'},{prop:'Unit',label:'单位'},{prop:'CheckDate',label:'请验时间',width:'200'}],//批次列表
-            batchtableconfig2:[{prop:'Specs',label:"规格"},{prop:'CheckNumber',label:'请验单号'},{prop:'Product',label:'品名'},{prop:'ProductNumber',label:'来料批号'},{prop:'Supplier',label:'供货单位'},{prop:'Number',label:'物料编码'},{prop:'ProductType',label:'物料类型'},{prop:'Amount',label:'数量'},{prop:'Unit',label:'单位'},{prop:'OperationTime',label:'操作时间',width:'200'}],//批次列表
+            batchtableconfig2:[{prop:'Specs',label:"规格"},{prop:'CheckNumber',label:'请验单号'},{prop:'Product',label:'品名'},{prop:'ProductNumber',label:'来料批号'},{prop:'Supplier',label:'供货单位'},{prop:'Number',label:'物料编码'},{prop:'ProductType',label:'物料类型'},{prop:'Amount',label:'数量'},{prop:'Unit',label:'单位'},{prop:'CheckDate',label:'操作时间',width:'200'}],//批次列表
         }
     },
     created(){

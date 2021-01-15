@@ -110,7 +110,7 @@ export default {
             this.$router.push('/')
             localStorage.setItem('Name',this.ruleForm.loginname)
             localStorage.setItem('WorkNumber',this.ruleForm.loginpass)
-            localStorage.setItem('sonMenu',JSON.stringify([{"name":"工艺看板","path":"/ProgressBoard"},{"name":"系统首页","path":"/Board"},{"name":"统计分析","path":"/StatisticalAnalysis"},{"name":'批次进度',"path":'/BatchProgress'}]))
+            localStorage.setItem('sonMenu',JSON.stringify([{"name":"工艺看板","path":"/ProgressBoard"},{"name":"统计分析","path":"/StatisticalAnalysis"},{"name":'批次进度',"path":'/BatchProgress'}]))
             localStorage.setItem('SonMenuIndex','0')
             sessionStorage.setItem('Rights',res.data.data.Permissions)
           this.$message({

@@ -69,7 +69,7 @@ export default {
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
-            batchtableconfig:[{prop:'Product',label:"名称"},{prop:'CheckNumber',label:'请验单号'},{prop:'ProductType',label:'类型'},{prop:'Status',label:'操作'},{prop:'OperationTime',label:'操作时间',width:'180'},{prop:'User',label:'操作人'},{prop:'Work',label:'具体内容',width:'220'}],//批次列表
+            batchtableconfig:[{prop:'Product',label:"名称"},{prop:'CheckNumber',label:'请验单号'},{prop:'ProductType',label:'类型'},{prop:'Status',label:'操作'},{prop:'CheckDate',label:'操作时间',width:'180'},{prop:'CheckUser',label:'操作人'},{prop:'Content',label:'具体内容',width:'220'}],//批次列表
             treeDom: [],//渲染的树
             defaultProps: {
                 children: 'children',

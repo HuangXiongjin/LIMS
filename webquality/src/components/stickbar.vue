@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <div class="fsz14px" style="backgroundColor:#666;color:#fff;textAlign:center;">原料质检数量对比</div>
+        <div class="fsz14px" style="backgroundColor:#fff;color:#666;textAlign:center;">{{res3}}质检数量对比</div>
         <div style="overflow:hidden;">
-            <div style="height:300px;backgroundColor:#666;" id="box3"></div>
+            <div style="height:300px;backgroundColor:#fff;" id="box3"></div>
         </div>
     </div>
 </template>
@@ -14,6 +14,7 @@ export default {
                 stickbar:null
             }
     },
+    props:['res1','res2','xdate','res3'],
     mounted(){
         this.drawpic()
     },
@@ -26,7 +27,7 @@ export default {
          drawpic() {
                this.stickbar=echarts.init(document.getElementById('box3'))
                var option = {
-                    backgroundColor: '#666',
+                    backgroundColor: '#fff',
                     tooltip: { //提示框组件
                         trigger: 'axis',
                         formatter: '{b}<br />{a0}: {c0}<br />{a1}: {c1}',
@@ -75,7 +76,7 @@ export default {
                         {
                             type: 'category',
                         //	boundaryGap: true,//坐标轴两边留白
-                            data: ['22:18', '22:23', '22:25','22:28','22:30','22:33','22:35','22:40','22:18', '22:23', '22:25','22:28','22:30','22:33','22:35','22:40'],
+                            data: this.xdate,
                             axisLabel: { //坐标轴刻度标签的相关设置。
                         //		interval: 0,//设置为 1，表示『隔一个标签显示一个标签』
                             //	margin:15,
@@ -85,7 +86,7 @@ export default {
                                     fontFamily: '微软雅黑',
                                     fontSize: 12,
                                 },
-                                rotate:50,
+                                // rotate:50,
                             },
                             axisTick:{//坐标轴刻度相关设置。
                                 show: false,
@@ -107,7 +108,7 @@ export default {
                             splitNumber: 5,
                             axisLabel: {
                                 textStyle: {
-                                    color: '#fff',
+                                    color: 'skyblue',
                                     fontStyle: 'normal',
                                     fontFamily: '微软雅黑',
                                     fontSize: 12,
@@ -132,7 +133,7 @@ export default {
                         {
                             name:'物料A',
                             type:'bar',
-                            data:[10,15, 30, 45, 55, 60, 62, 80,80,62, 60, 55, 45, 30, 15, 10],
+                            data:this.res1,
                             barWidth: 10,
                             barGap:0,//柱间距离
                             itemStyle: {
@@ -153,7 +154,7 @@ export default {
                             {
                             name:'物料B',
                             type:'bar',
-                            data:[8,5, 25, 30, 35, 55, 62, 78,65,55, 60, 45, 42, 15, 12, 5],
+                            data:this.res2,
                             barWidth: 10,
                             barGap:0,//柱间距离
                             itemStyle: {

@@ -1,8 +1,8 @@
 <template>
-    <div class="container is-current" style="backgroundColor:#eee;">
+    <div class="container is-current" style="backgroundColor:#fff;">
         <div class="fsz14px" style="marginBottom:5px;">{{toptitle}}</div>
         <div style="overflow:hidden;">
-            <div class="box" style="height:160px;backgroundColor:#ccc;" id="box1"></div>
+            <div class="box" style="height:160px;backgroundColor:#fff;" id="box1"></div>
             <div class="txtp">
                 <span class="txt1">{{startvalue}}</span>
                 <span class="txt2">/</span>
@@ -22,7 +22,7 @@ export default {
     },
     props:['toptitle','comment','startvalue','stopvalue'],
     mounted(){
-        this.drawpic(this.comment,this.startvalue,this.stopvalue)
+        this.drawpic()
     },
      beforeDestroy(){
             this.myecharts.clear()
@@ -34,7 +34,7 @@ export default {
                this.myecharts=echarts.init(document.getElementById('box1'))
                var option = {
                     title: [{
-                        text:comment,
+                        text:this.comment,
                         x: 'center',
                         top: '55%',
                         textStyle: {
@@ -43,7 +43,7 @@ export default {
                             fontWeight: '100',
                         }
                     }, {
-                        text:((startvalue/stopvalue).toFixed(3))*100+'%',
+                        text:((this.startvalue/this.stopvalue).toFixed(3))*100+'%',
                         x: 'center',
                         top: '40%',
                         textStyle: {
@@ -53,13 +53,13 @@ export default {
                             foontWeight: '60',
                         },
                     }],
-                    backgroundColor: '#eee',
+                    backgroundColor: '#fff',
                     polar: {
                         radius: ['68%', '88%'],
                         center: ['50%', '50%'],
                     },
                     angleAxis: {
-                        max: stopvalue,
+                        max: this.stopvalue,
                         show: false,
                     },
                     radiusAxis: {
@@ -82,20 +82,20 @@ export default {
                             barWidth: 80,
                             showBackground: true,
                             backgroundStyle: {
-                                color: 'rgba(66, 66, 66, .3)',
+                                color: '#aaa',
                             },
-                            data: [startvalue],
+                            data: [this.startvalue],
                             coordinateSystem: 'polar',
 
                             itemStyle: {
                                 normal: {
                                     color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
                                             offset: 0,
-                                            color: '#16CEB9',
+                                            color: '#00FFFF',
                                         },
                                         {
                                             offset: 1,
-                                            color: 'pink',
+                                            color: '#00FF00',
                                         },
                                     ]),
                                 },
@@ -111,7 +111,7 @@ export default {
                             itemStyle: {
                                 color: 'rgba(66, 66, 66, .1)',
                                 borderWidth: 1,
-                                borderColor: 'pink',
+                                borderColor: '#00FF66',
                             },
                             data: [100],
                         },
@@ -123,9 +123,9 @@ export default {
                             hoverAnimation: false,
                             center: ['50%', '50%'],
                             itemStyle: {
-                                color: 'rgba(66, 66, 66, .1)',
+                                color: '#aaa',
                                 borderWidth: 1,
-                                borderColor: '#fff',
+                                borderColor: 'pink',
                             },
                             data: [100],
                         }
@@ -144,7 +144,7 @@ export default {
     }
     .txtp{
         width: 40%;
-        background-color: #eee;
+        background-color: #fff;
         position: relative;
         left:135px;
         height: 160px;
@@ -152,7 +152,7 @@ export default {
     .txt1{
         position: absolute;
         top:70px;
-        right:50px;
+        right:42px;
         font-size: 29px;
     }
     .txt2{
