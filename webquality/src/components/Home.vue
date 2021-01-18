@@ -79,27 +79,27 @@ export default {
             },
              mneulist:[
                  {name:'功能看板',icon:'el-icon-data-analysis',children:[
-                    {name:'系统首页',path:'/Board'},
+                    {name:'系统首页',path:'/Board'}
                    
                  ]},
-                 {name:'原料质量',icon:'el-icon-folder-opened',children:[
+                 {name:'原料质量',icon:'el-icon-star-off',children:[
                     {name:'统计分析',path:'/StatisticalAnalysis'},
                     {name:'清单进度',path:'/ListProgress'},
                     {name:'检验详情',path:'/InspectionDetails'},
 
                  ]},
-                 {name:'过程质量',icon:'el-icon-folder-opened',children:[
+                 {name:'在制品质量',icon:'el-icon-s-claim',children:[
                     {name:'统计分析',path:'/ProgressStatisticalAnalysis'},
                     {name:'清单进度',path:'/ProgressListProgress'},
                     {name:'检验详情',path:'/ProgressInspectionDetails'},
 
                  ]},
-                 {name:'成品质量',icon:'el-icon-folder-opened',children:[
+                 {name:'成品质量',icon:'el-icon-star-on',children:[
                     {name:'统计分析',path:'/ProductStatisticalAnalysis'},
                     {name:'清单进度',path:'/ProductListProgress'},
                     {name:'检验详情',path:'/ProductInspectionDetails'},
                  ]},
-                 {name:'退货管理',icon:'el-icon-folder-opened',children:[
+                 {name:'退货管理',icon:'el-icon-s-home',children:[
                     {name:'统计分析',path:'/ReturnsStatisticalAnalysis'},
                     {name:'清单进度',path:'/ReturnsListProgress'},
                     {name:'检验详情',path:'/ReturnsInspectionDetails'},

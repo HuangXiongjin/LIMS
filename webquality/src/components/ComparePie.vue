@@ -1,6 +1,6 @@
 <template>
-    <div class="container is-current" style="backgroundColor:#eee;">
-        <div class="box" style="height:180px;backgroundColor:#eee;" id="box9"></div>
+    <div class="container is-current" style="backgroundColor:#fff;">
+        <div class="box" style="height:180px;backgroundColor:#fff;" id="box9"></div>
     </div>
 </template>
 <script>

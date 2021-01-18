@@ -145,20 +145,20 @@ def quality_standard():
         data = [
             {'No': No, 'Project': qs_center.Project, 'Source': qs_center.Source, 'Character': character,
              'Discern': discern, 'Inspect': inspect, 'Content': content, 'Microbe': microbe}]
-        character_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product,
+        character_data = db_session.query(QualityStandard).filter_by(No=No,
                                                                      Type='Character').all()
         for result in character_data:
             character.append({'ID': result.ID, 'value': result.Describe})
-        discern_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Discern').all()
+        discern_data = db_session.query(QualityStandard).filter_by(No=No, Type='Discern').all()
         for result in discern_data:
             discern.append({'ID': result.ID, 'value': result.Describe})
-        inspect_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Inspect').all()
+        inspect_data = db_session.query(QualityStandard).filter_by(No=No, Type='Inspect').all()
         for result in inspect_data:
             inspect.append({'ID': result.ID, 'value': result.Describe})
-        content_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Content').all()
+        content_data = db_session.query(QualityStandard).filter_by(No=No, Type='Content').all()
         for result in content_data:
             content.append({'ID': result.ID, 'value': result.Describe})
-        microbe_data = db_session.query(QualityStandard).filter_by(Product=qs_center.Product, Type='Microbe').all()
+        microbe_data = db_session.query(QualityStandard).filter_by(No=No, Type='Microbe').all()
         for result in microbe_data:
             microbe.append({'ID': result.ID, 'value': result.Describe})
         return json.dumps({'code': '1000', 'msg': '成功', 'data': data}, cls=MyEncoder, ensure_ascii=False)

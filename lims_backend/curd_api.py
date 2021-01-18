@@ -47,16 +47,22 @@ def operation():
                 if query_column_name2 is not None:
                     column2 = table_name.columns._data[query_column_name2]
                     sql = f"select * from [LIMS].[dbo].[{table_name}] where {column1}='{query_column_value1}' and {column2}='{query_column_value2}' and {time_column} between '{start_time}' and '{end_time}' order by ID desc offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only "
+                    sql2 = f"select * from [LIMS].[dbo].[{table_name}] where {column1}='{query_column_value1}' and {column2}='{query_column_value2}' and {time_column} between '{start_time}' and '{end_time}' order by ID desc"
                 else:
                     sql = f"select * from [LIMS].[dbo].[{table_name}] where {column1}='{query_column_value1}' and {time_column} between '{start_time}' and '{end_time}' order by ID desc offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only "
+                    sql2 = f"select * from [LIMS].[dbo].[{table_name}] where {column1}='{query_column_value1}' and {time_column} between '{start_time}' and '{end_time}' order by ID desc"
             elif query_column_name2 is not None:
                 column2 = table_name.columns._data[query_column_name2]
                 sql = f"select * from [LIMS].[dbo].[{table_name}] where {column1}='{query_column_value1}' and {column2}='{query_column_value2}' order by ID desc offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only "
+                sql2 = f"select * from [LIMS].[dbo].[{table_name}] where {column1}='{query_column_value1}' and {column2}='{query_column_value2}' order by ID desc"
             else:
                 sql = f"select * from [LIMS].[dbo].[{table_name}] where {query_column_name1}='{query_column_value1}' order by ID desc offset {(page - 1) * per_page} rows fetch next {page * per_page} rows only "
+                sql2 = f"select * from [LIMS].[dbo].[{table_name}] where {query_column_name1}='{query_column_value1}' order by ID desc"
             query_data = db_session.execute(sql).fetchall()
+            total = db_session.execute(sql2).fetchall()
+            print(total)
             results = [dict(zip(item.keys(), item)) for item in query_data]
-            return json.dumps({'code': '1000', 'msg': '查询成功', 'data': results, 'total': len(results)}, cls=MyEncoder,
+            return json.dumps({'code': '1000', 'msg': '查询成功', 'data': results, 'total': len(total)}, cls=MyEncoder,
                               ensure_ascii=False)
         else:
             query_data = db_session.query(table_name).order_by(table_name.columns._data['ID'].desc()).all()

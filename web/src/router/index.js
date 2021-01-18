@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/components/Index'
+import ProductionMonitoring from '@/components/ProductionMonitoring'
 import home from '@/views/home'
 import Login from '@/components/Login'
 import Organization from '@/views/system/Organization'
@@ -45,7 +46,6 @@ import ElectronicBatchRecord from '@/views/production/ElectronicBatchRecord'
 import BatchRecordFiles from '@/views/production/BatchRecordFiles'
 import MaterialBalanceStatistics from '@/views/production/MaterialBalanceStatistics'
 import TrendQuery from '@/views/production/TrendQuery'
-import ProductionMonitoring from '@/views/production/ProductionMonitoring'
 //物料管理
 import MaterialInformation from '@/views/material/MaterialInformation'
 import MaterialBOM from '@/views/material/MaterialBOM'
@@ -101,7 +101,6 @@ export default new Router({
         {path:'/sendMaterialLog',name:'sendMaterialLog',meta:{ title:'物料运输记录',type:"生产执行系统"},component:sendMaterialLog},
         {path:'/sendPlan',name:'sendPlan',meta:{ title:'发送投料计划',type:"生产执行系统"},component:sendPlan},
 
-        {path:'/ProductionMonitoring',name:'ProductionMonitoring',meta:{ title:'生产监视',type:"生产数据管理"},component:ProductionMonitoring},
         {path:'/ElectronicBatchRecord',name:'ElectronicBatchRecord',meta:{ title:'电子批生产记录',type:"生产数据管理"},component:ElectronicBatchRecord},
         {path:'/BatchRecordFiles',name:'BatchRecordFiles',meta:{ title:'批记录维护管理',type:"生产数据管理"},component:BatchRecordFiles},
         {path:'/MaterialBalanceStatistics',name:'MaterialBalanceStatistics',meta:{ title:'物料平衡统计',type:"生产数据管理"},component:MaterialBalanceStatistics},
@@ -119,6 +118,11 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: Login,
+    },
+    {
+      path: '/ProductionMonitoring',
+      name: 'ProductionMonitoring',
+      component: ProductionMonitoring,
     },
   ]
 })

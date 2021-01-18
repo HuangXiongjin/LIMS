@@ -2,7 +2,7 @@
     <el-row :gutter='20'>
         <el-col :span='24'>
             <el-col :span='24' class="container">分配权限列表</el-col>
-            <el-col :span='24' class="mgt24 container" style="height:500px;">
+            <el-col :span='24' class="mgt24 container" :style="conheight" style="overflow:auto;">
                 <div class="mgb24">
                     <el-button type="primary" size='small' @click="New('添加')">添加</el-button>
                     <el-button type="success" size='small' @click="New('编辑')">编辑</el-button>
@@ -107,7 +107,7 @@ export default {
             dialogTableVisible:false,
             batchTableData:{ //物料BOM
                 data:[],
-                limit: 5,//当前显示多少条
+                limit: 10,//当前显示多少条
                 offset: 1,//当前处于多少页
                 total: 0,//总的多少页
             },
@@ -115,6 +115,9 @@ export default {
            distribute:{
                CheckProjectNO:'',
            },
+           conheight:{
+                height:''
+            },
            searchObj:{
                category:'玉米淀粉',
                DestructionType:'样品销毁',
@@ -130,20 +133,15 @@ export default {
                 value: '留样销毁',
                 label: '留样销毁'
                 }],
-            batchTableData:{ //物料BOM
-                data:[],
-                limit: 5,//当前显示多少条
-                offset: 1,//当前处于多少页
-                total: 0,//总的多少页
-            },
             currentRow:[],
             batchtableconfig:[{prop:'Name',label:'人物',width:'100'},{prop:'WorkNumber',label:'登录名称',width:'120'},{prop:'Password',label:'登录密码',width:'120'},{prop:'CreateTime',label:'操作时间',width:'200'},{prop:'Permissions',label:'对应权限'}],//批次列表
         }
     },
     created(){
        this.getSelectOption()
-       this.SearchTab()
        this.getAllPeople()
+       window.addEventListener('resize', this.getHeight);
+       this.getHeight()
     },
     beforeRouteEnter(to,from,next){
         if(to.path==='/RightDistribute'){
@@ -155,6 +153,9 @@ export default {
         }
     },
     methods: {
+        getHeight(){
+          this.conheight.height=(window.innerHeight-200)+'px'
+       },
         New(txt){
             this.txt=txt
             if(this.txt=='添加'){
@@ -227,8 +228,10 @@ export default {
                 QueryColumnValue:'shiyanshi',
             }
             this.axios.get('/lims/CRUD',{params:params}).then((res) => {
+               if(res.data.code=='1000'){
                 this.batchTableData.data=res.data.data
                 this.batchTableData.total=res.data.total
+                }
             })
         },
         editRole(){ //编辑角色
@@ -299,16 +302,13 @@ export default {
 
            })
         },
-         SearchTab(){ //查询相关数据
-           
-        },
         handleSizeChange(limit){ //每页条数切换
             this.batchTableData.limit = limit
-            this.SearchTab()
+            this.getAllPeople()
       },
         handleCurrentChange(offset) { // 页码切换
             this.batchTableData.offset = offset
-            this.SearchTab()
+            this.getAllPeople()
         },
     },
 }

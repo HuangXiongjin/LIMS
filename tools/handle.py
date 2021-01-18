@@ -63,8 +63,8 @@ def is_allowed_image(content_type):
 
 
 # 生成时间戳文件名
-def generate_filename():
-    return f'{str(round(time.time() * 1000))}'
+# def generate_filename():
+#     return f'{str(round(time.time() * 1000))}'
 
 
 # 获取项目跟路径

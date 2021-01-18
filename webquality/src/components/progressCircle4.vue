@@ -1,8 +1,8 @@
 <template>
-    <div class="container is-current" style="backgroundColor:#eee;">
+    <div class="container is-current" style="backgroundColor:#fff;">
         <div class="fsz14px" style="marginBottom:5px;">{{toptitle}}</div>
         <div style="overflow:hidden;">
-            <div class="box" style="height:160px;backgroundColor:#ccc;" id="box8"></div>
+            <div class="box" style="height:160px;backgroundColor:#fff;" id="box8"></div>
             <div class="txtp">
                 <span class="txt1">{{startvalue}}</span>
                 <span class="txt2">/</span>
@@ -38,7 +38,7 @@ export default {
                         x: 'center',
                         top: '55%',
                         textStyle: {
-                            color: '#FFFFFF',
+                            color: '#666',
                             fontSize: 12,
                             fontWeight: '100',
                         }
@@ -53,7 +53,7 @@ export default {
                             foontWeight: '60',
                         },
                     }],
-                    backgroundColor: '#eee',
+                    backgroundColor: '#fff',
                     polar: {
                         radius: ['68%', '88%'],
                         center: ['50%', '50%'],
@@ -82,7 +82,7 @@ export default {
                             barWidth: 80,
                             showBackground: true,
                             backgroundStyle: {
-                                color: 'rgba(66, 66, 66, .3)',
+                                color: '#aaa',
                             },
                             data: [startvalue],
                             coordinateSystem: 'polar',
@@ -91,11 +91,11 @@ export default {
                                 normal: {
                                     color: new echarts.graphic.LinearGradient(0, 1, 0, 0, [{
                                             offset: 0,
-                                            color: '#16CEB9',
+                                            color: '#C0C0C0',
                                         },
                                         {
                                             offset: 1,
-                                            color: 'pink',
+                                            color: '#00FFFF',
                                         },
                                     ]),
                                 },
@@ -123,7 +123,7 @@ export default {
                             hoverAnimation: false,
                             center: ['50%', '50%'],
                             itemStyle: {
-                                color: 'rgba(66, 66, 66, .1)',
+                                color: '#aaa',
                                 borderWidth: 1,
                                 borderColor: '#fff',
                             },
@@ -144,7 +144,7 @@ export default {
     }
     .txtp{
         width: 40%;
-        background-color: #eee;
+        background-color: #fff;
         position: relative;
         left:135px;
         height: 160px;
@@ -152,7 +152,7 @@ export default {
     .txt1{
         position: absolute;
         top:70px;
-        right:50px;
+        right:42px;
         font-size: 29px;
     }
     .txt2{

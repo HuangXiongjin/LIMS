@@ -80,7 +80,6 @@ export default {
              mneulist:[
                  {name:'功能看板',icon:'el-icon-data-analysis',children:[
                     {name:'工艺看板',path:'/ProgressBoard'},
-                    {name:'系统首页',path:'/Board'},
                     {name:'统计分析',path:'/StatisticalAnalysis'},
                     {name:'批次进度',path:'/BatchProgress'},
                  ]},

@@ -23,6 +23,11 @@
             </el-tooltip>
           </li>
           <li>
+            <el-tooltip class="head-menu-item" effect="dark" content="大数据看板" placement="bottom">
+              <i class="el-icon-monitor" @click="$router.push('/ProductionMonitoring')"></i>
+            </el-tooltip>
+          </li>
+          <li>
             <el-tooltip class="head-menu-item" effect="dark" content="切换系统" placement="bottom">
               <i class="el-icon-menu" @click="showSystemNav = !showSystemNav"></i>
             </el-tooltip>
@@ -129,7 +134,6 @@
             {title:'发送投料计划',icon:"el-icon-position",url:"/sendPlan"},
           ]},
           {label: '生产数据管理',icon:"el-icon-tickets",mainMenu:[
-            {title:"生产监视",icon:"el-icon-view",url:"/ProductionMonitoring"},
             {title:"电子批生产记录",icon:"el-icon-edit-outline",url:"/ElectronicBatchRecord"},
             {title:"批物料平衡统计",icon:"fa fa-balance-scale",url:"/MaterialBalanceStatistics"},
             // {title:"生产数据趋势分析",icon:"fa fa-bar-chart",url:"/TrendQuery"},

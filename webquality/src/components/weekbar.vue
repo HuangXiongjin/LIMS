@@ -1,8 +1,18 @@
 <template>
-    <div class="container">
-        <div class="fsz14px" style="backgroundColor:#666;color:#fff;textAlign:center;">排名环比</div>
+    <div class="container" style="position:relative;">
+        <div class="fsz14px" style="backgroundColor:#fff;color:#666;textAlign:center;">排名环比</div>
         <div style="overflow:hidden;">
-            <div style="height:300px;backgroundColor:#666;" id="box2"></div>
+            <div style="height:300px;backgroundColor:#fff;" id="box2"></div>
+        </div>
+        <div class="mydateclass">
+            <el-select v-model="weekdate">
+                <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                </el-option> 
+            </el-select>
         </div>
     </div>
 </template>
@@ -12,9 +22,12 @@ let _ = require('lodash')
 export default {
     data(){
             return {
-                weekbar:null
+                weekbar:null,
+                weekdate:'周',
+                options:[{ value: '年',label: '年'}, {value: '月',label: '月'},{value: '周',label: '周'}]
             }
     },
+    props:['res1','res2'],
     mounted(){
         this.drawpic()
     },
@@ -26,79 +39,9 @@ export default {
     methods: {
          drawpic() {
                this.weekbar=echarts.init(document.getElementById('box2'))
-                var data1 = [{
-                        name: '物料A',
-                        value: 23.4,
-                        sum: 30,
-                    },
-                    {
-                        name: '物料A1',
-                        value: 16,
-                        sum: 20
-                    },
-                    {
-                        name: '物料B',
-                        value: 15,
-                        sum: 20
-                    },
-                    {
-                        name: '物料C',
-                        value: 15,
-                        sum: 20
-                    },
-                    {
-                        name: '物料D',
-                        value: 96,
-                        sum: 100
-                    },
-                    {
-                        name: '物料E',
-                        value: 98,
-                        sum: 100
-                    },
-                    {
-                        name: '物料F',
-                        value: 97,
-                        sum: 100
-                    }
-                ];
+                var data1 =this.res1
 
-                var data2 = [{
-                        name: '物料A',
-                        value: 20.4,
-                        sum: 30,
-                    },
-                    {
-                        name: '物料A1',
-                        value: 10,
-                        sum: 20
-                    },
-                    {
-                        name: '物料B',
-                        value: 12,
-                        sum: 20
-                    },
-                    {
-                        name: '物料C',
-                        value: 13,
-                        sum: 20
-                    },
-                    {
-                        name: '物料D',
-                        value: 90,
-                        sum: 100
-                    },
-                    {
-                        name: '物料E',
-                        value: 90,
-                        sum: 100
-                    },
-                    {
-                        name: '物料F',
-                        value: 91,
-                        sum: 100
-                    }
-                ];
+                var data2 = this.res2
                 // data = data.sort((a, b) => {
                 //     return b.value - a.value
                 // });
@@ -123,14 +66,14 @@ export default {
                 var option = {
                     legend : {
                                 top: '1%',
-                                right : '5%',
+                                left : '2%',
                                 itemWidth : 18,
                                 itemHeight : 10,
                                 itemGap: 16,
                                 orient: 'horizontal',
                                 // icon : 'circle',
                                 textStyle : {
-                                    color : '#ffffff',
+                                    color : '#666',
                                     fontSize : 14,
                                 },
                                 data: ['本周', '上周']
@@ -173,6 +116,9 @@ export default {
                             position: 'bottom',
                             axisLabel: {
                                 show: true,
+                                textStyle: {
+                                    color: '#666'
+                                }
                             },
                             splitLine: {
                                 show: false
@@ -196,7 +142,7 @@ export default {
                             axisLabel: {
                                 show: true,
                                 textStyle: {
-                                    color: 'white'
+                                    color: '#666'
                                 }
                             },
                             splitLine: {
@@ -240,7 +186,7 @@ export default {
                                 align: 'auto',
                                 verticalAlign: 'middle',
                                 textStyle: {
-                                    color: '#ffffff',
+                                    color: '#666',
                                     fontSize: 12,
                                     align: 'center',
 
