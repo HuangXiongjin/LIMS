@@ -246,6 +246,6 @@ def ManualDownload():
         response.headers["Content-Disposition"] = "attachment; filename={}".format(fname.encode().decode('latin-1'))
         return response
     else:
-        json.dumps({"code": "200", "message": "参数错误！"})
+        return json.dumps({"code": "200", "message": "参数错误！"})
 
 

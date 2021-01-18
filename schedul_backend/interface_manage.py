@@ -178,7 +178,7 @@ def WMS_SendPlan():
                 if responjson.get("code") != "0":
                     db_session.rollback()
                     return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！" + responjson.get("msg")})
-                oclass = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.BrandCode == pmoc.BrandCode, BatchMaterialInfo.BatchID == pmoc.BatchID).all()
+                oclass = db_session.query(BatchMaterialInfo).filter(BatchMaterialInfo.BrandCode == pmoc.BrandCode, BatchMaterialInfo.BatchID == pmoc.BatchID, BatchMaterialInfo.TaskTurn != "投料系统已接收").all()
                 dic = []
                 for oc in oclass:
                     dic.append(
@@ -198,7 +198,7 @@ def WMS_SendPlan():
                     if responjson.get("code") != "0":
                         return json.dumps({"code": "500", "message": "调用WMS_SendPlan接口报错！" + responjson.get("msg")})
                 for oc in oclass:
-                    oc.SendFlag = "投料系统已接收"
+                    oc.TaskTurn = "投料系统已接收"
                     oc.OperationDate = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     db_session.commit()
                 # pmoc.PlanStatus = Global.PlanStatus.FSMWMSed.value
